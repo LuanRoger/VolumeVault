@@ -12,13 +12,13 @@ public class BookUpdateModelValidator : AbstractValidator<BookUpdateModel>
             .When(book => book.title is not null);
         RuleFor(book => book.author)
             .NotEmpty()
-            .When(book => book.author is not null);;
+            .When(book => book.author is not null);
         RuleFor(book => book.isbn)
             .NotEmpty()
             .Length(17)
-            .When(book => book.isbn is not null);;
+            .When(book => book.isbn is not null);
         RuleFor(book => book.publicationYear)
-            .GreaterThanOrEqualTo(0)
+            .GreaterThanOrEqualTo(1)
             .When(book => book.publicationYear is not null);
         RuleFor(book => book.publisher)
             .NotEmpty()
@@ -28,7 +28,7 @@ public class BookUpdateModelValidator : AbstractValidator<BookUpdateModel>
             .NotEmpty()
             .When(book => book.edition is not null);
         RuleFor(book => book.pagesNumber)
-            .GreaterThanOrEqualTo(0)
+            .GreaterThanOrEqualTo(1)
             .When(book => book.pagesNumber is not null);
         RuleFor(book => book.genre)
             .NotEmpty()

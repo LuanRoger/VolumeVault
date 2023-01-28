@@ -1,132 +1,113 @@
 using FluentValidation;
+using FluentValidation.Results;
 using VolumeVaultInfra.Models.Book;
 using VolumeVaultInfra.Validators;
-using ValidationResult = FluentValidation.Results.ValidationResult;
 
-namespace VolumeVaultInfra.Test;
+namespace VolumeVaultInfra.Test.ValidationTests;
 
-public class BookWriteModelValidationTest
+public class BookUpdateModelValidationTest
 {
     [Theory]
-    [MemberData(nameof(GetBookWriteModelsOptionalParameters))]
-    public void ValidateValidBookWriteModelsOptionalParameters(BookWriteModel bookWriteModel)
+    [MemberData(nameof(GetValidBookUpdateModelOptionalParameters))]
+    public void ValidateValidBookUpdateModelOptionalParameters(BookUpdateModel bookUpdateModel)
     {
-        IValidator<BookWriteModel> validator = new BookWriteModelValidator();
-        ValidationResult result = validator.Validate(bookWriteModel);
+        IValidator<BookUpdateModel> validator = new BookUpdateModelValidator();
+        ValidationResult result = validator.Validate(bookUpdateModel);
         Assert.True(result.IsValid);
     }
     
     [Theory]
-    [MemberData(nameof(GetValidBookWireteModels))]
-    public void ValidateValidBookWriteModels(BookWriteModel bookWriteModel)
+    [MemberData(nameof(GetInvalidBookUpdateModel))]
+    public void ValidateInvalidBookUpdateModel(BookUpdateModel bookUpdateModel)
     {
-        IValidator<BookWriteModel> validator = new BookWriteModelValidator();
-        ValidationResult result = validator.Validate(bookWriteModel);
-        Assert.True(result.IsValid);
-    }
-    
-    [Theory]
-    [MemberData(nameof(GetInvalidBookWriteModel))]
-    public void ValidateInvalidBookWriteModels(BookWriteModel bookWriteModel)
-    {
-        IValidator<BookWriteModel> validator = new BookWriteModelValidator();
-        ValidationResult result = validator.Validate(bookWriteModel);
+        IValidator<BookUpdateModel> validator = new BookUpdateModelValidator();
+        ValidationResult result = validator.Validate(bookUpdateModel);
         Assert.False(result.IsValid);
     }
-
-    #region ValidBookWriteModelsOptionalParametersInputs
-    public static IEnumerable<object[]> GetBookWriteModelsOptionalParameters()
+    
+    #region ValidBookUpdateModelOptionalParametersInput
+    public static IEnumerable<object[]> GetValidBookUpdateModelOptionalParameters()
     {
-        foreach (BookWriteModel input in GetBookWriteModelsOptionalParametersInput())
+        foreach (BookUpdateModel input in GetValidBookUpdateModelOptionalParametersInput())
             yield return new object[] { input };
     }
-    private static IEnumerable<BookWriteModel> GetBookWriteModelsOptionalParametersInput()
+    private static IEnumerable<BookUpdateModel> GetValidBookUpdateModelOptionalParametersInput()
     {
         return new[]
         {
-            //General
-            new BookWriteModel
+            new BookUpdateModel {},
+            new BookUpdateModel
             {
                 title = "test",
-                author = "test",
-                isbn = "000-00-0000-000-0"
             },
-            //Optional parameters
-            new BookWriteModel
+            new BookUpdateModel
+            {
+                title = "test",
+                author = "test"
+            },
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
                 isbn = "000-00-0000-000-0",
-                publicationYear = 0
+                publicationYear = 1
             },
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
                 isbn = "000-00-0000-000-0",
-                publicationYear = 0,
+                publicationYear = 1,
                 publisher = "test"
             },
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
                 isbn = "000-00-0000-000-0",
-                publicationYear = 0,
+                publicationYear = 1,
                 publisher = "test",
-                edition = 1
+                edition = 0
             },
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
                 isbn = "000-00-0000-000-0",
-                publicationYear = 0,
+                publicationYear = 1,
                 publisher = "test",
                 edition = 1,
-                pagesNumber = 1
+                pagesNumber = 1,
             },
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
                 isbn = "000-00-0000-000-0",
-                publicationYear = 0,
+                publicationYear = 1,
                 publisher = "test",
                 edition = 1,
                 pagesNumber = 1,
                 genre = "test"
             },
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
                 isbn = "000-00-0000-000-0",
-                publicationYear = 0,
+                publicationYear = 1,
                 publisher = "test",
                 edition = 1,
                 pagesNumber = 1,
                 genre = "test",
-                format = 0
+                format = 0,
             },
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
                 isbn = "000-00-0000-000-0",
-                publicationYear = 0,
-                publisher = "test",
-                edition = 1,
-                pagesNumber = 1,
-                genre = "test",
-                format = 0
-            },
-            new BookWriteModel
-            {
-                title = "test",
-                author = "test",
-                isbn = "000-00-0000-000-0",
-                publicationYear = 0,
+                publicationYear = 1,
                 publisher = "test",
                 edition = 1,
                 pagesNumber = 1,
@@ -134,81 +115,51 @@ public class BookWriteModelValidationTest
                 format = 0,
                 observation = "test"
             },
-            new BookWriteModel
-            {
-                title = "test",
-                author = "test",
-                isbn = "000-00-0000-000-0",
-                publicationYear = 0,
-                publisher = "test",
-                edition = 1,
-                pagesNumber = 1,
-                genre = "test",
-                format = 0,
-                observation = "test",
-                readed = true
-            },
-            new BookWriteModel
-            {
-                title = "test",
-                author = "test",
-                isbn = "000-00-0000-000-0",
-                publicationYear = 0,
-                publisher = "test",
-                edition = 1,
-                pagesNumber = 1,
-                genre = "test",
-                format = 0,
-                observation = "test",
-                readed = true,
-                tags = new() { "test" }
-            }
+          new BookUpdateModel
+          {
+              title = "test",
+              author = "test",
+              isbn = "000-00-0000-000-0",
+              publicationYear = 1,
+              publisher = "test",
+              edition = 1,
+              pagesNumber = 1,
+              genre = "test",
+              format = 0,
+              observation = "test",
+              readed = false,
+          },
+          new BookUpdateModel
+          {
+              title = "test",
+              author = "test",
+              isbn = "000-00-0000-000-0",
+              publicationYear = 1,
+              publisher = "test",
+              edition = 1,
+              pagesNumber = 1,
+              genre = "test",
+              format = 0,
+              observation = "test",
+              readed = false,
+              tags = new () { "test" }
+          }
         };
     }
     #endregion
 
-    #region ValidBookWriteModelsInputs
-    public static IEnumerable<object[]> GetValidBookWireteModels()
+    #region InvalidBookUpdateModel
+    public static IEnumerable<object[]> GetInvalidBookUpdateModel()
     {
-        foreach (BookWriteModel input in GetValidBookWireteModelsInputs())
+        foreach (BookUpdateModel input in GetInvalidBookUpdateModelInput())
             yield return new object[] { input };
     }
-    public static IEnumerable<BookWriteModel> GetValidBookWireteModelsInputs()
+    private static IEnumerable<BookUpdateModel> GetInvalidBookUpdateModelInput()
     {
         return new[]
         {
             //General
-            new BookWriteModel
-            {
-                title = "test",
-                author = "test",
-                isbn = "000-00-0000-000-0",
-                publicationYear = 0,
-                publisher = "test",
-                edition = 1,
-                pagesNumber = 1,
-                genre = "test",
-                format = 0,
-                observation = "test",
-                readed = true,
-                tags = new() { "test" }
-            }
-        };
-    }
-    #endregion
-
-    #region InvalidBookWriteModelsInput
-    public static IEnumerable<object[]> GetInvalidBookWriteModel()
-    {
-        foreach (BookWriteModel input in GetInvalidBookWriteModelInput())
-            yield return new object[] { input };
-    }
-    public static IEnumerable<BookWriteModel> GetInvalidBookWriteModelInput()
-    {
-        return new[]
-        {
-            //General
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "",
                 author = "",
@@ -224,7 +175,7 @@ public class BookWriteModelValidationTest
                 tags = new() { "" }
             },
             //Title
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "",
                 author = "test",
@@ -240,7 +191,7 @@ public class BookWriteModelValidationTest
                 tags = new() { "test" }
             },
             //Author
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "",
@@ -256,7 +207,7 @@ public class BookWriteModelValidationTest
                 tags = new() { "test" }
             },
             //ISBN
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
@@ -271,7 +222,7 @@ public class BookWriteModelValidationTest
                 readed = true,
                 tags = new() { "test" }
             },
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
@@ -286,7 +237,7 @@ public class BookWriteModelValidationTest
                 readed = true,
                 tags = new() { "test" }
             },
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
@@ -302,7 +253,7 @@ public class BookWriteModelValidationTest
                 tags = new() { "test" }
             },
             //Publication year
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
@@ -318,7 +269,7 @@ public class BookWriteModelValidationTest
                 tags = new() { "test" }
             },
             //Publisher
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
@@ -333,7 +284,7 @@ public class BookWriteModelValidationTest
                 readed = true,
                 tags = new() { "test" }
             },
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
@@ -349,7 +300,7 @@ public class BookWriteModelValidationTest
                 tags = new() { "test" }
             },
             //Edition
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
@@ -365,7 +316,7 @@ public class BookWriteModelValidationTest
                 tags = new() { "test" }
             },
             //Page number
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
@@ -380,7 +331,7 @@ public class BookWriteModelValidationTest
                 readed = true,
                 tags = new() { "test" }
             },
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
@@ -396,7 +347,7 @@ public class BookWriteModelValidationTest
                 tags = new() { "test" }
             },
             //Genre
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
@@ -412,7 +363,7 @@ public class BookWriteModelValidationTest
                 tags = new() { "test" }
             },
             //Observation
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
@@ -428,7 +379,7 @@ public class BookWriteModelValidationTest
                 tags = new() { "test" }
             },
             //Tags
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
@@ -443,7 +394,7 @@ public class BookWriteModelValidationTest
                 readed = true,
                 tags = new() { "" }
             },
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
@@ -458,7 +409,7 @@ public class BookWriteModelValidationTest
                 readed = true,
                 tags = new() { "", "" }
             },
-            new BookWriteModel
+            new BookUpdateModel
             {
                 title = "test",
                 author = "test",
@@ -472,7 +423,7 @@ public class BookWriteModelValidationTest
                 observation = "test",
                 readed = true,
                 tags = new() { "", "", "" }
-            },
+            }
         };
     }
     #endregion

@@ -3,7 +3,7 @@ using FluentValidation.Results;
 using VolumeVaultInfra.Models.User;
 using VolumeVaultInfra.Validators;
 
-namespace VolumeVaultInfra.Test;
+namespace VolumeVaultInfra.Test.ValidationTests;
 
 public class UserValidationTest
 {
