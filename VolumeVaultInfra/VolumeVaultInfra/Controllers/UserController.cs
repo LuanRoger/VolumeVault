@@ -1,9 +1,8 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
-using Microsoft.EntityFrameworkCore;
-using VolumeVaultInfra.Context;
 using VolumeVaultInfra.Exceptions;
 using VolumeVaultInfra.Models.User;
+using VolumeVaultInfra.Repositories;
 using VolumeVaultInfra.Services.Hash;
 using VolumeVaultInfra.Services.Jwt;
 
@@ -11,14 +10,14 @@ namespace VolumeVaultInfra.Controllers;
 
 public class UserController : IUserController
 {
-    private DatabaseBaseContext _dbContext { get; }
+    private IUserRepository _userRepository { get; }
     private JwtService _jwtService { get; }
     private IValidator<UserWriteModel> _userWriteModelValidator { get; }
 
-    public UserController(DatabaseBaseContext dbContext, JwtService jwtService,
+    public UserController(IUserRepository userRepository, JwtService jwtService,
         IValidator<UserWriteModel> userWriteModelValidator)
     {
-        _dbContext = dbContext;
+        _userRepository = userRepository;
         _jwtService = jwtService;
         _userWriteModelValidator = userWriteModelValidator;
     }
@@ -32,8 +31,8 @@ public class UserController : IUserController
                 .Select(errors => errors.ErrorMessage)
                 .ToList());
 
-        UserModel? userVerifier = await _dbContext.users
-            .FirstOrDefaultAsync(dbUser => dbUser.username == userWrite.username || dbUser.email == userWrite.email);
+        UserModel? userVerifier = await _userRepository
+            .SearchUserByUsernameOrEmail(userWrite.username, userWrite.email);
         if(userVerifier is not null)
             throw new UserAlreadyExistException();
 
@@ -46,17 +45,15 @@ public class UserController : IUserController
             password = await HashService.HashPassword(userWrite.password, userInformationToHash)
         };
         
-        var userEntry = await _dbContext.users.AddAsync(user);
-        await _dbContext.SaveChangesAsync();
+        UserModel userEntry = await _userRepository.AddUser(user);
+        await _userRepository.Flush();
         
-        return _jwtService.GenerateToken(userEntry.Entity.id);
+        return _jwtService.GenerateToken(userEntry.id);
     }
 
     public async Task<string> LoginUser(UserLoginRequestModel loginRequest)
     {
-        UserModel? userInfo = await _dbContext.users
-            .FirstOrDefaultAsync(user => user.username == loginRequest.username);
-        
+        UserModel? userInfo = await _userRepository.GetUserByUsername(loginRequest.username);
         if(userInfo is null)
             throw new UsernameIsNotRegisteredException(loginRequest.username);
         
