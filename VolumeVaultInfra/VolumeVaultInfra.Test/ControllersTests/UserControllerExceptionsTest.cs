@@ -22,59 +22,62 @@ public class UserControllerExceptionsTest
         
         _userController = new(_userRepositoryMock.Object, jwtService, validator);
     }
-
+    
+    private static UserWriteModel userTestDumy => new()
+    {
+        username = "test",
+        email = "test@test.com",
+        password = "test1234"
+    };
+    private static UserLoginRequestModel loginRequestTestDumy => new()
+    {
+        username = "test",
+        password = "test1234"
+    };
+    
     [Fact]
     public async Task SignExistingUserTest()
     {
-        UserWriteModel testUser = new()
-        {
-            username = "test",
-            email = "test@test.com",
-            password = "test1234"
-        };
+        UserWriteModel user = userTestDumy;
+
         _userRepositoryMock.Setup(ex => ex
-                .SearchUserByUsernameOrEmail(testUser.username, testUser.email))
+                .SearchUserByUsernameOrEmail(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(new UserModel
             {
                 id = 1,
-                username = testUser.username,
-                email = testUser.email,
-                password = testUser.password
+                username = user.username,
+                email = user.email,
+                password = user.password
             });
 
-        await Assert.ThrowsAsync<UserAlreadyExistException>(() => _userController.SigninUser(testUser));
+        await Assert.ThrowsAsync<UserAlreadyExistException>(() => _userController.SigninUser(user));
     }
     
     [Fact]
-    public void LoginNonExistingUserTest()
+    public async void LoginNonExistingUserTest()
     {
-        UserLoginRequestModel loginRequest = new()
-        {
-            username = "test",
-            password = "test1234"
-        };
+        UserLoginRequestModel loginRequest = loginRequestTestDumy;
 
-        Assert.ThrowsAsync<UsernameIsNotRegisteredException>(() => _userController.LoginUser(loginRequest));
+        await Assert.ThrowsAsync<UsernameIsNotRegisteredException>(() => _userController.LoginUser(loginRequest));
     }
     
     [Fact]
-    public void LoginCredentialsNotMatchTest()
+    public async void LoginCredentialsNotMatchTest()
     {
-        UserLoginRequestModel loginRequest = new()
-        {
-            username = "test",
-            password = "test12345" //Wrong password
-        };
+        UserWriteModel user = userTestDumy;
+        UserLoginRequestModel loginRequest = loginRequestTestDumy;
+        loginRequest.password = "test12345"; //Wrong password
+
         _userRepositoryMock.Setup(ex => 
                 ex.GetUserByUsername(loginRequest.username))
             .ReturnsAsync(new UserModel
             {
                 id = 1,
-                username = "test",
-                email = "test@test.com",
-                password = "0+Yf74CcualNvW/7BnpJW6pFcivVb4Mc6/ye2qETuLqZsw9m6jENtOL/QBjAiKUQDIIYMzLXs8IbH2fBCw8bKw=="
+                username = user.username,
+                email = user.email,
+                password = user.password
             });
         
-        Assert.ThrowsAsync<InvalidUserCredentialsException>(() => _userController.LoginUser(loginRequest));
+        await Assert.ThrowsAsync<InvalidUserCredentialsException>(() => _userController.LoginUser(loginRequest));
     }
 }

@@ -22,27 +22,42 @@ public class UserControllerTest
         _userController = new(_userRepositoryMock.Object, jwtService, validator);
     }
     
+    private static UserModel userTestDumy => new()
+    {
+        id = 1,
+        username = "test",
+        email = "test@test.com",
+        password = "0+Yf74CcualNvW/7BnpJW6pFcivVb4Mc6/ye2qETuLqZsw9m6jENtOL/QBjAiKUQDIIYMzLXs8IbH2fBCw8bKw=="
+    };
+    
+    private static UserWriteModel userWriteTestDumy => new()
+    {
+        username = "test",
+        email = "test@test.com",
+        password = "test1234"
+    };
+    private static UserLoginRequestModel loginRequestTestDumy => new()
+    {
+        username = "test",
+        password = "test1234"
+    };
+    
     [Fact]
     public async void SignValidUserTest()
     {
-        UserWriteModel testUser = new()
-        {
-            username = "test",
-            email = "test@test.com",
-            password = "test1234"
-        };
+        UserWriteModel userWrite = userWriteTestDumy;
         
         _userRepositoryMock.Setup(ex => ex
                 .AddUser(It.IsAny<UserModel>()))
             .ReturnsAsync(new UserModel
             {
                 id = 1,
-                username = testUser.username,
-                email = testUser.email,
-                password = testUser.password
+                username = userWrite.username,
+                email = userWrite.email,
+                password = userWrite.password
             });
         
-        string jwt = await _userController.SigninUser(testUser);
+        string jwt = await _userController.SigninUser(userWrite);
         
         Assert.NotEmpty(jwt);
         Assert.Matches(TestConts.JWT_VALID_REGEX, jwt);
@@ -51,22 +66,12 @@ public class UserControllerTest
     [Fact]
     public async void LoginValidUserTest()
     {
-        UserModel userInDb = new()
-        {
-            id = 1,
-            username = "test",
-            email = "test@test.com",
-            password = "0+Yf74CcualNvW/7BnpJW6pFcivVb4Mc6/ye2qETuLqZsw9m6jENtOL/QBjAiKUQDIIYMzLXs8IbH2fBCw8bKw=="
-        };
-        UserLoginRequestModel loginRequest = new()
-        {
-            username = userInDb.username,
-            password = "test1234"
-        };
+        UserLoginRequestModel loginRequest = loginRequestTestDumy;
+        UserModel user = userTestDumy;
         
         _userRepositoryMock.Setup(ex => 
-                ex.GetUserByUsername(userInDb.username))
-            .ReturnsAsync(userInDb);
+                ex.GetUserByUsername(It.IsAny<string>()))
+            .ReturnsAsync(user);
         
         string jwt = await _userController.LoginUser(loginRequest);
         

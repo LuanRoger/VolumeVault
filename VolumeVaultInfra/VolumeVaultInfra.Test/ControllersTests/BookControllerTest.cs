@@ -24,39 +24,81 @@ public class BookControllerTest
             bookValidator, bookUpdateValidator);
     }
     
-    [Fact]
-    public async void RegsiterValidBookTest()
+    private static BookModel bookModelTestDumy => new()
     {
-        BookWriteModel book = new()
-        {
-            title = "test",
-            author = "test",
-            isbn = "000-00-0000-000-0",
-            publicationYear = 0,
-            publisher = "test",
-            edition = 1,
-            pagesNumber = 1,
-            genre = "test",
-            format = 0,
-            observation = "test",
-            readed = true,
-            tags = new() { "test" }
-        };
-        UserModel testUser = new()
+        id = 1,
+        title = "test",
+        author = "test",
+        isbn = "000-00-0000-000-0",
+        publicationYear = 0,
+        publisher = "test",
+        edition = 1,
+        pagesNumber = 1,
+        genre = "test",
+        format = 0,
+        observation = "test",
+        readed = true,
+        tags = new() { "test" },
+        createdAt = DateTime.Today,
+        owner = new()
         {
             id = 1,
             username = "test",
             email = "test@test.com",
             password = "test1234"
-        };
+        }
+    };
+    private static BookWriteModel bookWriteModelTestDumy => new()
+    {
+        title = "test",
+        author = "test",
+        isbn = "000-00-0000-000-0",
+        publicationYear = 0,
+        publisher = "test",
+        edition = 1,
+        pagesNumber = 1,
+        genre = "test",
+        format = 0,
+        observation = "test",
+        readed = true,
+        tags = new() { "test" }
+    };
+    private static BookUpdateModel bookUpdateModelTestDumy => new()
+    {
+        title = "changed",
+        author = "changed",
+        isbn = "999-99-9999-999-9",
+        publicationYear = 1,
+        publisher = "changed",
+        edition = 2,
+        pagesNumber = 2,
+        genre = "changed",
+        format = BookFormat.HARDBACK,
+        observation = "changed",
+        readed = false,
+        tags = new() { "changed", "changed" }
+    };
+    private static UserModel userModelTestDumy => new()
+    {
+        id = 1,
+        username = "test",
+        email = "test@test.com",
+        password = "test1234"
+    };
+    
+    [Fact]
+    public async void RegsiterValidBookTest()
+    {
+        UserModel user = userModelTestDumy;
+        BookWriteModel book = bookWriteModelTestDumy;
         
         _userRepository.Setup(ex => ex.GetUserById(It.IsAny<int>()))
-            .ReturnsAsync(testUser);
+            .ReturnsAsync(user);
         
-        await _bookController.RegisterNewBook(testUser.id, book);
+        await _bookController.RegisterNewBook(user.id, book);
     }
 
-    private IEnumerable<BookModel> GenerateDumyBooks(int count = 10)
+    private static IEnumerable<BookModel> GenerateDumyBooks(int count = 10)
     {
         for (int i = 0; i < count; i++)
             yield return new()
@@ -84,121 +126,68 @@ public class BookControllerTest
                 }
             };
     }
-    [Fact]
-    public async void GetBookFromUserTest()
+    [Theory]
+    [InlineData(1, 10)]
+    [InlineData(1, 20)]
+    [InlineData(1, 5)]
+    [InlineData(2, 10)]
+    [InlineData(2, 20)]
+    public async void GetBookFromUserTest(int page, int limitPerPage)
     {
-        UserModel testUser = new()
-        {
-            id = 1,
-            username = "test",
-            email = "test@test.com",
-            password = "test1234"
-        };
+        UserModel user = userModelTestDumy;
         _userRepository.Setup(ex => ex.GetUserById(It.IsAny<int>()))
-            .ReturnsAsync(testUser);
+            .ReturnsAsync(user);
         _bookRepository.Setup(ex => 
-            ex.GetUserOwnedBooksSplited(testUser.id, 1, 10))
-            .ReturnsAsync(GenerateDumyBooks().ToList);
+            ex.GetUserOwnedBooksSplited(user.id, page, limitPerPage))
+            .ReturnsAsync(GenerateDumyBooks(limitPerPage).ToList);
         
-        await _bookController.GetAllUserReleatedBooks(testUser.id, 1, 10, true);
+        var books = await _bookController
+            .GetAllUserReleatedBooks(user.id, page, limitPerPage, true);
+        
+        Assert.Equal(limitPerPage, books.Count);
     }
+    
     [Fact]
     public async void UpdateBookTest()
     {
-        UserModel testUser = new()
-        {
-            id = 1,
-            username = "test",
-            email = "test@test.com",
-            password = "test1234"
-        };
-        BookModel bookModel = new()
-        {
-            id = 1,
-            title = "test",
-            author = "test",
-            isbn = "000-00-0000-000-0",
-            publicationYear = 0,
-            publisher = "test",
-            edition = 1,
-            pagesNumber = 1,
-            genre = "test",
-            format = 0,
-            observation = "test",
-            readed = true,
-            tags = new() { "test" },
-            createdAt = DateTime.Today,
-            owner = testUser
-        };
-        BookUpdateModel updatedBook = new()
-        {
-            title = "changed",
-            author = "changed",
-            isbn = "999-99-9999-999-9",
-            publicationYear = 1,
-            publisher = "changed",
-            edition = 2,
-            pagesNumber = 2,
-            genre = "changed",
-            format = BookFormat.HARDBACK,
-            observation = "changed",
-            readed = false,
-            tags = new() { "changed", "changed" }
-        };
+        UserModel user = userModelTestDumy;
+        BookModel book = bookModelTestDumy;
+        book.owner = user;
+        BookUpdateModel bookUpdate = bookUpdateModelTestDumy;
+        
         _userRepository.Setup(ex => ex.GetUserById(It.IsAny<int>()))
-            .ReturnsAsync(testUser);
+            .ReturnsAsync(user);
         _bookRepository.Setup(ex => ex.GetBookById(1))
-            .ReturnsAsync(bookModel);
+            .ReturnsAsync(book);
         
-        await _bookController.UpdateBook(testUser.id, bookModel.id, updatedBook);
+        await _bookController.UpdateBook(user.id, book.id, bookUpdate);
         
-        Assert.Equal(updatedBook.title, bookModel.title);
-        Assert.Equal(updatedBook.author, bookModel.author);
-        Assert.Equal(updatedBook.isbn, bookModel.isbn);
-        Assert.Equal(updatedBook.publicationYear, bookModel.publicationYear);
-        Assert.Equal(updatedBook.publisher, bookModel.publisher);
-        Assert.Equal(updatedBook.edition, bookModel.edition);
-        Assert.Equal(updatedBook.pagesNumber, bookModel.pagesNumber);
-        Assert.Equal(updatedBook.genre, bookModel.genre);
-        Assert.Equal(updatedBook.format, bookModel.format);
-        Assert.Equal(updatedBook.observation, bookModel.observation);
-        Assert.Equal(updatedBook.readed, bookModel.readed);
-        Assert.Equal(updatedBook.tags, bookModel.tags);
+        Assert.Equal(book.title, bookUpdate.title);
+        Assert.Equal(book.author, bookUpdate.author);
+        Assert.Equal(book.isbn, bookUpdate.isbn);
+        Assert.Equal(book.publicationYear, bookUpdate.publicationYear);
+        Assert.Equal(book.publisher, bookUpdate.publisher);
+        Assert.Equal(book.edition, bookUpdate.edition);
+        Assert.Equal(book.pagesNumber, bookUpdate.pagesNumber);
+        Assert.Equal(book.genre, bookUpdate.genre);
+        Assert.Equal(book.format, bookUpdate.format);
+        Assert.Equal(book.observation, bookUpdate.observation);
+        Assert.Equal(book.readed, bookUpdate.readed);
+        Assert.Equal(book.tags, bookUpdate.tags);
     }
     
     [Fact]
     public async void DeleteBookTest()
     {
-        UserModel testUser = new()
-        {
-            id = 1,
-            username = "test",
-            email = "test@test.com",
-            password = "test1234"
-        };
-        BookModel bookModel = new()
-        {
-            id = 1,
-            title = "test",
-            author = "test",
-            isbn = "000-00-0000-000-0",
-            publicationYear = 0,
-            publisher = "test",
-            edition = 1,
-            pagesNumber = 1,
-            genre = "test",
-            format = 0,
-            observation = "test",
-            readed = true,
-            tags = new() { "test" },
-            createdAt = DateTime.Today,
-            owner = testUser
-        };
-        _userRepository.Setup(ex => ex.GetUserById(It.IsAny<int>()))
-            .ReturnsAsync(testUser);
-        _bookRepository.Setup(ex => ex.GetBookById(It.IsAny<int>()))
-            .ReturnsAsync(bookModel);
+        UserModel user = userModelTestDumy;
+        BookModel book = bookModelTestDumy;
+        book.owner = user;
         
-        await _bookController.DeleteBook(1, 1);
+        _userRepository.Setup(ex => ex.GetUserById(It.IsAny<int>()))
+            .ReturnsAsync(user);
+        _bookRepository.Setup(ex => ex.GetBookById(It.IsAny<int>()))
+            .ReturnsAsync(book);
+        
+        await _bookController.DeleteBook(It.IsAny<int>(), It.IsAny<int>());
     }
 }

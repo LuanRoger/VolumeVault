@@ -29,6 +29,7 @@ public class BookController : IBookController
         _bookUpdateModelValidator = bookUpdateModelValidator;
     }
     
+    //TODO: Return the new book
     public async Task RegisterNewBook(int userId, BookWriteModel book)
     {
         ValidationResult validationResult = await _bookWriteModelValidator.ValidateAsync(book);
@@ -153,7 +154,8 @@ public class BookController : IBookController
         
         await _bookRepository.Flush();
     }
-
+    
+    //TODO: Return the ID of the deleted book
     public async Task DeleteBook(int userId, int bookId)
     {
         UserModel? relatedUser = await _userRepository.GetUserById(userId);
