@@ -1,32 +1,35 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
-using Microsoft.EntityFrameworkCore;
-using VolumeVaultInfra.Context;
 using VolumeVaultInfra.Exceptions;
 using VolumeVaultInfra.Models.Book;
 using VolumeVaultInfra.Models.User;
+using VolumeVaultInfra.Repositories;
 using VolumeVaultInfra.Services.Cache;
 
 namespace VolumeVaultInfra.Controllers;
 
 public class BookController : IBookController
 {
-    private DatabaseBaseContext _dbContext { get; }
-    private BookCacheService _cache { get; }
+    private IBookRepository _bookRepository { get; }
+    private IUserRepository _userRepository { get; }
+    private BookCacheService? _cache { get; }
     private IValidator<BookWriteModel> _bookWriteModelValidator { get; }
     private IValidator<BookUpdateModel> _bookUpdateModelValidator { get; }
 
-    public BookController(DatabaseBaseContext dbContext,
-        BookCacheService cache,
+    public BookController(IBookRepository bookRepository,
+        IUserRepository userRepository,
+        BookCacheService? cache,
         IValidator<BookWriteModel> bookWriteModelValidator,
         IValidator<BookUpdateModel> bookUpdateModelValidator)
     {
-        _dbContext = dbContext;
+        _bookRepository = bookRepository;
+        _userRepository = userRepository;
         _cache = cache;
         _bookWriteModelValidator = bookWriteModelValidator;
         _bookUpdateModelValidator = bookUpdateModelValidator;
     }
     
+    //TODO: Return the new book
     public async Task RegisterNewBook(int userId, BookWriteModel book)
     {
         ValidationResult validationResult = await _bookWriteModelValidator.ValidateAsync(book);
@@ -35,7 +38,7 @@ public class BookController : IBookController
                 .Errors
                 .Select(errors => errors.ErrorMessage));
         
-        UserModel? relatedUser = await _dbContext.users.FindAsync(userId);
+        UserModel? relatedUser = await _userRepository.GetUserById(userId);
         if(relatedUser is null)
             throw new UserNotFoundException(userId);
         
@@ -56,25 +59,26 @@ public class BookController : IBookController
             createdAt = book.createdAt,
             owner = relatedUser
         };
-        _dbContext.books.Add(newBook);
-        await _dbContext.SaveChangesAsync();
+        await _bookRepository.AddBook(newBook);
+        await _bookRepository.Flush();
     }
 
     public async Task<List<BookReadModel>> GetAllUserReleatedBooks(int userId, int page, int limitPerPage,
         bool refresh)
     {
-        UserModel? relatedUser = await _dbContext.users.FindAsync(userId);
+        UserModel? relatedUser = await _userRepository.GetUserById(userId);
         if(relatedUser is null)
             throw new UserNotFoundException(userId);
         
-        List<BookReadModel>? cachedBooks = await _cache.TryGetUserCachedBook(relatedUser.id, page);
-        if(cachedBooks is not null && !refresh)
-            return cachedBooks;
+        if(_cache is not null)
+        {
+            var cachedBooks = await _cache.TryGetUserCachedBook(relatedUser.id, page);
+            if(cachedBooks is not null && !refresh)
+                return cachedBooks;
+        }
 
-        var userBooks = await _dbContext.books
-            .Where(couponRecord => couponRecord.owner.id == relatedUser.id)
-            .Skip(limitPerPage * page - limitPerPage)
-            .Take(limitPerPage)
+        var userBooks = 
+            (await _bookRepository.GetUserOwnedBooksSplited(relatedUser.id, page, limitPerPage))
             .Select(bookModel => new BookReadModel
             {
                 id = bookModel.id,
@@ -92,10 +96,10 @@ public class BookController : IBookController
                 tags = bookModel.tags,
                 createdAt = bookModel.createdAt,
                 owner = bookModel.owner,
-            })
-            .ToListAsync();
+            }).ToList();
         
-        await _cache.SetUserBooks(userBooks, userId, page);
+        if(_cache is not null)
+            await _cache.SetUserBooks(userBooks, userId, page);
         
         return userBooks;
     }
@@ -113,11 +117,11 @@ public class BookController : IBookController
                 .Errors
                 .Select(errors => errors.ErrorMessage));
         
-        UserModel? relatedUser = await _dbContext.users.FindAsync(userId);
+        UserModel? relatedUser = await _userRepository.GetUserById(userId);
         if(relatedUser is null)
             throw new UserNotFoundException(userId);
         
-        BookModel? book = await _dbContext.books.FindAsync(bookId);
+        BookModel? book = await _bookRepository.GetBookById(bookId);
         if(book is null)
             throw new BookNotFoundException(bookId);
         if(book.owner != relatedUser)
@@ -148,22 +152,23 @@ public class BookController : IBookController
         if(bookUpdate.tags is not null)
             book.tags = bookUpdate.tags;
         
-        await _dbContext.SaveChangesAsync();
+        await _bookRepository.Flush();
     }
-
+    
+    //TODO: Return the ID of the deleted book
     public async Task DeleteBook(int userId, int bookId)
     {
-        UserModel? relatedUser = await _dbContext.users.FindAsync(userId);
+        UserModel? relatedUser = await _userRepository.GetUserById(userId);
         if(relatedUser is null)
             throw new UserNotFoundException(userId);
         
-        BookModel? book = await _dbContext.books.FindAsync(bookId);
+        BookModel? book = await _bookRepository.GetBookById(bookId);
         if(book is null)
             throw new BookNotFoundException(bookId);
         if(book.owner != relatedUser)
             throw new NotOwnerBookException(book.title, relatedUser.username);
 
-        _dbContext.books.Remove(book);
-        await _dbContext.SaveChangesAsync();
+        _bookRepository.DeleteBook(book);
+        await _bookRepository.Flush();
     }
 }

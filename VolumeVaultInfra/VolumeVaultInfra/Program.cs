@@ -12,6 +12,7 @@ using VolumeVaultInfra.Controllers;
 using VolumeVaultInfra.Exceptions;
 using VolumeVaultInfra.Models.Book;
 using VolumeVaultInfra.Models.User;
+using VolumeVaultInfra.Repositories;
 using VolumeVaultInfra.Services.Cache;
 using VolumeVaultInfra.Services.Jwt;
 using VolumeVaultInfra.Utils;
@@ -63,6 +64,8 @@ builder.Services.AddSingleton<JwtService>(_ =>
     
     return new(jwtSymetricKey);
 });
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IUserController, UserController>();
 builder.Services.AddScoped<IBookController, BookController>();
 #endregion

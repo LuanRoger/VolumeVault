@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
 namespace VolumeVaultInfra.Services.Hash;
 
@@ -15,6 +16,8 @@ public sealed class RelatedInformation
         _cacheExpires = true;
     }
     
+    public bool hasInformation => !_informations.IsNullOrEmpty();
+    public bool cacheHasValue => !string.IsNullOrEmpty(_cachedResult);
     public void AddInformation(string info)
     {
         _informations.Add(info);
