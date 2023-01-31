@@ -29,11 +29,26 @@ public class UserControllerExceptionsTest
         email = "test@test.com",
         password = "test1234"
     };
+    private static UserWriteModel invalidUserTestDumy => new()
+    {
+        username = "test",
+        email = "test@test",
+        password = "test123"
+    };
     private static UserLoginRequestModel loginRequestTestDumy => new()
     {
         username = "test",
         password = "test1234"
     };
+    
+    [Fact]
+    public async void SignInvalidUserTest()
+    {
+        UserWriteModel invalidUser = invalidUserTestDumy;
+        
+        await Assert.ThrowsAsync<NotValidUserWriteException>(() => 
+            _userController.SigninUser(invalidUserTestDumy));
+    }
     
     [Fact]
     public async Task SignExistingUserTest()
