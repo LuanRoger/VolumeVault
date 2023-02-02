@@ -18,6 +18,8 @@ using VolumeVaultInfra.Services.Jwt;
 using VolumeVaultInfra.Utils;
 using VolumeVaultInfra.Validators;
 using ILogger = Serilog.ILogger;
+using Prometheus;
+using VolumeVaultInfra.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -29,23 +31,74 @@ CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
 CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("en-US");
 CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
-ILogger logger = new LoggerConfiguration().WriteTo
-    .Console()
+ILogger logger = new LoggerConfiguration()
+    .Enrich.WithMachineName()
+    .WriteTo.Console()
+    .Enrich.WithProperty("Environment", EnvVariableConsts.ASPNETCORE_ENVIRONMENT)
+    .ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 builder.Host.UseSerilog(logger);
 
 #region General Services
+builder.Services.AddHealthChecks()
+    .AddCheck<HealthCheckService>(nameof(HealthCheckService))
+    .ForwardToPrometheus();
 builder.Services.AddDbContext<DatabaseBaseContext, DatabaseContext>(optionsBuilder =>
 {
-    string connString = builder.Configuration
-        .GetConnectionString("PostgresConnectionString")!;
+    if(builder.Environment.IsDevelopment())
+    {
+        optionsBuilder.UseNpgsql(builder.Configuration
+            .GetConnectionString("PostgresConnectionString")!);
+        return;
+    }
+    
+    string? connStringHolder = builder.Configuration
+        .GetConnectionString("PostgresConnectionString");
+    if(string.IsNullOrEmpty(connStringHolder))
+        throw new RequiredConfigurationException("PostgresConnectionString");
+    
+    string? postgresUser = EnvironmentsVariables.GetVvPostgresUser();
+    string? postgresPassword = EnvironmentsVariables.GetVvPosgresPassword();
+    string? postgresHost = EnvironmentsVariables.GetPostgresHost();
+    string? postgresPort = EnvironmentsVariables.GetRedisPort();
+    string? dbName = EnvironmentsVariables.GetDefaultPostgresDbName();
+
+    if(string.IsNullOrEmpty(postgresUser))
+        throw new EnvironmentVariableNotProvidedException(EnvVariableConsts.VV_POSTGRES_USER);
+    if(string.IsNullOrEmpty(postgresPassword))
+        throw new EnvironmentVariableNotProvidedException(EnvVariableConsts.VV_POSTGRES_PASSWORD);
+    if(string.IsNullOrEmpty(postgresHost))
+        throw new EnvironmentVariableNotProvidedException(EnvVariableConsts.POSTGRES_HOST);
+    if(string.IsNullOrEmpty(postgresPort))
+        throw new EnvironmentVariableNotProvidedException(EnvVariableConsts.POSTGRES_PORT);
+    if(string.IsNullOrEmpty(dbName))
+        throw new EnvironmentVariableNotProvidedException(EnvVariableConsts.DEFAULT_POSTGRES_DB_NAME);
+    
+    string connString = string.Format(connStringHolder, postgresUser, postgresPassword,
+        postgresHost, postgresPort, dbName);
     optionsBuilder.UseNpgsql(connString);
 });
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.Configuration = builder.Configuration.GetConnectionString("RedisConfigurationString");
+    if(builder.Environment.IsDevelopment())
+    {
+        options.Configuration = builder.Configuration.GetConnectionString("RedisConfigurationString");
+        return;
+    }
+    
+    string? redisConnectionHolder =  builder.Configuration
+        .GetConnectionString("RedisConfigurationString");
+    if(string.IsNullOrEmpty(redisConnectionHolder))
+        throw new RequiredConfigurationException("RedisConfigurationString");
+    string? redisHost = EnvironmentsVariables.GetRedisHost();
+    string? redisPort = EnvironmentsVariables.GetRedisPort();
+    if(string.IsNullOrEmpty(redisHost) && string.IsNullOrEmpty(redisPort))
+        throw new EnvironmentVariableNotProvidedException(string.IsNullOrEmpty(redisHost) ? 
+            EnvVariableConsts.REDIS_HOST : EnvVariableConsts.REDIS_PORT);
+    
+    options.Configuration = string.Format(redisConnectionHolder, redisHost, redisPort);
 });
 builder.Services.AddScoped<BookCacheService>(provider =>
 {
@@ -60,7 +113,7 @@ builder.Services.AddSingleton<JwtService>(_ =>
 {
     string? jwtSymetricKey = EnvironmentsVariables.GetSymetricKey();
     if(jwtSymetricKey is null)
-        throw new(EnvVariableConsts.JWT_SYMETRIC_KEY);
+        throw new(EnvVariableConsts.JWT_SYMMETRIC_KEY);
     
     return new(jwtSymetricKey);
 });
@@ -84,9 +137,9 @@ builder.Services.AddAuthentication(options =>
 })
     .AddJwtBearer(options =>
     {
-        string? jwtSymetricKey = EnvironmentsVariables.GetSymetricKey();
-        if(jwtSymetricKey is null)
-            throw new(EnvVariableConsts.JWT_SYMETRIC_KEY);
+        string? jwtSymmetricKey = EnvironmentsVariables.GetSymetricKey();
+        if(string.IsNullOrEmpty(jwtSymmetricKey))
+            throw new(EnvVariableConsts.JWT_SYMMETRIC_KEY);
         
         options.TokenValidationParameters = new()
         {
@@ -94,7 +147,7 @@ builder.Services.AddAuthentication(options =>
             ValidateLifetime = true,
             ValidateAudience = true,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSymetricKey)),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSymmetricKey)),
             ValidAlgorithms = new [] { SecurityAlgorithms.HmacSha256Signature },
             ValidAudience = JwtServiceConsts.jwtAudience,
             ValidIssuer = JwtServiceConsts.jwtIssuer
@@ -116,8 +169,19 @@ using (IServiceScope scope = app.Services.CreateScope())
     context?.Database.EnsureCreated();
 }
 
+app.UseStaticFiles();
+app.UseRouting();
+
+app.UseHttpMetrics();
+
 app.UseAuthentication();
 app.UseAuthorization();
+
+#region SystemEndpoints
+#pragma warning disable ASP0014
+app.UseEndpoints(endpointOptions => endpointOptions.MapMetrics());
+#pragma warning restore ASP0014
+#endregion
 
 #region UserEndpoint
 app.MapPost("auth/signin", 
