@@ -62,7 +62,7 @@ builder.Services.AddDbContext<DatabaseBaseContext, DatabaseContext>(optionsBuild
     string? postgresUser = EnvironmentsVariables.GetVvPostgresUser();
     string? postgresPassword = EnvironmentsVariables.GetVvPosgresPassword();
     string? postgresHost = EnvironmentsVariables.GetPostgresHost();
-    string? postgresPort = EnvironmentsVariables.GetRedisPort();
+    string? postgresPort = EnvironmentsVariables.GetPostgresPort();
     string? dbName = EnvironmentsVariables.GetDefaultPostgresDbName();
 
     if(string.IsNullOrEmpty(postgresUser))
@@ -80,38 +80,43 @@ builder.Services.AddDbContext<DatabaseBaseContext, DatabaseContext>(optionsBuild
         postgresHost, postgresPort, dbName);
     optionsBuilder.UseNpgsql(connString);
 });
-builder.Services.AddStackExchangeRedisCache(options =>
+
+string? redisConnString = builder.Configuration.GetConnectionString("RedisConfigurationString");
+if(!string.IsNullOrEmpty(redisConnString))
 {
-    if(builder.Environment.IsDevelopment())
+    builder.Services.AddStackExchangeRedisCache(options =>
     {
-        options.Configuration = builder.Configuration.GetConnectionString("RedisConfigurationString");
-        return;
-    }
+        if(builder.Environment.IsDevelopment())
+        {
+            options.Configuration = redisConnString;
+            return;
+        }
     
-    string? redisConnectionHolder =  builder.Configuration
-        .GetConnectionString("RedisConfigurationString");
-    if(string.IsNullOrEmpty(redisConnectionHolder))
-        throw new RequiredConfigurationException("RedisConfigurationString");
-    string? redisHost = EnvironmentsVariables.GetRedisHost();
-    string? redisPort = EnvironmentsVariables.GetRedisPort();
-    if(string.IsNullOrEmpty(redisHost) && string.IsNullOrEmpty(redisPort))
-        throw new EnvironmentVariableNotProvidedException(string.IsNullOrEmpty(redisHost) ? 
-            EnvVariableConsts.REDIS_HOST : EnvVariableConsts.REDIS_PORT);
+        string? redisConnectionHolder =  builder.Configuration
+            .GetConnectionString("RedisConfigurationString");
+        if(string.IsNullOrEmpty(redisConnectionHolder))
+            throw new RequiredConfigurationException("RedisConfigurationString");
+        string? redisHost = EnvironmentsVariables.GetRedisHost();
+        string? redisPort = EnvironmentsVariables.GetRedisPort();
+        if(string.IsNullOrEmpty(redisHost) && string.IsNullOrEmpty(redisPort))
+            throw new EnvironmentVariableNotProvidedException(string.IsNullOrEmpty(redisHost) ? 
+                EnvVariableConsts.REDIS_HOST : EnvVariableConsts.REDIS_PORT);
     
-    options.Configuration = string.Format(redisConnectionHolder, redisHost, redisPort);
-});
-builder.Services.AddScoped<BookCacheService>(provider =>
+        options.Configuration = string.Format(redisConnectionHolder, redisHost, redisPort);
+    });
+}
+builder.Services.AddScoped<BookCacheRepository>(provider =>
 {
     DistributedCacheEntryOptions cacheOptions = new()
     {
         AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(60),
         SlidingExpiration = TimeSpan.FromSeconds(20)
     };
-    return new(provider.GetRequiredService<IDistributedCache>(), cacheOptions);
+    return new(provider.GetService<IDistributedCache>(), cacheOptions);
 });
 builder.Services.AddSingleton<JwtService>(_ =>
 {
-    string? jwtSymetricKey = EnvironmentsVariables.GetSymetricKey();
+    string? jwtSymetricKey = EnvironmentsVariables.GetSymmetricKey();
     if(jwtSymetricKey is null)
         throw new(EnvVariableConsts.JWT_SYMMETRIC_KEY);
     
@@ -137,9 +142,9 @@ builder.Services.AddAuthentication(options =>
 })
     .AddJwtBearer(options =>
     {
-        string? jwtSymmetricKey = EnvironmentsVariables.GetSymetricKey();
+        string? jwtSymmetricKey = EnvironmentsVariables.GetSymmetricKey();
         if(string.IsNullOrEmpty(jwtSymmetricKey))
-            throw new(EnvVariableConsts.JWT_SYMMETRIC_KEY);
+            throw new EnvironmentVariableNotProvidedException(EnvVariableConsts.JWT_SYMMETRIC_KEY);
         
         options.TokenValidationParameters = new()
         {

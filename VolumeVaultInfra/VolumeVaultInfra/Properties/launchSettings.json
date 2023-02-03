@@ -17,8 +17,7 @@
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5081",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production",
-        "JWT_SYMMETRIC_KEY": ""
+        "ASPNETCORE_ENVIRONMENT": "Production"
       }
     },
     "https(prod)": {

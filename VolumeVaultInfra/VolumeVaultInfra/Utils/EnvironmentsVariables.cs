@@ -2,7 +2,7 @@
 
 public static class EnvironmentsVariables
 {
-    public static string? GetSymetricKey() => Environment
+    public static string? GetSymmetricKey() => Environment
         .GetEnvironmentVariable(EnvVariableConsts.JWT_SYMMETRIC_KEY);
     public static string? GetEnvironmentName() => Environment
         .GetEnvironmentVariable(EnvVariableConsts.ASPNETCORE_ENVIRONMENT);
