@@ -32,5 +32,5 @@ public class BookReadModel
     
     public DateTime createdAt { get; set; }
     
-    public UserModel owner { get; set; }
+    public UserReadModel owner { get; set; }
 }
