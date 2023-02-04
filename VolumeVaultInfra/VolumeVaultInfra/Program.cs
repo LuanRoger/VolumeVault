@@ -20,6 +20,7 @@ using VolumeVaultInfra.Validators;
 using ILogger = Serilog.ILogger;
 using Prometheus;
 using VolumeVaultInfra.Services;
+using VolumeVaultInfra.Services.Metrics;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -126,6 +127,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IUserController, UserController>();
 builder.Services.AddScoped<IBookController, BookController>();
+builder.Services.AddScoped<IBookControllerMetrics, BookControllerMetrics>();
+builder.Services.AddScoped<IUserControllerMetrics, UserControllerMetrics>();
 #endregion
 
 #region Validation Services

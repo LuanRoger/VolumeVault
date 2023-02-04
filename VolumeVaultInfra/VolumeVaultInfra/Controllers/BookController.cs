@@ -5,6 +5,7 @@ using VolumeVaultInfra.Models.Book;
 using VolumeVaultInfra.Models.User;
 using VolumeVaultInfra.Repositories;
 using VolumeVaultInfra.Services.Cache;
+using VolumeVaultInfra.Services.Metrics;
 using ILogger = Serilog.ILogger;
 
 namespace VolumeVaultInfra.Controllers;
@@ -14,6 +15,7 @@ public class BookController : IBookController
     private IBookRepository _bookRepository { get; }
     private IUserRepository _userRepository { get; }
     private BookCacheRepository _cache { get; }
+    private IBookControllerMetrics _metrics { get; }
     private IValidator<BookWriteModel> _bookWriteModelValidator { get; }
     private IValidator<BookUpdateModel> _bookUpdateModelValidator { get; }
     private ILogger _logger { get; }
@@ -21,6 +23,7 @@ public class BookController : IBookController
     public BookController(IBookRepository bookRepository,
         IUserRepository userRepository,
         BookCacheRepository cache,
+        IBookControllerMetrics metrics,
         IValidator<BookWriteModel> bookWriteModelValidator,
         IValidator<BookUpdateModel> bookUpdateModelValidator,
         ILogger logger)
@@ -28,6 +31,7 @@ public class BookController : IBookController
         _bookRepository = bookRepository;
         _userRepository = userRepository;
         _cache = cache;
+        _metrics = metrics;
         _bookWriteModelValidator = bookWriteModelValidator;
         _bookUpdateModelValidator = bookUpdateModelValidator;
         _logger = logger;
@@ -75,6 +79,9 @@ public class BookController : IBookController
         };
         BookModel registeredBook = await _bookRepository.AddBook(newBook);
         await _bookRepository.Flush();
+        _metrics.IncreaseExistingBooks();
+        _metrics.IncreaseRegisteredBooks();
+        if(registeredBook.pagesNumber is not null) _metrics.ObserverBookPageNumber(registeredBook.pagesNumber);
         _logger.Information("Book [{0}] registered sucessfully.", registeredBook.id);
     }
 
@@ -179,7 +186,7 @@ public class BookController : IBookController
             _logger.Error(ex, ex.Message);
             throw ex;    
         }
-        _logger.Information("Updating book ID[{0}]");
+        _logger.Information("Updating book ID[{0}]", book.id);
         
         if(bookUpdate.title is not null)
             book.title = bookUpdate.title;
@@ -238,6 +245,7 @@ public class BookController : IBookController
 
         _bookRepository.DeleteBook(book);
         await _bookRepository.Flush();
+        _metrics.DecreaseExsistingBooks();
         _logger.Information("Book ID[{0}] deleted.", book.id);
     }
 }
