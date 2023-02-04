@@ -4,12 +4,13 @@ using VolumeVaultInfra.Models.Book;
 
 namespace VolumeVaultInfra.Services.Cache;
 
-public class BookCacheService
+public class BookCacheRepository
 {
-    private IDistributedCache _cache { get; }
+    private IDistributedCache? _cache { get; }
     private DistributedCacheEntryOptions _cacheOptions { get; }
-
-    public BookCacheService(IDistributedCache cache, DistributedCacheEntryOptions cacheOptions)
+    
+    public bool isAvailable => _cache is not null;
+    public BookCacheRepository(IDistributedCache? cache, DistributedCacheEntryOptions cacheOptions)
     {
         _cache = cache;
         _cacheOptions = cacheOptions;
@@ -17,6 +18,8 @@ public class BookCacheService
     
     public async Task<List<BookReadModel>?> TryGetUserCachedBook(int userId, int page)
     {
+        if(_cache is null) return null;
+        
         string? booksFromCache = await _cache.GetStringAsync(
             string.Format(CacheStringKeys.USER_BOOK_PAGE, userId, page));
         if(booksFromCache is null) return null;
@@ -28,6 +31,8 @@ public class BookCacheService
     
     public async Task SetUserBooks(List<BookReadModel> userBooks, int userId, int page)
     {
+        if(_cache is null) return;
+        
         string serializerBooks = JsonSerializer.Serialize(userBooks);
         string cacheKey = string.Format(CacheStringKeys.USER_BOOK_PAGE, userId, page);
 

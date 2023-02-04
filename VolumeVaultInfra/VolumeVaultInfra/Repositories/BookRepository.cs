@@ -20,6 +20,7 @@ public class BookRepository : IBookRepository
         await _bookDb.books.Where(book => book.owner.id == userId)
             .Skip(limitPerSection * section - limitPerSection)
             .Take(limitPerSection)
+            .OrderBy(book => book.id)
             .ToListAsync();
     
     public void DeleteBook(BookModel book) => _bookDb.books.Remove(book);

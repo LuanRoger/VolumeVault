@@ -1,0 +1,74 @@
+version: '3.9'
+
+networks:
+  prom:
+  db:
+  redis-conn:
+
+volumes:
+  volumes-db:
+
+services:
+  vvinfra:
+    container_name: volume_vault_infra
+    build:
+      context: ./VolumeVaultInfra/
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT
+      - JWT_SYMMETRIC_KEY
+      - POSTGRES_HOST
+      - POSTGRES_PORT
+      - DEFAULT_POSTGRES_DB_NAME
+      - VV_POSTGRES_USER
+      - VV_POSTGRES_PASSWORD
+      - REDIS_HOST
+      - REDIS_PORT
+    ports:
+      - 5081:80
+    networks:
+      - db
+      - prom
+      - redis-conn
+    depends_on:
+      - postgres
+    restart: unless-stopped
+  
+  redis:
+    container_name: cache_redis
+    image: redis
+    ports:
+      - 6379:6379
+    networks:
+      - redis-conn
+
+  postgres:
+    container_name: postgres
+    image: postgres
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+    ports:
+      - 5432:5432
+    networks:
+      - db
+    volumes:
+      - volumes-db:/var/lib/postgresql/data
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - prom
+  
+  grafana:
+    container_name: grafana
+    image: grafana/grafana-oss
+    ports:
+      - 3000:3000
+    networks:
+      - prom

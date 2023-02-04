@@ -5,6 +5,8 @@ using VolumeVaultInfra.Models.Book;
 using VolumeVaultInfra.Models.User;
 using VolumeVaultInfra.Repositories;
 using VolumeVaultInfra.Services.Cache;
+using VolumeVaultInfra.Services.Metrics;
+using ILogger = Serilog.ILogger;
 
 namespace VolumeVaultInfra.Controllers;
 
@@ -12,21 +14,27 @@ public class BookController : IBookController
 {
     private IBookRepository _bookRepository { get; }
     private IUserRepository _userRepository { get; }
-    private BookCacheService? _cache { get; }
+    private BookCacheRepository _cache { get; }
+    private IBookControllerMetrics _metrics { get; }
     private IValidator<BookWriteModel> _bookWriteModelValidator { get; }
     private IValidator<BookUpdateModel> _bookUpdateModelValidator { get; }
+    private ILogger _logger { get; }
 
     public BookController(IBookRepository bookRepository,
         IUserRepository userRepository,
-        BookCacheService? cache,
+        BookCacheRepository cache,
+        IBookControllerMetrics metrics,
         IValidator<BookWriteModel> bookWriteModelValidator,
-        IValidator<BookUpdateModel> bookUpdateModelValidator)
+        IValidator<BookUpdateModel> bookUpdateModelValidator,
+        ILogger logger)
     {
         _bookRepository = bookRepository;
         _userRepository = userRepository;
         _cache = cache;
+        _metrics = metrics;
         _bookWriteModelValidator = bookWriteModelValidator;
         _bookUpdateModelValidator = bookUpdateModelValidator;
+        _logger = logger;
     }
     
     //TODO: Return the new book
@@ -34,14 +42,24 @@ public class BookController : IBookController
     {
         ValidationResult validationResult = await _bookWriteModelValidator.ValidateAsync(book);
         if(!validationResult.IsValid)
-            throw new NotValidBookInformationException(validationResult
+        {
+            Exception ex = new NotValidBookInformationException(validationResult
                 .Errors
                 .Select(errors => errors.ErrorMessage));
+            _logger.Error(ex, ex.Message);
+            throw ex;
+        }
+        _logger.Information("Registering a new book: Title {0}.", book.title);
         
         UserModel? relatedUser = await _userRepository.GetUserById(userId);
         if(relatedUser is null)
-            throw new UserNotFoundException(userId);
-        
+        {
+            Exception ex = new UserNotFoundException(userId);
+            _logger.Error(ex, ex.Message);
+            throw ex;
+        }
+        _logger.Information("The book will be owner by ID {0}.", relatedUser.id);
+
         BookModel newBook = new()
         {
             title = book.title,
@@ -59,8 +77,12 @@ public class BookController : IBookController
             createdAt = book.createdAt,
             owner = relatedUser
         };
-        await _bookRepository.AddBook(newBook);
+        BookModel registeredBook = await _bookRepository.AddBook(newBook);
         await _bookRepository.Flush();
+        _metrics.IncreaseExistingBooks();
+        _metrics.IncreaseRegisteredBooks();
+        if(registeredBook.pagesNumber is not null) _metrics.ObserverBookPageNumber(registeredBook.pagesNumber);
+        _logger.Information("Book [{0}] registered sucessfully.", registeredBook.id);
     }
 
     public async Task<List<BookReadModel>> GetAllUserReleatedBooks(int userId, int page, int limitPerPage,
@@ -68,15 +90,31 @@ public class BookController : IBookController
     {
         UserModel? relatedUser = await _userRepository.GetUserById(userId);
         if(relatedUser is null)
-            throw new UserNotFoundException(userId);
-        
-        if(_cache is not null)
         {
+            Exception ex = new UserNotFoundException(userId);
+            _logger.Error(ex, ex.Message);
+            throw ex;
+        }
+            
+        _logger.Information("Getting book from user ID[{0}].", relatedUser.id);
+        _logger.Information("{0}: {1}, {2}: {3}.", nameof(page), page,
+            nameof(limitPerPage), limitPerPage);
+        
+        if(_cache.isAvailable)
+        {
+            _logger.Information("Trying to get information from cache.");
             var cachedBooks = await _cache.TryGetUserCachedBook(relatedUser.id, page);
             if(cachedBooks is not null && !refresh)
+            {
+                _logger.Information("Returning information from cache.");
                 return cachedBooks;
+            }
+            _logger.Information("Was not found value in cache or made refresh.");
         }
-
+        else _logger.Warning("The cache service is not available.");
+            
+        
+        _logger.Information("Geting results from database.");
         var userBooks = 
             (await _bookRepository.GetUserOwnedBooksSplited(relatedUser.id, page, limitPerPage))
             .Select(bookModel => new BookReadModel
@@ -95,12 +133,18 @@ public class BookController : IBookController
                 readed = bookModel.readed,
                 tags = bookModel.tags,
                 createdAt = bookModel.createdAt,
-                owner = bookModel.owner,
+                owner = new()
+                {
+                    id = bookModel.owner.id,
+                    username = bookModel.owner.username,
+                    email = bookModel.owner.email
+                },
             }).ToList();
-        
-        if(_cache is not null)
-            await _cache.SetUserBooks(userBooks, userId, page);
-        
+
+        if (!_cache.isAvailable) return userBooks;
+        _logger.Information("Saving information in cache.");
+        await _cache.SetUserBooks(userBooks, userId, page);
+
         return userBooks;
     }
 
@@ -113,19 +157,36 @@ public class BookController : IBookController
     {
         ValidationResult validationResult = await _bookUpdateModelValidator.ValidateAsync(bookUpdate);
         if(!validationResult.IsValid)
-            throw new NotValidBookInformationException(validationResult
+        {
+            Exception ex = new NotValidBookInformationException(validationResult
                 .Errors
-                .Select(errors => errors.ErrorMessage));
-        
+                .Select(errors => errors.ErrorMessage)); 
+            _logger.Error(ex, ex.Message);
+            throw ex;
+        }
+
         UserModel? relatedUser = await _userRepository.GetUserById(userId);
         if(relatedUser is null)
-            throw new UserNotFoundException(userId);
+        {
+            Exception ex = new UserNotFoundException(userId);
+            _logger.Error(ex, ex.Message);
+            throw ex;
+        }
         
         BookModel? book = await _bookRepository.GetBookById(bookId);
         if(book is null)
-            throw new BookNotFoundException(bookId);
+        {
+            Exception ex = new BookNotFoundException(bookId);
+            _logger.Error(ex, ex.Message);
+            throw ex;
+        }
         if(book.owner != relatedUser)
-            throw new NotOwnerBookException(book.title, relatedUser.username);
+        {
+            Exception ex = new NotOwnerBookException(book.title, relatedUser.username);
+            _logger.Error(ex, ex.Message);
+            throw ex;    
+        }
+        _logger.Information("Updating book ID[{0}]", book.id);
         
         if(bookUpdate.title is not null)
             book.title = bookUpdate.title;
@@ -153,6 +214,7 @@ public class BookController : IBookController
             book.tags = bookUpdate.tags;
         
         await _bookRepository.Flush();
+        _logger.Information("Book ID[{0}] updated.", book.id);
     }
     
     //TODO: Return the ID of the deleted book
@@ -160,15 +222,30 @@ public class BookController : IBookController
     {
         UserModel? relatedUser = await _userRepository.GetUserById(userId);
         if(relatedUser is null)
-            throw new UserNotFoundException(userId);
+        {
+            Exception ex = new UserNotFoundException(userId);
+            _logger.Error(ex, ex.Message);
+            throw ex;
+        }
         
         BookModel? book = await _bookRepository.GetBookById(bookId);
         if(book is null)
-            throw new BookNotFoundException(bookId);
+        {
+            Exception ex = new BookNotFoundException(bookId);
+            _logger.Error(ex, ex.Message);
+            throw ex;    
+        }
         if(book.owner != relatedUser)
-            throw new NotOwnerBookException(book.title, relatedUser.username);
+        {
+            Exception ex = new NotOwnerBookException(book.title, relatedUser.username);
+            _logger.Error(ex, ex.Message);
+            throw ex;
+        }
+        _logger.Information("Deleting book ID[{0}].", book.id);
 
         _bookRepository.DeleteBook(book);
         await _bookRepository.Flush();
+        _metrics.DecreaseExsistingBooks();
+        _logger.Information("Book ID[{0}] deleted.", book.id);
     }
 }

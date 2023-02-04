@@ -1,10 +1,12 @@
 using FluentValidation;
 using Moq;
+using Serilog;
 using VolumeVaultInfra.Controllers;
 using VolumeVaultInfra.Exceptions;
 using VolumeVaultInfra.Models.User;
 using VolumeVaultInfra.Repositories;
 using VolumeVaultInfra.Services.Jwt;
+using VolumeVaultInfra.Services.Metrics;
 using VolumeVaultInfra.Validators;
 
 namespace VolumeVaultInfra.Test.ControllersTests;
@@ -12,6 +14,8 @@ namespace VolumeVaultInfra.Test.ControllersTests;
 public class UserControllerExceptionsTest
 {
     private Mock<IUserRepository> _userRepositoryMock { get; } = new();
+    private Mock<IUserControllerMetrics> _userControllerMetricsMock { get; } = new();
+    private Mock<ILogger> _logger { get; } = new();
     private UserController _userController { get; }
     
     public UserControllerExceptionsTest()
@@ -20,7 +24,8 @@ public class UserControllerExceptionsTest
         JwtService jwtService = new(fakeSymetricKeyTest);
         IValidator<UserWriteModel> validator = new UserWriteModelValidator();
         
-        _userController = new(_userRepositoryMock.Object, jwtService, validator);
+        _userController = new(_userRepositoryMock.Object, jwtService, _userControllerMetricsMock.Object,
+            validator, _logger.Object);
     }
     
     private static UserWriteModel userTestDumy => new()

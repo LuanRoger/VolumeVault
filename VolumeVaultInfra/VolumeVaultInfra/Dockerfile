@@ -17,4 +17,4 @@ RUN dotnet publish "VolumeVaultInfra.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "VolumeVaultInfra.dll"]
+ENTRYPOINT ["dotnet", "VolumeVaultInfra.dll", "-launch-profile \"http(prod)\""]
