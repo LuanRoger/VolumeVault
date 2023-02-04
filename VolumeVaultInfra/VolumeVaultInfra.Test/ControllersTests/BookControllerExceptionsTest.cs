@@ -1,11 +1,14 @@
 using FluentValidation;
 using Moq;
+using Serilog;
 using VolumeVaultInfra.Controllers;
 using VolumeVaultInfra.Exceptions;
 using VolumeVaultInfra.Models.Book;
 using VolumeVaultInfra.Models.Enums;
 using VolumeVaultInfra.Models.User;
 using VolumeVaultInfra.Repositories;
+using VolumeVaultInfra.Services.Cache;
+using VolumeVaultInfra.Services.Metrics;
 using VolumeVaultInfra.Validators;
 
 namespace VolumeVaultInfra.Test.ControllersTests;
@@ -14,15 +17,18 @@ public class BookControllerExceptionsTest
 {
     private Mock<IBookRepository> _bookRepositoryMock { get; } = new();
     private Mock<IUserRepository> _userRepositoryMock { get; } = new();
+    private Mock<IBookControllerMetrics> _bookControllerMetricsMock { get; } = new();
+    private Mock<ILogger> _logger { get; } = new();
     private BookController _bookController { get; }
 
     public BookControllerExceptionsTest()
     {
         IValidator<BookWriteModel> bookValidator = new BookWriteModelValidator();
         IValidator<BookUpdateModel> bookUpdateValidator = new BookUpdateModelValidator();
+        BookCacheRepository notAvailableCache = new(null, new());
         
-        _bookController = new(_bookRepositoryMock.Object, _userRepositoryMock.Object, null,
-            bookValidator, bookUpdateValidator);
+        _bookController = new(_bookRepositoryMock.Object, _userRepositoryMock.Object, notAvailableCache,
+            _bookControllerMetricsMock.Object, bookValidator, bookUpdateValidator, _logger.Object);
     }
     
     private static BookModel bookModelTestDumy => new()

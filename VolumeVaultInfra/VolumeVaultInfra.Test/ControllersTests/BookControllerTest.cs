@@ -1,11 +1,14 @@
  using FluentValidation;
 using Moq;
-using VolumeVaultInfra.Controllers;
+ using Serilog;
+ using VolumeVaultInfra.Controllers;
  using VolumeVaultInfra.Models.Book;
 using VolumeVaultInfra.Models.Enums;
 using VolumeVaultInfra.Models.User;
 using VolumeVaultInfra.Repositories;
-using VolumeVaultInfra.Validators;
+ using VolumeVaultInfra.Services.Cache;
+ using VolumeVaultInfra.Services.Metrics;
+ using VolumeVaultInfra.Validators;
 
 namespace VolumeVaultInfra.Test.ControllersTests;
 
@@ -13,15 +16,18 @@ public class BookControllerTest
 {
     private Mock<IBookRepository> _bookRepository { get; } = new();
     private Mock<IUserRepository> _userRepository { get; } = new();
+    private Mock<IBookControllerMetrics> _bookControllerMetricsMock { get; } = new();
+    private Mock<ILogger> _logger { get; } = new();
     private BookController _bookController { get; }
 
     public BookControllerTest()
     {
         IValidator<BookWriteModel> bookValidator = new BookWriteModelValidator();
         IValidator<BookUpdateModel> bookUpdateValidator = new BookUpdateModelValidator();
+        BookCacheRepository notAvailableCache = new(null, new());
         
-        _bookController = new(_bookRepository.Object, _userRepository.Object, null,
-            bookValidator, bookUpdateValidator);
+        _bookController = new(_bookRepository.Object, _userRepository.Object, notAvailableCache, _bookControllerMetricsMock.Object,
+            bookValidator, bookUpdateValidator, _logger.Object);
     }
     
     private static BookModel bookModelTestDumy => new()
@@ -94,6 +100,8 @@ public class BookControllerTest
         
         _userRepository.Setup(ex => ex.GetUserById(It.IsAny<int>()))
             .ReturnsAsync(user);
+        _bookRepository.Setup(ex => ex.AddBook(It.IsAny<BookModel>()))
+            .ReturnsAsync(bookModelTestDumy);
         
         await _bookController.RegisterNewBook(user.id, book);
     }
