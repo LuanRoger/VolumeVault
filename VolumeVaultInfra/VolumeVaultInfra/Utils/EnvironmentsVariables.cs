@@ -16,8 +16,4 @@ public static class EnvironmentsVariables
         .GetEnvironmentVariable(EnvVariableConsts.VV_POSTGRES_USER);
     public static string? GetVvPosgresPassword() => Environment
         .GetEnvironmentVariable(EnvVariableConsts.VV_POSTGRES_PASSWORD);
-    public static string? GetRedisHost() => Environment
-        .GetEnvironmentVariable(EnvVariableConsts.REDIS_HOST);
-    public static string? GetRedisPort() => Environment
-        .GetEnvironmentVariable(EnvVariableConsts.REDIS_PORT);
 }

@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
-using Prometheus;
 using VolumeVaultInfra.Exceptions;
 using VolumeVaultInfra.Models.User;
 using VolumeVaultInfra.Repositories;

@@ -6,7 +6,6 @@ using Moq;
 using VolumeVaultInfra.Models.Enums;
 using VolumeVaultInfra.Models.User;
 using VolumeVaultInfra.Repositories;
- using VolumeVaultInfra.Services.Cache;
  using VolumeVaultInfra.Services.Metrics;
  using VolumeVaultInfra.Validators;
 
@@ -24,9 +23,8 @@ public class BookControllerTest
     {
         IValidator<BookWriteModel> bookValidator = new BookWriteModelValidator();
         IValidator<BookUpdateModel> bookUpdateValidator = new BookUpdateModelValidator();
-        BookCacheRepository notAvailableCache = new(null, new());
-        
-        _bookController = new(_bookRepository.Object, _userRepository.Object, notAvailableCache, _bookControllerMetricsMock.Object,
+
+        _bookController = new(_bookRepository.Object, _userRepository.Object, _bookControllerMetricsMock.Object,
             bookValidator, bookUpdateValidator, _logger.Object);
     }
     

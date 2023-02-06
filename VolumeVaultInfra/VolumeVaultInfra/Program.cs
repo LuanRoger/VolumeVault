@@ -4,7 +4,6 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using VolumeVaultInfra.Context;
@@ -13,7 +12,6 @@ using VolumeVaultInfra.Exceptions;
 using VolumeVaultInfra.Models.Book;
 using VolumeVaultInfra.Models.User;
 using VolumeVaultInfra.Repositories;
-using VolumeVaultInfra.Services.Cache;
 using VolumeVaultInfra.Services.Jwt;
 using VolumeVaultInfra.Utils;
 using VolumeVaultInfra.Validators;
@@ -80,40 +78,6 @@ builder.Services.AddDbContext<DatabaseBaseContext, DatabaseContext>(optionsBuild
     string connString = string.Format(connStringHolder, postgresUser, postgresPassword,
         postgresHost, postgresPort, dbName);
     optionsBuilder.UseNpgsql(connString);
-});
-
-string? redisConnString = builder.Configuration.GetConnectionString("RedisConfigurationString");
-if(!string.IsNullOrEmpty(redisConnString))
-{
-    builder.Services.AddStackExchangeRedisCache(options =>
-    {
-        if(builder.Environment.IsDevelopment())
-        {
-            options.Configuration = redisConnString;
-            return;
-        }
-    
-        string? redisConnectionHolder =  builder.Configuration
-            .GetConnectionString("RedisConfigurationString");
-        if(string.IsNullOrEmpty(redisConnectionHolder))
-            throw new RequiredConfigurationException("RedisConfigurationString");
-        string? redisHost = EnvironmentsVariables.GetRedisHost();
-        string? redisPort = EnvironmentsVariables.GetRedisPort();
-        if(string.IsNullOrEmpty(redisHost) && string.IsNullOrEmpty(redisPort))
-            throw new EnvironmentVariableNotProvidedException(string.IsNullOrEmpty(redisHost) ? 
-                EnvVariableConsts.REDIS_HOST : EnvVariableConsts.REDIS_PORT);
-    
-        options.Configuration = string.Format(redisConnectionHolder, redisHost, redisPort);
-    });
-}
-builder.Services.AddScoped<BookCacheRepository>(provider =>
-{
-    DistributedCacheEntryOptions cacheOptions = new()
-    {
-        AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(60),
-        SlidingExpiration = TimeSpan.FromSeconds(20)
-    };
-    return new(provider.GetService<IDistributedCache>(), cacheOptions);
 });
 builder.Services.AddSingleton<JwtService>(_ =>
 {

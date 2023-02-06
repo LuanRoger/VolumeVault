@@ -7,7 +7,6 @@ using VolumeVaultInfra.Models.Book;
 using VolumeVaultInfra.Models.Enums;
 using VolumeVaultInfra.Models.User;
 using VolumeVaultInfra.Repositories;
-using VolumeVaultInfra.Services.Cache;
 using VolumeVaultInfra.Services.Metrics;
 using VolumeVaultInfra.Validators;
 
@@ -25,9 +24,8 @@ public class BookControllerExceptionsTest
     {
         IValidator<BookWriteModel> bookValidator = new BookWriteModelValidator();
         IValidator<BookUpdateModel> bookUpdateValidator = new BookUpdateModelValidator();
-        BookCacheRepository notAvailableCache = new(null, new());
-        
-        _bookController = new(_bookRepositoryMock.Object, _userRepositoryMock.Object, notAvailableCache,
+
+        _bookController = new(_bookRepositoryMock.Object, _userRepositoryMock.Object,
             _bookControllerMetricsMock.Object, bookValidator, bookUpdateValidator, _logger.Object);
     }
     

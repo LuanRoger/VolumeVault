@@ -9,6 +9,4 @@ public static class EnvVariableConsts
     public const string DEFAULT_POSTGRES_DB_NAME = "DEFAULT_POSTGRES_DB_NAME";
     public const string VV_POSTGRES_USER = "VV_POSTGRES_USER";
     public const string VV_POSTGRES_PASSWORD = "VV_POSTGRES_PASSWORD";
-    public const string REDIS_HOST = "REDIS_HOST";
-    public const string REDIS_PORT = "REDIS_PORT";
 }

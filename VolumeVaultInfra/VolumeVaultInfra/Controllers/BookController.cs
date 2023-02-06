@@ -4,7 +4,6 @@ using VolumeVaultInfra.Exceptions;
 using VolumeVaultInfra.Models.Book;
 using VolumeVaultInfra.Models.User;
 using VolumeVaultInfra.Repositories;
-using VolumeVaultInfra.Services.Cache;
 using VolumeVaultInfra.Services.Metrics;
 using ILogger = Serilog.ILogger;
 
@@ -14,7 +13,6 @@ public class BookController : IBookController
 {
     private IBookRepository _bookRepository { get; }
     private IUserRepository _userRepository { get; }
-    private BookCacheRepository _cache { get; }
     private IBookControllerMetrics _metrics { get; }
     private IValidator<BookWriteModel> _bookWriteModelValidator { get; }
     private IValidator<BookUpdateModel> _bookUpdateModelValidator { get; }
@@ -22,7 +20,6 @@ public class BookController : IBookController
 
     public BookController(IBookRepository bookRepository,
         IUserRepository userRepository,
-        BookCacheRepository cache,
         IBookControllerMetrics metrics,
         IValidator<BookWriteModel> bookWriteModelValidator,
         IValidator<BookUpdateModel> bookUpdateModelValidator,
@@ -30,7 +27,6 @@ public class BookController : IBookController
     {
         _bookRepository = bookRepository;
         _userRepository = userRepository;
-        _cache = cache;
         _metrics = metrics;
         _bookWriteModelValidator = bookWriteModelValidator;
         _bookUpdateModelValidator = bookUpdateModelValidator;
@@ -99,21 +95,7 @@ public class BookController : IBookController
         _logger.Information("Getting book from user ID[{0}].", relatedUser.id);
         _logger.Information("{0}: {1}, {2}: {3}.", nameof(page), page,
             nameof(limitPerPage), limitPerPage);
-        
-        if(_cache.isAvailable)
-        {
-            _logger.Information("Trying to get information from cache.");
-            var cachedBooks = await _cache.TryGetUserCachedBook(relatedUser.id, page);
-            if(cachedBooks is not null && !refresh)
-            {
-                _logger.Information("Returning information from cache.");
-                return cachedBooks;
-            }
-            _logger.Information("Was not found value in cache or made refresh.");
-        }
-        else _logger.Warning("The cache service is not available.");
-            
-        
+
         _logger.Information("Geting results from database.");
         var userBooks = 
             (await _bookRepository.GetUserOwnedBooksSplited(relatedUser.id, page, limitPerPage))
@@ -140,10 +122,6 @@ public class BookController : IBookController
                     email = bookModel.owner.email
                 },
             }).ToList();
-
-        if (!_cache.isAvailable) return userBooks;
-        _logger.Information("Saving information in cache.");
-        await _cache.SetUserBooks(userBooks, userId, page);
 
         return userBooks;
     }
