@@ -9,7 +9,8 @@
       "applicationUrl": "http://localhost:5081",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "JWT_SYMMETRIC_KEY": "837104660155f1c26c90c7f1a28505607603a4e16e995186339613620d1c2f07"
+        "JWT_SYMMETRIC_KEY": "837104660155f1c26c90c7f1a28505607603a4e16e995186339613620d1c2f07",
+        "VV_MONGO_DB_NAME": "main"
       }
     },
     "http(prod)": {
