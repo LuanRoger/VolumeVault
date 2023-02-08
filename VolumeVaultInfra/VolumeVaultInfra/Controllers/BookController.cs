@@ -12,6 +12,7 @@ namespace VolumeVaultInfra.Controllers;
 public class BookController : IBookController
 {
     private IBookRepository _bookRepository { get; }
+    private IBookSearchRepository _searchRepository { get; }
     private IUserRepository _userRepository { get; }
     private IBookControllerMetrics _metrics { get; }
     private IValidator<BookWriteModel> _bookWriteModelValidator { get; }
@@ -19,6 +20,7 @@ public class BookController : IBookController
     private ILogger _logger { get; }
 
     public BookController(IBookRepository bookRepository,
+        IBookSearchRepository searchRepository,
         IUserRepository userRepository,
         IBookControllerMetrics metrics,
         IValidator<BookWriteModel> bookWriteModelValidator,
@@ -26,6 +28,7 @@ public class BookController : IBookController
         ILogger logger)
     {
         _bookRepository = bookRepository;
+        _searchRepository = searchRepository;
         _userRepository = userRepository;
         _metrics = metrics;
         _bookWriteModelValidator = bookWriteModelValidator;
@@ -75,6 +78,8 @@ public class BookController : IBookController
         };
         BookModel registeredBook = await _bookRepository.AddBook(newBook);
         await _bookRepository.Flush();
+        await _searchRepository.MadeBookSearchable(BookSearchModel.FromBookModel(registeredBook));
+
         _metrics.IncreaseExistingBooks();
         _metrics.IncreaseRegisteredBooks();
         if(registeredBook.pagesNumber is not null) _metrics.ObserverBookPageNumber(registeredBook.pagesNumber);
@@ -221,8 +226,10 @@ public class BookController : IBookController
         }
         _logger.Information("Deleting book ID[{0}].", book.id);
 
-        _bookRepository.DeleteBook(book);
+        BookModel deletedBook = _bookRepository.DeleteBook(book);
         await _bookRepository.Flush();
+        await _searchRepository.DeleteBookFromSearch(deletedBook.id);
+        
         _metrics.DecreaseExsistingBooks();
         _logger.Information("Book ID[{0}] deleted.", book.id);
     }
