@@ -23,7 +23,7 @@ public class BookRepository : IBookRepository
             .OrderBy(book => book.id)
             .ToListAsync();
     
-    public void DeleteBook(BookModel book) => _bookDb.books.Remove(book);
+    public BookModel DeleteBook(BookModel book) => _bookDb.books.Remove(book).Entity;
     
     public async Task Flush() => await _bookDb.SaveChangesAsync();
 }

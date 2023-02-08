@@ -9,7 +9,7 @@ public interface IBookRepository
     public Task<BookModel?> GetBookById(int id);
     public Task<List<BookModel>> GetUserOwnedBooksSplited(int userId, int section, int limitPerSection);
     
-    public void DeleteBook(BookModel book);
+    public BookModel DeleteBook(BookModel book);
     
     public Task Flush();
 }
