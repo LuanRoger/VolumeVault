@@ -5,7 +5,9 @@ networks:
   db:
 
 volumes:
-  volumes-db:
+  primary-db:
+  secundary-db:
+  grafana-vol:
 
 services:
   vvinfra:
@@ -21,6 +23,11 @@ services:
       - DEFAULT_POSTGRES_DB_NAME
       - VV_POSTGRES_USER
       - VV_POSTGRES_PASSWORD
+      - VV_MONGO_HOST
+      - VV_MONGO_PORT
+      - VV_MONGO_USER
+      - VV_MONGO_PASSWORD
+      - VV_MONGO_DB_NAME
     ports:
       - 5081:80
     networks:
@@ -29,6 +36,7 @@ services:
     depends_on:
       - postgres
     restart: unless-stopped
+
   postgres:
     container_name: postgres
     image: postgres
@@ -40,7 +48,21 @@ services:
     networks:
       - db
     volumes:
-      - volumes-db:/var/lib/postgresql/data
+      - primary-db:/var/lib/postgresql/data
+  
+  mongo:
+    container_name: mongo-db
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD
+      - MONGO_INITDB_DATABASE
+    ports:
+      - 27017:27017
+    volumes:
+      - secundary-db:/data/db
+    networks:
+      - db
 
   prometheus:
     container_name: prometheus
@@ -59,3 +81,5 @@ services:
       - 3000:3000
     networks:
       - prom
+    volumes:
+      - grafana-vol:/var/lib/grafana grafana/grafana-enterprise
