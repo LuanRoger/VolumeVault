@@ -8,38 +8,38 @@ public class BookSearchRepository : IBookSearchRepository
 {
     private IMongoCollection<BookSearchModel> searchCollection { get; }
     public string databaseName { get; }
-    public readonly string collectionName = "search_storage";
-    
+    public const string COLLECTION_NAME = "search_storage";
+
     public BookSearchRepository(IMongoClient mongoClient, string databaseName)
     {
         this.databaseName = databaseName;
         searchCollection = mongoClient
             .GetDatabase(this.databaseName)
-            .GetCollection<BookSearchModel>(collectionName);
+            .GetCollection<BookSearchModel>(COLLECTION_NAME);
         CreateDefaultSearchIndexes();
     }
     
     private void CreateDefaultSearchIndexes()
     {
+        var textIndex = Builders<BookSearchModel>.IndexKeys
+            .Text("$**");
+        CreateIndexOptions textIndexOptions = new() { Name = "text_index" };
         var pubYearIndex = Builders<BookSearchModel>.IndexKeys
             .Ascending(book => book.publicationYear);
-        CreateIndexOptions pubYearIndexOptions = new() { Name = "pubYear_index", Unique = true };
+        CreateIndexOptions pubYearIndexOptions = new() { Name = "pubYear_index" };
         var editionIndex = Builders<BookSearchModel>.IndexKeys
             .Ascending(book => book.edition);
-        CreateIndexOptions editionIndexOptions = new() { Name = "edition_index", Unique = true };
+        CreateIndexOptions editionIndexOptions = new() { Name = "edition_index" };
         var pageNumbIndex = Builders<BookSearchModel>.IndexKeys
             .Descending(book => book.pagesNumber);
-        CreateIndexOptions pageNumbIndexOptions = new() { Name = "pageNumb_index", Unique = true };
-        var tagsIndex = Builders<BookSearchModel>.IndexKeys
-            .Text(book => book.tags);
-        CreateIndexOptions tagsIndexOptions = new() { Name = "tags_index", Unique = true };
-        
+        CreateIndexOptions pageNumbIndexOptions = new() { Name = "pageNumb_index" };
+
         searchCollection.Indexes.CreateMany(new []
         {
+            new CreateIndexModel<BookSearchModel>(textIndex, textIndexOptions),
             new CreateIndexModel<BookSearchModel>(pubYearIndex, pubYearIndexOptions),
             new CreateIndexModel<BookSearchModel>(editionIndex, editionIndexOptions),
             new CreateIndexModel<BookSearchModel>(pageNumbIndex, pageNumbIndexOptions),
-            new CreateIndexModel<BookSearchModel>(tagsIndex, tagsIndexOptions),
         });
     }
     
@@ -52,11 +52,24 @@ public class BookSearchRepository : IBookSearchRepository
 
         return (await searchCollection.DeleteOneAsync(bookFilter)).IsAcknowledged;
     }
-    public async Task UpdateSearchBook(int id, BookSearchModel bookSearchModel)
+    public async Task UpdateSearchBook(int bookId, BookSearchModel bookSearchModel)
     {
         var bookFilter = Builders<BookSearchModel>.Filter
-            .Eq(book => book.id, id);
+            .Eq(book => book.id, bookId);
         
         await searchCollection.ReplaceOneAsync(bookFilter, bookSearchModel);
+    }
+    
+    public async Task<List<BookSearchModel>> SearchBook(int userId, string sentence)
+    {
+        var bookFilter = Builders<BookSearchModel>.Filter
+            .Text(sentence, new TextSearchOptions());
+        var searchResult = await searchCollection.FindAsync(bookFilter);
+        List<BookSearchModel> bookList = await searchResult.ToListAsync();
+
+        var filteredResult = 
+            from book in bookList where book.ownerId == userId select book;
+        
+        return filteredResult.ToList();
     }
 }

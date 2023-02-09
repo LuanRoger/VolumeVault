@@ -86,8 +86,7 @@ public class BookController : IBookController
         _logger.Information("Book [{0}] registered sucessfully.", registeredBook.id);
     }
 
-    public async Task<List<BookReadModel>> GetAllUserReleatedBooks(int userId, int page, int limitPerPage,
-        bool refresh)
+    public async Task<List<BookReadModel>> GetAllUserReleatedBooks(int userId, int page, int limitPerPage)
     {
         UserModel? relatedUser = await _userRepository.GetUserById(userId);
         if(relatedUser is null)
@@ -131,9 +130,20 @@ public class BookController : IBookController
         return userBooks;
     }
 
-    public List<BookReadModel> SearchBookParameters(BookSearchModel bookSearchParameters)
+    public async Task<List<BookReadModel>> SearchBookParameters(int userId, string searchQuery)
     {
-        throw new NotImplementedException();
+        List<BookSearchModel> searchResults = await _searchRepository.SearchBook(userId, searchQuery);
+        List<BookReadModel> booksFromMainDb = new();
+        foreach (BookSearchModel book in searchResults)
+        {
+            BookModel? bookFromMainDb = await _bookRepository.GetBookById(book.id);
+            if(bookFromMainDb is null) continue;
+            
+            await _bookRepository.LoadBookEntityReference(bookFromMainDb);
+            booksFromMainDb.Add(BookReadModel.FromBookModel(bookFromMainDb));
+        }
+        
+        return booksFromMainDb;
     }
 
     public async Task UpdateBook(int userId, int bookId, BookUpdateModel bookUpdate)
@@ -197,6 +207,7 @@ public class BookController : IBookController
             book.tags = bookUpdate.tags;
         
         await _bookRepository.Flush();
+        await _searchRepository.UpdateSearchBook(bookId, BookSearchModel.FromBookModel(book));
         _logger.Information("Book ID[{0}] updated.", book.id);
     }
     

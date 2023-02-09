@@ -221,7 +221,6 @@ app.MapGet("books",
     async (HttpContext context, 
         [FromQuery] int page, 
         [FromQuery] int? limitPerPage,
-        [FromQuery] bool? refresh,
         [FromServices] IBookController bookController) =>
 {
    int idClaim = int.Parse(context.User.Claims
@@ -230,7 +229,7 @@ app.MapGet("books",
    List<BookReadModel> userBooks;
    try
    {
-       userBooks = await bookController.GetAllUserReleatedBooks(idClaim, page, limitPerPage ?? 10, refresh ?? false);
+       userBooks = await bookController.GetAllUserReleatedBooks(idClaim, page, limitPerPage ?? 10);
    }
    catch(UserNotFoundException e)
    {
@@ -242,6 +241,29 @@ app.MapGet("books",
     {
         policyBuilder.RequireClaim("ID");
     });
+app.MapGet("books/search", 
+    async (HttpContext context, 
+        [FromQuery] string query,
+        [FromServices] IBookController bookController) =>
+{
+    int idClaim = int.Parse(context.User.Claims
+        .First(claim => claim.Type == "ID").Value);
+    
+    List<BookReadModel> searchResult;
+    try
+    {
+        searchResult = await bookController.SearchBookParameters(idClaim, query);
+    }
+    catch(Exception e)
+    {
+        return Results.BadRequest(e.Message);
+    }
+    
+    return Results.Ok(searchResult);
+}).RequireAuthorization(policyBuilder =>
+{
+    policyBuilder.RequireClaim("ID");
+});
 app.MapPost("books", 
     async (HttpContext context, 
         [FromBody] BookWriteModel bookWriteInfo, 

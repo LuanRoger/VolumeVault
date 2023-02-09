@@ -5,10 +5,11 @@ namespace VolumeVaultInfra.Models.Book;
 public class BookSearchModel
 {
     public int id { get; set; }
-    public string? title { get; set; }
-    public string? author { get; set; }
+    public string title { get; set; }
     
-    public string? isbn { get; set; }
+    public string author { get; set; }
+    
+    public string isbn { get; set; }
     
     public int? publicationYear { get; set; }
     
@@ -26,7 +27,9 @@ public class BookSearchModel
     
     public List<string>? tags { get; set; }
     
-    public DateTime? createdAt { get; set; }
+    public DateTime createdAt { get; set; }
+    
+    public int ownerId { get; set; }
     
     public static BookSearchModel FromBookModel(BookModel bookModel) => new()
     {
@@ -43,5 +46,6 @@ public class BookSearchModel
         readed = bookModel.readed,
         tags = bookModel.tags,
         createdAt = bookModel.createdAt,
+        ownerId = bookModel.owner.id
     };
 }
