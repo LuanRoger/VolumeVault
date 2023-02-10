@@ -14,6 +14,7 @@ namespace VolumeVaultInfra.Test.ControllersTests;
 public class BookControllerTest
 {
     private Mock<IBookRepository> _bookRepository { get; } = new();
+    private Mock<IBookSearchRepository> _bookSearchRepository { get; } = new();
     private Mock<IUserRepository> _userRepository { get; } = new();
     private Mock<IBookControllerMetrics> _bookControllerMetricsMock { get; } = new();
     private Mock<ILogger> _logger { get; } = new();
@@ -24,7 +25,7 @@ public class BookControllerTest
         IValidator<BookWriteModel> bookValidator = new BookWriteModelValidator();
         IValidator<BookUpdateModel> bookUpdateValidator = new BookUpdateModelValidator();
 
-        _bookController = new(_bookRepository.Object, _userRepository.Object, _bookControllerMetricsMock.Object,
+        _bookController = new(_bookRepository.Object, _bookSearchRepository.Object, _userRepository.Object, _bookControllerMetricsMock.Object,
             bookValidator, bookUpdateValidator, _logger.Object);
     }
     
@@ -132,6 +133,27 @@ public class BookControllerTest
                 }
             };
     }
+    private static IEnumerable<BookSearchModel> GenerateDumySearchResult(int count = 10)
+    {
+        for (int i = 0; i < count; i++)
+            yield return new()
+            {
+                id = count,
+                title = "test",
+                author = "test",
+                isbn = "000-00-0000-000-0",
+                publicationYear = 0,
+                publisher = "test",
+                edition = 1,
+                pagesNumber = 1,
+                genre = "test",
+                format = 0,
+                readed = true,
+                tags = new() { "test" },
+                createdAt = DateTime.Today,
+                ownerId = 1
+            };
+    }
     [Theory]
     [InlineData(1, 10)]
     [InlineData(1, 20)]
@@ -148,9 +170,27 @@ public class BookControllerTest
             .ReturnsAsync(GenerateDumyBooks(limitPerPage).ToList);
         
         var books = await _bookController
-            .GetAllUserReleatedBooks(user.id, page, limitPerPage, true);
+            .GetAllUserReleatedBooks(user.id, page, limitPerPage);
         
         Assert.Equal(limitPerPage, books.Count);
+    }
+    
+    [Fact]
+    public async void SearchForBookTest()
+    {
+        BookModel book = bookModelTestDumy;
+        List<BookSearchModel> searchResult = GenerateDumySearchResult().ToList();
+        const int userId = 1;
+        
+        _bookRepository.Setup(ex => ex.GetBookById(It.IsAny<int>()))
+            .ReturnsAsync(book);
+        _bookSearchRepository.Setup(ex => ex.SearchBook(userId, 
+            It.IsAny<string>())).ReturnsAsync(searchResult);
+        
+         var result = await _bookController
+             .SearchBookParameters(1, "anySearch");
+         
+         Assert.All(result, searchBook => Assert.Equal(userId, searchBook.owner.id));
     }
     
     [Fact]

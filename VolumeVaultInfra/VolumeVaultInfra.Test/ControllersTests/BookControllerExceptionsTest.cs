@@ -15,6 +15,7 @@ namespace VolumeVaultInfra.Test.ControllersTests;
 public class BookControllerExceptionsTest
 {
     private Mock<IBookRepository> _bookRepositoryMock { get; } = new();
+    private Mock<IBookSearchRepository> _bookSearchRepository { get; } = new();
     private Mock<IUserRepository> _userRepositoryMock { get; } = new();
     private Mock<IBookControllerMetrics> _bookControllerMetricsMock { get; } = new();
     private Mock<ILogger> _logger { get; } = new();
@@ -25,8 +26,9 @@ public class BookControllerExceptionsTest
         IValidator<BookWriteModel> bookValidator = new BookWriteModelValidator();
         IValidator<BookUpdateModel> bookUpdateValidator = new BookUpdateModelValidator();
 
-        _bookController = new(_bookRepositoryMock.Object, _userRepositoryMock.Object,
-            _bookControllerMetricsMock.Object, bookValidator, bookUpdateValidator, _logger.Object);
+        _bookController = new(_bookRepositoryMock.Object, _bookSearchRepository.Object,
+            _userRepositoryMock.Object, _bookControllerMetricsMock.Object, bookValidator,
+            bookUpdateValidator, _logger.Object);
     }
     
     private static BookModel bookModelTestDumy => new()
@@ -155,7 +157,7 @@ public class BookControllerExceptionsTest
             .ReturnsAsync(() => null);
         
         await Assert.ThrowsAsync<UserNotFoundException>(() => 
-            _bookController.GetAllUserReleatedBooks(It.IsAny<int>(), 1, 10, false));
+            _bookController.GetAllUserReleatedBooks(It.IsAny<int>(), 1, 10));
     }
     [Fact]
     public async void NotRegistredUserDeleteBookTest()
