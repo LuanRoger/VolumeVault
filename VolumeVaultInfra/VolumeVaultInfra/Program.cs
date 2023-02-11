@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Driver;
 using Serilog;
 using VolumeVaultInfra.Context;
 using VolumeVaultInfra.Controllers;
@@ -32,6 +33,19 @@ CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
 ILogger logger = new LoggerConfiguration()
     .Enrich.WithMachineName()
+    .WriteTo.MongoDBBson(configurations =>
+    {
+        string mongoConnStringHolder = builder.Configuration
+            .GetConnectionString("MongoDBConnectionString")!;
+        string mongoConnString = builder.Environment.IsDevelopment() ? mongoConnStringHolder : 
+            EnvironmentVariables.FormatVvMongoConnectionString(mongoConnStringHolder);
+        
+        MongoClient loggerClient = new(mongoConnString);
+        IMongoDatabase loggerDatabase = loggerClient
+            .GetDatabase(EnvironmentVariables.GetVvMongoDbName());
+        
+        configurations.SetMongoDatabase(loggerDatabase);
+    })
     .WriteTo.Console()
     .Enrich.WithProperty("Environment", EnvVariableConsts.ASPNETCORE_ENVIRONMENT)
     .ReadFrom.Configuration(builder.Configuration)
@@ -58,38 +72,42 @@ builder.Services.AddDbContext<DatabaseBaseContext, DatabaseContext>(optionsBuild
     if(string.IsNullOrEmpty(connStringHolder))
         throw new RequiredConfigurationException("PostgresConnectionString");
     
-    string? postgresUser = EnvironmentsVariables.GetVvPostgresUser();
-    string? postgresPassword = EnvironmentsVariables.GetVvPosgresPassword();
-    string? postgresHost = EnvironmentsVariables.GetPostgresHost();
-    string? postgresPort = EnvironmentsVariables.GetPostgresPort();
-    string? dbName = EnvironmentsVariables.GetDefaultPostgresDbName();
-
-    if(string.IsNullOrEmpty(postgresUser))
-        throw new EnvironmentVariableNotProvidedException(EnvVariableConsts.VV_POSTGRES_USER);
-    if(string.IsNullOrEmpty(postgresPassword))
-        throw new EnvironmentVariableNotProvidedException(EnvVariableConsts.VV_POSTGRES_PASSWORD);
-    if(string.IsNullOrEmpty(postgresHost))
-        throw new EnvironmentVariableNotProvidedException(EnvVariableConsts.POSTGRES_HOST);
-    if(string.IsNullOrEmpty(postgresPort))
-        throw new EnvironmentVariableNotProvidedException(EnvVariableConsts.POSTGRES_PORT);
-    if(string.IsNullOrEmpty(dbName))
-        throw new EnvironmentVariableNotProvidedException(EnvVariableConsts.DEFAULT_POSTGRES_DB_NAME);
-    
-    string connString = string.Format(connStringHolder, postgresUser, postgresPassword,
-        postgresHost, postgresPort, dbName);
+    string connString = EnvironmentVariables.FormatVvPostgresConnectionString(connStringHolder); 
     optionsBuilder.UseNpgsql(connString);
+});
+builder.Services.AddSingleton<IMongoClient, MongoClient>(_ =>
+{
+    if(builder.Environment.IsDevelopment())
+        return new(builder.Configuration.GetConnectionString("MongoDBConnectionString")!);
+    
+    string connStringHolder = builder.Configuration.GetConnectionString("MongoDBConnectionString")!;
+    if(string.IsNullOrEmpty(connStringHolder))
+        throw new RequiredConfigurationException("MongoDBConnectionString");
+    
+    string connString = EnvironmentVariables
+        .FormatVvMongoConnectionString(connStringHolder);
+    return new(connString);
 });
 builder.Services.AddSingleton<JwtService>(_ =>
 {
-    string? jwtSymetricKey = EnvironmentsVariables.GetSymmetricKey();
+    string? jwtSymetricKey = EnvironmentVariables.GetSymmetricKey();
     if(jwtSymetricKey is null)
         throw new(EnvVariableConsts.JWT_SYMMETRIC_KEY);
     
     return new(jwtSymetricKey);
 });
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
-builder.Services.AddScoped<IUserController, UserController>();
+builder.Services.AddScoped<IBookSearchRepository, BookSearchRepository>(provider =>
+{
+    string? secundaryDbName = EnvironmentVariables.GetVvMongoDbName();
+    if(secundaryDbName is null)
+        throw new EnvironmentVariableNotProvidedException(EnvVariableConsts.VV_MONGO_DB_NAME);
+    
+    return new(provider.GetRequiredService<IMongoClient>(), secundaryDbName);
+});
+    builder.Services.AddScoped<IUserController, UserController>();
 builder.Services.AddScoped<IBookController, BookController>();
 builder.Services.AddScoped<IBookControllerMetrics, BookControllerMetrics>();
 builder.Services.AddScoped<IUserControllerMetrics, UserControllerMetrics>();
@@ -109,7 +127,7 @@ builder.Services.AddAuthentication(options =>
 })
     .AddJwtBearer(options =>
     {
-        string? jwtSymmetricKey = EnvironmentsVariables.GetSymmetricKey();
+        string? jwtSymmetricKey = EnvironmentVariables.GetSymmetricKey();
         if(string.IsNullOrEmpty(jwtSymmetricKey))
             throw new EnvironmentVariableNotProvidedException(EnvVariableConsts.JWT_SYMMETRIC_KEY);
         
@@ -203,7 +221,6 @@ app.MapGet("books",
     async (HttpContext context, 
         [FromQuery] int page, 
         [FromQuery] int? limitPerPage,
-        [FromQuery] bool? refresh,
         [FromServices] IBookController bookController) =>
 {
    int idClaim = int.Parse(context.User.Claims
@@ -212,7 +229,7 @@ app.MapGet("books",
    List<BookReadModel> userBooks;
    try
    {
-       userBooks = await bookController.GetAllUserReleatedBooks(idClaim, page, limitPerPage ?? 10, refresh ?? false);
+       userBooks = await bookController.GetAllUserReleatedBooks(idClaim, page, limitPerPage ?? 10);
    }
    catch(UserNotFoundException e)
    {
@@ -224,6 +241,29 @@ app.MapGet("books",
     {
         policyBuilder.RequireClaim("ID");
     });
+app.MapGet("books/search", 
+    async (HttpContext context, 
+        [FromQuery] string query,
+        [FromServices] IBookController bookController) =>
+{
+    int idClaim = int.Parse(context.User.Claims
+        .First(claim => claim.Type == "ID").Value);
+    
+    List<BookReadModel> searchResult;
+    try
+    {
+        searchResult = await bookController.SearchBookParameters(idClaim, query);
+    }
+    catch(Exception e)
+    {
+        return Results.BadRequest(e.Message);
+    }
+    
+    return Results.Ok(searchResult);
+}).RequireAuthorization(policyBuilder =>
+{
+    policyBuilder.RequireClaim("ID");
+});
 app.MapPost("books", 
     async (HttpContext context, 
         [FromBody] BookWriteModel bookWriteInfo, 

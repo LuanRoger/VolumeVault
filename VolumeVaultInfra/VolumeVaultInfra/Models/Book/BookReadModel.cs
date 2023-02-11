@@ -33,4 +33,23 @@ public class BookReadModel
     public DateTime createdAt { get; set; }
     
     public UserReadModel owner { get; set; }
+    
+    public static BookReadModel FromBookModel(BookModel bookModel) => new()
+    {
+        id = bookModel.id,
+        title = bookModel.title,
+        author = bookModel.author,
+        isbn = bookModel.isbn,
+        publicationYear = bookModel.publicationYear,
+        publisher = bookModel.publisher,
+        edition = bookModel.edition,
+        pagesNumber = bookModel.pagesNumber,
+        genre = bookModel.genre,
+        format = bookModel.format,
+        observation = bookModel.observation,
+        readed = bookModel.readed,
+        tags = bookModel.tags,
+        createdAt = bookModel.createdAt,
+        owner = UserReadModel.FromUserModel(bookModel.owner),
+    };
 }
