@@ -233,6 +233,8 @@ public class BookControllerTest
             .ReturnsAsync(user);
         _bookRepository.Setup(ex => ex.GetBookById(It.IsAny<int>()))
             .ReturnsAsync(book);
+        _bookRepository.Setup(ex => ex.DeleteBook(book))
+            .Returns(book);
         
         await _bookController.DeleteBook(It.IsAny<int>(), It.IsAny<int>());
     }
