@@ -26,6 +26,12 @@ public class BookReadModel
     
     public string? observation { get; set; }
     
+    public string? synopsis { get; set; }
+    
+    public string? coverLink { get; set; }
+    
+    public string? buyLink { get; set; }
+    
     public bool? readed { get; set; }
     
     public List<string>? tags { get; set; }
@@ -47,6 +53,9 @@ public class BookReadModel
         genre = bookModel.genre,
         format = bookModel.format,
         observation = bookModel.observation,
+        synopsis = bookModel.synopsis,
+        coverLink = bookModel.coverLink,
+        buyLink = bookModel.buyLink,
         readed = bookModel.readed,
         tags = bookModel.tags,
         createdAt = bookModel.createdAt,

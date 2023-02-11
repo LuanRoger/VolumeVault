@@ -24,7 +24,15 @@ public class BookUpdateModel
     
     public string? observation { get; set; }
     
+    public string? synopsis { get; set; }
+    
+    public string? coverLink { get; set; }
+    
+    public string? buyLink { get; set; }
+    
     public bool? readed { get; set; }
     
     public List<string>? tags { get; set; }
+    
+    public DateTime lastModification { get; set; } 
 }
