@@ -59,7 +59,7 @@ public class BookControllerTest
         title = "test",
         author = "test",
         isbn = "000-00-0000-000-0",
-        publicationYear = 0,
+        publicationYear = 1,
         publisher = "test",
         edition = 1,
         pagesNumber = 1,
@@ -67,7 +67,12 @@ public class BookControllerTest
         format = 0,
         observation = "test",
         readed = true,
-        tags = new() { "test" }
+        tags = new()
+        {
+            "test"
+        },
+        createdAt = DateTime.Today,
+        lastModification = DateTime.Today
     };
     private static BookUpdateModel bookUpdateModelTestDumy => new()
     {
@@ -81,8 +86,12 @@ public class BookControllerTest
         genre = "changed",
         format = BookFormat.HARDBACK,
         observation = "changed",
+        synopsis = "changed",
+        coverLink = "changed",
+        buyLink = "changed",
         readed = false,
-        tags = new() { "changed", "changed" }
+        tags = new() { "changed", "changed" },
+        lastModification = DateTime.Now
     };
     private static UserModel userModelTestDumy => new()
     {
@@ -153,6 +162,7 @@ public class BookControllerTest
                 readed = true,
                 tags = new() { "test" },
                 createdAt = DateTime.Today,
+                lastModification = DateTime.Today,
                 ownerId = 1
             };
     }

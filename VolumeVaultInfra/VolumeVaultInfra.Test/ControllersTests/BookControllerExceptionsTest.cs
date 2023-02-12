@@ -64,7 +64,7 @@ public class BookControllerExceptionsTest
         title = "test",
         author = "test",
         isbn = "000-00-0000-000-0",
-        publicationYear = 0,
+        publicationYear = 1,
         publisher = "test",
         edition = 1,
         pagesNumber = 1,
@@ -75,7 +75,9 @@ public class BookControllerExceptionsTest
         coverLink = "test",
         buyLink = "test",
         readed = true,
-        tags = new() { "test" }
+        tags = new() { "test" },
+        lastModification = DateTime.Today,
+        createdAt = DateTime.Today
     };
     private static BookWriteModel invalidBookWriteModelTestDumy => new()
     {
@@ -93,7 +95,9 @@ public class BookControllerExceptionsTest
         coverLink = "test",
         buyLink = "test",
         readed = true,
-        tags = new() { "test" }
+        tags = new() { "test" },
+        lastModification = DateTime.Today,
+        createdAt = DateTime.Today
     };
     private static BookUpdateModel bookUpdateModelTestDumy => new()
     {
