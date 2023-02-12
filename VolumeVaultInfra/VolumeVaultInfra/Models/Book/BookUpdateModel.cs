@@ -4,35 +4,35 @@ namespace VolumeVaultInfra.Models.Book;
 
 public class BookUpdateModel
 {
-    public string? title { get; set; }
+    public string? title { get; init; }
     
-    public string? author { get; set; }
+    public string? author { get; init; }
     
-    public string? isbn { get; set; }
+    public string? isbn { get; init; }
     
-    public int? publicationYear { get; set; }
+    public int? publicationYear { get; init; }
     
-    public string? publisher { get; set; }
+    public string? publisher { get; init; }
     
-    public int? edition { get; set; }
+    public int? edition { get; init; }
     
-    public int? pagesNumber { get; set; }
+    public int? pagesNumber { get; init; }
     
-    public string? genre { get; set; }
+    public string? genre { get; init; }
     
-    public BookFormat? format { get; set; }
+    public BookFormat? format { get; init; }
     
-    public string? observation { get; set; }
+    public string? observation { get; init; }
     
-    public string? synopsis { get; set; }
+    public string? synopsis { get; init; }
     
-    public string? coverLink { get; set; }
+    public string? coverLink { get; init; }
     
-    public string? buyLink { get; set; }
+    public string? buyLink { get; init; }
     
-    public bool? readed { get; set; }
+    public bool? readed { get; init; }
     
-    public List<string>? tags { get; set; }
+    public List<string>? tags { get; init; }
     
-    public DateTime lastModification { get; set; } 
+    public DateTime lastModification { get; init; } 
 }

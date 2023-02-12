@@ -60,7 +60,8 @@ public class UserController : IUserController
         {
             username = userWrite.username,
             email = userWrite.email,
-            password = await HashService.HashPassword(userWrite.password, userInformationToHash)
+            password = await HashService.HashPassword(userWrite.password,
+                userInformationToHash),
         };
 
         UserModel userEntry = await _userRepository.AddUser(user);

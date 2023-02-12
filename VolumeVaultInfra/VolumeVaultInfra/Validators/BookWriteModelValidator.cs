@@ -13,7 +13,7 @@ public class BookWriteModelValidator : AbstractValidator<BookWriteModel>
             .NotEmpty()
             .Length(17);
         RuleFor(book => book.publicationYear)
-            .GreaterThanOrEqualTo(0)
+            .GreaterThanOrEqualTo(1)
             .When(book => book.publicationYear is not null);
         RuleFor(book => book.publisher)
             .NotEmpty()
