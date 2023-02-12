@@ -36,6 +36,18 @@ public class BookWriteModelValidator : AbstractValidator<BookWriteModel>
         RuleFor(book => book.observation)
             .NotEmpty()
             .When(book => book.observation is not null);
+        RuleFor(book => book.synopsis)
+            .NotEmpty()
+            .MaximumLength(300)
+            .When(book => book.synopsis is not null);
+        RuleFor(book => book.coverLink)
+            .NotEmpty()
+            .MaximumLength(500)
+            .When(book => book.coverLink is not null);
+        RuleFor(book => book.buyLink)
+            .NotEmpty()
+            .MaximumLength(500)
+            .When(book => book.buyLink is not null);
         RuleFor(book => book.readed)
             .NotEmpty()
             .When(book => book.readed is not null);
