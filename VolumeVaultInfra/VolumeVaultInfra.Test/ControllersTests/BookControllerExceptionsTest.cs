@@ -44,9 +44,13 @@ public class BookControllerExceptionsTest
         genre = "test",
         format = 0,
         observation = "test",
+        synopsis = "test",
+        coverLink = "test",
+        buyLink = "test",
         readed = true,
         tags = new() { "test" },
         createdAt = DateTime.Today,
+        lastModification = DateTime.Today,
         owner = new()
         {
             id = 1,
@@ -67,6 +71,9 @@ public class BookControllerExceptionsTest
         genre = "test",
         format = 0,
         observation = "test",
+        synopsis = "test",
+        coverLink = "test",
+        buyLink = "test",
         readed = true,
         tags = new() { "test" }
     };
@@ -82,6 +89,9 @@ public class BookControllerExceptionsTest
         genre = "test",
         format = 0,
         observation = "test",
+        synopsis = "test",
+        coverLink = "test",
+        buyLink = "test",
         readed = true,
         tags = new() { "test" }
     };
@@ -97,6 +107,9 @@ public class BookControllerExceptionsTest
         genre = "changed",
         format = BookFormat.HARDBACK,
         observation = "changed",
+        synopsis = "test",
+        coverLink = "test",
+        buyLink = "test",
         readed = false,
         tags = new() { "changed", "changed" }
     };
@@ -112,6 +125,9 @@ public class BookControllerExceptionsTest
         genre = "changed",
         format = BookFormat.HARDBACK,
         observation = "changed",
+        synopsis = "changed",
+        coverLink = "changed",
+        buyLink = "changed",
         readed = false,
         tags = new() { "changed", "changed" }
     };
