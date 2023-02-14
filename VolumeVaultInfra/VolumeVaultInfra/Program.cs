@@ -18,6 +18,7 @@ using VolumeVaultInfra.Utils;
 using VolumeVaultInfra.Validators;
 using ILogger = Serilog.ILogger;
 using Prometheus;
+using VolumeVaultInfra.Middlewares;
 using VolumeVaultInfra.Services;
 using VolumeVaultInfra.Services.Metrics;
 
@@ -164,6 +165,7 @@ app.UseRouting();
 
 app.UseHttpMetrics();
 
+app.UseMiddleware<ApiKeyMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 

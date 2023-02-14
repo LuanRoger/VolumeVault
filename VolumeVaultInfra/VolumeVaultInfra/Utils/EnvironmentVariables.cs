@@ -6,6 +6,8 @@ namespace VolumeVaultInfra.Utils;
 
 public static class EnvironmentVariables
 {
+    public static string? GetApiKey() => Environment
+        .GetEnvironmentVariable(EnvVariableConsts.API_KEY);
     public static string? GetSymmetricKey() => Environment
         .GetEnvironmentVariable(EnvVariableConsts.JWT_SYMMETRIC_KEY);
     public static string? GetEnvironmentName() => Environment

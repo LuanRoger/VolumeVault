@@ -2,6 +2,7 @@
 
 public static class EnvVariableConsts
 {
+    public const string API_KEY = "API_KEY";
     public const string JWT_SYMMETRIC_KEY = "JWT_SYMMETRIC_KEY";
     public const string ASPNETCORE_ENVIRONMENT = "ASPNETCORE_ENVIRONMENT";    
     public const string POSTGRES_HOST = "POSTGRES_HOST";
