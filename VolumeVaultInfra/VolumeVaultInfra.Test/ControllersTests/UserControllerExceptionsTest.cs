@@ -45,6 +45,11 @@ public class UserControllerExceptionsTest
         username = "test",
         password = "test1234"
     };
+    private static UserLoginRequestModel wrongPasswordLoginRequestTestDumy => new()
+    {
+        username = "test",
+        password = "test12345" //Wrong password compared with [userTestDumy]
+    };
     
     [Fact]
     public async void SignInvalidUserTest()
@@ -85,8 +90,7 @@ public class UserControllerExceptionsTest
     public async void LoginCredentialsNotMatchTest()
     {
         UserWriteModel user = userTestDumy;
-        UserLoginRequestModel loginRequest = loginRequestTestDumy;
-        loginRequest.password = "test12345"; //Wrong password
+        UserLoginRequestModel loginRequest = wrongPasswordLoginRequestTestDumy;
 
         _userRepositoryMock.Setup(ex => 
                 ex.GetUserByUsername(loginRequest.username))

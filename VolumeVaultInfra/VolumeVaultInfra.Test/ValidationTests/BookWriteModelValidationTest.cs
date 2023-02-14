@@ -49,7 +49,9 @@ public class BookWriteModelValidationTest
             {
                 title = "test",
                 author = "test",
-                isbn = "000-00-0000-000-0"
+                isbn = "000-00-0000-000-0",
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             //Optional parameters
             new BookWriteModel
@@ -57,103 +59,156 @@ public class BookWriteModelValidationTest
                 title = "test",
                 author = "test",
                 isbn = "000-00-0000-000-0",
-                publicationYear = 0
+                publicationYear = 1,
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             new BookWriteModel
             {
                 title = "test",
                 author = "test",
                 isbn = "000-00-0000-000-0",
-                publicationYear = 0,
-                publisher = "test"
-            },
-            new BookWriteModel
-            {
-                title = "test",
-                author = "test",
-                isbn = "000-00-0000-000-0",
-                publicationYear = 0,
+                publicationYear = 1,
                 publisher = "test",
-                edition = 1
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             new BookWriteModel
             {
                 title = "test",
                 author = "test",
                 isbn = "000-00-0000-000-0",
-                publicationYear = 0,
+                publicationYear = 1,
                 publisher = "test",
                 edition = 1,
-                pagesNumber = 1
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             new BookWriteModel
             {
                 title = "test",
                 author = "test",
                 isbn = "000-00-0000-000-0",
-                publicationYear = 0,
+                publicationYear = 1,
                 publisher = "test",
                 edition = 1,
                 pagesNumber = 1,
-                genre = "test"
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             new BookWriteModel
             {
                 title = "test",
                 author = "test",
                 isbn = "000-00-0000-000-0",
-                publicationYear = 0,
+                publicationYear = 1,
                 publisher = "test",
                 edition = 1,
                 pagesNumber = 1,
                 genre = "test",
-                format = 0
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             new BookWriteModel
             {
                 title = "test",
                 author = "test",
                 isbn = "000-00-0000-000-0",
-                publicationYear = 0,
-                publisher = "test",
-                edition = 1,
-                pagesNumber = 1,
-                genre = "test",
-                format = 0
-            },
-            new BookWriteModel
-            {
-                title = "test",
-                author = "test",
-                isbn = "000-00-0000-000-0",
-                publicationYear = 0,
+                publicationYear = 1,
                 publisher = "test",
                 edition = 1,
                 pagesNumber = 1,
                 genre = "test",
                 format = 0,
-                observation = "test"
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             new BookWriteModel
             {
                 title = "test",
                 author = "test",
                 isbn = "000-00-0000-000-0",
-                publicationYear = 0,
+                publicationYear = 1,
+                publisher = "test",
+                edition = 1,
+                pagesNumber = 1,
+                genre = "test",
+                format = 0,
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
+            },
+            new BookWriteModel
+            {
+                title = "test",
+                author = "test",
+                isbn = "000-00-0000-000-0",
+                publicationYear = 1,
                 publisher = "test",
                 edition = 1,
                 pagesNumber = 1,
                 genre = "test",
                 format = 0,
                 observation = "test",
-                readed = true
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             new BookWriteModel
             {
                 title = "test",
                 author = "test",
                 isbn = "000-00-0000-000-0",
-                publicationYear = 0,
+                publicationYear = 1,
+                publisher = "test",
+                edition = 1,
+                pagesNumber = 1,
+                genre = "test",
+                format = 0,
+                observation = "test",
+                synopsis = "test",
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
+            },
+            new BookWriteModel
+            {
+                title = "test",
+                author = "test",
+                isbn = "000-00-0000-000-0",
+                publicationYear = 1,
+                publisher = "test",
+                edition = 1,
+                pagesNumber = 1,
+                genre = "test",
+                format = 0,
+                observation = "test",
+                synopsis = "test",
+                coverLink = "test",
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
+            },
+            new BookWriteModel
+            {
+                title = "test",
+                author = "test",
+                isbn = "000-00-0000-000-0",
+                publicationYear = 1,
+                publisher = "test",
+                edition = 1,
+                pagesNumber = 1,
+                genre = "test",
+                format = 0,
+                observation = "test",
+                synopsis = "test",
+                coverLink = "test",
+                buyLink = "test",
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
+            },
+            new BookWriteModel
+            {
+                title = "test",
+                author = "test",
+                isbn = "000-00-0000-000-0",
+                publicationYear = 1,
                 publisher = "test",
                 edition = 1,
                 pagesNumber = 1,
@@ -161,7 +216,25 @@ public class BookWriteModelValidationTest
                 format = 0,
                 observation = "test",
                 readed = true,
-                tags = new() { "test" }
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
+            },
+            new BookWriteModel
+            {
+                title = "test",
+                author = "test",
+                isbn = "000-00-0000-000-0",
+                publicationYear = 1,
+                publisher = "test",
+                edition = 1,
+                pagesNumber = 1,
+                genre = "test",
+                format = 0,
+                observation = "test",
+                readed = true,
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             }
         };
     }
@@ -173,7 +246,7 @@ public class BookWriteModelValidationTest
         foreach (BookWriteModel input in GetValidBookWireteModelsInputs())
             yield return new object[] { input };
     }
-    public static IEnumerable<BookWriteModel> GetValidBookWireteModelsInputs()
+    private static IEnumerable<BookWriteModel> GetValidBookWireteModelsInputs()
     {
         return new[]
         {
@@ -183,15 +256,20 @@ public class BookWriteModelValidationTest
                 title = "test",
                 author = "test",
                 isbn = "000-00-0000-000-0",
-                publicationYear = 0,
+                publicationYear = 1,
                 publisher = "test",
                 edition = 1,
                 pagesNumber = 1,
                 genre = "test",
                 format = 0,
                 observation = "test",
+                synopsis = "test",
+                coverLink = "test",
+                buyLink = "test",
                 readed = true,
-                tags = new() { "test" }
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             }
         };
     }
@@ -222,7 +300,9 @@ public class BookWriteModelValidationTest
                 format = 0,
                 observation = "",
                 readed = true,
-                tags = new() { "" }
+                tags = new() { "" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             //Title
             new BookWriteModel
@@ -238,7 +318,9 @@ public class BookWriteModelValidationTest
                 format = 0,
                 observation = "test",
                 readed = true,
-                tags = new() { "test" }
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             //Author
             new BookWriteModel
@@ -254,7 +336,9 @@ public class BookWriteModelValidationTest
                 format = 0,
                 observation = "test",
                 readed = true,
-                tags = new() { "test" }
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             //ISBN
             new BookWriteModel
@@ -270,7 +354,9 @@ public class BookWriteModelValidationTest
                 format = 0,
                 observation = "test",
                 readed = true,
-                tags = new() { "test" }
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             new BookWriteModel
             {
@@ -285,7 +371,9 @@ public class BookWriteModelValidationTest
                 format = 0,
                 observation = "test",
                 readed = true,
-                tags = new() { "test" }
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             new BookWriteModel
             {
@@ -300,7 +388,9 @@ public class BookWriteModelValidationTest
                 format = 0,
                 observation = "test",
                 readed = true,
-                tags = new() { "test" }
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             //Publication year
             new BookWriteModel
@@ -316,7 +406,9 @@ public class BookWriteModelValidationTest
                 format = 0,
                 observation = "test",
                 readed = true,
-                tags = new() { "test" }
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             //Publisher
             new BookWriteModel
@@ -332,7 +424,9 @@ public class BookWriteModelValidationTest
                 format = 0,
                 observation = "test",
                 readed = true,
-                tags = new() { "test" }
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             new BookWriteModel
             {
@@ -340,14 +434,16 @@ public class BookWriteModelValidationTest
                 author = "test",
                 isbn = "000-00-0000-000-0",
                 publicationYear = 0,
-                publisher = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                publisher = new('a', 101),
                 edition = 1,
                 pagesNumber = 1,
                 genre = "test",
                 format = 0,
                 observation = "test",
                 readed = true,
-                tags = new() { "test" }
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             //Edition
             new BookWriteModel
@@ -363,7 +459,9 @@ public class BookWriteModelValidationTest
                 format = 0,
                 observation = "test",
                 readed = true,
-                tags = new() { "test" }
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             //Page number
             new BookWriteModel
@@ -379,7 +477,9 @@ public class BookWriteModelValidationTest
                 format = 0,
                 observation = "test",
                 readed = true,
-                tags = new() { "test" }
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             new BookWriteModel
             {
@@ -394,7 +494,9 @@ public class BookWriteModelValidationTest
                 format = 0,
                 observation = "test",
                 readed = true,
-                tags = new() { "test" }
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             //Genre
             new BookWriteModel
@@ -406,11 +508,13 @@ public class BookWriteModelValidationTest
                 publisher = "test",
                 edition = 1,
                 pagesNumber = 1,
-                genre = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                genre = new('a', 51),
                 format = 0,
                 observation = "test",
                 readed = true,
-                tags = new() { "test" }
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             //Observation
             new BookWriteModel
@@ -426,7 +530,126 @@ public class BookWriteModelValidationTest
                 format = 0,
                 observation = "",
                 readed = true,
-                tags = new() { "test" }
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
+            },
+            //Synopsis
+            new BookWriteModel
+            {
+                title = "test",
+                author = "test",
+                isbn = "000-00-0000-000-0",
+                publicationYear = 0,
+                publisher = "test",
+                edition = 1,
+                pagesNumber = 1,
+                genre = "test",
+                format = 0,
+                observation = "",
+                synopsis = "",
+                readed = true,
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
+            },
+            new BookWriteModel
+            {
+                title = "test",
+                author = "test",
+                isbn = "000-00-0000-000-0",
+                publicationYear = 0,
+                publisher = "test",
+                edition = 1,
+                pagesNumber = 1,
+                genre = "test",
+                format = 0,
+                observation = "",
+                synopsis = new('a', 501),
+                readed = true,
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
+            },
+            //Cover link
+            new BookWriteModel
+            {
+                title = "test",
+                author = "test",
+                isbn = "000-00-0000-000-0",
+                publicationYear = 0,
+                publisher = "test",
+                edition = 1,
+                pagesNumber = 1,
+                genre = "test",
+                format = 0,
+                observation = "test",
+                synopsis = "test",
+                coverLink = "",
+                readed = true,
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
+            },
+            new BookWriteModel
+            {
+                title = "test",
+                author = "test",
+                isbn = "000-00-0000-000-0",
+                publicationYear = 0,
+                publisher = "test",
+                edition = 1,
+                pagesNumber = 1,
+                genre = "test",
+                format = 0,
+                observation = "test",
+                synopsis = "test",
+                coverLink = new('a', 501),
+                readed = true,
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
+            },
+            //Buy link
+            new BookWriteModel
+            {
+                title = "test",
+                author = "test",
+                isbn = "000-00-0000-000-0",
+                publicationYear = 0,
+                publisher = "test",
+                edition = 1,
+                pagesNumber = 1,
+                genre = "test",
+                format = 0,
+                observation = "test",
+                synopsis = "test",
+                coverLink = "test",
+                buyLink = "",
+                readed = true,
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
+            },
+            new BookWriteModel
+            {
+                title = "test",
+                author = "test",
+                isbn = "000-00-0000-000-0",
+                publicationYear = 0,
+                publisher = "test",
+                edition = 1,
+                pagesNumber = 1,
+                genre = "test",
+                format = 0,
+                observation = "test",
+                synopsis = "test",
+                coverLink = "test",
+                buyLink = new('a', 501),
+                readed = true,
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             //Tags
             new BookWriteModel
@@ -442,7 +665,9 @@ public class BookWriteModelValidationTest
                 format = 0,
                 observation = "test",
                 readed = true,
-                tags = new() { "" }
+                tags = new() { "" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             new BookWriteModel
             {
@@ -457,7 +682,9 @@ public class BookWriteModelValidationTest
                 format = 0,
                 observation = "test",
                 readed = true,
-                tags = new() { "", "" }
+                tags = new() { "", "" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             },
             new BookWriteModel
             {
@@ -472,7 +699,9 @@ public class BookWriteModelValidationTest
                 format = 0,
                 observation = "test",
                 readed = true,
-                tags = new() { "", "", "" }
+                tags = new() { "", "", "" },
+                lastModification = DateTime.Today,
+                createdAt = DateTime.Today
             }
         };
     }

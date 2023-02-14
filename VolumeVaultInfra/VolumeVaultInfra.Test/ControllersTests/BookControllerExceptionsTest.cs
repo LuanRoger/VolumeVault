@@ -44,9 +44,13 @@ public class BookControllerExceptionsTest
         genre = "test",
         format = 0,
         observation = "test",
+        synopsis = "test",
+        coverLink = "test",
+        buyLink = "test",
         readed = true,
         tags = new() { "test" },
         createdAt = DateTime.Today,
+        lastModification = DateTime.Today,
         owner = new()
         {
             id = 1,
@@ -60,15 +64,20 @@ public class BookControllerExceptionsTest
         title = "test",
         author = "test",
         isbn = "000-00-0000-000-0",
-        publicationYear = 0,
+        publicationYear = 1,
         publisher = "test",
         edition = 1,
         pagesNumber = 1,
         genre = "test",
         format = 0,
         observation = "test",
+        synopsis = "test",
+        coverLink = "test",
+        buyLink = "test",
         readed = true,
-        tags = new() { "test" }
+        tags = new() { "test" },
+        lastModification = DateTime.Today,
+        createdAt = DateTime.Today
     };
     private static BookWriteModel invalidBookWriteModelTestDumy => new()
     {
@@ -82,8 +91,13 @@ public class BookControllerExceptionsTest
         genre = "test",
         format = 0,
         observation = "test",
+        synopsis = "test",
+        coverLink = "test",
+        buyLink = "test",
         readed = true,
-        tags = new() { "test" }
+        tags = new() { "test" },
+        lastModification = DateTime.Today,
+        createdAt = DateTime.Today
     };
     private static BookUpdateModel bookUpdateModelTestDumy => new()
     {
@@ -97,6 +111,9 @@ public class BookControllerExceptionsTest
         genre = "changed",
         format = BookFormat.HARDBACK,
         observation = "changed",
+        synopsis = "test",
+        coverLink = "test",
+        buyLink = "test",
         readed = false,
         tags = new() { "changed", "changed" }
     };
@@ -112,6 +129,9 @@ public class BookControllerExceptionsTest
         genre = "changed",
         format = BookFormat.HARDBACK,
         observation = "changed",
+        synopsis = "changed",
+        coverLink = "changed",
+        buyLink = "changed",
         readed = false,
         tags = new() { "changed", "changed" }
     };

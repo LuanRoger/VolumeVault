@@ -71,9 +71,13 @@ public class BookController : IBookController
             genre = book.genre,
             format = book.format,
             observation = book.observation,
+            synopsis = book.synopsis,
+            coverLink = book.coverLink,
+            buyLink = book.buyLink,
             readed = book.readed,
             tags = book.tags,
             createdAt = book.createdAt,
+            lastModification = book.lastModification,
             owner = relatedUser
         };
         BookModel registeredBook = await _bookRepository.AddBook(newBook);
@@ -103,29 +107,7 @@ public class BookController : IBookController
         _logger.Information("Geting results from database.");
         var userBooks = 
             (await _bookRepository.GetUserOwnedBooksSplited(relatedUser.id, page, limitPerPage))
-            .Select(bookModel => new BookReadModel
-            {
-                id = bookModel.id,
-                title = bookModel.title,
-                author = bookModel.author,
-                isbn = bookModel.isbn,
-                publicationYear = bookModel.publicationYear,
-                publisher = bookModel.publisher,
-                edition = bookModel.edition,
-                pagesNumber = bookModel.pagesNumber,
-                genre = bookModel.genre,
-                format = bookModel.format,
-                observation = bookModel.observation,
-                readed = bookModel.readed,
-                tags = bookModel.tags,
-                createdAt = bookModel.createdAt,
-                owner = new()
-                {
-                    id = bookModel.owner.id,
-                    username = bookModel.owner.username,
-                    email = bookModel.owner.email
-                },
-            }).ToList();
+            .Select(BookReadModel.FromBookModel).ToList();
 
         return userBooks;
     }
@@ -180,32 +162,86 @@ public class BookController : IBookController
             throw ex;    
         }
         _logger.Information("Updating book ID[{0}]", book.id);
+        bool hasBeenModified = false;
         
         if(bookUpdate.title is not null)
+        {
             book.title = bookUpdate.title;
+            hasBeenModified = true;
+        }
         if(bookUpdate.author is not null)
+        {
             book.author = bookUpdate.author;
+            hasBeenModified = true;
+        }
         if(bookUpdate.isbn is not null)
+        {
             book.isbn = bookUpdate.isbn;
+            hasBeenModified = true;
+        }
         if(bookUpdate.publicationYear is not null)
+        {
             book.publicationYear = bookUpdate.publicationYear;
+            hasBeenModified = true;
+        }
         if(bookUpdate.publisher is not null)
+        {
             book.publisher = bookUpdate.publisher;
+            hasBeenModified = true;
+        }
         if(bookUpdate.edition is not null)
+        {
             book.edition = bookUpdate.edition;
+            hasBeenModified = true;
+        }
         if(bookUpdate.pagesNumber is not null)
+        {
             book.pagesNumber = bookUpdate.pagesNumber;
+            hasBeenModified = true;
+        }
         if(bookUpdate.genre is not null)
+        {
             book.genre = bookUpdate.genre;
+            hasBeenModified = true;
+        }
         if(bookUpdate.format is not null)
+        {
             book.format = bookUpdate.format;
+            hasBeenModified = true;
+        }
         if(bookUpdate.observation is not null)
+        {
             book.observation = bookUpdate.observation;
+            hasBeenModified = true;
+        }
+        if(bookUpdate.synopsis is not null)
+        {
+            book.synopsis = bookUpdate.synopsis;
+            hasBeenModified = true;
+        }
+        if(bookUpdate.coverLink is not null)
+        {
+            book.coverLink = bookUpdate.coverLink;
+            hasBeenModified = true;
+        }
+        if(bookUpdate.buyLink is not null)
+        {
+            book.buyLink = bookUpdate.buyLink;
+            hasBeenModified = true;
+        }
         if(bookUpdate.readed is not null)
+        {
             book.readed = bookUpdate.readed;
+            hasBeenModified = true;
+        }
         if(bookUpdate.tags is not null)
+        {
             book.tags = bookUpdate.tags;
-        
+            hasBeenModified = true;
+        }
+        if(hasBeenModified)
+            book.lastModification = bookUpdate.lastModification;
+
         await _bookRepository.Flush();
         await _searchRepository.UpdateSearchBook(bookId, BookSearchModel.FromBookModel(book));
         _logger.Information("Book ID[{0}] updated.", book.id);

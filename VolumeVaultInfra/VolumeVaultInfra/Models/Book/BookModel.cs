@@ -48,6 +48,18 @@ public class BookModel
     [Column("Obsevation")]
     public string? observation { get; set; }
     
+    [Column("Synopsis")]
+    [MaxLength(300)]
+    public string? synopsis { get; set; }
+    
+    [Column("CoverLink")]
+    [MaxLength(500)]
+    public string? coverLink { get; set; }
+    
+    [Column("BuyLink")]
+    [MaxLength(500)]
+    public string? buyLink { get; set; }
+    
     [Column("Readed")]
     public bool? readed { get; set; }
     
@@ -56,6 +68,9 @@ public class BookModel
     
     [Column("CreatedAt")]
     public required DateTime createdAt { get; set; }
+    
+    [Column("LastModification")]
+    public required DateTime lastModification { get; set; } 
     
     [Column("Owner")]
     public required UserModel owner { get; set; }

@@ -45,6 +45,7 @@ public class BookControllerTest
         readed = true,
         tags = new() { "test" },
         createdAt = DateTime.Today,
+        lastModification = DateTime.Today,
         owner = new()
         {
             id = 1,
@@ -58,7 +59,7 @@ public class BookControllerTest
         title = "test",
         author = "test",
         isbn = "000-00-0000-000-0",
-        publicationYear = 0,
+        publicationYear = 1,
         publisher = "test",
         edition = 1,
         pagesNumber = 1,
@@ -66,7 +67,12 @@ public class BookControllerTest
         format = 0,
         observation = "test",
         readed = true,
-        tags = new() { "test" }
+        tags = new()
+        {
+            "test"
+        },
+        createdAt = DateTime.Today,
+        lastModification = DateTime.Today
     };
     private static BookUpdateModel bookUpdateModelTestDumy => new()
     {
@@ -80,8 +86,12 @@ public class BookControllerTest
         genre = "changed",
         format = BookFormat.HARDBACK,
         observation = "changed",
+        synopsis = "changed",
+        coverLink = "changed",
+        buyLink = "changed",
         readed = false,
-        tags = new() { "changed", "changed" }
+        tags = new() { "changed", "changed" },
+        lastModification = DateTime.Now
     };
     private static UserModel userModelTestDumy => new()
     {
@@ -124,6 +134,7 @@ public class BookControllerTest
                 readed = true,
                 tags = new() { "test" },
                 createdAt = DateTime.Today,
+                lastModification = DateTime.Today,
                 owner = new()
                 {
                     id = 1,
@@ -151,6 +162,7 @@ public class BookControllerTest
                 readed = true,
                 tags = new() { "test" },
                 createdAt = DateTime.Today,
+                lastModification = DateTime.Today,
                 ownerId = 1
             };
     }
@@ -192,6 +204,22 @@ public class BookControllerTest
          
          Assert.All(result, searchBook => Assert.Equal(userId, searchBook.owner.id));
     }
+    [Fact]
+    public async void SearchBookThatIsNotInMainDbTest()
+    {
+        List<BookSearchModel> searchResult = GenerateDumySearchResult(count: 3).ToList();
+        const int userId = 1;
+        
+        _bookRepository.Setup(ex => ex.GetBookById(It.IsAny<int>()))
+            .ReturnsAsync(() => null);
+        _bookSearchRepository.Setup(ex => ex.SearchBook(userId, 
+            It.IsAny<string>())).ReturnsAsync(searchResult);
+        
+        var result = await _bookController
+            .SearchBookParameters(1, "anySearch");
+         
+        Assert.Empty(result);
+    }
     
     [Fact]
     public async void UpdateBookTest()
@@ -220,6 +248,39 @@ public class BookControllerTest
         Assert.Equal(book.observation, bookUpdate.observation);
         Assert.Equal(book.readed, bookUpdate.readed);
         Assert.Equal(book.tags, bookUpdate.tags);
+        Assert.Equal(book.lastModification, bookUpdate.lastModification);
+    }
+    [Fact]
+    public async void UpdateEmptyRequestTest()
+    {
+        UserModel user = userModelTestDumy;
+        BookModel book = bookModelTestDumy;
+        book.owner = user;
+        BookUpdateModel bookUpdate = new()
+        {
+            lastModification = DateTime.Now
+        };
+        
+        _userRepository.Setup(ex => ex.GetUserById(It.IsAny<int>()))
+            .ReturnsAsync(user);
+        _bookRepository.Setup(ex => ex.GetBookById(1))
+            .ReturnsAsync(book);
+        
+        await _bookController.UpdateBook(user.id, book.id, bookUpdate);
+        
+        Assert.NotEqual(book.title, bookUpdate.title);
+        Assert.NotEqual(book.author, bookUpdate.author);
+        Assert.NotEqual(book.isbn, bookUpdate.isbn);
+        Assert.NotEqual(book.publicationYear, bookUpdate.publicationYear);
+        Assert.NotEqual(book.publisher, bookUpdate.publisher);
+        Assert.NotEqual(book.edition, bookUpdate.edition);
+        Assert.NotEqual(book.pagesNumber, bookUpdate.pagesNumber);
+        Assert.NotEqual(book.genre, bookUpdate.genre);
+        Assert.NotEqual(book.format, bookUpdate.format);
+        Assert.NotEqual(book.observation, bookUpdate.observation);
+        Assert.NotEqual(book.readed, bookUpdate.readed);
+        Assert.NotEqual(book.tags, bookUpdate.tags);
+        Assert.NotEqual(book.lastModification, bookUpdate.lastModification);
     }
     
     [Fact]
