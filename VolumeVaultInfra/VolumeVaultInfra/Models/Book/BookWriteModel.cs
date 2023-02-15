@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using VolumeVaultInfra.Models.Enums;
+﻿using VolumeVaultInfra.Models.Enums;
 
 namespace VolumeVaultInfra.Models.Book;
 

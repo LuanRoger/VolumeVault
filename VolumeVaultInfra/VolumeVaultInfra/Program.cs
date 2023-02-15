@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using Serilog;
 using VolumeVaultInfra.Context;
@@ -18,14 +19,24 @@ using VolumeVaultInfra.Utils;
 using VolumeVaultInfra.Validators;
 using ILogger = Serilog.ILogger;
 using Prometheus;
-using VolumeVaultInfra.Middlewares;
+using VolumeVaultInfra.Filters;
 using VolumeVaultInfra.Services;
 using VolumeVaultInfra.Services.Metrics;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("API Key", new()
+    {
+        Description = "API Key for login and sigin requests",
+        Type = SecuritySchemeType.ApiKey,
+        Name = ProgramConsts.API_KEY_REQUEST_HEADER,
+        In = ParameterLocation.Header,
+        Scheme = "ApiKeyScheme"
+    });
+});
 
 CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
@@ -165,7 +176,6 @@ app.UseRouting();
 
 app.UseHttpMetrics();
 
-app.UseMiddleware<ApiKeyMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -176,7 +186,10 @@ app.UseEndpoints(endpointOptions => endpointOptions.MapMetrics());
 #endregion
 
 #region UserEndpoint
-app.MapPost("auth/signin", 
+// The user endpoint use the API Key filter to authenticate, this is to eliminate anonymous request.
+// Just validate requests from trusted clients.
+
+app.MapPost("auth/signin",
     async ([FromServices] IUserController userController,
     [FromBody] UserWriteModel userWrite) =>
 {
@@ -195,8 +208,9 @@ app.MapPost("auth/signin",
     }
     
     return Results.Ok(jwt);
-});
-app.MapGet("auth/login", 
+})
+    .AddEndpointFilter<ApiKeyFilter>();
+app.MapGet("auth/login",
     async ([FromServices] IUserController userController,
     [FromBody] UserLoginRequestModel loginRequest) =>
 {
@@ -215,7 +229,8 @@ app.MapGet("auth/login",
     }
     
     return Results.Ok(jwt);
-});
+})
+    .AddEndpointFilter<ApiKeyFilter>();
 #endregion
 
 #region BooksEndpoint
