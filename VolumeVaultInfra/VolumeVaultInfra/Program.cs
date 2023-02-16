@@ -19,6 +19,7 @@ using VolumeVaultInfra.Utils;
 using VolumeVaultInfra.Validators;
 using ILogger = Serilog.ILogger;
 using Prometheus;
+using VolumeVaultInfra.Endpoints;
 using VolumeVaultInfra.Filters;
 using VolumeVaultInfra.Services;
 using VolumeVaultInfra.Services.Metrics;
@@ -188,172 +189,17 @@ app.UseEndpoints(endpointOptions => endpointOptions.MapMetrics());
 #region UserEndpoint
 // The user endpoint use the API Key filter to authenticate, this is to eliminate anonymous request.
 // Just validate requests from trusted clients.
-
-app.MapPost("auth/signin",
-    async ([FromServices] IUserController userController,
-    [FromBody] UserWriteModel userWrite) =>
-{
-    string jwt;
-    try
-    {
-        jwt = await userController.SigninUser(userWrite);
-    }
-    catch(UserAlreadyExistException e)
-    {
-        return Results.Conflict(e.Message);
-    }
-    catch(NotValidUserWriteException e)
-    {
-        return Results.BadRequest(e.Message);
-    }
-    
-    return Results.Ok(jwt);
-})
+RouteGroupBuilder authGroup = app.MapGroup("auth")
+    .WithTags("auth")
     .AddEndpointFilter<ApiKeyFilter>();
-app.MapGet("auth/login",
-    async ([FromServices] IUserController userController,
-    [FromBody] UserLoginRequestModel loginRequest) =>
-{
-    string jwt;
-    try
-    {
-        jwt = await userController.LoginUser(loginRequest);
-    }
-    catch(UsernameIsNotRegisteredException e)
-    {
-        return Results.NotFound(e.Message);
-    }
-    catch(InvalidUserCredentialsException)
-    {
-        return Results.Unauthorized();
-    }
-    
-    return Results.Ok(jwt);
-})
-    .AddEndpointFilter<ApiKeyFilter>();
+authGroup.MapAuthEndpoints();
 #endregion
 
 #region BooksEndpoint
-app.MapGet("books", 
-    async (HttpContext context, 
-        [FromQuery] int page, 
-        [FromQuery] int? limitPerPage,
-        [FromServices] IBookController bookController) =>
-{
-   int idClaim = int.Parse(context.User.Claims
-       .First(claim => claim.Type == "ID").Value);
-   
-   List<BookReadModel> userBooks;
-   try
-   {
-       userBooks = await bookController.GetAllUserReleatedBooks(idClaim, page, limitPerPage ?? 10);
-   }
-   catch(UserNotFoundException e)
-   {
-       return Results.BadRequest(e.Message);
-   }
-
-   return Results.Ok(userBooks);
-}).RequireAuthorization(policyBuilder =>
-    {
-        policyBuilder.RequireClaim("ID");
-    });
-app.MapGet("books/search", 
-    async (HttpContext context, 
-        [FromQuery] string query,
-        [FromServices] IBookController bookController) =>
-{
-    int idClaim = int.Parse(context.User.Claims
-        .First(claim => claim.Type == "ID").Value);
-    
-    List<BookReadModel> searchResult;
-    try
-    {
-        searchResult = await bookController.SearchBookParameters(idClaim, query);
-    }
-    catch(Exception e)
-    {
-        return Results.BadRequest(e.Message);
-    }
-    
-    return Results.Ok(searchResult);
-}).RequireAuthorization(policyBuilder =>
-{
-    policyBuilder.RequireClaim("ID");
-});
-app.MapPost("books", 
-    async (HttpContext context, 
-        [FromBody] BookWriteModel bookWriteInfo, 
-        [FromServices] IBookController bookController) =>
-    {
-        int idClaim = int.Parse(context.User.Claims
-            .First(claim => claim.Type == "ID").Value);
-    
-        try
-        {
-            await bookController.RegisterNewBook(idClaim, bookWriteInfo);
-        }
-        catch(Exception e) when (e is UserNotFoundException or NotValidBookInformationException)
-        {
-            return Results.BadRequest(e.Message);
-        }
-     
-        return Results.Ok();
-    }).RequireAuthorization(policyBuilder =>
-{
-    policyBuilder.RequireClaim("ID");
-});
-app.MapDelete("books/{id:int}", 
-    async (HttpContext context, 
-        int id, 
-        [FromServices] IBookController bookController) =>
-{
-    int idClaim = int.Parse(context.User.Claims
-        .First(claim => claim.Type == "ID").Value);
-    
-    try
-    {
-       await bookController.DeleteBook(idClaim, id);
-    }
-    catch(Exception e) when (e is UserNotFoundException or BookNotFoundException)
-    {
-        return Results.BadRequest(e.Message);
-    }
-    catch(NotOwnerBookException)
-    {
-        return Results.Unauthorized();
-    }
-    
-    return Results.Ok();
-}).RequireAuthorization(policyBuilder =>
-    {
-        policyBuilder.RequireClaim("ID");
-    });
-app.MapPut("books/{id:int}", 
-    async (HttpContext context,
-        int id,
-        [FromServices] IBookController bookController,
-        [FromBody] BookUpdateModel bookUpdate) => 
-{
-    int idClaim = int.Parse(context.User.Claims
-        .First(claim => claim.Type == "ID").Value);
-        
-    try
-    {
-        await bookController.UpdateBook(idClaim, id, bookUpdate);
-    }
-    catch(Exception e) when (e is UserNotFoundException or 
-                                 BookNotFoundException or 
-                                 NotValidBookInformationException)
-    {
-        return Results.BadRequest(e.Message);
-    }
-        
-    return Results.Ok();
-}).RequireAuthorization(policyBuilder =>
-    {
-        policyBuilder.RequireClaim("ID");
-    });
+RouteGroupBuilder bookGroup = app.MapGroup("book")
+    .WithTags("book")
+    .RequireAuthorization(policyBuilder => { policyBuilder.RequireClaim("ID"); });
+bookGroup.MapBookEndpoints();
 #endregion
 
 app.Run();
