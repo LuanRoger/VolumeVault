@@ -36,8 +36,7 @@ public class BookController : IBookController
         _logger = logger;
     }
     
-    //TODO: Return the new book
-    public async Task RegisterNewBook(int userId, BookWriteModel book)
+    public async Task<BookReadModel> RegisterNewBook(int userId, BookWriteModel book)
     {
         ValidationResult validationResult = await _bookWriteModelValidator.ValidateAsync(book);
         if(!validationResult.IsValid)
@@ -88,6 +87,8 @@ public class BookController : IBookController
         _metrics.IncreaseRegisteredBooks();
         if(registeredBook.pagesNumber is not null) _metrics.ObserverBookPageNumber(registeredBook.pagesNumber);
         _logger.Information("Book [{0}] registered sucessfully.", registeredBook.id);
+        
+        return BookReadModel.FromBookModel(registeredBook);
     }
 
     public async Task<List<BookReadModel>> GetAllUserReleatedBooks(int userId, int page, int limitPerPage)
@@ -247,8 +248,7 @@ public class BookController : IBookController
         _logger.Information("Book ID[{0}] updated.", book.id);
     }
     
-    //TODO: Return the ID of the deleted book
-    public async Task DeleteBook(int userId, int bookId)
+    public async Task<int> DeleteBook(int userId, int bookId)
     {
         UserModel? relatedUser = await _userRepository.GetUserById(userId);
         if(relatedUser is null)
@@ -279,5 +279,7 @@ public class BookController : IBookController
         
         _metrics.DecreaseExsistingBooks();
         _logger.Information("Book ID[{0}] deleted.", book.id);
+        
+        return deletedBook.id;
     }
 }
