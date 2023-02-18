@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
 import 'package:volume_vault/pages/home_page/sections/bookmark_section.dart';
 import 'package:volume_vault/pages/home_page/sections/home_section.dart';
+import 'package:volume_vault/shared/fake_models.dart';
 
 class HomePage extends HookWidget {
   const HomePage({super.key});
@@ -11,12 +12,14 @@ class HomePage extends HookWidget {
     switch (index) {
       case 0:
         return HomeSection(
+          books: List.generate(50, (index) => fakeBookModel),
           viewType: VisualizationType.LIST,
         );
       case 1:
         return const BookmarkSection();
       default:
         return HomeSection(
+          books: List.generate(50, (index) => fakeBookModel),
           viewType: VisualizationType.LIST,
         );
     }
@@ -41,6 +44,8 @@ class HomePage extends HookWidget {
               label: "Marcadores",
             ),
           ]),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {}, child: const Icon(Icons.edit_rounded)),
     );
   }
 }
