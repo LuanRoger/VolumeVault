@@ -1,0 +1,1 @@
+enum BookFormat { HARDCOVER, HARDBACK, PAPERBACK, EBOOK }

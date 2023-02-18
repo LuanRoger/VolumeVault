@@ -1,0 +1,1 @@
+enum VisualizationType { LIST, GRID }
