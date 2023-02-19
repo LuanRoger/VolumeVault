@@ -22,4 +22,5 @@ BookModel fakeBookModel = BookModel(
     readed: true,
     createdAt: DateTime.now(),
     lastModification: DateTime.now(),
+    tags: ["Magia", "Amizade", "Inspiração"],
     owner: fakeUserModel);
