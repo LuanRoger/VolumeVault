@@ -45,6 +45,7 @@ dependencies:
   url_launcher: ^6.1.9
   eeffects: ^0.0.3
   intl: ^0.18.0
+  flutter_animate: ^4.0.0
 
 dev_dependencies:
   flutter_test:

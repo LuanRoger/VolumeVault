@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:volume_vault/models/book_model.dart';
@@ -15,9 +16,56 @@ class BookInfoViewerPage extends StatelessWidget {
   const BookInfoViewerPage(this.book, {super.key});
 
   Future<Color?> getColorFromImage(ImageProvider image) async {
-    final PaletteGenerator palette =
-        await PaletteGenerator.fromImageProvider(image);
-    return palette.dominantColor?.color;
+    try {
+      final PaletteGenerator palette =
+          await PaletteGenerator.fromImageProvider(image);
+      return palette.dominantColor?.color;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<Widget> _buildCoverShowcase(String coverLink,
+      {required Size screenSize, required BuildContext context}) async {
+    if (coverLink.isEmpty) return const SizedBox();
+    NetworkImage coverImage = NetworkImage(coverLink);
+
+    await precacheImage(coverImage, context);
+    Color? dominantColor = await getColorFromImage(coverImage);
+
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        if (dominantColor != null)
+          Animate(
+            effects: const [
+              ScaleEffect(
+                  duration: Duration(seconds: 1), curve: Curves.easeOutCirc)
+            ],
+            child: RadialLight(250 * 1.2, screenSize.width,
+                radius: 100, colors: [dominantColor]),
+          ),
+        Container(
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15.0),
+            border: Border.all(width: 0.5),
+          ),
+          height: 250,
+          width: 175,
+          child: Image(
+            image: coverImage,
+            fit: BoxFit.scaleDown,
+            errorBuilder: (_, __, ___) =>
+                const Icon(Icons.image_not_supported_rounded),
+          ),
+        ).animate(effects: const [
+          FadeEffect(
+              curve: Curves.easeInOutQuart,
+              duration: Duration(milliseconds: 500))
+        ]),
+      ],
+    );
   }
 
   void launchBuyPage(String buyPageLink) async {
@@ -43,34 +91,24 @@ class BookInfoViewerPage extends StatelessWidget {
         child: SingleChildScrollView(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                if (book.coverLink != null)
-                  FutureBuilder(
-                    future: getColorFromImage(NetworkImage(book.coverLink!)),
-                    builder: (_, snapshot) {
-                      final Color? dominantColor = snapshot.data;
-                      if (dominantColor == null) return const SizedBox();
-                      return RadialLight(250 * 1.2, size.width,
-                          radius: 100, colors: [dominantColor]);
-                    },
-                  ),
-                Container(
-                  clipBehavior: Clip.hardEdge,
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(15.0)),
-                  height: 250,
-                  width: 175,
-                  child: Image.network(
-                    book.coverLink!,
-                    fit: BoxFit.scaleDown,
-                    errorBuilder: (_, __, ___) =>
-                        const Icon(Icons.image_not_supported_rounded),
-                  ),
-                ),
-              ],
-            ),
+                if(book.coverLink != null)
+            SizedBox(
+                height: 250 * 1.2,
+                width: size.width,
+                child: FutureBuilder(
+                  future: _buildCoverShowcase(book.coverLink!,
+                      screenSize: size, context: context),
+                  builder: (_, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasError || !snapshot.hasData) {
+                      return const SizedBox();
+                    }
+
+                    return snapshot.data!;
+                  },
+                )),
             Align(
               alignment: Alignment.center,
               child: Column(
