@@ -41,6 +41,10 @@ dependencies:
   freezed: ^2.3.2
   responsive_framework: ^0.2.0
   google_fonts: ^4.0.3
+  palette_generator: ^0.3.3+2
+  url_launcher: ^6.1.9
+  eeffects: ^0.0.3
+  intl: ^0.18.0
 
 dev_dependencies:
   flutter_test:
