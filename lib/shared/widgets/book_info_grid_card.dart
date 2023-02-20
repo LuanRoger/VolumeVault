@@ -13,55 +13,59 @@ class BookInfoGridCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onPressed,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              if (bookModel.coverLink != null)
+                Image.network(
+                  bookModel.coverLink!,
+                  fit: BoxFit.contain,
+                ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    bookModel.coverLink != null
-                        ? Image.network(
-                            bookModel.coverLink!,
-                            fit: BoxFit.contain,
-                          )
-                        : const SizedBox(),
-                    Text(
-                      bookModel.title,
-                      style: Theme.of(context).textTheme.titleMedium,
-                      overflow: TextOverflow.clip,
-                    ),
-                    Text(
-                      "${bookModel.author} - ${bookModel.publicationYear.toString()}",
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    bookModel.publisher != null
-                        ? Text(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          bookModel.title,
+                          style: Theme.of(context).textTheme.headlineLarge,
+                          overflow: TextOverflow.clip,
+                        ),
+                        Text(
+                          "${bookModel.author} - ${bookModel.publicationYear.toString()}",
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                        if (bookModel.publisher != null)
+                          Text(
                             "ed. ${bookModel.publisher!}",
                             style: Theme.of(context).textTheme.headlineSmall,
-                          )
-                        : const SizedBox(),
+                          ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          bookModel.isbn,
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                        bookModel.pagesNumber != null
+                            ? Text("p. ${bookModel.pagesNumber}",
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall)
+                            : const SizedBox(),
+                      ],
+                    )
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      bookModel.isbn,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    bookModel.pagesNumber != null
-                        ? Text("p. ${bookModel.pagesNumber}",
-                            style: Theme.of(context).textTheme.headlineSmall)
-                        : const SizedBox(),
-                  ],
-                )
-              ]),
-        ),
+              ),
+            ]),
       ),
     );
   }
