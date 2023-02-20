@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.volume_vault">
+    <uses-permission android:name="android.permission.INTERNET" />
    <application
         android:label="volume_vault"
         android:name="${applicationName}"
