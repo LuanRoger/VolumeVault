@@ -51,7 +51,7 @@ class HomePage extends HookWidget {
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         closedBuilder: (_, open) => FloatingActionButton(
             onPressed: open, child: const Icon(Icons.add_rounded)),
-        openBuilder: (_, __) => const RegisterBookPage(),
+        openBuilder: (_, __) => RegisterBookPage(),
       ),
     );
   }

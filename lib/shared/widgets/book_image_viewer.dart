@@ -8,7 +8,11 @@ class BookImageViewer extends StatelessWidget {
   final double _height = 250.0;
   final double _width = 175.0;
 
-  BookImageViewer({super.key, required this.image, this.sizeMultiplier = 1, this.borderWidth = 0.5});
+  BookImageViewer(
+      {super.key,
+      required this.image,
+      this.sizeMultiplier = 1,
+      this.borderWidth = 0.5});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +26,7 @@ class BookImageViewer extends StatelessWidget {
       width: _width * sizeMultiplier,
       child: Image(
         image: image,
-        fit: BoxFit.scaleDown,
+        fit: BoxFit.cover,
         errorBuilder: (_, __, ___) =>
             const Icon(Icons.image_not_supported_rounded),
       ),

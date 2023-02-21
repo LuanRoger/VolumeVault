@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 class BottomSheet {
   List<Widget> items;
   double padding;
-  Widget? action;
+  Widget Function(BuildContext)? action;
   bool dragable;
+  void Function()? onClose;
 
   BottomSheet(
       {required this.items,
       this.action,
       this.padding = 8.0,
-      this.dragable = false});
+      this.dragable = false,
+      this.onClose});
 
   Future show(BuildContext context) {
     return showModalBottomSheet(
@@ -30,10 +32,13 @@ class BottomSheet {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () {
+                            onClose?.call();
+                            Navigator.pop(context);
+                          },
                           icon: const Icon(Icons.close_rounded)),
                       if (dragable) const _DragIndicator(),
-                      action ?? const SizedBox(),
+                      action?.call(context) ?? const SizedBox(),
                     ],
                   ),
                   const SizedBox(height: 15),

@@ -4,14 +4,20 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:volume_vault/models/enums/book_format.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
+import 'package:volume_vault/shared/validators/text_field_validator.dart';
 import 'package:volume_vault/shared/widgets/book_image_viewer.dart';
 import 'package:volume_vault/shared/widgets/bottom_sheet.dart';
 
 class RegisterBookPage extends HookWidget {
-  const RegisterBookPage({super.key});
+  final _bookInfoFormKey = GlobalKey<FormState>();
+  final _publisherInfoFormKey = GlobalKey<FormState>();
+  final _aditionalInfoFormKey = GlobalKey<FormState>();
+
+  RegisterBookPage({super.key});
 
   void _showImageCoverDialog(
       BuildContext context, TextEditingController coverTextController) {
+    String coverTextOldMemento = coverTextController.text;
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -30,107 +36,202 @@ class RegisterBookPage extends HookWidget {
                       border: UnderlineInputBorder())),
               actions: [
                 TextButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () {
+                      coverTextController.text = coverTextOldMemento;
+                      Navigator.pop(context);
+                    },
                     child: const Text("Cancelar")),
-                TextButton(onPressed: () {}, child: const Text("Aceitar"))
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("Aceitar"))
               ],
             ));
   }
 
-  void _showBookInfoModal(BuildContext context) {
+  void validateAndPop(BuildContext context, GlobalKey<FormState> formKey) {
+    bool allGood = formKey.currentState!.validate();
+    if (allGood) Navigator.pop(context);
+  }
+
+  void _showBookInfoModal(BuildContext context,
+      {TextEditingController? titleController,
+      TextEditingController? authorController,
+      TextEditingController? isbnController}) {
     final isbnInputFormater = MaskTextInputFormatter(
         mask: "###-##-####-###-#", type: MaskAutoCompletionType.eager);
 
+    String titleMemento = titleController?.text ?? "";
+    String authorMemento = authorController?.text ?? "";
+    String isbnMemento = isbnController?.text ?? "";
+
     BottomSheet(
-      action: FilledButton(onPressed: () {}, child: const Text("Salvar")),
+      action: (context) => FilledButton(
+          onPressed: () => validateAndPop(context, _bookInfoFormKey),
+          child: const Text("Salvar")),
+      onClose: () {
+        titleController?.text = titleMemento;
+        authorController?.text = authorMemento;
+        isbnController?.text = isbnMemento;
+      },
       items: [
-        TextFormField(
-          decoration: const InputDecoration(labelText: "Titulo *"),
-        ),
-        const SizedBox(height: 15),
-        TextFormField(
-          decoration: const InputDecoration(labelText: "Autor *"),
-        ),
-        const SizedBox(height: 15),
-        TextFormField(
-          decoration: const InputDecoration(labelText: "ISBN *"),
-          inputFormatters: [isbnInputFormater],
+        Form(
+          key: _bookInfoFormKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: titleController,
+                validator: mandatoryNotEmpty,
+                decoration: const InputDecoration(labelText: "Titulo *"),
+              ),
+              const SizedBox(height: 15),
+              TextFormField(
+                controller: authorController,
+                validator: mandatoryNotEmpty,
+                decoration: const InputDecoration(labelText: "Autor *"),
+              ),
+              const SizedBox(height: 15),
+              TextFormField(
+                controller: isbnController,
+                validator: mandatoryNotEmptyExactLenght17,
+                decoration: const InputDecoration(labelText: "ISBN *"),
+                inputFormatters: [isbnInputFormater],
+              ),
+            ],
+          ),
         ),
       ],
     ).show(context);
   }
 
-  void _showPublisherInfoModal(BuildContext context) {
+  void _showPublisherInfoModal(BuildContext context,
+      {TextEditingController? publisherController,
+      TextEditingController? publishYearController,
+      TextEditingController? editionController}) {
+    String publisherMemento = publisherController?.text ?? "";
+    String publishYearMemento = publishYearController?.text ?? "";
+    String editionMemento = editionController?.text ?? "";
+
     BottomSheet(
-      action: FilledButton(onPressed: () {}, child: const Text("Salvar")),
+      action: (context) => FilledButton(
+          onPressed: () => validateAndPop(context, _publisherInfoFormKey),
+          child: const Text("Salvar")),
+      onClose: () {
+        publisherController?.text = publisherMemento;
+        publishYearController?.text = publishYearMemento;
+        editionController?.text = editionMemento;
+      },
       items: [
-        TextFormField(
-          decoration: const InputDecoration(labelText: "Ano de publicação"),
-          keyboardType: TextInputType.number,
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        ),
-        const SizedBox(height: 15),
-        TextFormField(
-          decoration: const InputDecoration(labelText: "Edição"),
-          keyboardType: TextInputType.number,
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        ),
-        const SizedBox(height: 15),
-        TextFormField(
-          maxLength: 100,
-          maxLines: 1,
-          decoration: const InputDecoration(labelText: "Editora"),
+        Form(
+          key: _publisherInfoFormKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: publisherController,
+                validator: maximumLenght100,
+                maxLength: 100,
+                maxLines: 1,
+                decoration: const InputDecoration(labelText: "Editora"),
+              ),
+              const SizedBox(height: 15),
+              TextFormField(
+                controller: publishYearController,
+                validator: greaterThanOrEqualTo1,
+                decoration:
+                    const InputDecoration(labelText: "Ano de publicação"),
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              ),
+              const SizedBox(height: 15),
+              TextFormField(
+                controller: editionController,
+                validator: greaterThanOrEqualTo1,
+                decoration: const InputDecoration(labelText: "Edição"),
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              ),
+            ],
+          ),
         ),
       ],
     ).show(context);
   }
 
-  void _showAditionalInfoModal(BuildContext context) {
+  void _showAditionalInfoModal(BuildContext context,
+      {BookFormat? bookFormat,
+      TextEditingController? pageNumbController,
+      TextEditingController? genreController,
+      TextEditingController? buyLinkController}) {
+    String pageNumbMemento = pageNumbController?.text ?? "";
+    String genreMemento = genreController?.text ?? "";
+    String buyLinkMemento = buyLinkController?.text ?? "";
+
     BottomSheet(
-      action: FilledButton(onPressed: () {}, child: const Text("Salvar")),
+      action: (context) => FilledButton(
+        onPressed: () => validateAndPop(context, _aditionalInfoFormKey),
+        child: const Text("Salvar"),
+      ),
+      onClose: () {
+        pageNumbController?.text = pageNumbMemento;
+        genreController?.text = genreMemento;
+        buyLinkController?.text = buyLinkMemento;
+      },
       items: [
-        DropdownButtonFormField(
-          value: BookFormat.HARDCOVER,
-          items: [
-            DropdownMenuItem(
-              value: BookFormat.HARDCOVER,
-              child: Text(BookFormat.HARDCOVER.name),
-            ),
-            DropdownMenuItem(
-              value: BookFormat.HARDBACK,
-              child: Text(BookFormat.HARDBACK.name),
-            ),
-            DropdownMenuItem(
-              value: BookFormat.PAPERBACK,
-              child: Text(BookFormat.PAPERBACK.name),
-            ),
-            DropdownMenuItem(
-              value: BookFormat.EBOOK,
-              child: Text(BookFormat.EBOOK.name),
-            )
-          ],
-          onChanged: (selectedValue) {},
-        ),
-        const SizedBox(height: 15),
-        TextFormField(
-          decoration: const InputDecoration(labelText: "N° de páginas"),
-          keyboardType: TextInputType.number,
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        ),
-        const SizedBox(height: 15),
-        TextFormField(
-          maxLength: 50,
-          maxLines: 1,
-          decoration: const InputDecoration(labelText: "Genero"),
-          enableSuggestions: true,
-          autocorrect: true,
-          enableIMEPersonalizedLearning: true,
-        ),
-        const SizedBox(height: 15),
-        TextFormField(
-          decoration: const InputDecoration(labelText: "Link de compra"),
-          maxLength: 500,
-          maxLines: 1,
+        Form(
+          key: _aditionalInfoFormKey,
+          child: Column(
+            children: [
+              DropdownButtonFormField(
+                value: bookFormat,
+                validator: null,
+                items: [
+                  DropdownMenuItem(
+                    value: BookFormat.HARDCOVER,
+                    child: Text(BookFormat.HARDCOVER.name),
+                  ),
+                  DropdownMenuItem(
+                    value: BookFormat.HARDBACK,
+                    child: Text(BookFormat.HARDBACK.name),
+                  ),
+                  DropdownMenuItem(
+                    value: BookFormat.PAPERBACK,
+                    child: Text(BookFormat.PAPERBACK.name),
+                  ),
+                  DropdownMenuItem(
+                    value: BookFormat.EBOOK,
+                    child: Text(BookFormat.EBOOK.name),
+                  )
+                ],
+                onChanged: (newValue) => bookFormat = newValue,
+              ),
+              const SizedBox(height: 15),
+              TextFormField(
+                controller: pageNumbController,
+                validator: greaterThanOrEqualTo1,
+                decoration: const InputDecoration(labelText: "N° de páginas"),
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              ),
+              const SizedBox(height: 15),
+              TextFormField(
+                controller: genreController,
+                validator: maximumLenght50,
+                maxLength: 50,
+                maxLines: 1,
+                decoration: const InputDecoration(labelText: "Genero"),
+                enableSuggestions: true,
+                autocorrect: true,
+                enableIMEPersonalizedLearning: true,
+              ),
+              const SizedBox(height: 15),
+              TextFormField(
+                controller: buyLinkController,
+                validator: maximumLenght500,
+                decoration: const InputDecoration(labelText: "Link de compra"),
+                maxLength: 500,
+                maxLines: 1,
+              ),
+            ],
+          ),
         ),
       ],
     ).show(context);
@@ -139,8 +240,24 @@ class RegisterBookPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final coverUrlController = useTextEditingController();
+
+    final titleController = useTextEditingController();
+    final authorController = useTextEditingController();
+    final isbnController = useTextEditingController();
+
+    final editionController = useTextEditingController();
+    final publishYearController = useTextEditingController();
+    final publisherController = useTextEditingController();
+
+    final bookFormatState = useState<BookFormat>(BookFormat.HARDCOVER);
+    final buyLinkController = useTextEditingController();
+    final genreController = useTextEditingController();
+    final pageNumbController = useTextEditingController();
+
     final observationController = useTextEditingController();
     final synopsisController = useTextEditingController();
+
+    final readedState = useState(false);
 
     return Scaffold(
       appBar: AppBar(),
@@ -154,7 +271,8 @@ class RegisterBookPage extends HookWidget {
                 child: GestureDetector(
                     onTap: () =>
                         _showImageCoverDialog(context, coverUrlController),
-                    child: BookImageViewer(image: const NetworkImage("")))),
+                    child: BookImageViewer(
+                        image: NetworkImage(coverUrlController.text)))),
             const SizedBox(height: 5.0),
             Text(
               "Seções que tem \"*\" possuem campos obrigatorios",
@@ -171,19 +289,31 @@ class RegisterBookPage extends HookWidget {
                   leading: const Icon(Icons.book_rounded),
                   title: const Text("Informações do livro *"),
                   trailing: const Icon(Icons.navigate_next_rounded),
-                  onTap: () => _showBookInfoModal(context),
+                  onTap: () => _showBookInfoModal(context,
+                      titleController: titleController,
+                      authorController: authorController,
+                      isbnController: isbnController),
                 ),
                 ListTile(
                   leading: const Icon(Icons.business_rounded),
                   title: const Text("Informações da editora"),
                   trailing: const Icon(Icons.navigate_next_rounded),
-                  onTap: () => _showPublisherInfoModal(context),
+                  onTap: () => _showPublisherInfoModal(context,
+                      publisherController: publisherController,
+                      publishYearController: publishYearController,
+                      editionController: editionController),
                 ),
                 ListTile(
                   leading: const Icon(Icons.info_rounded),
                   title: const Text("Informações adicionais"),
                   trailing: const Icon(Icons.navigate_next_rounded),
-                  onTap: () => _showPublisherInfoModal(context),
+                  onTap: () => _showAditionalInfoModal(
+                    context,
+                    bookFormat: bookFormatState.value,
+                    buyLinkController: buyLinkController,
+                    genreController: genreController,
+                    pageNumbController: pageNumbController,
+                  ),
                 ),
                 ListTile(
                   leading: const Icon(Icons.text_snippet_rounded),
@@ -197,9 +327,12 @@ class RegisterBookPage extends HookWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text("Lido"),
-                    Switch(value: true, onChanged: (newValue) {}),
+                    Switch(
+                        value: readedState.value,
+                        onChanged: (newValue) => readedState.value = newValue),
                   ],
                 ),
+                ElevatedButton(onPressed: () {}, child: const Text("Confirmar"))
               ],
             )
           ]),
