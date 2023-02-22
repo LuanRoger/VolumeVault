@@ -34,24 +34,26 @@ class BookInfoViewerPage extends StatelessWidget {
     await precacheImage(coverImage, context);
     Color? dominantColor = await getColorFromImage(coverImage);
 
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        if (dominantColor != null)
-          Animate(
-            effects: const [
-              ScaleEffect(
-                  duration: Duration(seconds: 1), curve: Curves.easeOutCirc)
-            ],
-            child: RadialLight(250 * 1.2, screenSize.width,
-                radius: 100, colors: [dominantColor]),
-          ),
-        BookImageViewer(image: coverImage).animate(effects: const [
-          FadeEffect(
-              curve: Curves.easeInOutQuart,
-              duration: Duration(milliseconds: 500))
-        ]),
-      ],
+    return RepaintBoundary(
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          if (dominantColor != null)
+            Animate(
+              effects: const [
+                ScaleEffect(
+                    duration: Duration(seconds: 1), curve: Curves.easeOutCirc)
+              ],
+              child: RadialLight(250 * 1.2, screenSize.width,
+                  radius: 100, colors: [dominantColor]),
+            ),
+          BookImageViewer(image: coverImage).animate(effects: const [
+            FadeEffect(
+                curve: Curves.easeInOutQuart,
+                duration: Duration(milliseconds: 500))
+          ]),
+        ],
+      ),
     );
   }
 
@@ -175,7 +177,7 @@ class BookInfoViewerPage extends StatelessWidget {
                 children: [
                   const IconText(icon: Icons.tag_rounded, text: "Tags"),
                   const SizedBox(height: 5),
-                  ChipList(book.tags!),
+                  ChipList(book.tags!.toSet()),
                 ],
               )
           ]),
