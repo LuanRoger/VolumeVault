@@ -76,7 +76,7 @@ class HomeSection extends HookWidget {
                         : Icons.view_list_rounded),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () => Navigator.pushNamed(context, AppRoutes.configurationsPageRoute),
                     icon: const Icon(Icons.settings_rounded),
                   ),
                 ],

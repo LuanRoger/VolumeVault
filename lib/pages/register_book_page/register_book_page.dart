@@ -315,14 +315,12 @@ class RegisterBookPage extends HookWidget {
                       context, AppRoutes.largeInfoInputPageRoute,
                       arguments: [observationController, synopsisController]),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("Lido"),
-                    Switch(
-                        value: readedState.value,
-                        onChanged: (newValue) => readedState.value = newValue),
-                  ],
+                ListTile(
+                  title: const Text("Lido"),
+                  trailing: Switch(
+                      value: readedState.value,
+                      onChanged: (newValue) => readedState.value = newValue),
+                  onTap: () => readedState.value = !readedState.value,
                 ),
                 const IconText(
                   icon: Icons.tag_rounded,
@@ -339,7 +337,7 @@ class RegisterBookPage extends HookWidget {
                           tagLabelsState.value.contains(tagController.text)) {
                         return;
                       }
-                      
+
                       tagLabelsState.value = {
                         ...tagLabelsState.value,
                         tagController.text
