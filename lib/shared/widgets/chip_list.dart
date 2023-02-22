@@ -2,16 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:volume_vault/shared/widgets/filled_chip.dart';
 
 class ChipList extends StatelessWidget {
-  final List<String> labels;
+  final Set<String> labels;
+  final double spacing;
+  final void Function(String)? onRemove;
 
-  const ChipList(this.labels, {super.key});
+  const ChipList(this.labels, {super.key, this.spacing = 10.0, this.onRemove});
 
   List<Widget> _generateChips(BuildContext context) {
     List<Widget> chips = List.empty(growable: true);
-
     for (String label in labels) {
-      FilledChip chip = FilledChip(label: label);
+      final bool isLast = label == labels.last;
+      Widget chip = onRemove != null
+          ? InputChip(
+              label: Text(label),
+              deleteIcon: const Icon(Icons.close_rounded),
+              onDeleted: () => onRemove!(label),
+            )
+          : FilledChip(label: label);
+
       chips.add(chip);
+      if (!isLast) chips.add(SizedBox(width: spacing));
     }
 
     return chips;
@@ -19,8 +29,6 @@ class ChipList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: _generateChips(context));
+    return Wrap(children: _generateChips(context));
   }
 }

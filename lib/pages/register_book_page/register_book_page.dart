@@ -7,6 +7,9 @@ import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/validators/text_field_validator.dart';
 import 'package:volume_vault/shared/widgets/book_image_viewer.dart';
 import 'package:volume_vault/shared/widgets/bottom_sheet.dart';
+import 'package:volume_vault/shared/widgets/chip_list.dart';
+import 'package:volume_vault/shared/widgets/dialogs/input_dialog.dart';
+import 'package:volume_vault/shared/widgets/icon_text.dart';
 
 class RegisterBookPage extends HookWidget {
   final _bookInfoFormKey = GlobalKey<FormState>();
@@ -15,37 +18,25 @@ class RegisterBookPage extends HookWidget {
 
   RegisterBookPage({super.key});
 
-  void _showImageCoverDialog(
-      BuildContext context, TextEditingController coverTextController) {
-    String coverTextOldMemento = coverTextController.text;
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              alignment: Alignment.center,
-              title: Text(
-                "Imagem da capa",
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              icon: const Icon(Icons.image),
-              content: TextField(
-                  controller: coverTextController,
-                  decoration: const InputDecoration(
-                      label: Text("URL"),
-                      filled: true,
-                      prefixIcon: Icon(Icons.link_rounded),
-                      border: UnderlineInputBorder())),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      coverTextController.text = coverTextOldMemento;
-                      Navigator.pop(context);
-                    },
-                    child: const Text("Cancelar")),
-                TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("Aceitar"))
-              ],
-            ));
+  Future _showImageCoverDialog(
+      BuildContext context, TextEditingController coverTextController) async {
+    await InputDialog(
+      controller: coverTextController,
+      icon: const Icon(Icons.image),
+      title: "Imagem da capa",
+      textFieldLabel: const Text("URL"),
+      prefixIcon: const Icon(Icons.link_rounded),
+    ).show(context);
+  }
+
+  Future _showAddTagDialog(
+      BuildContext context, TextEditingController tagLabelController) async {
+    await InputDialog(
+      controller: tagLabelController,
+      icon: const Icon(Icons.tag_rounded),
+      title: "Adicionar tag",
+      textFieldLabel: const Text("Tag"),
+    ).show(context);
   }
 
   void validateAndPop(BuildContext context, GlobalKey<FormState> formKey) {
@@ -258,6 +249,7 @@ class RegisterBookPage extends HookWidget {
     final synopsisController = useTextEditingController();
 
     final readedState = useState(false);
+    final tagLabelsState = useState<Set<String>>({});
 
     return Scaffold(
       appBar: AppBar(),
@@ -331,6 +323,40 @@ class RegisterBookPage extends HookWidget {
                         value: readedState.value,
                         onChanged: (newValue) => readedState.value = newValue),
                   ],
+                ),
+                const IconText(
+                  icon: Icons.tag_rounded,
+                  text: "Tags",
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: FilledButton.tonal(
+                    onPressed: () async {
+                      TextEditingController tagController =
+                          TextEditingController();
+                      await _showAddTagDialog(context, tagController);
+                      if (tagController.text.isEmpty ||
+                          tagLabelsState.value.contains(tagController.text)) {
+                        return;
+                      }
+                      
+                      tagLabelsState.value = {
+                        ...tagLabelsState.value,
+                        tagController.text
+                      };
+
+                      tagController.dispose();
+                    },
+                    child: const Text("Adicionar"),
+                  ),
+                ),
+                ChipList(
+                  tagLabelsState.value,
+                  onRemove: (value) {
+                    Set<String> newLabels = Set.from(tagLabelsState.value);
+                    newLabels.remove(value);
+                    tagLabelsState.value = newLabels;
+                  },
                 ),
                 ElevatedButton(onPressed: () {}, child: const Text("Confirmar"))
               ],
