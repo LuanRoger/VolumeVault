@@ -4,6 +4,7 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/shared/time_formats.dart';
+import 'package:volume_vault/shared/widgets/book_image_viewer.dart';
 import 'package:volume_vault/shared/widgets/chip_list.dart';
 import 'package:volume_vault/shared/widgets/icon_text.dart';
 import 'package:volume_vault/shared/widgets/list_tile_text.dart';
@@ -45,21 +46,7 @@ class BookInfoViewerPage extends StatelessWidget {
             child: RadialLight(250 * 1.2, screenSize.width,
                 radius: 100, colors: [dominantColor]),
           ),
-        Container(
-          clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-            border: Border.all(width: 0.5),
-          ),
-          height: 250,
-          width: 175,
-          child: Image(
-            image: coverImage,
-            fit: BoxFit.scaleDown,
-            errorBuilder: (_, __, ___) =>
-                const Icon(Icons.image_not_supported_rounded),
-          ),
-        ).animate(effects: const [
+        BookImageViewer(image: coverImage).animate(effects: const [
           FadeEffect(
               curve: Curves.easeInOutQuart,
               duration: Duration(milliseconds: 500))
@@ -83,7 +70,12 @@ class BookInfoViewerPage extends StatelessWidget {
           if (book.buyLink != null)
             IconButton(
                 onPressed: () => launchBuyPage(book.buyLink!),
-                icon: const Icon(Icons.shopping_cart_rounded))
+                icon: const Icon(Icons.shopping_cart_rounded)),
+          PopupMenuButton(
+              itemBuilder: (_) =>
+                  [const PopupMenuItem(value: 0, child: Text("Deletar"))],
+              onSelected: (value) {},
+              icon: const Icon(Icons.more_vert_rounded))
         ],
       ),
       body: Padding(
@@ -91,39 +83,36 @@ class BookInfoViewerPage extends StatelessWidget {
         child: SingleChildScrollView(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                if(book.coverLink != null)
-            SizedBox(
-                height: 250 * 1.2,
-                width: size.width,
-                child: FutureBuilder(
-                  future: _buildCoverShowcase(book.coverLink!,
-                      screenSize: size, context: context),
-                  builder: (_, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    if (snapshot.hasError || !snapshot.hasData) {
-                      return const SizedBox();
-                    }
+            if (book.coverLink != null)
+              SizedBox(
+                  height: 250 * 1.2,
+                  width: size.width,
+                  child: FutureBuilder(
+                    future: _buildCoverShowcase(book.coverLink!,
+                        screenSize: size, context: context),
+                    builder: (_, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (snapshot.hasError || !snapshot.hasData) {
+                        return const SizedBox();
+                      }
 
-                    return snapshot.data!;
-                  },
-                )),
-            Align(
-              alignment: Alignment.center,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    book.title,
-                    style: Theme.of(context).textTheme.headlineLarge,
-                  ),
-                  Text(
-                    book.author,
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                ],
-              ),
+                      return snapshot.data!;
+                    },
+                  )),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  book.title,
+                  style: Theme.of(context).textTheme.headlineLarge,
+                ),
+                Text(
+                  book.author,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+              ],
             ),
             const SizedBox(height: 5),
             Row(
