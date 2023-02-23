@@ -47,8 +47,11 @@ class HomePage extends HookWidget {
             ),
           ]),
       floatingActionButton: OpenContainer(
+        clipBehavior: Clip.none,
+        openColor: Theme.of(context).colorScheme.background,
+        closedColor: Theme.of(context).colorScheme.background,
         closedShape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         closedBuilder: (_, open) => FloatingActionButton(
             onPressed: open, child: const Icon(Icons.add_rounded)),
         openBuilder: (_, __) => RegisterBookPage(),
