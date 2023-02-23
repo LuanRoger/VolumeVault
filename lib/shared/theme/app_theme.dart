@@ -20,7 +20,6 @@ ThemeData lightTheme = ThemeData(
   colorScheme: _lightColorScheme,
   textTheme: _textTheme,
   inputDecorationTheme: _inputDecorationTheme,
-  
 );
 ThemeData darkTheme = ThemeData(
   useMaterial3: true,
