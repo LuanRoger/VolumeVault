@@ -3,7 +3,8 @@ import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/pages/book_info_viewer_page.dart';
 import 'package:volume_vault/pages/configuration_page.dart';
 import 'package:volume_vault/pages/home_page/home_page.dart';
-import 'package:volume_vault/pages/register_book_page/sub_pages/large_info_input.dart';
+import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
+import 'package:volume_vault/pages/register_edit_book_page/sub_pages/large_info_input.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 
 class RouteDriver {
@@ -18,6 +19,8 @@ class RouteDriver {
         return gotoHomePage();
       case AppRoutes.bookInfoViewerPageRoute:
         return gotoBookInfoViewerPage(pageArgs![0] as BookModel);
+      case AppRoutes.registerEditBookPageRoute:
+        return gotoRegisterEditBookPage(bookToEdit: pageArgs?[0] as BookModel);
       case AppRoutes.largeInfoInputPageRoute:
         return gotoLargeInfoInputPage(pageArgs![0] as TextEditingController,
             pageArgs[1] as TextEditingController);
@@ -31,6 +34,8 @@ class RouteDriver {
   static gotoHomePage() => MaterialPageRoute(builder: (_) => const HomePage());
   static gotoBookInfoViewerPage(BookModel bookModel) =>
       MaterialPageRoute(builder: (_) => BookInfoViewerPage(bookModel));
+  static gotoRegisterEditBookPage({BookModel? bookToEdit}) => MaterialPageRoute(
+      builder: (_) => RegisterEditBookPage(editBookModel: bookToEdit));
   static gotoLargeInfoInputPage(TextEditingController observationController,
           TextEditingController synopsisController) =>
       MaterialPageRoute(

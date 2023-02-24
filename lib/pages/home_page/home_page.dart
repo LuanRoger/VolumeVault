@@ -4,7 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
 import 'package:volume_vault/pages/home_page/sections/bookmark_section.dart';
 import 'package:volume_vault/pages/home_page/sections/home_section.dart';
-import 'package:volume_vault/pages/register_book_page/register_book_page.dart';
+import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
 import 'package:volume_vault/shared/fake_models.dart';
 
 class HomePage extends HookWidget {
@@ -54,7 +54,7 @@ class HomePage extends HookWidget {
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         closedBuilder: (_, open) => FloatingActionButton(
             onPressed: open, child: const Icon(Icons.add_rounded)),
-        openBuilder: (_, __) => RegisterBookPage(),
+        openBuilder: (_, __) => RegisterEditBookPage(),
       ),
     );
   }
