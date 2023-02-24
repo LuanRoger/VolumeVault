@@ -5,26 +5,30 @@ part 'color_schemes.dart';
 part 'text_themes.dart';
 
 TextTheme get _textTheme => TextTheme(
+  displayLarge: _displayStyle.copyWith(fontSize: 16),
+    displayMedium: _displayStyle.copyWith(fontSize: 14),
+    displaySmall: _displayStyle.copyWith(fontSize: 12),
     headlineLarge:
         _headlinesStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
     headlineMedium: _headlinesStyle.copyWith(fontSize: 14),
-    headlineSmall: _headlinesStyle.copyWith(fontSize: 12),
-    displayLarge: _displayStyle.copyWith(fontSize: 16),
-    displayMedium: _displayStyle.copyWith(fontSize: 14),
-    displaySmall: _displayStyle.copyWith(fontSize: 12));
+    headlineSmall: _headlinesStyle.copyWith(fontSize: 12),);
 InputDecorationTheme get _inputDecorationTheme =>
     const InputDecorationTheme(border: OutlineInputBorder());
+DialogTheme _dialogTheme(BuildContext context) => DialogTheme(
+    titleTextStyle: Theme.of(context).textTheme.titleLarge,
+  );
 
-ThemeData lightTheme = ThemeData(
+ThemeData lightTheme(BuildContext context) => ThemeData(
   useMaterial3: true,
   colorScheme: _lightColorScheme,
   textTheme: _textTheme,
   inputDecorationTheme: _inputDecorationTheme,
-  
+  dialogTheme: _dialogTheme(context)
 );
-ThemeData darkTheme = ThemeData(
+ThemeData darkTheme(BuildContext context) => ThemeData(
   useMaterial3: true,
   colorScheme: _darkColorScheme,
   textTheme: _textTheme,
   inputDecorationTheme: _inputDecorationTheme,
+  dialogTheme: _dialogTheme(context)
 );

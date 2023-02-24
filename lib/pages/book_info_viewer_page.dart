@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:volume_vault/models/book_model.dart';
+import 'package:volume_vault/providers/providers.dart';
+import 'package:volume_vault/shared/preferences/models/graphics_preferences.dart';
 import 'package:volume_vault/shared/time_formats.dart';
 import 'package:volume_vault/shared/widgets/book_image_viewer.dart';
 import 'package:volume_vault/shared/widgets/chip_list.dart';
@@ -11,7 +14,7 @@ import 'package:volume_vault/shared/widgets/list_tile_text.dart';
 import 'package:volume_vault/shared/widgets/radial_light.dart';
 import 'package:volume_vault/shared/widgets/title_card.dart';
 
-class BookInfoViewerPage extends StatelessWidget {
+class BookInfoViewerPage extends ConsumerWidget {
   final BookModel book;
 
   const BookInfoViewerPage(this.book, {super.key});
@@ -27,7 +30,7 @@ class BookInfoViewerPage extends StatelessWidget {
   }
 
   Future<Widget> _buildCoverShowcase(String coverLink,
-      {required Size screenSize, required BuildContext context}) async {
+      {required Size screenSize, required BuildContext context, bool renderLightEffect = true}) async {
     if (coverLink.isEmpty) return const SizedBox();
     NetworkImage coverImage = NetworkImage(coverLink);
 
@@ -36,16 +39,17 @@ class BookInfoViewerPage extends StatelessWidget {
 
     return RepaintBoundary(
       child: Stack(
+        clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
-          if (dominantColor != null)
+          if (dominantColor != null && renderLightEffect)
             Animate(
               effects: const [
                 ScaleEffect(
                     duration: Duration(seconds: 1), curve: Curves.easeOutCirc)
               ],
               child: RadialLight(250 * 1.2, screenSize.width,
-                  radius: 100, colors: [dominantColor]),
+                  radius: 105, colors: [dominantColor]),
             ),
           BookImageViewer(image: coverImage).animate(effects: const [
             FadeEffect(
@@ -62,7 +66,8 @@ class BookInfoViewerPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final graphicsPreferences = ref.watch(graphicsPreferencesStateProvider);
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -83,15 +88,14 @@ class BookInfoViewerPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: SingleChildScrollView(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child: Column(children: [
             if (book.coverLink != null)
               SizedBox(
                   height: 250 * 1.2,
                   width: size.width,
                   child: FutureBuilder(
                     future: _buildCoverShowcase(book.coverLink!,
-                        screenSize: size, context: context),
+                        screenSize: size, context: context, renderLightEffect: graphicsPreferences.lightEffect),
                     builder: (_, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
@@ -174,6 +178,7 @@ class BookInfoViewerPage extends StatelessWidget {
             const SizedBox(height: 5),
             if (book.tags != null)
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const IconText(icon: Icons.tag_rounded, text: "Tags"),
                   const SizedBox(height: 5),
