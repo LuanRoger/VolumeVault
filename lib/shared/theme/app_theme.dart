@@ -5,30 +5,41 @@ part 'color_schemes.dart';
 part 'text_themes.dart';
 
 TextTheme get _textTheme => TextTheme(
-  displayLarge: _displayStyle.copyWith(fontSize: 16),
-    displayMedium: _displayStyle.copyWith(fontSize: 14),
-    displaySmall: _displayStyle.copyWith(fontSize: 12),
-    headlineLarge:
-        _headlinesStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-    headlineMedium: _headlinesStyle.copyWith(fontSize: 14),
-    headlineSmall: _headlinesStyle.copyWith(fontSize: 12),);
+      headlineLarge: _headlinesStyle.copyWith(fontWeight: FontWeight.bold),
+      headlineMedium: _headlinesStyle,
+      headlineSmall: _headlinesStyle,
+      titleLarge: _titleStyle.copyWith(fontWeight: FontWeight.bold),
+      titleMedium: _titleStyle,
+      titleSmall: _titleStyle,
+    );
 InputDecorationTheme get _inputDecorationTheme =>
     const InputDecorationTheme(border: OutlineInputBorder());
 DialogTheme _dialogTheme(BuildContext context) => DialogTheme(
-    titleTextStyle: Theme.of(context).textTheme.titleLarge,
-  );
+      titleTextStyle: Theme.of(context).textTheme.titleLarge,
+    );
+AppBarTheme _appBarTheme(bool darkTheme) => AppBarTheme(
+      titleTextStyle: _defaultStyle.copyWith(
+        color: darkTheme ? Colors.white : Colors.black,
+        fontSize: 22,
+      ),
+    );
+ListTileThemeData get _listTileTheme => const ListTileThemeData(
+      style: ListTileStyle.drawer,
+    );
 
 ThemeData lightTheme(BuildContext context) => ThemeData(
-  useMaterial3: true,
-  colorScheme: _lightColorScheme,
-  textTheme: _textTheme,
-  inputDecorationTheme: _inputDecorationTheme,
-  dialogTheme: _dialogTheme(context)
-);
+    useMaterial3: true,
+    colorScheme: _lightColorScheme,
+    textTheme: _textTheme,
+    inputDecorationTheme: _inputDecorationTheme,
+    dialogTheme: _dialogTheme(context),
+    appBarTheme: _appBarTheme(false),
+    listTileTheme: _listTileTheme);
 ThemeData darkTheme(BuildContext context) => ThemeData(
-  useMaterial3: true,
-  colorScheme: _darkColorScheme,
-  textTheme: _textTheme,
-  inputDecorationTheme: _inputDecorationTheme,
-  dialogTheme: _dialogTheme(context)
-);
+    useMaterial3: true,
+    colorScheme: _darkColorScheme,
+    textTheme: _textTheme,
+    inputDecorationTheme: _inputDecorationTheme,
+    dialogTheme: _dialogTheme(context),
+    appBarTheme: _appBarTheme(true),
+    listTileTheme: _listTileTheme);

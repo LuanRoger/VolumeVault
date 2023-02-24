@@ -120,11 +120,11 @@ class BookInfoViewerPage extends ConsumerWidget {
               children: [
                 Text(
                   book.title,
-                  style: Theme.of(context).textTheme.headlineLarge,
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 Text(
                   book.author,
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],
             ),

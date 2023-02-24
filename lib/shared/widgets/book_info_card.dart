@@ -48,14 +48,14 @@ class BookInfoCard extends StatelessWidget {
                         flex: 0,
                         child: Text(
                           bookModel.title,
-                          style: Theme.of(context).textTheme.headlineLarge,
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
                       ),
                       Flexible(
                         flex: 0,
                         child: Text(
                           bookModel.author,
-                          style: Theme.of(context).textTheme.headlineSmall,
+                          style: Theme.of(context).textTheme.titleSmall,
                         ),
                       ),
                       const Spacer(),

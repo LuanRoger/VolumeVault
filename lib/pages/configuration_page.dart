@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:volume_vault/models/enums/api_protocol.dart';
 import 'package:volume_vault/models/enums/theme_brightness.dart';
 import 'package:volume_vault/providers/providers.dart';
+import 'package:volume_vault/shared/widgets/text_body_title.dart';
 
 class ConfigurationPage extends HookConsumerWidget {
   const ConfigurationPage({super.key});
@@ -47,7 +47,8 @@ class ConfigurationPage extends HookConsumerWidget {
     final themeBrightness = ref
         .read(appPreferencesProvider.notifier)
         .themePreferences
-        .themeBrightnes.index;
+        .themeBrightnes
+        .index;
 
     await showDialog(
       context: context,
@@ -69,7 +70,7 @@ class ConfigurationPage extends HookConsumerWidget {
               value: ThemeBrightness.LIGHT.index,
               groupValue: themeBrightness,
               onChanged: (newValue) {
-                if(newValue == null) return;
+                if (newValue == null) return;
 
                 ref.read(appPreferencesProvider.notifier).themeBrightness =
                     newValue;
@@ -81,7 +82,7 @@ class ConfigurationPage extends HookConsumerWidget {
               value: ThemeBrightness.DARK.index,
               groupValue: themeBrightness,
               onChanged: (newValue) {
-                if(newValue == null) return;
+                if (newValue == null) return;
 
                 ref.read(appPreferencesProvider.notifier).themeBrightness =
                     newValue;
@@ -93,7 +94,7 @@ class ConfigurationPage extends HookConsumerWidget {
               value: ThemeBrightness.SYSTEM.index,
               groupValue: themeBrightness,
               onChanged: (newValue) {
-                if(newValue == null) return;
+                if (newValue == null) return;
 
                 ref.read(appPreferencesProvider.notifier).themeBrightness =
                     newValue;
@@ -132,23 +133,13 @@ class ConfigurationPage extends HookConsumerWidget {
         padding: const EdgeInsets.all(8.0),
         child: ListView(
           children: [
-            Text(
-              "Aparencia",
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Theme.of(context).colorScheme.surfaceTint,
-                  ),
-            ),
+            TextBodyTitle("Aparencia"),
             ListTile(
               title: const Text("Tema"),
               onTap: () async => await _showThemeChangeDialog(context, ref),
               trailing: Text(themePreferences.themeBrightnes.name),
             ),
-            Text(
-              "Gráficos",
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Theme.of(context).colorScheme.surfaceTint,
-                  ),
-            ),
+            TextBodyTitle("Gráficos"),
             ListTile(
               title: const Text("Efeito de luz"),
               onTap: () =>
@@ -158,12 +149,7 @@ class ConfigurationPage extends HookConsumerWidget {
                 onChanged: (newValue) => _toggleLightEffect(ref, newValue),
               ),
             ),
-            Text(
-              "Outros",
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Theme.of(context).colorScheme.surfaceTint,
-                  ),
-            ),
+            TextBodyTitle("Outros"),
             Form(
               child: ExpansionTile(
                 title: const Text("Avançado"),

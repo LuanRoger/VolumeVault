@@ -33,35 +33,15 @@ class BookInfoGridCard extends StatelessWidget {
                       children: [
                         Text(
                           bookModel.title,
-                          style: Theme.of(context).textTheme.headlineLarge,
+                          style: Theme.of(context).textTheme.titleLarge,
                           overflow: TextOverflow.clip,
                         ),
                         Text(
                           "${bookModel.author} - ${bookModel.publicationYear.toString()}",
-                          style: Theme.of(context).textTheme.headlineMedium,
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
-                        if (bookModel.publisher != null)
-                          Text(
-                            "ed. ${bookModel.publisher!}",
-                            style: Theme.of(context).textTheme.headlineSmall,
-                          ),
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          bookModel.isbn,
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        ),
-                        bookModel.pagesNumber != null
-                            ? Text("p. ${bookModel.pagesNumber}",
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall)
-                            : const SizedBox(),
-                      ],
-                    )
                   ],
                 ),
               ),

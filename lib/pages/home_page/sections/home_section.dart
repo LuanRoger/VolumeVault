@@ -47,7 +47,7 @@ class HomeSection extends HookWidget {
             );
           },
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, childAspectRatio: 0.5),
+              crossAxisCount: 2, childAspectRatio: 0.53),
         );
     }
   }
