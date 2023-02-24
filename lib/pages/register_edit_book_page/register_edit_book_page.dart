@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide BottomSheet;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/enums/book_format.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/validators/text_field_validator.dart';
@@ -11,12 +12,16 @@ import 'package:volume_vault/shared/widgets/chip_list.dart';
 import 'package:volume_vault/shared/widgets/dialogs/input_dialog.dart';
 import 'package:volume_vault/shared/widgets/icon_text.dart';
 
-class RegisterBookPage extends HookWidget {
+class RegisterEditBookPage extends HookWidget {
+  ///If this model is not null, the page enter in edit mode.
+  ///So when you hit the save button, the book will be updated instead of created.
+  final BookModel? editBookModel;
+
   final _bookInfoFormKey = GlobalKey<FormState>();
   final _publisherInfoFormKey = GlobalKey<FormState>();
   final _aditionalInfoFormKey = GlobalKey<FormState>();
 
-  RegisterBookPage({super.key});
+  RegisterEditBookPage({super.key, this.editBookModel});
 
   Future _showImageCoverDialog(
       BuildContext context, TextEditingController coverTextController) async {
@@ -230,29 +235,44 @@ class RegisterBookPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final coverUrlController = useTextEditingController();
+    final coverUrlController =
+        useTextEditingController(text: editBookModel?.coverLink);
 
-    final titleController = useTextEditingController();
-    final authorController = useTextEditingController();
-    final isbnController = useTextEditingController();
+    final titleController =
+        useTextEditingController(text: editBookModel?.title);
+    final authorController =
+        useTextEditingController(text: editBookModel?.author);
+    final isbnController = useTextEditingController(text: editBookModel?.isbn);
 
-    final editionController = useTextEditingController();
-    final publishYearController = useTextEditingController();
-    final publisherController = useTextEditingController();
+    final editionController =
+        useTextEditingController(text: editBookModel?.edition.toString());
+    final publishYearController = useTextEditingController(
+        text: editBookModel?.publicationYear.toString());
+    final publisherController =
+        useTextEditingController(text: editBookModel?.publisher);
 
-    final bookFormatState = useState<BookFormat>(BookFormat.HARDCOVER);
-    final buyLinkController = useTextEditingController();
-    final genreController = useTextEditingController();
-    final pageNumbController = useTextEditingController();
+    final bookFormatState =
+        useState<BookFormat>(editBookModel?.format ?? BookFormat.HARDCOVER);
+    final buyLinkController =
+        useTextEditingController(text: editBookModel?.buyLink);
+    final genreController =
+        useTextEditingController(text: editBookModel?.genre);
+    final pageNumbController =
+        useTextEditingController(text: editBookModel?.pagesNumber.toString());
 
-    final observationController = useTextEditingController();
-    final synopsisController = useTextEditingController();
+    final observationController =
+        useTextEditingController(text: editBookModel?.observation);
+    final synopsisController =
+        useTextEditingController(text: editBookModel?.synopsis);
 
     final readedState = useState(false);
-    final tagLabelsState = useState<Set<String>>({});
+    final tagLabelsState = useState<Set<String>>(editBookModel?.tags ?? {});
+    final editMode = editBookModel != null;
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text(!editMode ? "Novo livro" : "Editar livro"),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(

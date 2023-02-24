@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
-import 'package:volume_vault/pages/register_book_page/register_book_page.dart';
+import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
 import 'package:volume_vault/shared/fake_models.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/widgets/book_info_card.dart';
@@ -60,8 +60,6 @@ class HomeSection extends HookWidget {
     return NestedScrollView(
         headerSliverBuilder: (context, _) => [
               SliverAppBar(
-                floating: true,
-                leading: UserAccountButton(fakeUserModel),
                 title: SearchTextField(height: 40),
                 actions: [
                   IconButton(
