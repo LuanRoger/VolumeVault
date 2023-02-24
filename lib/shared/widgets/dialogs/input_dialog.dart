@@ -27,8 +27,7 @@ class InputDialog {
               alignment: Alignment.center,
               title: title != null
                   ? Text(
-                      title!,
-                      style: Theme.of(context).textTheme.titleLarge,
+                      title!
                     )
                   : null,
               icon: icon,

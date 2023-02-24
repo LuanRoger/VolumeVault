@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:volume_vault/models/enums/theme_brightness.dart';
 import 'package:volume_vault/shared/preferences/models/graphics_preferences.dart';
 import 'package:volume_vault/shared/preferences/models/server_preferences.dart';
 import 'package:volume_vault/shared/preferences/models/theme_preferences.dart';
@@ -15,8 +16,8 @@ class AppPreferences extends ChangeNotifier {
 
   Future loadPreferences() async {
     _themePreferences = ThemePreferences(
-        darkModePreference:
-            _preferences.getBool(PreferencesKey.themeModePrefKey) ?? false);
+        themeBrightnes: ThemeBrightness
+            .values[_preferences.getInt(PreferencesKey.themeModePrefKey) ?? 0]);
     _graphicsPreferences = GraphicsPreferences(
         lightEffect:
             _preferences.getBool(PreferencesKey.lightEffectPrefKey) ?? true);
@@ -32,10 +33,12 @@ class AppPreferences extends ChangeNotifier {
   }
 
   ThemePreferences get themePreferences => _themePreferences;
-  set darkModePreference(bool newValue) {
-    _themePreferences =
-        _themePreferences.copyWith(darkModePreference: newValue);
-    _preferences.setBool(PreferencesKey.themeModePrefKey, newValue);
+  set themeBrightness(int newValue) {
+    assert(newValue >= 0 && newValue < ThemeBrightness.values.length);
+
+    _themePreferences = _themePreferences.copyWith(
+        themeBrightnes: ThemeBrightness.values[newValue]);
+    _preferences.setInt(PreferencesKey.themeModePrefKey, newValue);
 
     notifyListeners();
   }
@@ -76,7 +79,9 @@ class AppPreferences extends ChangeNotifier {
 
     notifyListeners();
   }
-  void setAllServerPref({required String host, required String port, required String apiKey}) {
+
+  void setAllServerPref(
+      {required String host, required String port, required String apiKey}) {
     _serverPreferences = _serverPreferences.copyWith(
       serverHost: host,
       serverPort: port,

@@ -25,14 +25,14 @@ class App extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final darkMode =
-        ref.watch(themePreferencesStateProvider).darkModePreference;
+    final themeBrightness =
+        ref.watch(themePreferencesStateProvider).themeBrightnes;
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.light,
-      theme: darkMode ? darkTheme : lightTheme,
-      darkTheme: darkTheme,
+      themeMode: themeBrightness.themeMode,
+      theme: lightTheme(context),
+      darkTheme: darkTheme(context),
       onGenerateRoute: RouteDriver.driver,
       initialRoute: AppRoutes.homePageRoute,
     );
