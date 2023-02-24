@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/preferences/models/graphics_preferences.dart';
+import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/time_formats.dart';
 import 'package:volume_vault/shared/widgets/book_image_viewer.dart';
 import 'package:volume_vault/shared/widgets/chip_list.dart';
@@ -30,7 +31,9 @@ class BookInfoViewerPage extends ConsumerWidget {
   }
 
   Future<Widget> _buildCoverShowcase(String coverLink,
-      {required Size screenSize, required BuildContext context, bool renderLightEffect = true}) async {
+      {required Size screenSize,
+      required BuildContext context,
+      bool renderLightEffect = true}) async {
     if (coverLink.isEmpty) return const SizedBox();
     NetworkImage coverImage = NetworkImage(coverLink);
 
@@ -73,7 +76,10 @@ class BookInfoViewerPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.edit_rounded)),
+          IconButton(
+              onPressed: () => Navigator.pushNamed(
+                  context, AppRoutes.registerEditBookPageRoute, arguments: [book]),
+              icon: const Icon(Icons.edit_rounded)),
           if (book.buyLink != null)
             IconButton(
                 onPressed: () => launchBuyPage(book.buyLink!),
@@ -95,7 +101,9 @@ class BookInfoViewerPage extends ConsumerWidget {
                   width: size.width,
                   child: FutureBuilder(
                     future: _buildCoverShowcase(book.coverLink!,
-                        screenSize: size, context: context, renderLightEffect: graphicsPreferences.lightEffect),
+                        screenSize: size,
+                        context: context,
+                        renderLightEffect: graphicsPreferences.lightEffect),
                     builder: (_, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());

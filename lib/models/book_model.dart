@@ -17,7 +17,7 @@ class BookModel {
   String? coverLink;
   String? buyLink;
   bool? readed;
-  List<String>? tags;
+  Set<String>? tags;
   DateTime createdAt;
   DateTime lastModification;
   UserInfoModel owner;
