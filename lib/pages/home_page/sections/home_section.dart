@@ -3,13 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
-import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
-import 'package:volume_vault/shared/fake_models.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/widgets/book_info_card.dart';
 import 'package:volume_vault/shared/widgets/book_info_grid_card.dart';
 import 'package:volume_vault/shared/widgets/search_text_field.dart';
-import 'package:volume_vault/shared/widgets/user_account_button.dart';
 
 class HomeSection extends HookWidget {
   List<BookModel> books;
@@ -30,7 +27,7 @@ class HomeSection extends HookWidget {
             final BookModel book = books[0];
 
             return BookInfoCard(
-              fakeBookModel,
+              book,
               onPressed: () => _onCardPress(context, book),
             );
           },
@@ -42,7 +39,7 @@ class HomeSection extends HookWidget {
             final BookModel book = books[0];
 
             return BookInfoGridCard(
-              fakeBookModel,
+              book,
               onPressed: () => _onCardPress(context, book),
             );
           },
