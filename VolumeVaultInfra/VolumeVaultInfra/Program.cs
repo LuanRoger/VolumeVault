@@ -2,7 +2,6 @@ using System.Globalization;
 using System.Text;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -21,6 +20,7 @@ using ILogger = Serilog.ILogger;
 using Prometheus;
 using VolumeVaultInfra.Endpoints;
 using VolumeVaultInfra.Filters;
+using VolumeVaultInfra.Models.Delegates;
 using VolumeVaultInfra.Services;
 using VolumeVaultInfra.Services.Metrics;
 
@@ -198,8 +198,16 @@ authGroup.MapAuthEndpoints();
 #region BooksEndpoint
 RouteGroupBuilder bookGroup = app.MapGroup("book")
     .WithTags("book")
-    .RequireAuthorization(policyBuilder => { policyBuilder.RequireClaim("ID"); });
+    .AddEndpointFilter<ApiKeyFilter>()
+    .RequireAuthorization(PolicyAuthDelegateTemplates.JWTRequiredIdClaimPolicy);
 bookGroup.MapBookEndpoints();
+#endregion
+
+#region UtilsEndpoint
+RouteGroupBuilder utilsGroup = app.MapGroup("utils")
+    .WithTags("utils")
+    .AddEndpointFilter<ApiKeyFilter>();
+utilsGroup.MapUtilsEndpoints();
 #endregion
 
 app.Run();

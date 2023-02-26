@@ -2,13 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using VolumeVaultInfra.Controllers;
 using VolumeVaultInfra.Exceptions;
 using VolumeVaultInfra.Models.Book;
+// ReSharper disable UnusedMethodReturnValue.Global
 
 namespace VolumeVaultInfra.Endpoints;
 
 internal static class BookEndpoints
 {
-    
-    
     internal static RouteGroupBuilder MapBookEndpoints(this RouteGroupBuilder groupBuilder)
     {
         groupBuilder.MapGet("/",
@@ -31,26 +30,6 @@ internal static class BookEndpoints
                 }
 
                 return Results.Ok(userBooks);
-            });
-        groupBuilder.MapGet("/search",
-            async (HttpContext context,
-                [FromQuery] string query,
-                [FromServices] IBookController bookController) =>
-            {
-                int idClaim = int.Parse(context.User.Claims
-                    .First(claim => claim.Type == "ID").Value);
-
-                List<BookReadModel> searchResult;
-                try
-                {
-                    searchResult = await bookController.SearchBookParameters(idClaim, query);
-                }
-                catch (Exception e)
-                {
-                    return Results.BadRequest(e.Message);
-                }
-
-                return Results.Ok(searchResult);
             });
         groupBuilder.MapPost("/",
             async (HttpContext context,
@@ -117,6 +96,26 @@ internal static class BookEndpoints
                 }
 
                 return Results.Ok();
+            });
+        groupBuilder.MapGet("/search",
+            async (HttpContext context,
+                [FromQuery] string query,
+                [FromServices] IBookController bookController) =>
+            {
+                int idClaim = int.Parse(context.User.Claims
+                    .First(claim => claim.Type == "ID").Value);
+
+                List<BookReadModel> searchResult;
+                try
+                {
+                    searchResult = await bookController.SearchBookParameters(idClaim, query);
+                }
+                catch (Exception e)
+                {
+                    return Results.BadRequest(e.Message);
+                }
+
+                return Results.Ok(searchResult);
             });
         
         return groupBuilder;
