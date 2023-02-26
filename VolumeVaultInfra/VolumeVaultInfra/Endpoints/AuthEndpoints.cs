@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using VolumeVaultInfra.Controllers;
 using VolumeVaultInfra.Exceptions;
 using VolumeVaultInfra.Models.User;
+// ReSharper disable UnusedMethodReturnValue.Global
 
 namespace VolumeVaultInfra.Endpoints;
 
@@ -29,7 +30,7 @@ internal static class AuthEndpoints
 
                 return Results.Ok(jwt);
             });
-        groupBuilder.MapGet("auth/login",
+        groupBuilder.MapGet("login",
             async ([FromServices] IUserController userController,
                 [FromBody] UserLoginRequestModel loginRequest) =>
             {
@@ -49,7 +50,7 @@ internal static class AuthEndpoints
 
                 return Results.Ok(jwt);
             });
-
+        
         return groupBuilder;
     }
 }
