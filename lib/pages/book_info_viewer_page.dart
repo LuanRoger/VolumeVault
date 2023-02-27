@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:palette_generator/palette_generator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/providers/providers.dart';
-import 'package:volume_vault/shared/preferences/models/graphics_preferences.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/time_formats.dart';
-import 'package:volume_vault/shared/widgets/book_image_viewer.dart';
+import 'package:volume_vault/shared/utils/image_utils.dart';
+import 'package:volume_vault/shared/widgets/book_showcase.dart';
 import 'package:volume_vault/shared/widgets/chip_list.dart';
 import 'package:volume_vault/shared/widgets/icon_text.dart';
 import 'package:volume_vault/shared/widgets/list_tile_text.dart';
-import 'package:volume_vault/shared/widgets/radial_light.dart';
 import 'package:volume_vault/shared/widgets/title_card.dart';
 
 class BookInfoViewerPage extends ConsumerWidget {
@@ -20,48 +17,18 @@ class BookInfoViewerPage extends ConsumerWidget {
 
   const BookInfoViewerPage(this.book, {super.key});
 
-  Future<Color?> getColorFromImage(ImageProvider image) async {
-    try {
-      final PaletteGenerator palette =
-          await PaletteGenerator.fromImageProvider(image);
-      return palette.dominantColor?.color;
-    } catch (_) {
-      return null;
-    }
-  }
-
   Future<Widget> _buildCoverShowcase(String coverLink,
-      {required Size screenSize,
+      {required Size showcaseSize,
       required BuildContext context,
       bool renderLightEffect = true}) async {
     if (coverLink.isEmpty) return const SizedBox();
     NetworkImage coverImage = NetworkImage(coverLink);
 
     await precacheImage(coverImage, context);
-    Color? dominantColor = await getColorFromImage(coverImage);
+    Color? dominantColor = await ImageUtils.getDominantColor(coverImage);
 
-    return RepaintBoundary(
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
-        children: [
-          if (dominantColor != null && renderLightEffect)
-            Animate(
-              effects: const [
-                ScaleEffect(
-                    duration: Duration(seconds: 1), curve: Curves.easeOutCirc)
-              ],
-              child: RadialLight(250 * 1.2, screenSize.width,
-                  radius: 105, colors: [dominantColor]),
-            ),
-          BookImageViewer(image: coverImage).animate(effects: const [
-            FadeEffect(
-                curve: Curves.easeInOutQuart,
-                duration: Duration(milliseconds: 500))
-          ]),
-        ],
-      ),
-    );
+    return BookShowcase(
+        size: showcaseSize, image: coverImage, color: dominantColor, lightEffect: renderLightEffect,);
   }
 
   void launchBuyPage(String buyPageLink) async {
@@ -78,7 +45,8 @@ class BookInfoViewerPage extends ConsumerWidget {
         actions: [
           IconButton(
               onPressed: () => Navigator.pushNamed(
-                  context, AppRoutes.registerEditBookPageRoute, arguments: [book]),
+                  context, AppRoutes.registerEditBookPageRoute,
+                  arguments: [book]),
               icon: const Icon(Icons.edit_rounded)),
           if (book.buyLink != null)
             IconButton(
@@ -101,7 +69,7 @@ class BookInfoViewerPage extends ConsumerWidget {
                   width: size.width,
                   child: FutureBuilder(
                     future: _buildCoverShowcase(book.coverLink!,
-                        screenSize: size,
+                        showcaseSize: Size(size.width, 250 * 1.2),
                         context: context,
                         renderLightEffect: graphicsPreferences.lightEffect),
                     builder: (_, snapshot) {

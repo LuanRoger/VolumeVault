@@ -22,10 +22,10 @@ class BookImageViewer extends StatelessWidget {
         borderRadius: BorderRadius.circular(15.0),
         border: Border.all(width: borderWidth),
       ),
-      height: _height * sizeMultiplier,
-      width: _width * sizeMultiplier,
       child: Image(
         image: image,
+      height: _height * sizeMultiplier,
+      width: _width * sizeMultiplier,
         fit: BoxFit.cover,
         errorBuilder: (_, __, ___) =>
             const Icon(Icons.image_not_supported_rounded),

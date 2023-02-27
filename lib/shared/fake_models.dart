@@ -5,7 +5,7 @@ import 'package:volume_vault/models/user_info_model.dart';
 UserInfoModel fakeUserModel = UserInfoModel(1,
     username: "Luan Roger", email: "luan.roger.2003@gmail.com");
 
-BookModel fakeBookModel = BookModel(
+BookModel get fakeBookModel => BookModel(
     0, "Harry Potter", "J.K. Rowling", "978-85-7683-393-2",
     publicationYear: 1992,
     publisher: "Rocco",
