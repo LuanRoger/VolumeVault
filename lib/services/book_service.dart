@@ -12,9 +12,9 @@ class BookService {
   late final HttpModule _httpModule;
   final ApiConfigParams _apiConfig;
 
-  BookService({required ApiConfigParams apiConfig}) : _apiConfig = apiConfig {
+  BookService({required ApiConfigParams apiConfig, required String userAuthToken}) : _apiConfig = apiConfig {
     _httpModule = HttpModule(
-        fixHeaders: {Consts.AUTHORIZATION_REQUEST_HEADER: _apiConfig.apiKey});
+        fixHeaders: {Consts.API_KEY_REQUEST_HEADER: _apiConfig.apiKey, Consts.AUTHORIZATION_REQUEST_HEADER: userAuthToken});
   }
 
   String get _baseUrl =>

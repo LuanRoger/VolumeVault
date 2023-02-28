@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:volume_vault/models/api_config_params.dart';
 import 'package:volume_vault/models/http_response.dart';
 import 'package:volume_vault/models/interfaces/http_module.dart';
+import 'package:volume_vault/services/models/login_result.dart';
+import 'package:volume_vault/services/models/sigin_result.dart';
 import 'package:volume_vault/services/models/user_login_request.dart';
 import 'package:volume_vault/services/models/user_sigin_request.dart';
 import 'package:volume_vault/shared/consts.dart';
@@ -21,19 +23,20 @@ class AuthService {
   String get _siginUrl => "$_baseUrl/signin";
   String get _loginUrl => "$_baseUrl/login";
 
-  Future<HttpResponse> sigin(UserSiginRequest userRequest) async {
+  Future<SiginResult> sigin(UserSiginRequest userRequest) async {
     final String userJsonInfo = json.encode(userRequest);
-
     final HttpResponse response =
         await _httpModule.post(_siginUrl, body: userJsonInfo);
-    return response;
+        
+    return SiginResult(
+        jwtToken: response.body, requestCode: response.statusCode);
   }
 
-  Future<HttpResponse> login(UserLoginRequest userRequest) async {
-    final String userJsonInfo = json.encode(userRequest);
+  Future<LoginResult> login(UserLoginRequest userRequest) async {
+    final String jsonRequestBody = json.encode(userRequest);
+    final HttpResponse response = await _httpModule.post(_loginUrl, body: jsonRequestBody);
 
-    final HttpResponse response =
-        await _httpModule.post(_loginUrl, body: userJsonInfo);
-    return response;
+    return LoginResult(
+        jwtToken: response.body, requestCode: response.statusCode);
   }
 }
