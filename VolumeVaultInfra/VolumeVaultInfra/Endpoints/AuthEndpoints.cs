@@ -30,7 +30,7 @@ internal static class AuthEndpoints
 
                 return Results.Ok(jwt);
             });
-        groupBuilder.MapGet("login",
+        groupBuilder.MapPost("login",
             async ([FromServices] IUserController userController,
                 [FromBody] UserLoginRequestModel loginRequest) =>
             {

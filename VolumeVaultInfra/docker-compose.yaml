@@ -18,6 +18,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT
       - JWT_SYMMETRIC_KEY
+      - API_KEY
       - VV_POSTGRES_HOST
       - VV_POSTGRES_PORT
       - VV_DEFAULT_POSTGRES_DB_NAME
