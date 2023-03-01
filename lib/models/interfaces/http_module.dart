@@ -16,10 +16,13 @@ class HttpModule {
 
   HttpModule({this.fixHeaders});
 
-  Future<HttpResponse> get(String url, {Map<String, String>? query}) async {
+  Future<HttpResponse> get(String url,
+      {Map<String, String>? query, Map<String, String>? headers}) async {
     final Response response;
     try {
-      response = await _dio.get(url, queryParameters: query ?? const {});
+      response = await _dio.get(url,
+          queryParameters: query ?? const {},
+          options: Options(headers: headers));
     } on DioError catch (e) {
       return HttpResponse.error(
           message: e.message, code: e.response?.statusCode);
