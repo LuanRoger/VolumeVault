@@ -38,17 +38,17 @@ class ConfigurationPage extends HookConsumerWidget {
     );
 
     if (resetConfig) {
-      final appPreferences = ref.read(appPreferencesProvider.notifier);
-      await appPreferences.restartPreferences();
+      final themePreferences = ref.read(themePreferencesStateProvider.notifier);
+      final graphicsPreferences =
+          ref.read(graphicsPreferencesStateProvider.notifier);
+
+      themePreferences.reset();
+      graphicsPreferences.reset();
     }
   }
 
   Future _showThemeChangeDialog(BuildContext context, WidgetRef ref) async {
-    final themeBrightness = ref
-        .read(appPreferencesProvider.notifier)
-        .themePreferences
-        .themeBrightnes
-        .index;
+    final themeBrightness = ref.read(themePreferencesStateProvider);
 
     await showDialog(
       context: context,
@@ -65,39 +65,42 @@ class ConfigurationPage extends HookConsumerWidget {
           children: [
             const Text("Selecione o tema desejado:"),
             const SizedBox(height: 8),
-            RadioListTile<int>(
+            RadioListTile<ThemeBrightness>(
               title: const Text("Claro"),
-              value: ThemeBrightness.LIGHT.index,
-              groupValue: themeBrightness,
+              value: ThemeBrightness.LIGHT,
+              groupValue: themeBrightness.themeBrightnes,
               onChanged: (newValue) {
                 if (newValue == null) return;
 
-                ref.read(appPreferencesProvider.notifier).themeBrightness =
-                    newValue;
+                ref
+                    .read(themePreferencesStateProvider.notifier)
+                    .themeBrightness = newValue;
                 Navigator.pop(context);
               },
             ),
-            RadioListTile<int>(
+            RadioListTile<ThemeBrightness>(
               title: const Text("Escuro"),
-              value: ThemeBrightness.DARK.index,
-              groupValue: themeBrightness,
+              value: ThemeBrightness.DARK,
+              groupValue: themeBrightness.themeBrightnes,
               onChanged: (newValue) {
                 if (newValue == null) return;
 
-                ref.read(appPreferencesProvider.notifier).themeBrightness =
-                    newValue;
+                ref
+                    .read(themePreferencesStateProvider.notifier)
+                    .themeBrightness = newValue;
                 Navigator.pop(context);
               },
             ),
-            RadioListTile<int>(
+            RadioListTile<ThemeBrightness>(
               title: const Text("Sistema"),
-              value: ThemeBrightness.SYSTEM.index,
-              groupValue: themeBrightness,
+              value: ThemeBrightness.SYSTEM,
+              groupValue: themeBrightness.themeBrightnes,
               onChanged: (newValue) {
                 if (newValue == null) return;
 
-                ref.read(appPreferencesProvider.notifier).themeBrightness =
-                    newValue;
+                ref
+                    .read(themePreferencesStateProvider.notifier)
+                    .themeBrightness = newValue;
                 Navigator.pop(context);
               },
             ),
@@ -108,21 +111,25 @@ class ConfigurationPage extends HookConsumerWidget {
   }
 
   void _toggleLightEffect(WidgetRef ref, bool newValue) {
-    final appPreferences = ref.read(appPreferencesProvider.notifier);
-    appPreferences.lightEffect = newValue;
+    final graphicsPrefernces =
+        ref.read(graphicsPreferencesStateProvider.notifier);
+    graphicsPrefernces.lightEffect = newValue;
+  }
+
+  void _toggleUserEnvVars(WidgetRef ref) {
+    ref.read(serverConfigNotifierProvider.notifier).toggleUseEnvVars();
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themePreferences = ref.watch(themePreferencesStateProvider);
     final graphicsPreferences = ref.watch(graphicsPreferencesStateProvider);
-    final serverPreferences = ref.read(serverPreferencesStateProvider);
-    final serverHostController =
-        useTextEditingController(text: serverPreferences.serverHost);
-    final serverPortController =
-        useTextEditingController(text: serverPreferences.serverPort);
-    final serverApiKeyController =
-        useTextEditingController(text: serverPreferences.serverApiKey);
+    final serverConfig = ref.watch(serverConfigNotifierProvider);
+
+    final serverHostController = useTextEditingController();
+    final serverPortController = useTextEditingController();
+    final serverApiKeyController = useTextEditingController();
+
     final resetConfigLoadingState = useState(false);
 
     return Scaffold(
@@ -150,57 +157,75 @@ class ConfigurationPage extends HookConsumerWidget {
               ),
             ),
             TextBodyTitle("Outros"),
-            Form(
-              child: ExpansionTile(
-                title: const Text("Avançado"),
-                subtitle: const Text("Configurações do servidor e conexão"),
-                children: [
-                  ListTile(
-                    title: TextFormField(
-                      controller: serverHostController,
-                      enabled: false,
-                      decoration: const InputDecoration(
-                        labelText: "Host do servidor",
-                      ),
+            serverConfig.maybeWhen(
+                data: (data) {
+                  serverHostController.text = data.serverHost;
+                  serverPortController.text = data.serverPort;
+                  serverApiKeyController.text = data.serverApiKey;
+
+                  return Form(
+                    child: ExpansionTile(
+                      title: const Text("Avançado"),
+                      subtitle:
+                          const Text("Configurações do servidor e conexão"),
+                      children: [
+                        ListTile(
+                          title: TextFormField(
+                            controller: serverHostController,
+                            enabled: !data.useEnvVars,
+                            decoration: const InputDecoration(
+                              labelText: "Host do servidor",
+                            ),
+                          ),
+                        ),
+                        ListTile(
+                          title: TextFormField(
+                            controller: serverPortController,
+                            enabled: !data.useEnvVars,
+                            decoration: const InputDecoration(
+                              labelText: "Porta do servidor",
+                            ),
+                          ),
+                        ),
+                        ListTile(
+                          title: TextFormField(
+                            controller: serverApiKeyController,
+                            enabled: !data.useEnvVars,
+                            obscureText: true,
+                            decoration: const InputDecoration(
+                              labelText: "Chave da API",
+                            ),
+                          ),
+                        ),
+                        ListTile(
+                          title: const Text("Usar variaveis de ambiente"),
+                          onTap: () => _toggleUserEnvVars(ref),
+                          trailing: Switch(
+                            value: data.useEnvVars,
+                            onChanged: (_) => _toggleUserEnvVars(ref),
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              final serverConfig = ref
+                                  .read(serverConfigNotifierProvider.notifier);
+                              serverConfig.changeServerConfig(
+                                  serverHost: serverHostController.text,
+                                  serverPort: serverPortController.text,
+                                  serverApiKey: serverApiKeyController.text,
+                                  serverProtocol: serverPortController.text);
+                            },
+                            child: const Text("Salvar"),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  ListTile(
-                    title: TextFormField(
-                      controller: serverPortController,
-                      enabled: false,
-                      decoration: const InputDecoration(
-                        labelText: "Porta do servidor",
-                      ),
-                    ),
-                  ),
-                  ListTile(
-                    title: TextFormField(
-                      controller: serverApiKeyController,
-                      enabled: false,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: "Chave da API",
-                      ),
-                    ),
-                  ),
-                  const Align(
-                    alignment: Alignment.centerRight,
-                    child: ElevatedButton(
-                      onPressed: null,
-                      /* () {
-                        final appPreferences =
-                            ref.read(appPreferencesProvider.notifier);
-                        appPreferences.setAllServerPref(
-                            host: serverHostController.text,
-                            port: serverPortController.text,
-                            apiKey: serverApiKeyController.text);
-                      }, */
-                      child: Text("Salvar"),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                  );
+                },
+                orElse: () => const CircularProgressIndicator()),
             ElevatedButton(
               onPressed: !resetConfigLoadingState.value
                   ? () async {
