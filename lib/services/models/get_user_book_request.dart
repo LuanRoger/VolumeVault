@@ -11,4 +11,10 @@ class GetUserBookRequest {
         "page": page.toString(),
         "limitPerPage": limitPerPage.toString(),
       };
+  GetUserBookRequest copyWith({int? page, int? limitPerPage}) {
+    return GetUserBookRequest(
+      page: page ?? this.page,
+      limitPerPage: limitPerPage ?? this.limitPerPage,
+    );
+  }
 }
