@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using VolumeVaultInfra.Controllers;
 using VolumeVaultInfra.Exceptions;
+using VolumeVaultInfra.Models.Delegates;
 using VolumeVaultInfra.Models.User;
 // ReSharper disable UnusedMethodReturnValue.Global
 
@@ -10,6 +11,25 @@ internal static class AuthEndpoints
 {
     internal static RouteGroupBuilder MapAuthEndpoints(this RouteGroupBuilder groupBuilder)
     {
+        groupBuilder.MapGet("/", 
+             async (HttpContext context,
+                [FromServices] IUserController controller) =>
+        {
+            int userId = int.Parse(context.User.Claims
+                .First(claim => claim.Type == "ID").Value);
+            
+            UserReadModel userInfo;
+            try
+            { 
+                userInfo = await controller.GetUserInfo(userId);
+            }
+            catch(UserIdIsNotRegisteredException e)
+            {
+                return Results.NotFound();
+            }
+            
+            return Results.Ok(userInfo);
+        }).RequireAuthorization(PolicyAuthDelegateTemplates.JWTRequiredIdClaimPolicy);
         groupBuilder.MapPost("signin",
             async ([FromServices] IUserController userController,
                 [FromBody] UserWriteModel userWrite) =>

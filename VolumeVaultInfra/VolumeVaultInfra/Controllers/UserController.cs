@@ -29,6 +29,22 @@ public class UserController : IUserController
         _logger = logger;
     }
     
+    public async Task<UserReadModel> GetUserInfo(int userId)
+    {
+        _logger.Information("Getting informations from user ID[{0}]", userId);
+        UserModel? userInfo = await _userRepository.GetUserById(userId);
+        // ReSharper disable once InvertIf
+        if(userInfo is null)
+        {
+            Exception ex = new UserIdIsNotRegisteredException(userId);
+            _logger.Error(ex, ex.Message);
+            throw ex;
+        }
+        
+        _logger.Information("Found Username[{0}]", userInfo.username);
+        return UserReadModel.FromUserModel(userInfo);
+    }
+    
     public async Task<string> SigninUser(UserWriteModel userWrite)
     {
         ValidationResult validationResult = await _userWriteModelValidator.ValidateAsync(userWrite);
