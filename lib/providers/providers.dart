@@ -1,11 +1,19 @@
+import 'dart:convert';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:volume_vault/models/api_config_params.dart';
+import 'package:volume_vault/models/http_code.dart';
+import 'package:volume_vault/models/http_response.dart';
+import 'package:volume_vault/models/user_info_model.dart';
 import 'package:volume_vault/providers/interfaces/graphics_preferences_state.dart';
 import 'package:volume_vault/providers/interfaces/server_config_notifier.dart';
 import 'package:volume_vault/providers/interfaces/theme_preferences_state.dart';
 import 'package:volume_vault/providers/interfaces/user_session_notifier.dart';
 import 'package:volume_vault/services/auth_service.dart';
+import 'package:volume_vault/services/book_service.dart';
+import 'package:volume_vault/services/models/get_user_book_request.dart';
+import 'package:volume_vault/services/models/user_book_result.dart';
 import 'package:volume_vault/services/utils_service.dart';
 import 'package:volume_vault/shared/preferences/models/graphics_preferences.dart';
 import 'package:volume_vault/shared/preferences/models/theme_preferences.dart';
@@ -30,6 +38,21 @@ final graphicsPreferencesStateProvider =
     StateNotifierProvider<GraphicsPreferencesState, GraphicsPreferences>(
         (_) => throw UnimplementedError());
 
+final userInfoProvider = FutureProvider<UserInfoModel?>((ref) async {
+  final userSession = await ref.watch(userSessionNotifierProvider.future);
+  final authService = await ref.watch(authServiceProvider.future);
+
+  if (userSession.token.isEmpty) return null;
+
+  final HttpResponse response =
+      await authService.getUserInfo(userSession.token);
+  if (response.statusCode != HttpCode.OK) return null;
+
+  final String userJsonInfo = response.body;
+  UserInfoModel userInfo = json.decode(userJsonInfo);
+
+  return userInfo;
+});
 final authServiceProvider = FutureProvider<AuthService>((ref) async {
   final serverConfig = await ref.watch(serverConfigNotifierProvider.future);
 
@@ -40,6 +63,29 @@ final authServiceProvider = FutureProvider<AuthService>((ref) async {
         apiKey: serverConfig.serverApiKey,
         protocol: serverConfig.serverProtocol),
   );
+});
+final bookServiceProvider = FutureProvider<BookService?>((ref) async {
+  final serverConfig = await ref.watch(serverConfigNotifierProvider.future);
+  final userSession = await ref.watch(userSessionNotifierProvider.future);
+
+  if (userSession.token.isEmpty) return null;
+
+  return BookService(
+    userAuthToken: userSession.token,
+    apiConfig: ApiConfigParams(
+        host: serverConfig.serverHost,
+        port: serverConfig.serverPort,
+        apiKey: serverConfig.serverApiKey,
+        protocol: serverConfig.serverProtocol),
+  );
+});
+final fetchUserBooksProvider = FutureProvider.family<UserBookResult, GetUserBookRequest>((ref, userBooksRequest) async {
+  final bookService = await ref.read(bookServiceProvider.future);
+  if (bookService == null) return UserBookResult.empty();
+
+  UserBookResult userBookResult =
+      await bookService.getUserBook(userBooksRequest);
+  return userBookResult;
 });
 final utilsServiceProvider = FutureProvider<UtilsService>((ref) async {
   final serverConfig = await ref.watch(serverConfigNotifierProvider.future);

@@ -20,8 +20,14 @@ class AuthService {
 
   String get _baseUrl =>
       "${_apiConfig.protocol}://${_apiConfig.host}:${_apiConfig.port}/auth";
+  String get _userInfoUrl => "$_baseUrl/";
   String get _siginUrl => "$_baseUrl/signin";
   String get _loginUrl => "$_baseUrl/login";
+
+  Future<HttpResponse> getUserInfo(String userAuthToken) async {
+    return await _httpModule.get(_userInfoUrl,
+        headers: {Consts.AUTHORIZATION_REQUEST_HEADER: userAuthToken});
+  }
 
   Future<SiginResult> sigin(UserSiginRequest userRequest) async {
     final String userJsonInfo = json.encode(userRequest);

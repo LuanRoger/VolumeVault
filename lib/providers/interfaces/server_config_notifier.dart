@@ -11,6 +11,10 @@ class ServerConfigNotifier extends AsyncNotifier<ServerConfig> {
     ServerConfig? savedServerConfig = realm.find<ServerConfig>(0);
     ServerConfig serverConfig = ServerConfig(0, "", "", "", "", true);
     if (savedServerConfig == null) {
+      serverConfig.serverHost = EnvVars.apiHost;
+      serverConfig.serverPort = EnvVars.apiPort;
+      serverConfig.serverApiKey = EnvVars.apiKey;
+      serverConfig.serverProtocol = EnvVars.apiProtocol;
       await realm.writeAsync(() {
         serverConfig = realm.add(serverConfig);
       });

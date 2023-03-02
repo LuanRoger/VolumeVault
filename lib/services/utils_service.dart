@@ -16,7 +16,7 @@ class UtilsService {
   String get _baseUrl =>
       "${_apiConfig.protocol}://${_apiConfig.host}:${_apiConfig.port}/utils";
   String get _pingUrl => "$_baseUrl/ping";
-  String get _checkAuthTokenUrl => "$_baseUrl/check-auth-token";
+  String get _checkAuthTokenUrl => "$_baseUrl/check_auth_token";
 
   Future<HttpResponse> ping() {
     return _httpModule.get(_pingUrl);
@@ -24,6 +24,6 @@ class UtilsService {
 
   Future<HttpResponse> checkAuthToken(String authToken) {
     return _httpModule.get(_checkAuthTokenUrl,
-        headers: {Consts.AUTHORIZATION_REQUEST_HEADER: authToken});
+        headers: {Consts.AUTHORIZATION_REQUEST_HEADER: "Bearer $authToken"});
   }
 }
