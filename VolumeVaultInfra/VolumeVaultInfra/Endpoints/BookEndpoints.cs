@@ -31,6 +31,26 @@ internal static class BookEndpoints
 
                 return Results.Ok(userBooks);
             });
+            groupBuilder.MapGet("/{id:int}", 
+                async (HttpContext context,
+                    int id,
+                    [FromServices] IBookController controller) =>
+                {
+                    int idClaim = int.Parse(context.User.Claims
+                        .First(claim => claim.Type == "ID").Value);
+                    
+                    BookReadModel book;
+                    try
+                    { 
+                        book = await controller.GetBookById(idClaim, id);
+                    }
+                    catch (Exception e) when (e is BookNotFoundException or UserNotFoundException or NotOwnerBookException)
+                    {
+                        return Results.BadRequest(e.Message);
+                    }
+                    
+                    return Results.Ok(book);
+                });
         groupBuilder.MapPost("/",
             async (HttpContext context,
                 [FromBody] BookWriteModel bookWriteInfo,

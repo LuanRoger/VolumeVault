@@ -3,7 +3,9 @@
 namespace VolumeVaultInfra.Controllers;
 
 public interface IBookController
-{
+{ 
+    public Task<BookReadModel> GetBookById(int userId, int bookId);
+    
     public Task<BookReadModel> RegisterNewBook(int userId, BookWriteModel book);
 
     #region Read

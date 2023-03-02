@@ -36,6 +36,37 @@ public class BookController : IBookController
         _logger = logger;
     }
     
+    public async Task<BookReadModel> GetBookById(int userId, int bookId)
+    {
+        UserModel? relatedUser = await _userRepository.GetUserById(userId);
+        if(relatedUser is null)
+        {
+            Exception ex = new UserNotFoundException(userId);
+            _logger.Error(ex, ex.Message);
+            throw ex;
+        }
+        
+        _logger.Information("Getting book ID[{0}] owned by {1}", 
+            bookId, relatedUser.username);
+        BookModel? book = await _bookRepository.GetBookById(bookId);
+        if(book is null)
+        {
+            Exception ex = new BookNotFoundException(bookId);
+            _logger.Error(ex, ex.Message);
+            throw ex;
+        }
+        if(book.owner != relatedUser)
+        {
+            Exception ex = new NotOwnerBookException(book.title, relatedUser.username);
+            _logger.Error(ex, ex.Message);
+            throw ex;    
+        }
+
+        _logger.Information("Found Title[{0}]. Sending book...", book.title);
+        BookReadModel bookReadModel = BookReadModel.FromBookModel(book);
+        return bookReadModel;
+    }
+    
     public async Task<BookReadModel> RegisterNewBook(int userId, BookWriteModel book)
     {
         ValidationResult validationResult = await _bookWriteModelValidator.ValidateAsync(book);
@@ -101,7 +132,7 @@ public class BookController : IBookController
             throw ex;
         }
             
-        _logger.Information("Getting book from user ID[{0}].", relatedUser.id);
+        _logger.Information("Getting books from user ID[{0}].", relatedUser.id);
         _logger.Information("{0}: {1}, {2}: {3}.", nameof(page), page,
             nameof(limitPerPage), limitPerPage);
 
