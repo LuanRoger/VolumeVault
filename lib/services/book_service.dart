@@ -7,6 +7,7 @@ import 'package:volume_vault/models/http_response.dart';
 import 'package:volume_vault/models/interfaces/http_module.dart';
 import 'package:volume_vault/models/update_book_model.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
+import 'package:volume_vault/services/models/register_book_request.dart';
 import 'package:volume_vault/services/models/user_book_result.dart';
 import 'package:volume_vault/shared/consts.dart';
 
@@ -26,18 +27,23 @@ class BookService {
   String get _baseUrl =>
       "${_apiConfig.protocol}://${_apiConfig.host}:${_apiConfig.port}/book";
   String get _bookRootUrl => _baseUrl;
-  String get _bookUpdateUrl => "$_bookRootUrl/"; // + bookId
-  String get _bookDeleteUrl => "$_bookRootUrl/"; // + bookId
+  String get _bookAndIdUrl => "$_bookRootUrl/"; // + bookId
   String get _searchBookUrl => "$_bookRootUrl/search";
 
-  //TODO: Made all return [HttpResponse] and implement logic in providers
+  Future<BookModel> getUserBookById(int bookId) async {
+    HttpResponse response =
+        await _httpModule.get(_bookAndIdUrl + bookId.toString());
+
+    return BookModel.fromJson(response.body as Map<String, dynamic>);
+  }
 
   Future<UserBookResult> getUserBook(
       GetUserBookRequest getUserBookRequest) async {
     HttpResponse response =
         await _httpModule.get(_baseUrl, query: getUserBookRequest.forRequest());
-    final UserBookResult userBooks = UserBookResult(books: List.empty(growable: true));
-    if(response.statusCode != HttpCode.OK) return userBooks;
+    final UserBookResult userBooks =
+        UserBookResult(books: List.empty(growable: true));
+    if (response.statusCode != HttpCode.OK) return userBooks;
 
     for (Map<String, dynamic> jsonBook in response.body as List) {
       userBooks.books.add(BookModel.fromJson(jsonBook));
@@ -46,13 +52,14 @@ class BookService {
     return userBooks;
   }
 
-  Future<HttpResponse> registerBook(BookModel book) async {
+  Future<BookModel?> registerBook(RegisterBookRequest book) async {
     String bookJson = json.encode(book);
 
     HttpResponse response = await _httpModule.post(_baseUrl, body: bookJson);
+    if (response.statusCode != HttpCode.OK) return null;
+    BookModel registeredBook = BookModel.fromJson(response.body);
 
-    return response;
-    BookModel.fromJson(response.body as Map<String, dynamic>);
+    return registeredBook;
   }
 
   Future<HttpResponse> updateBook(
@@ -60,17 +67,17 @@ class BookService {
     String bookJson = json.encode(newInfosBook);
 
     HttpResponse response =
-        await _httpModule.put(_baseUrl + bookId.toString(), body: bookJson);
+        await _httpModule.put(_bookAndIdUrl + bookId.toString(), body: bookJson);
 
     return response;
     BookModel.fromJson(response.body as Map<String, dynamic>);
   }
 
-  Future<HttpResponse> deleteBook(int bookId) async {
+  Future<bool> deleteBook(int bookId) async {
     HttpResponse response =
-        await _httpModule.delete(_bookDeleteUrl + bookId.toString());
+        await _httpModule.delete(_bookAndIdUrl + bookId.toString());
 
-    return response;
+    return response.statusCode == HttpCode.OK;
   }
 
   Future<String> searchBook(String query) async {

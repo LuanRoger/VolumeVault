@@ -14,60 +14,52 @@ import 'package:volume_vault/shared/widgets/book_info_grid_card.dart';
 import 'package:volume_vault/shared/widgets/search_text_field.dart';
 
 class HomeSection extends HookConsumerWidget {
-  List<BookModel> books;
   VisualizationType? viewType;
+  final _booksFetcherRequest = GetUserBookRequest(page: 1);
+  
 
-  HomeSection({super.key, this.viewType, required this.books});
+  HomeSection({super.key, this.viewType});
 
   void _onCardPress(BuildContext context, BookModel bookModel) {
     Navigator.pushNamed(context, AppRoutes.bookInfoViewerPageRoute,
         arguments: [bookModel]);
   }
 
-  Future _fetchUserBooks(
-      WidgetRef ref, GetUserBookRequest userBookRequest) async {
-    final bookService = await ref.watch(bookServiceProvider.future);
+  Future<UserBookResult> _fetchUserBooks(WidgetRef ref) async {
+    final bookService = await ref.read(bookServiceProvider.future);
     if (bookService == null) return UserBookResult.empty();
 
     UserBookResult userBookResult =
-        await bookService.getUserBook(userBookRequest);
+        await bookService.getUserBook(_booksFetcherRequest);
     return userBookResult;
   }
 
-  Widget _buildBookView(WidgetRef ref,
+  Widget _buildBookView(BuildContext context, WidgetRef ref,
       {required List<BookModel> books,
       required ScrollController controller,
       VisualizationType viewType = VisualizationType.LIST}) {
     switch (viewType) {
       case VisualizationType.LIST:
-        return ListView.builder(
+        return ListView(
           controller: controller,
           physics: const AlwaysScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-            final BookModel book = books[index];
-
-            return BookInfoCard(
+          children: [
+            for (final book in books) BookInfoCard(
               book,
               onPressed: () => _onCardPress(context, book),
-            );
-          },
-          itemCount: books.length,
+            ),],
         );
       case VisualizationType.GRID:
-        return GridView.builder(
+        return GridView(
           controller: controller,
           physics: const AlwaysScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-            final BookModel book = books[index];
-
-            return BookInfoGridCard(
-              book,
-              onPressed: () => _onCardPress(context, book),
-            );
-          },
-          itemCount: books.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2, childAspectRatio: 0.53),
+          children: [
+            for (final book in books) BookInfoGridCard(
+              book,
+              onPressed: () => _onCardPress(context, book),
+            ),],
         );
     }
   }
@@ -106,22 +98,36 @@ class HomeSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userInfo = ref.watch(userInfoProvider);
-    final getUserBookState = useState(GetUserBookRequest(page: 1));
-    final userBooks = ref.watch(fetchUserBooksProvider(getUserBookState.value));
+    
+    final fetchRelaodKey = useState(UniqueKey());
+    final userBooks = useState(List<BookModel>.empty());
+    final fetchMemoizer = useMemoized(() => _fetchUserBooks(ref), [fetchRelaodKey.value]);
+    final fetchFuture = useFuture(fetchMemoizer);
 
+    final lastDataPage = useState(1);
     final visualizationType =
         useState<VisualizationType>(viewType ?? VisualizationType.LIST);
     final scrollController = useScrollController();
-    useEffect(() => () {
-          scrollController.addListener(() {
+    useEffect(
+      () => () {
+        scrollController.addListener(
+          () {
             if (scrollController.position.maxScrollExtent !=
                 scrollController.offset) return;
+            if (_booksFetcherRequest.page > lastDataPage.value) return;
+            _booksFetcherRequest.page += 1;
+            fetchRelaodKey.value = UniqueKey();
+          },
+        );
+      },
+    );
 
-            getUserBookState.value = getUserBookState.value
-                .copyWith(page: getUserBookState.value.page + 1);
-            ref.refresh(fetchUserBooksProvider(getUserBookState.value));
-          });
-        });
+    if (fetchFuture.hasData && fetchFuture.connectionState == ConnectionState.done) {
+      if (fetchFuture.data!.books.isNotEmpty) {
+        userBooks.value = [...userBooks.value, ...fetchFuture.data!.books];
+        lastDataPage.value = _booksFetcherRequest.page;
+      }
+    }
 
     return Scaffold(
       drawer: Drawer(
@@ -184,25 +190,22 @@ class HomeSection extends HookConsumerWidget {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () {
-          ref.refresh(fetchUserBooksProvider(getUserBookState.value));
-          return Future.delayed(const Duration(seconds: 1));
+        onRefresh: () async {
+          userBooks.value = List.empty();
+          _booksFetcherRequest.page = 1;
+          fetchRelaodKey.value = UniqueKey();
         },
         child: PageTransitionSwitcher(
-            transitionBuilder: (child, animation, secondaryAnimation) =>
-                FadeThroughTransition(
-                    animation: animation,
-                    secondaryAnimation: secondaryAnimation,
-                    child: child),
-            child: userBooks.maybeWhen(
-              data: (data) {
-                return _buildBookView(ref,
-                    books: data.books,
-                    controller: scrollController,
-                    viewType: visualizationType.value);
-              },
-              orElse: () => const Center(child: CircularProgressIndicator()),
-            )),
+          transitionBuilder: (child, animation, secondaryAnimation) =>
+              FadeThroughTransition(
+                  animation: animation,
+                  secondaryAnimation: secondaryAnimation,
+                  child: child),
+          child: _buildBookView(context, ref,
+              books: userBooks.value,
+              controller: scrollController,
+              viewType: visualizationType.value),
+        ),
       ),
       floatingActionButton: OpenContainer(
         clipBehavior: Clip.none,

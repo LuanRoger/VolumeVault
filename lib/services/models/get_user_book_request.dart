@@ -1,5 +1,5 @@
 class GetUserBookRequest {
-  final int page;
+  int page;
   final int limitPerPage;
 
   GetUserBookRequest({

@@ -9,7 +9,6 @@ import 'package:volume_vault/shared/utils/image_utils.dart';
 import 'package:volume_vault/shared/widgets/book_showcase.dart';
 import 'package:volume_vault/shared/widgets/chip_list.dart';
 import 'package:volume_vault/shared/widgets/icon_text.dart';
-import 'package:volume_vault/shared/widgets/list_tile_text.dart';
 import 'package:volume_vault/shared/widgets/title_card.dart';
 
 class BookInfoViewerPage extends ConsumerWidget {
@@ -28,7 +27,11 @@ class BookInfoViewerPage extends ConsumerWidget {
     Color? dominantColor = await ImageUtils.getDominantColor(coverImage);
 
     return BookShowcase(
-        size: showcaseSize, image: coverImage, color: dominantColor, lightEffect: renderLightEffect,);
+      size: showcaseSize,
+      image: coverImage,
+      color: dominantColor,
+      lightEffect: renderLightEffect,
+    );
   }
 
   void launchBuyPage(String buyPageLink) async {
@@ -127,21 +130,28 @@ class BookInfoViewerPage extends ConsumerWidget {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               children: [
-                ListTileText(title: "ISBN", text: book.isbn),
-                ListTileText(title: "Editora", text: book.publisher),
-                ListTileText(
-                    title: "Ano de lançamento",
-                    text: book.publicationYear.toString()),
-                ListTileText(title: "Formato", text: book.format?.name),
+                ListTile(title: const Text("ISBN"), trailing: Text(book.isbn)),
+                if (book.publisher != null)
+                  ListTile(
+                      title: const Text("Editora"),
+                      trailing: Text(book.publisher!)),
+                if (book.publicationYear != null)
+                  ListTile(
+                      title: const Text("Ano de lançamento"),
+                      trailing: Text(book.publicationYear.toString())),
+                if (book.format != null)
+                  ListTile(
+                      title: const Text("Formato"),
+                      trailing: Text(book.format!.name)),
                 if (book.readed != null)
-                  ListTileText(
-                      title: "Lido", text: book.readed! ? "Sim" : "Não"),
-                ListTileText(
-                    title: "Criado em",
-                    text: dayMonthYearFormat.format(book.createdAt)),
-                ListTileText(
-                    title: "Ultima modificação",
-                    text: dayMonthYearFormat.format(book.lastModification)),
+                  ListTile(
+                      title: const Text("Lido"), trailing: book.readed! ? const Text("Sim") : const Text("Não")),
+                ListTile(
+                    title: const Text("Criado em"),
+                    trailing: Text(dayMonthYearFormat.format(book.createdAt),),),
+                ListTile(
+                    title: const Text("Ultima modificação"),
+                    trailing: Text(dayMonthYearFormat.format(book.lastModification),),),
               ],
             ),
             const SizedBox(height: 5),
