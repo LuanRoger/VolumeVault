@@ -57,7 +57,7 @@ class HttpModule {
 
     return HttpResponse(
         statusCode: HttpCode.fromInt(response.statusCode ?? -1),
-        body: response.data as String);
+        body: response.data);
   }
 
   Future<HttpResponse> put(String url,
@@ -80,7 +80,7 @@ class HttpModule {
 
     return HttpResponse(
         statusCode: HttpCode.fromInt(response.statusCode ?? -1),
-        body: response.data as String);
+        body: response.data);
   }
 
   Future<HttpResponse> delete(String url,
@@ -103,6 +103,6 @@ class HttpModule {
 
     return HttpResponse(
         statusCode: HttpCode.fromInt(response.statusCode ?? -1),
-        body: response.data as String);
+        body: response.data);
   }
 }
