@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart' hide BottomSheet;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/enums/book_format.dart';
+import 'package:volume_vault/providers/providers.dart';
+import 'package:volume_vault/services/models/register_book_request.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/validators/text_field_validator.dart';
 import 'package:volume_vault/shared/widgets/book_image_viewer.dart';
@@ -12,7 +15,7 @@ import 'package:volume_vault/shared/widgets/chip_list.dart';
 import 'package:volume_vault/shared/widgets/dialogs/input_dialog.dart';
 import 'package:volume_vault/shared/widgets/icon_text.dart';
 
-class RegisterEditBookPage extends HookWidget {
+class RegisterEditBookPage extends HookConsumerWidget {
   ///If this model is not null, the page enter in edit mode.
   ///So when you hit the save button, the book will be updated instead of created.
   final BookModel? editBookModel;
@@ -22,6 +25,16 @@ class RegisterEditBookPage extends HookWidget {
   final _aditionalInfoFormKey = GlobalKey<FormState>();
 
   RegisterEditBookPage({super.key, this.editBookModel});
+
+  Future<bool> _registerNewBook(WidgetRef ref,
+      {required RegisterBookRequest book}) async {
+    final bookService = await ref.read(bookServiceProvider.future);
+    if (bookService == null) return false;
+
+    final BookModel? registeredBook = await bookService.registerBook(book);
+
+    return registeredBook != null;
+  }
 
   Future _showImageCoverDialog(
       BuildContext context, TextEditingController coverTextController) async {
@@ -234,7 +247,7 @@ class RegisterEditBookPage extends HookWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final coverUrlController =
         useTextEditingController(text: editBookModel?.coverLink);
 
@@ -281,10 +294,12 @@ class RegisterEditBookPage extends HookWidget {
             Align(
                 alignment: Alignment.center,
                 child: GestureDetector(
-                    onTap: () =>
-                        _showImageCoverDialog(context, coverUrlController),
-                    child: BookImageViewer(
-                        image: NetworkImage(coverUrlController.text)))),
+                  onTap: () =>
+                      _showImageCoverDialog(context, coverUrlController),
+                  child: BookImageViewer(
+                    image: NetworkImage(coverUrlController.text),
+                  ),
+                )),
             const SizedBox(height: 5.0),
             Text(
               "Seções que tem \"*\" possuem campos obrigatorios",
@@ -376,7 +391,56 @@ class RegisterEditBookPage extends HookWidget {
                     tagLabelsState.value = newLabels;
                   },
                 ),
-                ElevatedButton(onPressed: () {}, child: const Text("Confirmar"))
+                ElevatedButton(
+                    onPressed: () async {
+                      final RegisterBookRequest book = RegisterBookRequest(
+                        title: titleController.text,
+                        author: authorController.text,
+                        isbn: isbnController.text,
+                        publisher: publisherController.text.isNotEmpty
+                            ? publisherController.text
+                            : null,
+                        publicationYear:
+                            int.tryParse(publishYearController.text),
+                        edition: int.tryParse(editionController.text),
+                        format: bookFormatState.value.index,
+                        genre: genreController.text.isNotEmpty
+                            ? genreController.text
+                            : null,
+                        pagesNumber: int.tryParse(pageNumbController.text),
+                        observation: observationController.text.isNotEmpty
+                            ? observationController.text
+                            : null,
+                        synopsis: synopsisController.text.isNotEmpty
+                            ? synopsisController.text
+                            : null,
+                        readed: readedState.value,
+                        tags: tagLabelsState.value.isNotEmpty
+                            ? tagLabelsState.value
+                            : null,
+                        coverLink: coverUrlController.text.isNotEmpty
+                            ? coverUrlController.text
+                            : null,
+                        buyLink: buyLinkController.text.isNotEmpty
+                            ? buyLinkController.text
+                            : null,
+                        createdAt: DateTime.now().toUtc(),
+                        lastModification: DateTime.now().toUtc(),
+                      );
+
+                      final bool success =
+                          await _registerNewBook(ref, book: book);
+                      if (success) {
+                        Navigator.pop(context);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Erro ao registrar livro"),
+                          ),
+                        );
+                      }
+                    },
+                    child: const Text("Confirmar"))
               ],
             )
           ]),
