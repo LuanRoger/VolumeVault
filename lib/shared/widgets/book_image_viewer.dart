@@ -18,6 +18,8 @@ class BookImageViewer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       clipBehavior: Clip.hardEdge,
+      height: _height * sizeMultiplier,
+      width: _width * sizeMultiplier,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15.0),
         border: Border.all(width: borderWidth),

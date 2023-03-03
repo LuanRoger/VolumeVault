@@ -6,7 +6,6 @@ import 'package:volume_vault/models/http_code.dart';
 import 'package:volume_vault/pages/home_page/sections/bookmark_section.dart';
 import 'package:volume_vault/pages/home_page/sections/home_section.dart';
 import 'package:volume_vault/providers/providers.dart';
-import 'package:volume_vault/services/utils_service.dart';
 import 'package:volume_vault/shared/fake_models.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 
@@ -17,14 +16,12 @@ class HomePageMobile extends HookConsumerWidget {
     switch (index) {
       case 0:
         return HomeSection(
-          books: List.generate(50, (index) => fakeBookModel),
           viewType: VisualizationType.LIST,
         );
       case 1:
         return const BookmarkSection();
       default:
         return HomeSection(
-          books: List.generate(50, (index) => fakeBookModel),
           viewType: VisualizationType.LIST,
         );
     }
@@ -103,7 +100,6 @@ class HomePageMobile extends HookConsumerWidget {
               child: CircularProgressIndicator(),
             )
           : HomeSection(
-              books: List.generate(50, (index) => fakeBookModel),
               viewType: VisualizationType.LIST,
             ),
     );
