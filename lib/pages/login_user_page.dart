@@ -37,110 +37,123 @@ class LoginUserPage extends HookConsumerWidget {
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    height: 150,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      image: const DecorationImage(
-                        image: AppImages.loginImage,
-                        fit: BoxFit.cover,
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        image: const DecorationImage(
+                          image: AppImages.loginImage,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
-                  Text(
-                    "Bem-vindo(a) de volta",
-                    style: Theme.of(context)
-                        .textTheme
-                        .displaySmall!
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 5),
-                  Form(
-                    key: _loginFormKey,
+                  Expanded(
+                    flex: 4,
                     child: Column(
                       children: [
-                        TextFormField(
-                          controller: usernameController,
-                          validator: minumumLenght3,
-                          decoration: const InputDecoration(
-                            label: Text("Usuário"),
-                            filled: true,
-                            border: UnderlineInputBorder(
-                                borderSide: BorderSide.none),
-                          ),
+                        Text(
+                          "Bem-vindo(a) de volta",
+                          style: Theme.of(context)
+                              .textTheme
+                              .displaySmall!
+                              .copyWith(fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(height: 15),
-                        TextFormField(
-                          controller: passwordController,
-                          validator: minumumLenght8AndMaximum18,
-                          obscureText: true,
-                          decoration: const InputDecoration(
-                            label: Text("Senha"),
-                            filled: true,
-                            border: UnderlineInputBorder(
-                                borderSide: BorderSide.none),
-                          ),
-                        ),
-                        const SizedBox(height: 15),
-                        ElevatedButton(
-                            onPressed: () async {
-                              if (!_loginFormKey.currentState!.validate()) {
-                                return;
-                              }
-                              isLoadingState.value = true;
+                        const SizedBox(height: 5),
+                        Form(
+                          key: _loginFormKey,
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                controller: usernameController,
+                                validator: minumumLenght3,
+                                decoration: const InputDecoration(
+                                  label: Text("Usuário"),
+                                  filled: true,
+                                  border: UnderlineInputBorder(
+                                      borderSide: BorderSide.none),
+                                ),
+                              ),
+                              const SizedBox(height: 15),
+                              TextFormField(
+                                controller: passwordController,
+                                validator: minumumLenght8AndMaximum18,
+                                obscureText: true,
+                                decoration: const InputDecoration(
+                                  label: Text("Senha"),
+                                  filled: true,
+                                  border: UnderlineInputBorder(
+                                      borderSide: BorderSide.none),
+                                ),
+                              ),
+                              const SizedBox(height: 15),
+                              ElevatedButton(
+                                  onPressed: () async {
+                                    if (!_loginFormKey.currentState!
+                                        .validate()) {
+                                      return;
+                                    }
+                                    isLoadingState.value = true;
 
-                              LoginResult result = await _login(
-                                ref,
-                                loginRequest: UserLoginRequest(
-                                    username: usernameController.text,
-                                    password: passwordController.text),
-                              );
-
-                              if (result.requestCode != HttpCode.OK) {
-                                switch (result.requestCode) {
-                                  case HttpCode.NOT_FOUND:
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(const SnackBar(
-                                      content: Text("O usuário não existe."),
-                                    ));
-                                    break;
-                                  default:
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                            "Occoreu um error. (${result.requestCode.code})"),
-                                      ),
+                                    LoginResult result = await _login(
+                                      ref,
+                                      loginRequest: UserLoginRequest(
+                                          username: usernameController.text,
+                                          password: passwordController.text),
                                     );
-                                    break;
-                                }
-                                isLoadingState.value = false;
-                                return;
-                              }
 
-                              ref
-                                  .read(userSessionNotifierProvider.notifier)
-                                  .changeUserSessionToken(result.jwtToken!);
-                              Navigator.pushNamedAndRemoveUntil(context,
-                                  AppRoutes.homePageRoute, (_) => false);
-                            },
-                            child: const Text("Entrar")),
+                                    if (result.requestCode != HttpCode.OK) {
+                                      switch (result.requestCode) {
+                                        case HttpCode.NOT_FOUND:
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                            content:
+                                                Text("O usuário não existe."),
+                                          ));
+                                          break;
+                                        default:
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                  "Occoreu um error. (${result.requestCode.code})"),
+                                            ),
+                                          );
+                                          break;
+                                      }
+                                      isLoadingState.value = false;
+                                      return;
+                                    }
+
+                                    ref
+                                        .read(userSessionNotifierProvider
+                                            .notifier)
+                                        .changeUserSessionToken(
+                                            result.jwtToken!);
+                                    Navigator.pushNamedAndRemoveUntil(context,
+                                        AppRoutes.homePageRoute, (_) => false);
+                                  },
+                                  child: const Text("Entrar")),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Text("Não tem uma conta?"),
+                            TextButton(
+                              onPressed: () => Navigator.of(context)
+                                  .pushNamedAndRemoveUntil(
+                                      AppRoutes.siginPageRoute, (_) => false),
+                              child: const Text("Registre-se"),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text("Não tem uma conta?"),
-                      TextButton(
-                        onPressed: () => Navigator.of(context)
-                            .pushNamedAndRemoveUntil(
-                                AppRoutes.siginPageRoute, (_) => false),
-                        child: const Text("Registre-se"),
-                      ),
-                    ],
                   ),
                 ],
               ),

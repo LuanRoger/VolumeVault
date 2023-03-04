@@ -5,7 +5,7 @@ import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/http_code.dart';
 import 'package:volume_vault/models/http_response.dart';
 import 'package:volume_vault/models/interfaces/http_module.dart';
-import 'package:volume_vault/models/update_book_model.dart';
+import 'package:volume_vault/services/models/edit_book_request.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
 import 'package:volume_vault/services/models/register_book_request.dart';
 import 'package:volume_vault/services/models/user_book_result.dart';
@@ -30,9 +30,10 @@ class BookService {
   String get _bookAndIdUrl => "$_bookRootUrl/"; // + bookId
   String get _searchBookUrl => "$_bookRootUrl/search";
 
-  Future<BookModel> getUserBookById(int bookId) async {
+  Future<BookModel?> getUserBookById(int bookId) async {
     HttpResponse response =
         await _httpModule.get(_bookAndIdUrl + bookId.toString());
+    if (response.statusCode != HttpCode.OK) return null;
 
     return BookModel.fromJson(response.body as Map<String, dynamic>);
   }
@@ -62,15 +63,14 @@ class BookService {
     return registeredBook;
   }
 
-  Future<HttpResponse> updateBook(
-      int bookId, UpdateBookModel newInfosBook) async {
+  Future<bool> updateBook(int bookId, EditBookRequest newInfosBook) async {
     String bookJson = json.encode(newInfosBook);
 
-    HttpResponse response =
-        await _httpModule.put(_bookAndIdUrl + bookId.toString(), body: bookJson);
+    HttpResponse response = await _httpModule
+        .put(_bookAndIdUrl + bookId.toString(), body: bookJson);
+    if (response.statusCode != HttpCode.OK) return false;
 
-    return response;
-    BookModel.fromJson(response.body as Map<String, dynamic>);
+    return true;
   }
 
   Future<bool> deleteBook(int bookId) async {
