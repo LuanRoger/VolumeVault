@@ -141,6 +141,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
                 controller: isbnController,
                 validator: mandatoryNotEmptyExactLenght17,
                 decoration: const InputDecoration(labelText: "ISBN *"),
+                keyboardType: TextInputType.number,
                 inputFormatters: [isbnInputFormater],
               ),
             ],
@@ -289,6 +290,8 @@ class RegisterEditBookPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final coverUrlController =
         useTextEditingController(text: editBookModel?.coverLink);
+    // ignore: unused_local_variable
+    final coverReloader = useListenable(coverUrlController);
 
     final titleController =
         useTextEditingController(text: editBookModel?.title);
@@ -297,9 +300,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
     final isbnController = useTextEditingController(text: editBookModel?.isbn);
 
     final editionController =
-        useTextEditingController(text: editBookModel?.edition.toString());
+        useTextEditingController(text: editBookModel?.edition?.toString());
     final publishYearController = useTextEditingController(
-        text: editBookModel?.publicationYear.toString());
+        text: editBookModel?.publicationYear?.toString());
     final publisherController =
         useTextEditingController(text: editBookModel?.publisher);
 
@@ -310,7 +313,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
     final genreController =
         useTextEditingController(text: editBookModel?.genre);
     final pageNumbController =
-        useTextEditingController(text: editBookModel?.pagesNumber.toString());
+        useTextEditingController(text: editBookModel?.pagesNumber?.toString());
 
     final observationController =
         useTextEditingController(text: editBookModel?.observation);

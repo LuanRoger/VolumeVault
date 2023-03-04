@@ -149,7 +149,7 @@ class BookInfoViewerPage extends HookConsumerWidget {
                     );
                     return;
                   }
-                  
+
                   currentBookInfoState.value = newInfos;
                 },
                 child: SingleChildScrollView(
@@ -183,10 +183,12 @@ class BookInfoViewerPage extends HookConsumerWidget {
                       children: [
                         Text(
                           book.title,
+                          textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.headlineSmall,
                         ),
                         Text(
                           book.author,
+                          textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ],

@@ -37,6 +37,8 @@ class BookInfoGridCard extends StatelessWidget {
                           overflow: TextOverflow.clip,
                         ),
                         Text(
+                          bookModel.publicationYear == null ?
+                          bookModel.author :
                           "${bookModel.author} - ${bookModel.publicationYear.toString()}",
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
