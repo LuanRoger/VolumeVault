@@ -79,7 +79,7 @@ class BookModel {
         buyLink: json["buyLink"] as String?,
         readed: json["readed"] as bool?,
         tags: json["tags"] != null
-            ? (json["tags"] as List<String>).toSet()
+            ? (json["tags"] as List).map((e) => e as String).toSet()
             : null,
         createdAt: DateTime.parse(json["createdAt"] as String),
         lastModification: DateTime.parse(json["lastModification"] as String),

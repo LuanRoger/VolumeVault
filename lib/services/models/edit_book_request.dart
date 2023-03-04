@@ -1,6 +1,4 @@
-import 'package:volume_vault/models/enums/book_format.dart';
-
-class UpdateBookModel {
+class EditBookRequest {
   String? title;
   String? author;
   String? isbn;
@@ -9,7 +7,7 @@ class UpdateBookModel {
   int? edition;
   int? pagesNumber;
   String? genre;
-  BookFormat? format;
+  int? format;
   String? observation;
   String? synopsis;
   String? coverLink;
@@ -18,23 +16,24 @@ class UpdateBookModel {
   Set<String>? tags;
   DateTime lastModification;
 
-  UpdateBookModel(
-      {this.title,
-      this.author,
-      this.isbn,
-      this.publicationYear,
-      this.publisher,
-      this.edition,
-      this.pagesNumber,
-      this.genre,
-      this.format,
-      this.observation,
-      this.synopsis,
-      this.coverLink,
-      this.buyLink,
-      this.readed,
-      this.tags,
-      required this.lastModification});
+  EditBookRequest({
+    this.title,
+    this.author,
+    this.isbn,
+    this.publicationYear,
+    this.publisher,
+    this.edition,
+    this.pagesNumber,
+    this.genre,
+    this.format,
+    this.observation,
+    this.synopsis,
+    this.coverLink,
+    this.buyLink,
+    this.readed,
+    this.tags,
+    required this.lastModification,
+  });
 
   Map<String, dynamic> toJson() => {
         "title": title,
@@ -45,13 +44,13 @@ class UpdateBookModel {
         "edition": edition,
         "pagesNumber": pagesNumber,
         "genre": genre,
-        "format": format?.index,
+        "format": format,
         "observation": observation,
         "synopsis": synopsis,
         "coverLink": coverLink,
         "buyLink": buyLink,
-        "readed": readed,
         "tags": tags?.toList(),
+        "readed": readed,
         "lastModification": lastModification.toIso8601String(),
       };
 }

@@ -52,7 +52,7 @@ class RegisterBookRequest {
         if(coverLink != null) "coverLink": coverLink,
         if(buyLink != null) "buyLink": buyLink,
         "readed": readed ?? false,
-        if(tags != null) "tags": tags,
+        if(tags != null) "tags": tags!.toList(),
         "createdAt": createdAt.toIso8601String(),
         "lastModification": lastModification.toIso8601String(),
       };
