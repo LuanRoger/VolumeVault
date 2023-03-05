@@ -35,12 +35,14 @@ class BookInfoGridCard extends StatelessWidget {
                           bookModel.title,
                           style: Theme.of(context).textTheme.titleLarge,
                           overflow: TextOverflow.clip,
+                          maxLines: 2,
                         ),
                         Text(
-                          bookModel.publicationYear == null ?
-                          bookModel.author :
-                          "${bookModel.author} - ${bookModel.publicationYear.toString()}",
+                          bookModel.publicationYear == null
+                              ? bookModel.author
+                              : "${bookModel.author} - ${bookModel.publicationYear.toString()}",
                           style: Theme.of(context).textTheme.titleMedium,
+                          overflow: TextOverflow.clip,
                         ),
                       ],
                     ),
