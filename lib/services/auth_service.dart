@@ -26,7 +26,7 @@ class AuthService {
 
   Future<HttpResponse> getUserInfo(String userAuthToken) async {
     return await _httpModule.get(_userInfoUrl,
-        headers: {Consts.AUTHORIZATION_REQUEST_HEADER: userAuthToken});
+        headers: {Consts.AUTHORIZATION_REQUEST_HEADER: "Bearer $userAuthToken"});
   }
 
   Future<SiginResult> sigin(UserSiginRequest userRequest) async {

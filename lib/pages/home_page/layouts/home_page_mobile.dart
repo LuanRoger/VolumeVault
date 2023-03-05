@@ -3,29 +3,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
 import 'package:volume_vault/models/http_code.dart';
-import 'package:volume_vault/pages/home_page/sections/bookmark_section.dart';
 import 'package:volume_vault/pages/home_page/sections/home_section.dart';
 import 'package:volume_vault/providers/providers.dart';
-import 'package:volume_vault/shared/fake_models.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 
 class HomePageMobile extends HookConsumerWidget {
   const HomePageMobile({super.key});
-
-  Widget getSection(int index) {
-    switch (index) {
-      case 0:
-        return HomeSection(
-          viewType: VisualizationType.LIST,
-        );
-      case 1:
-        return const BookmarkSection();
-      default:
-        return HomeSection(
-          viewType: VisualizationType.LIST,
-        );
-    }
-  }
 
   Future<bool> _checkConnection(WidgetRef ref) async {
     final utilsService = await ref.read(utilsServiceProvider.future);

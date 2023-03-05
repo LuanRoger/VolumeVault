@@ -135,15 +135,6 @@ class HomeSection extends HookConsumerWidget {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  Theme.of(context).colorScheme.surface,
-                  Theme.of(context).colorScheme.surfaceTint
-                ], stops: const [
-                  0.5,
-                  1
-                ]),
-              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -152,8 +143,11 @@ class HomeSection extends HookConsumerWidget {
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   userInfo.maybeWhen(
-                      data: (data) =>
-                          Text("Olá, ${data != null ? data.username : ""}"),
+                      data: (data) {
+                        if (data == null) return const SizedBox();
+
+                        return Text("Olá, ${data.username}");
+                      },
                       orElse: () => const SizedBox())
                 ],
               ),

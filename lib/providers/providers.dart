@@ -48,8 +48,7 @@ final userInfoProvider = FutureProvider<UserInfoModel?>((ref) async {
       await authService.getUserInfo(userSession.token);
   if (response.statusCode != HttpCode.OK) return null;
 
-  final String userJsonInfo = response.body;
-  UserInfoModel userInfo = json.decode(userJsonInfo);
+  UserInfoModel userInfo = UserInfoModel.fromJson(response.body);
 
   return userInfo;
 });
