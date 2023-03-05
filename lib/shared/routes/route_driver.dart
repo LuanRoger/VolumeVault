@@ -41,7 +41,7 @@ class RouteDriver {
   static gotoLoginPage() => MaterialPageRoute(builder: (_) => LoginUserPage());
   static gotoSiginPage() => MaterialPageRoute(builder: (_) => SiginUserPage());
   static gotoBookInfoViewerPage(BookModel bookModel) =>
-      MaterialPageRoute(builder: (_) => BookInfoViewerPage(bookModel));
+      MaterialPageRoute<bool>(builder: (_) => BookInfoViewerPage(bookModel));
   static gotoRegisterEditBookPage({BookModel? bookToEdit}) => MaterialPageRoute(
       builder: (_) => RegisterEditBookPage(editBookModel: bookToEdit));
   static gotoLargeInfoInputPage(TextEditingController observationController,

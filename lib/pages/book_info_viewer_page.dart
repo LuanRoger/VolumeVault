@@ -122,7 +122,7 @@ class BookInfoViewerPage extends HookConsumerWidget {
                         ),
                       );
                     } else {
-                      Navigator.pop(context);
+                      Navigator.pop(context, true);
                     }
                     break;
                 }
