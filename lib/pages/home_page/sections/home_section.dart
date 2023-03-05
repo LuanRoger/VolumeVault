@@ -11,32 +11,38 @@ import 'package:volume_vault/services/models/user_book_result.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/widgets/book_info_card.dart';
 import 'package:volume_vault/shared/widgets/book_info_grid_card.dart';
+import 'package:volume_vault/shared/widgets/placeholders/no_registered_book_placeholder.dart';
 import 'package:volume_vault/shared/widgets/search_text_field.dart';
 
 class HomeSection extends HookConsumerWidget {
   VisualizationType? viewType;
-  final _booksFetcherRequest = GetUserBookRequest(page: 1);
-  
 
   HomeSection({super.key, this.viewType});
 
-  void _onCardPress(BuildContext context, BookModel bookModel) {
-    Navigator.pushNamed(context, AppRoutes.bookInfoViewerPageRoute,
-        arguments: [bookModel]);
+  void _onCardPress(BuildContext context, BookModel bookModel,
+      {void Function()? onUpdate}) {
+    Navigator.pushNamed<bool>(context, AppRoutes.bookInfoViewerPageRoute,
+        arguments: [bookModel]).then((value) {
+      if (value == null || onUpdate == null) return;
+
+      onUpdate.call();
+    });
   }
 
-  Future<UserBookResult> _fetchUserBooks(WidgetRef ref) async {
+  Future<UserBookResult> _fetchUserBooks(
+      WidgetRef ref, GetUserBookRequest getUserBookRequest) async {
     final bookService = await ref.read(bookServiceProvider.future);
     if (bookService == null) return UserBookResult.empty();
 
     UserBookResult userBookResult =
-        await bookService.getUserBook(_booksFetcherRequest);
+        await bookService.getUserBook(getUserBookRequest);
     return userBookResult;
   }
 
   Widget _buildBookView(BuildContext context, WidgetRef ref,
       {required List<BookModel> books,
       required ScrollController controller,
+      void Function()? onUpdate,
       VisualizationType viewType = VisualizationType.LIST}) {
     switch (viewType) {
       case VisualizationType.LIST:
@@ -44,22 +50,28 @@ class HomeSection extends HookConsumerWidget {
           controller: controller,
           physics: const AlwaysScrollableScrollPhysics(),
           children: [
-            for (final book in books) BookInfoCard(
-              book,
-              onPressed: () => _onCardPress(context, book),
-            ),],
+            for (final book in books)
+              BookInfoCard(
+                book,
+                onPressed: () =>
+                    _onCardPress(context, book, onUpdate: onUpdate),
+              ),
+          ],
         );
       case VisualizationType.GRID:
         return GridView(
           controller: controller,
           physics: const AlwaysScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, childAspectRatio: 0.53),
+              crossAxisCount: 2, childAspectRatio: 0.5),
           children: [
-            for (final book in books) BookInfoGridCard(
-              book,
-              onPressed: () => _onCardPress(context, book),
-            ),],
+            for (final book in books)
+              BookInfoGridCard(
+                book,
+                onPressed: () =>
+                    _onCardPress(context, book, onUpdate: onUpdate),
+              ),
+          ],
         );
     }
   }
@@ -98,36 +110,68 @@ class HomeSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userInfo = ref.watch(userInfoProvider);
-    
-    final fetchRelaodKey = useState(UniqueKey());
+
+    final fetchLastPageKey = useState(UniqueKey());
+    final booksFetcherRequest = useState(GetUserBookRequest(page: 1));
     final userBooks = useState(List<BookModel>.empty());
-    final fetchMemoizer = useMemoized(() => _fetchUserBooks(ref), [fetchRelaodKey.value]);
-    final fetchFuture = useFuture(fetchMemoizer);
+    final fetchMemoizer = useMemoized(
+        () => _fetchUserBooks(ref, booksFetcherRequest.value),
+        [booksFetcherRequest.value, fetchLastPageKey.value]);
+    final fetchFuture = useFuture(fetchMemoizer, preserveState: false);
 
     final lastDataPage = useState(1);
     final visualizationType =
         useState<VisualizationType>(viewType ?? VisualizationType.LIST);
     final scrollController = useScrollController();
     useEffect(
-      () => () {
-        scrollController.addListener(
-          () {
-            if (scrollController.position.maxScrollExtent !=
-                scrollController.offset) return;
-            if (_booksFetcherRequest.page > lastDataPage.value) return;
-            _booksFetcherRequest.page += 1;
-            fetchRelaodKey.value = UniqueKey();
-          },
-        );
+      () {
+        scrollListener() {
+          if (scrollController.position.maxScrollExtent !=
+              scrollController.offset) return;
+          if (booksFetcherRequest.value.page > lastDataPage.value) return;
+          booksFetcherRequest.value = booksFetcherRequest.value.copyWith(
+            page: booksFetcherRequest.value.page + 1,
+          );
+        }
+
+        scrollController.addListener(scrollListener);
+
+        return () => scrollController.removeListener(scrollListener);
       },
     );
+    useEffect(() {
+      if (fetchFuture.hasData &&
+          fetchFuture.connectionState == ConnectionState.done &&
+          fetchFuture.data!.books.isNotEmpty &&
+          userBooks.value.length != fetchFuture.data!.books.length) {
+        final List<BookModel> newBooks = List.from(fetchFuture.data!.books);
+        final List<BookModel> booksFromList = List.from(userBooks.value);
+        List<BookModel> updatedBooks;
+        if (newBooks.length > booksFromList.length) {
+          final leftBooks =
+              newBooks.sublist(booksFromList.length, newBooks.length);
+          updatedBooks = [...booksFromList, ...leftBooks];
+        } else {
+          int startRange =
+              (booksFromList.length ~/ booksFetcherRequest.value.limitPerPage) *
+                  booksFetcherRequest.value.limitPerPage;
+          booksFromList.removeRange(startRange, booksFromList.length);
+          updatedBooks = [...booksFromList, ...newBooks];
+        }
 
-    if (fetchFuture.hasData && fetchFuture.connectionState == ConnectionState.done) {
-      if (fetchFuture.data!.books.isNotEmpty) {
-        userBooks.value = [...userBooks.value, ...fetchFuture.data!.books];
-        lastDataPage.value = _booksFetcherRequest.page;
+        userBooks.value = updatedBooks;
+        lastDataPage.value = booksFetcherRequest.value.page;
       }
-    }
+
+      if (fetchFuture.hasData &&
+          fetchFuture.data!.books.isEmpty &&
+          booksFetcherRequest.value.page > 1) {
+        booksFetcherRequest.value = booksFetcherRequest.value
+            .copyWith(page: booksFetcherRequest.value.page - 1);
+        lastDataPage.value = booksFetcherRequest.value.page;
+      }
+      return () {};
+    }, [fetchFuture.connectionState, fetchLastPageKey.value]);
 
     return Scaffold(
       drawer: Drawer(
@@ -186,8 +230,10 @@ class HomeSection extends HookConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () async {
           userBooks.value = List.empty();
-          _booksFetcherRequest.page = 1;
-          fetchRelaodKey.value = UniqueKey();
+          booksFetcherRequest.value = booksFetcherRequest.value.copyWith(
+            page: 1,
+          );
+          await Future.delayed(const Duration(milliseconds: 500));
         },
         child: PageTransitionSwitcher(
           transitionBuilder: (child, animation, secondaryAnimation) =>
@@ -195,16 +241,21 @@ class HomeSection extends HookConsumerWidget {
                   animation: animation,
                   secondaryAnimation: secondaryAnimation,
                   child: child),
-          child: _buildBookView(context, ref,
-              books: userBooks.value,
-              controller: scrollController,
-              viewType: visualizationType.value),
+          child: userBooks.value.isEmpty
+              ? const Center(child: NoRegisteredBookPlaceholder())
+              : _buildBookView(context, ref,
+                  books: userBooks.value,
+                  controller: scrollController,
+                  viewType: visualizationType.value, onUpdate: () {
+                  fetchLastPageKey.value = UniqueKey();
+                }),
         ),
       ),
       floatingActionButton: OpenContainer(
         clipBehavior: Clip.none,
         openColor: Theme.of(context).colorScheme.background,
         closedColor: Theme.of(context).colorScheme.background,
+        onClosed: (_) => fetchLastPageKey.value = UniqueKey(),
         closedShape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         closedBuilder: (_, open) => FloatingActionButton(

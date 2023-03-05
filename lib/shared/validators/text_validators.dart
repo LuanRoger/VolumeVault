@@ -7,7 +7,7 @@ class StringValidators {
   static bool minimumLengh(String value, {required int lenght}) =>
       value.length >= lenght;
   static bool maximumLengh(String value, {required int lenght}) =>
-      value.length > lenght;
+      value.length < lenght;
   static bool inBetween(String value, {required int min, required int max}) =>
       value.length >= min && value.length <= max;
   static bool matchWithRegex(String value, {required String regex}) =>
