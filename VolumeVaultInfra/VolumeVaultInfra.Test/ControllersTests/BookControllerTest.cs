@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
  using FluentValidation;
 using Moq;
  using Serilog;
@@ -192,6 +193,14 @@ public class BookControllerTest
             };
         }
     }
+    
+    private IEnumerable<string> GenerateBooksGenre(int count)
+    {
+        int genreIndex = 1;
+        for(int c = 0; c != count; c++)
+            yield return "genre" + genreIndex++;
+    }
+    
     [Theory]
     [InlineData(1, 10)]
     [InlineData(1, 20)]
@@ -211,6 +220,20 @@ public class BookControllerTest
             .GetAllUserReleatedBooks(user.id, page, limitPerPage);
         
         Assert.Equal(limitPerPage, books.Count);
+    }
+    [Fact]
+    public async void GetUserBooksGenres()
+    {
+        IReadOnlyList<string> genres = GenerateBooksGenre(3).ToImmutableList();
+        const int userId = 1;
+        
+        _bookRepository.Setup(ex => ex.GetUserBooksGenres(userId))
+            .ReturnsAsync(genres);
+        
+        IReadOnlyList<string> genresResult = await _bookController.GetBooksGenre(userId);
+        
+        Assert.Equal(genres.Count, genresResult.Count);
+        Assert.Equal(genres, genresResult);
     }
     
     [Fact]
@@ -241,8 +264,8 @@ public class BookControllerTest
         List<BookSearchModel> searchResult = GenerateDumySearchResult(count: resultCount).ToList();
         const int userId = 1;
 
-        _bookSearchRepository.Setup(repository => 
-            repository.SearchBook(It.IsAny<int>(), It.IsAny<string>(), limitPerPage))
+        _bookSearchRepository.Setup(ex => 
+            ex.SearchBook(It.IsAny<int>(), It.IsAny<string>(), limitPerPage))
             .ReturnsAsync(searchResult);
         
         List<BookSearchReadModel> bookResult = await _bookController
