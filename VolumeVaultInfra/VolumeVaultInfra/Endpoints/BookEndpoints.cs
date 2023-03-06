@@ -52,6 +52,25 @@ internal static class BookEndpoints
                     
                     return Results.Ok(book);
                 });
+            groupBuilder.MapGet("/genres", 
+                async (HttpContext context,
+                    [FromServices] IBookController controller) =>
+            {
+                int idClaim = int.Parse(context.User.Claims
+                    .First(claim => claim.Type == "ID").Value);
+                
+                IReadOnlyList<string> genresResult;
+                try
+                {
+                    genresResult = await controller.GetBooksGenre(idClaim);
+                }
+                catch (Exception e)
+                {
+                    return Results.BadRequest(e.Message);
+                }
+                
+                return Results.Ok(genresResult);
+            });
         groupBuilder.MapPost("/",
             async (HttpContext context,
                 [FromBody] BookWriteModel bookWriteInfo,
