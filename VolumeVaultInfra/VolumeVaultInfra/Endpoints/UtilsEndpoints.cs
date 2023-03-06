@@ -8,7 +8,7 @@ internal static class UtilsEndpoints
     {
         groupBuilder.MapGet("ping", () => Results.Ok("PONG"));
         groupBuilder.MapGet("check_auth_token", () => Results.Ok())
-            .RequireAuthorization(PolicyAuthDelegateTemplates.JWTRequiredIdClaimPolicy);;
+            .RequireAuthorization(PolicyAuthDelegateTemplates.JWTRequiredIdClaimPolicy);
         
         return groupBuilder;
     }

@@ -22,7 +22,8 @@ internal static class BookEndpoints
                 List<BookReadModel> userBooks;
                 try
                 {
-                    userBooks = await bookController.GetAllUserReleatedBooks(idClaim, page, limitPerPage ?? 10);
+                    userBooks = await bookController
+                        .GetAllUserReleatedBooks(idClaim, page, limitPerPage ?? 10);
                 }
                 catch (UserNotFoundException e)
                 {
@@ -120,15 +121,17 @@ internal static class BookEndpoints
         groupBuilder.MapGet("/search",
             async (HttpContext context,
                 [FromQuery] string query,
+                [FromQuery] int? limitPerPage,
                 [FromServices] IBookController bookController) =>
             {
                 int idClaim = int.Parse(context.User.Claims
                     .First(claim => claim.Type == "ID").Value);
 
-                List<BookReadModel> searchResult;
+                List<BookSearchReadModel> searchResult;
                 try
                 {
-                    searchResult = await bookController.SearchBookParameters(idClaim, query);
+                    searchResult = await bookController
+                        .SearchBook(idClaim, query, limitPerPage ?? 10);
                 }
                 catch (Exception e)
                 {
