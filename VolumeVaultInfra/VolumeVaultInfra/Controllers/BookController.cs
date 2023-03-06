@@ -144,20 +144,16 @@ public class BookController : IBookController
         return userBooks;
     }
 
-    public async Task<List<BookReadModel>> SearchBookParameters(int userId, string searchQuery)
+    public async Task<List<BookSearchReadModel>> SearchBook(int userId, string searchQuery, int limitPerPage)
     {
-        List<BookSearchModel> searchResults = await _searchRepository.SearchBook(userId, searchQuery);
-        List<BookReadModel> booksFromMainDb = new();
-        foreach (BookSearchModel book in searchResults)
-        {
-            BookModel? bookFromMainDb = await _bookRepository.GetBookById(book.id);
-            if(bookFromMainDb is null) continue;
-            
-            await _bookRepository.LoadBookEntityReference(bookFromMainDb);
-            booksFromMainDb.Add(BookReadModel.FromBookModel(bookFromMainDb));
-        }
-        
-        return booksFromMainDb;
+        var searchResults = await _searchRepository.SearchBook(userId, searchQuery, limitPerPage);
+        var filteredResult = 
+            from book in searchResults where book.ownerId == userId select book;
+
+        var searchReadResults = filteredResult
+            .Select(BookSearchReadModel.FromSearchModel)
+            .ToList();
+        return searchReadResults;
     }
 
     public async Task UpdateBook(int userId, int bookId, BookUpdateModel bookUpdate)

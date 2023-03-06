@@ -1,3 +1,4 @@
+using MongoDB.Bson;
 using MongoDB.Driver;
 using VolumeVaultInfra.Models.Book;
 // ReSharper disable MemberCanBePrivate.Global
@@ -60,16 +61,22 @@ public class BookSearchRepository : IBookSearchRepository
         await searchCollection.ReplaceOneAsync(bookFilter, bookSearchModel);
     }
     
-    public async Task<List<BookSearchModel>> SearchBook(int userId, string sentence)
+    public async Task<List<BookSearchModel>> SearchBook(int userId, string sentence, int limitPerSection)
     {
         var bookFilter = Builders<BookSearchModel>.Filter
-            .Text(sentence, new TextSearchOptions());
-        var searchResult = await searchCollection.FindAsync(bookFilter);
-        List<BookSearchModel> bookList = await searchResult.ToListAsync();
+            .Text(sentence, new TextSearchOptions
+            {
+                CaseSensitive = false
+            });
+        var sortDefinition = new SortDefinitionBuilder<BookSearchModel>();
+        sortDefinition.Ascending(book => book.title);
 
-        var filteredResult = 
-            from book in bookList where book.ownerId == userId select book;
-        
-        return filteredResult.ToList();
+        var searchResult = await searchCollection.FindAsync(bookFilter, new FindOptions<BookSearchModel>
+        {
+            Limit = limitPerSection,
+            Sort = new BsonDocumentSortDefinition<BookSearchModel>(sortDefinition.ToBsonDocument()),
+        });
+
+        return await searchResult.ToListAsync();
     }
 }

@@ -10,7 +10,7 @@ public interface IBookController
 
     #region Read
     public Task<List<BookReadModel>> GetAllUserReleatedBooks(int userId, int page, int limitPerPage);
-    public Task<List<BookReadModel>> SearchBookParameters(int userId, string searchQuery);
+    public Task<List<BookSearchReadModel>> SearchBook(int userId, string searchQuery, int limitPerPage);
     #endregion
     
     public Task UpdateBook(int userId, int bookId, BookUpdateModel bookUpdate);
