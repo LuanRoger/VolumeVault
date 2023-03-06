@@ -17,10 +17,19 @@ public class BookRepository : IBookRepository
     
     public async Task<BookModel?> GetBookById(int id) => await _bookDb.books.FindAsync(id);
     
-    public async Task LoadBookEntityReference(BookModel bookModel) => await _bookDb.Entry(bookModel)
-        .Reference(book => book.owner)
-        .LoadAsync();
-    
+    public async Task<IReadOnlyList<string>> GetUserBooksGenres(int userId)
+    {
+        List<string?> genresFromDb = await _bookDb.books
+            .Where(book => book.owner.id == userId)
+            .Select(book => book.genre).ToListAsync();
+        var filteredGenres = genresFromDb.OfType<string>()
+            .Distinct()
+            .OrderDescending()
+            .ToList();
+        
+        return filteredGenres;
+    }
+
     public async Task<List<BookModel>> GetUserOwnedBooksSplited(int userId, int section, int limitPerSection) =>
         await _bookDb.books.Where(book => book.owner.id == userId)
             .Skip(limitPerSection * section - limitPerSection)

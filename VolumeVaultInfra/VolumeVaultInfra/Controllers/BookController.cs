@@ -66,6 +66,10 @@ public class BookController : IBookController
         BookReadModel bookReadModel = BookReadModel.FromBookModel(book);
         return bookReadModel;
     }
+    public async Task<IReadOnlyList<string>> GetBooksGenre(int userId)
+    {
+        return await _bookRepository.GetUserBooksGenres(userId);;
+    }
     
     public async Task<BookReadModel> RegisterNewBook(int userId, BookWriteModel book)
     {
