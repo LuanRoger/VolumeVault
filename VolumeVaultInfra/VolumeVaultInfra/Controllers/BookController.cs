@@ -68,7 +68,7 @@ public class BookController : IBookController
     }
     public async Task<IReadOnlyList<string>> GetBooksGenre(int userId)
     {
-        return await _bookRepository.GetUserBooksGenres(userId);;
+        return await _bookRepository.GetUserBooksGenres(userId);
     }
     
     public async Task<BookReadModel> RegisterNewBook(int userId, BookWriteModel book)
@@ -126,7 +126,7 @@ public class BookController : IBookController
         return BookReadModel.FromBookModel(registeredBook);
     }
 
-    public async Task<List<BookReadModel>> GetAllUserReleatedBooks(int userId, int page, int limitPerPage)
+    public async Task<IReadOnlyList<BookReadModel>> GetAllUserReleatedBooks(int userId, int page, int limitPerPage)
     {
         UserModel? relatedUser = await _userRepository.GetUserById(userId);
         if(relatedUser is null)
@@ -141,14 +141,14 @@ public class BookController : IBookController
             nameof(limitPerPage), limitPerPage);
 
         _logger.Information("Geting results from database.");
-        var userBooks = 
+        IReadOnlyList<BookReadModel> userBooks = 
             (await _bookRepository.GetUserOwnedBooksSplited(relatedUser.id, page, limitPerPage))
             .Select(BookReadModel.FromBookModel).ToList();
 
         return userBooks;
     }
 
-    public async Task<List<BookSearchReadModel>> SearchBook(int userId, string searchQuery, int limitPerPage)
+    public async Task<IReadOnlyList<BookSearchReadModel>> SearchBook(int userId, string searchQuery, int limitPerPage)
     {
         var searchResults = await _searchRepository.SearchBook(userId, searchQuery, limitPerPage);
         var filteredResult = 
@@ -157,6 +157,7 @@ public class BookController : IBookController
         var searchReadResults = filteredResult
             .Select(BookSearchReadModel.FromSearchModel)
             .ToList();
+        
         return searchReadResults;
     }
 

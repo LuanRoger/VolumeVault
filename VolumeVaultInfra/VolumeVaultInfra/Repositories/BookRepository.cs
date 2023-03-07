@@ -30,7 +30,7 @@ public class BookRepository : IBookRepository
         return filteredGenres;
     }
 
-    public async Task<List<BookModel>> GetUserOwnedBooksSplited(int userId, int section, int limitPerSection) =>
+    public async Task<IReadOnlyList<BookModel>> GetUserOwnedBooksSplited(int userId, int section, int limitPerSection) =>
         await _bookDb.books.Where(book => book.owner.id == userId)
             .Skip(limitPerSection * section - limitPerSection)
             .Take(limitPerSection)

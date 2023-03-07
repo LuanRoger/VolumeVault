@@ -61,7 +61,7 @@ public class BookSearchRepository : IBookSearchRepository
         await searchCollection.ReplaceOneAsync(bookFilter, bookSearchModel);
     }
     
-    public async Task<List<BookSearchModel>> SearchBook(int userId, string sentence, int limitPerSection)
+    public async Task<IReadOnlyList<BookSearchModel>> SearchBook(int userId, string sentence, int limitPerSection)
     {
         var bookFilter = Builders<BookSearchModel>.Filter
             .Text(sentence, new TextSearchOptions

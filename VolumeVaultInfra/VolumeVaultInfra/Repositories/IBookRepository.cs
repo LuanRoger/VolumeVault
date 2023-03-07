@@ -8,7 +8,7 @@ public interface IBookRepository
     
     public Task<BookModel?> GetBookById(int id);
     public Task<IReadOnlyList<string>> GetUserBooksGenres(int userId);
-    public Task<List<BookModel>> GetUserOwnedBooksSplited(int userId, int section, int limitPerSection);
+    public Task<IReadOnlyList<BookModel>> GetUserOwnedBooksSplited(int userId, int section, int limitPerSection);
     
     public BookModel DeleteBook(BookModel book);
     
