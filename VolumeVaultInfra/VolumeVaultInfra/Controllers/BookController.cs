@@ -66,6 +66,10 @@ public class BookController : IBookController
         BookReadModel bookReadModel = BookReadModel.FromBookModel(book);
         return bookReadModel;
     }
+    public async Task<IReadOnlyList<string>> GetBooksGenre(int userId)
+    {
+        return await _bookRepository.GetUserBooksGenres(userId);
+    }
     
     public async Task<BookReadModel> RegisterNewBook(int userId, BookWriteModel book)
     {
@@ -122,7 +126,7 @@ public class BookController : IBookController
         return BookReadModel.FromBookModel(registeredBook);
     }
 
-    public async Task<List<BookReadModel>> GetAllUserReleatedBooks(int userId, int page, int limitPerPage)
+    public async Task<IReadOnlyList<BookReadModel>> GetAllUserReleatedBooks(int userId, int page, int limitPerPage)
     {
         UserModel? relatedUser = await _userRepository.GetUserById(userId);
         if(relatedUser is null)
@@ -137,27 +141,24 @@ public class BookController : IBookController
             nameof(limitPerPage), limitPerPage);
 
         _logger.Information("Geting results from database.");
-        var userBooks = 
+        IReadOnlyList<BookReadModel> userBooks = 
             (await _bookRepository.GetUserOwnedBooksSplited(relatedUser.id, page, limitPerPage))
             .Select(BookReadModel.FromBookModel).ToList();
 
         return userBooks;
     }
 
-    public async Task<List<BookReadModel>> SearchBookParameters(int userId, string searchQuery)
+    public async Task<IReadOnlyList<BookSearchReadModel>> SearchBook(int userId, string searchQuery, int limitPerPage)
     {
-        List<BookSearchModel> searchResults = await _searchRepository.SearchBook(userId, searchQuery);
-        List<BookReadModel> booksFromMainDb = new();
-        foreach (BookSearchModel book in searchResults)
-        {
-            BookModel? bookFromMainDb = await _bookRepository.GetBookById(book.id);
-            if(bookFromMainDb is null) continue;
-            
-            await _bookRepository.LoadBookEntityReference(bookFromMainDb);
-            booksFromMainDb.Add(BookReadModel.FromBookModel(bookFromMainDb));
-        }
+        var searchResults = await _searchRepository.SearchBook(userId, searchQuery, limitPerPage);
+        var filteredResult = 
+            from book in searchResults where book.ownerId == userId select book;
+
+        var searchReadResults = filteredResult
+            .Select(BookSearchReadModel.FromSearchModel)
+            .ToList();
         
-        return booksFromMainDb;
+        return searchReadResults;
     }
 
     public async Task UpdateBook(int userId, int bookId, BookUpdateModel bookUpdate)

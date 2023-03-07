@@ -5,12 +5,13 @@ namespace VolumeVaultInfra.Controllers;
 public interface IBookController
 { 
     public Task<BookReadModel> GetBookById(int userId, int bookId);
+    public Task<IReadOnlyList<string>> GetBooksGenre(int userId);
     
     public Task<BookReadModel> RegisterNewBook(int userId, BookWriteModel book);
 
     #region Read
-    public Task<List<BookReadModel>> GetAllUserReleatedBooks(int userId, int page, int limitPerPage);
-    public Task<List<BookReadModel>> SearchBookParameters(int userId, string searchQuery);
+    public Task<IReadOnlyList<BookReadModel>> GetAllUserReleatedBooks(int userId, int page, int limitPerPage);
+    public Task<IReadOnlyList<BookSearchReadModel>> SearchBook(int userId, string searchQuery, int limitPerPage);
     #endregion
     
     public Task UpdateBook(int userId, int bookId, BookUpdateModel bookUpdate);

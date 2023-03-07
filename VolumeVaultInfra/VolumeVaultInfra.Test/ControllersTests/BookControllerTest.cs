@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
  using FluentValidation;
 using Moq;
  using Serilog;
@@ -166,6 +167,40 @@ public class BookControllerTest
                 ownerId = 1
             };
     }
+    private static IEnumerable<BookSearchModel> GenerateMessDumySearchResult(int count = 10)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            Random random = new();
+            int randomUserId = random.Next(1, 3);
+            yield return new()
+            {
+                id = count,
+                title = "test",
+                author = "test",
+                isbn = "000-00-0000-000-0",
+                publicationYear = 0,
+                publisher = "test",
+                edition = 1,
+                pagesNumber = 1,
+                genre = "test",
+                format = 0,
+                readed = true,
+                tags = new() { "test" },
+                createdAt = DateTime.Today,
+                lastModification = DateTime.Today,
+                ownerId = randomUserId
+            };
+        }
+    }
+    
+    private IEnumerable<string> GenerateBooksGenre(int count)
+    {
+        int genreIndex = 1;
+        for(int c = 0; c != count; c++)
+            yield return "genre" + genreIndex++;
+    }
+    
     [Theory]
     [InlineData(1, 10)]
     [InlineData(1, 20)]
@@ -186,39 +221,58 @@ public class BookControllerTest
         
         Assert.Equal(limitPerPage, books.Count);
     }
+    [Fact]
+    public async void GetUserBooksGenres()
+    {
+        IReadOnlyList<string> genres = GenerateBooksGenre(3).ToImmutableList();
+        const int userId = 1;
+        
+        _bookRepository.Setup(ex => ex.GetUserBooksGenres(userId))
+            .ReturnsAsync(genres);
+        
+        IReadOnlyList<string> genresResult = await _bookController.GetBooksGenre(userId);
+        
+        Assert.Equal(genres.Count, genresResult.Count);
+        Assert.Equal(genres, genresResult);
+    }
     
     [Fact]
     public async void SearchForBookTest()
     {
         BookModel book = bookModelTestDumy;
-        List<BookSearchModel> searchResult = GenerateDumySearchResult().ToList();
+        List<BookSearchModel> searchResult = GenerateMessDumySearchResult().ToList();
         const int userId = 1;
+        const int limitPerPage = 1;
         
         _bookRepository.Setup(ex => ex.GetBookById(It.IsAny<int>()))
             .ReturnsAsync(book);
         _bookSearchRepository.Setup(ex => ex.SearchBook(userId, 
-            It.IsAny<string>())).ReturnsAsync(searchResult);
+            It.IsAny<string>(), limitPerPage)).ReturnsAsync(searchResult);
         
          var result = await _bookController
-             .SearchBookParameters(1, "anySearch");
+             .SearchBook(userId, "anySearch", limitPerPage);
          
-         Assert.All(result, searchBook => Assert.Equal(userId, searchBook.owner.id));
+         Assert.All(result, searchBook => Assert.Equal(userId, searchBook.ownerId));
     }
-    [Fact]
-    public async void SearchBookThatIsNotInMainDbTest()
+    [Theory]
+    [InlineData(5, 5)]
+    [InlineData(10, 10)]
+    [InlineData(15, 10)]
+    [InlineData(20, 10)]
+    public async void SearchResultLimitTest(int limitPerPage, int resultCount)
     {
-        List<BookSearchModel> searchResult = GenerateDumySearchResult(count: 3).ToList();
+        List<BookSearchModel> searchResult = GenerateDumySearchResult(count: resultCount).ToList();
         const int userId = 1;
+
+        _bookSearchRepository.Setup(ex => 
+            ex.SearchBook(It.IsAny<int>(), It.IsAny<string>(), limitPerPage))
+            .ReturnsAsync(searchResult);
         
-        _bookRepository.Setup(ex => ex.GetBookById(It.IsAny<int>()))
-            .ReturnsAsync(() => null);
-        _bookSearchRepository.Setup(ex => ex.SearchBook(userId, 
-            It.IsAny<string>())).ReturnsAsync(searchResult);
+        IReadOnlyList<BookSearchReadModel> bookResult = await _bookController
+            .SearchBook(userId, "anySearch", limitPerPage);
         
-        var result = await _bookController
-            .SearchBookParameters(1, "anySearch");
-         
-        Assert.Empty(result);
+        Assert.NotEmpty(bookResult);
+        Assert.Equal(bookResult.Count, resultCount);
     }
     
     [Fact]
