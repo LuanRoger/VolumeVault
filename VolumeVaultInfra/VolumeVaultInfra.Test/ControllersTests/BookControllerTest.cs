@@ -268,7 +268,7 @@ public class BookControllerTest
             ex.SearchBook(It.IsAny<int>(), It.IsAny<string>(), limitPerPage))
             .ReturnsAsync(searchResult);
         
-        List<BookSearchReadModel> bookResult = await _bookController
+        IReadOnlyList<BookSearchReadModel> bookResult = await _bookController
             .SearchBook(userId, "anySearch", limitPerPage);
         
         Assert.NotEmpty(bookResult);
