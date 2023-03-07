@@ -25,12 +25,12 @@ internal static class AuthEndpoints
             }
             catch(UserIdIsNotRegisteredException e)
             {
-                return Results.NotFound();
+                return Results.NotFound(e.Message);
             }
             
             return Results.Ok(userInfo);
         }).RequireAuthorization(PolicyAuthDelegateTemplates.JWTRequiredIdClaimPolicy);
-        groupBuilder.MapPost("signin",
+        groupBuilder.MapPost("/signin",
             async ([FromServices] IUserController userController,
                 [FromBody] UserWriteModel userWrite) =>
             {
@@ -48,9 +48,9 @@ internal static class AuthEndpoints
                     return Results.BadRequest(e.Message);
                 }
 
-                return Results.Ok(jwt);
+                return Results.CreatedAtRoute("signin", jwt);
             });
-        groupBuilder.MapPost("login",
+        groupBuilder.MapPost("/login",
             async ([FromServices] IUserController userController,
                 [FromBody] UserLoginRequestModel loginRequest) =>
             {

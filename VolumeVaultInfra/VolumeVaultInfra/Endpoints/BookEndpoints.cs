@@ -19,7 +19,7 @@ internal static class BookEndpoints
                 int idClaim = int.Parse(context.User.Claims
                     .First(claim => claim.Type == "ID").Value);
 
-                List<BookReadModel> userBooks;
+                IReadOnlyList<BookReadModel> userBooks;
                 try
                 {
                     userBooks = await bookController
@@ -45,9 +45,13 @@ internal static class BookEndpoints
                     { 
                         book = await controller.GetBookById(idClaim, id);
                     }
-                    catch (Exception e) when (e is BookNotFoundException or UserNotFoundException or NotOwnerBookException)
+                    catch (Exception e) when (e is BookNotFoundException or UserNotFoundException)
                     {
                         return Results.BadRequest(e.Message);
+                    }
+                    catch (Exception e) when (e is NotOwnerBookException)
+                    {
+                        return Results.Unauthorized();
                     }
                     
                     return Results.Ok(book);
@@ -89,7 +93,7 @@ internal static class BookEndpoints
                     return Results.BadRequest(e.Message);
                 }
 
-                return Results.Ok(registeredBook);
+                return Results.Created("database", registeredBook);
             });
         groupBuilder.MapDelete("/{id:int}",
             async (HttpContext context,
@@ -146,7 +150,7 @@ internal static class BookEndpoints
                 int idClaim = int.Parse(context.User.Claims
                     .First(claim => claim.Type == "ID").Value);
 
-                List<BookSearchReadModel> searchResult;
+                IReadOnlyList<BookSearchReadModel> searchResult;
                 try
                 {
                     searchResult = await bookController
