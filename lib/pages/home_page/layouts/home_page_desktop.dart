@@ -1,12 +1,10 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:volume_vault/models/book_model.dart';
-import 'package:volume_vault/pages/book_info_viewer_page.dart';
 import 'package:volume_vault/shared/fake_models.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
-import 'package:volume_vault/shared/widgets/book_info_card.dart';
+import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info_list_card.dart';
 import 'package:volume_vault/shared/widgets/book_viewer_card.dart';
 import 'package:volume_vault/shared/widgets/search_text_field.dart';
 
@@ -32,7 +30,6 @@ class HomePageDesktop extends HookWidget {
                 ],
               )),
               AppBar(
-                title: SearchTextField(height: 40),
                 actions: [
                   IconButton(
                     onPressed: () => Navigator.pushNamed(
@@ -76,7 +73,7 @@ class HomePageDesktop extends HookWidget {
                       final BookModel book = fakeBookModel;
                       book.title = "Livro $index";
 
-                      return BookInfoCard(
+                      return BookInfoListCard(
                         book,
                         onPressed: () => selectedBook.value = book,
                       );

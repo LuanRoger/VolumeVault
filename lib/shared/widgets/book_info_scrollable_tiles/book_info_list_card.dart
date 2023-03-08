@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:volume_vault/models/book_model.dart';
+import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info_card.dart';
 
-class BookInfoCard extends StatelessWidget {
-  final BookModel bookModel;
-  final void Function() onPressed;
+class BookInfoListCard extends BookInfoCard {
   double? height;
 
-  BookInfoCard(this.bookModel,
-      {super.key, required this.onPressed, this.height = 150});
+  BookInfoListCard(super.bookModel,
+      {super.key, required super.onPressed, this.height = 150});
 
   @override
   Widget build(BuildContext context) {
