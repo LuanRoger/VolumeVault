@@ -7,7 +7,7 @@ class HttpModule {
   Dio get _dio {
     final dio = Dio();
     dio.options.headers = fixHeaders ?? const {};
-    dio.options.connectTimeout = const Duration(seconds: 10);
+    dio.options.connectTimeout = const Duration(seconds: 30);
 
     return dio;
   }

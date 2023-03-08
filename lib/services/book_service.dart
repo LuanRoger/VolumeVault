@@ -57,7 +57,7 @@ class BookService {
     String bookJson = json.encode(book);
 
     HttpResponse response = await _httpModule.post(_baseUrl, body: bookJson);
-    if (response.statusCode != HttpCode.OK) return null;
+    if (response.statusCode != HttpCode.CREATED) return null;
     BookModel registeredBook = BookModel.fromJson(response.body);
 
     return registeredBook;
@@ -80,14 +80,14 @@ class BookService {
     return response.statusCode == HttpCode.OK;
   }
 
-  Future<String> searchBook(String query) async {
+  Future<List<String>> searchBook(String query) async {
     final response = await _httpModule.get(_searchBookUrl, query: {
       "query": query,
     });
 
-    //TODO: Check response returned infos
-    var d = 0;
+    List<String> searchResults =
+        (response.body as List).map((e) => e.toString()).toList();
 
-    return response.body;
+    return searchResults;
   }
 }

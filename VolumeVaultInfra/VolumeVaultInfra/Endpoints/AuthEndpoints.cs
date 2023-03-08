@@ -48,7 +48,7 @@ internal static class AuthEndpoints
                     return Results.BadRequest(e.Message);
                 }
 
-                return Results.CreatedAtRoute("signin", jwt);
+                return Results.Created("signin", jwt);
             });
         groupBuilder.MapPost("/login",
             async ([FromServices] IUserController userController,

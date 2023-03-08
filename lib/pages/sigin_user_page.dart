@@ -109,7 +109,7 @@ class SiginUserPage extends HookConsumerWidget {
                                           email: emailController.text,
                                           password: passwordController.text));
 
-                                  if (result.requestCode != HttpCode.OK) {
+                                  if (result.requestCode != HttpCode.CREATED) {
                                     switch (result.requestCode) {
                                       case HttpCode.NOT_FOUND:
                                         ScaffoldMessenger.of(context)
