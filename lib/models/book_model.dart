@@ -61,28 +61,28 @@ class BookModel {
         "owner": owner.toJson(),
       };
   factory BookModel.fromJson(Map<String, dynamic> json) => BookModel(
-        json["id"] as int,
-        json["title"] as String,
-        json["author"] as String,
-        json["isbn"] as String,
-        publicationYear: json["publicationYear"] as int?,
-        publisher: json["publisher"] as String?,
-        edition: json["edition"] as int?,
-        pagesNumber: json["pagesNumber"] as int?,
-        genre: json["genre"] as String?,
+        json["id"],
+        json["title"],
+        json["author"],
+        json["isbn"],
+        publicationYear: json["publicationYear"],
+        publisher: json["publisher"],
+        edition: json["edition"],
+        pagesNumber: json["pagesNumber"],
+        genre: json["genre"],
         format: json["format"] != null
-            ? BookFormat.values[json["format"] as int]
+            ? BookFormat.values[json["format"]]
             : null,
-        observation: json["observation"] as String?,
-        synopsis: json["synopsis"] as String?,
-        coverLink: json["coverLink"] as String?,
-        buyLink: json["buyLink"] as String?,
-        readed: json["readed"] as bool?,
+        observation: json["observation"],
+        synopsis: json["synopsis"],
+        coverLink: json["coverLink"],
+        buyLink: json["buyLink"],
+        readed: json["readed"],
         tags: json["tags"] != null
             ? (json["tags"] as List).map((e) => e as String).toSet()
             : null,
-        createdAt: DateTime.parse(json["createdAt"] as String),
-        lastModification: DateTime.parse(json["lastModification"] as String),
-        owner: UserInfoModel.fromJson(json["owner"] as Map<String, dynamic>),
+        createdAt: DateTime.parse(json["createdAt"]),
+        lastModification: DateTime.parse(json["lastModification"]),
+        owner: UserInfoModel.fromJson(json["owner"]),
       );
 }

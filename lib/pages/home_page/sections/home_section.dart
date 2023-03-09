@@ -3,16 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/book_model.dart';
+import 'package:volume_vault/models/book_search_result.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
 import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
 import 'package:volume_vault/services/models/user_book_result.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
-import 'package:volume_vault/shared/widgets/book_info_card.dart';
-import 'package:volume_vault/shared/widgets/book_info_grid_card.dart';
+import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info_card.dart';
+import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info_grid_card.dart';
+import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info_list_card.dart';
+import 'package:volume_vault/shared/widgets/book_search_result_tile.dart';
+import 'package:volume_vault/shared/widgets/fetcher_list_grid.dart';
 import 'package:volume_vault/shared/widgets/placeholders/no_registered_book_placeholder.dart';
-import 'package:volume_vault/shared/widgets/search_text_field.dart';
+import 'package:volume_vault/shared/widgets/search_floating_card.dart';
 
 class HomeSection extends HookConsumerWidget {
   VisualizationType? viewType;
@@ -39,40 +43,35 @@ class HomeSection extends HookConsumerWidget {
     return userBookResult;
   }
 
-  Widget _buildBookView(BuildContext context, WidgetRef ref,
+  Future<List<BookSearchResult>> _search(String query, WidgetRef ref) async {
+    final bookService = await ref.read(bookServiceProvider.future);
+    if (bookService == null) return List.empty();
+
+    List<BookSearchResult> searchResult = await bookService.searchBook(query);
+    return searchResult;
+  }
+
+  List<BookInfoCard> _buildBookView(BuildContext context,
       {required List<BookModel> books,
-      required ScrollController controller,
       void Function()? onUpdate,
       VisualizationType viewType = VisualizationType.LIST}) {
     switch (viewType) {
       case VisualizationType.LIST:
-        return ListView(
-          controller: controller,
-          physics: const AlwaysScrollableScrollPhysics(),
-          children: [
-            for (final book in books)
-              BookInfoCard(
-                book,
-                onPressed: () =>
-                    _onCardPress(context, book, onUpdate: onUpdate),
-              ),
-          ],
-        );
+        return [
+          for (final book in books)
+            BookInfoListCard(
+              book,
+              onPressed: () => _onCardPress(context, book, onUpdate: onUpdate),
+            ),
+        ];
       case VisualizationType.GRID:
-        return GridView(
-          controller: controller,
-          physics: const AlwaysScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, childAspectRatio: 0.5),
-          children: [
-            for (final book in books)
-              BookInfoGridCard(
-                book,
-                onPressed: () =>
-                    _onCardPress(context, book, onUpdate: onUpdate),
-              ),
-          ],
-        );
+        return [
+          for (final book in books)
+            BookInfoGridCard(
+              book,
+              onPressed: () => _onCardPress(context, book, onUpdate: onUpdate),
+            ),
+        ];
     }
   }
 
@@ -122,23 +121,7 @@ class HomeSection extends HookConsumerWidget {
     final lastDataPage = useState(1);
     final visualizationType =
         useState<VisualizationType>(viewType ?? VisualizationType.LIST);
-    final scrollController = useScrollController();
-    useEffect(
-      () {
-        scrollListener() {
-          if (scrollController.position.maxScrollExtent !=
-              scrollController.offset) return;
-          if (booksFetcherRequest.value.page > lastDataPage.value) return;
-          booksFetcherRequest.value = booksFetcherRequest.value.copyWith(
-            page: booksFetcherRequest.value.page + 1,
-          );
-        }
 
-        scrollController.addListener(scrollListener);
-
-        return () => scrollController.removeListener(scrollListener);
-      },
-    );
     useEffect(() {
       if (fetchFuture.hasData &&
           fetchFuture.connectionState == ConnectionState.done &&
@@ -172,6 +155,8 @@ class HomeSection extends HookConsumerWidget {
       }
       return () {};
     }, [fetchFuture.connectionState, fetchLastPageKey.value]);
+
+    final searchTextController = useTextEditingController();
 
     return Scaffold(
       drawer: Drawer(
@@ -207,8 +192,40 @@ class HomeSection extends HookConsumerWidget {
         ),
       ),
       appBar: AppBar(
-        title: SearchTextField(height: 40),
+        title: const Text("Início"),
         actions: [
+          IconButton(
+              onPressed: () async {
+                SearchFloatingCard searchFloatingCard = SearchFloatingCard(
+                    controller: searchTextController,
+                    search: (query, dialogContext) async {
+                      return await _search(query, ref).then((searchResult) => [
+                            for (final bookResult in searchResult)
+                              BookSearchResultTile(
+                                bookResult,
+                                onTap: () async {
+                                  Navigator.pop(dialogContext);
+                                  final bookService = await ref
+                                      .read(bookServiceProvider.future);
+                                  final BookModel? book = await bookService
+                                      ?.getUserBookById(bookResult.id);
+                                  if (bookService == null || book == null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                            "Este livro não está disponível"),
+                                      ),
+                                    );
+                                    return;
+                                  }
+                                  _onCardPress(context, book);
+                                },
+                              )
+                          ]);
+                    });
+                await searchFloatingCard.show(context);
+              },
+              icon: const Icon(Icons.search_rounded)),
           IconButton(
             onPressed: () {
               visualizationType.value =
@@ -243,12 +260,25 @@ class HomeSection extends HookConsumerWidget {
                   child: child),
           child: userBooks.value.isEmpty
               ? const Center(child: NoRegisteredBookPlaceholder())
-              : _buildBookView(context, ref,
-                  books: userBooks.value,
-                  controller: scrollController,
-                  viewType: visualizationType.value, onUpdate: () {
-                  fetchLastPageKey.value = UniqueKey();
-                }),
+              : FetcherListGrid(
+                  key: ValueKey(visualizationType.value),
+                  visualizationType: visualizationType.value,
+                  reachScrollBottom: () {
+                    if (booksFetcherRequest.value.page > lastDataPage.value) {
+                      return;
+                    }
+                    booksFetcherRequest.value =
+                        booksFetcherRequest.value.copyWith(
+                      page: booksFetcherRequest.value.page + 1,
+                    );
+                  },
+                  children: _buildBookView(
+                    context,
+                    books: userBooks.value,
+                    viewType: visualizationType.value,
+                    onUpdate: () => fetchLastPageKey.value = UniqueKey(),
+                  ),
+                ),
         ),
       ),
       floatingActionButton: OpenContainer(
