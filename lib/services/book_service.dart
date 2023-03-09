@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:volume_vault/models/api_config_params.dart';
 import 'package:volume_vault/models/book_model.dart';
+import 'package:volume_vault/models/book_search_result.dart';
 import 'package:volume_vault/models/http_code.dart';
 import 'package:volume_vault/models/http_response.dart';
 import 'package:volume_vault/models/interfaces/http_module.dart';
@@ -80,14 +81,15 @@ class BookService {
     return response.statusCode == HttpCode.OK;
   }
 
-  Future<List<String>> searchBook(String query) async {
+  Future<List<BookSearchResult>> searchBook(String query) async {
     final response = await _httpModule.get(_searchBookUrl, query: {
       "query": query,
     });
+    if(response.statusCode != HttpCode.OK) return List.empty();
 
-    List<String> searchResults =
-        (response.body as List).map((e) => e.toString()).toList();
+    List<BookSearchResult> searchResult = (response.body as List)
+    .map((bookJson) => BookSearchResult.fromJson(bookJson)).toList();
 
-    return searchResults;
+    return searchResult;
   }
 }
