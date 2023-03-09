@@ -48,15 +48,7 @@ class HomePageMobile extends HookConsumerWidget {
         content: Text(message),
         actions: [
           TextButton(
-            onPressed: () {
-              if (authValidationError) {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, AppRoutes.loginPageRoute, (route) => false);
-                return;
-              }
-
-              Navigator.pop(context);
-            },
+            onPressed: () => Navigator.pop(context),
             child: const Text("Ok"),
           ),
         ],

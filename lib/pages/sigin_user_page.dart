@@ -103,6 +103,8 @@ class SiginUserPage extends HookConsumerWidget {
                                   if (!_siginFormKey.currentState!.validate()) {
                                     return;
                                   }
+                                  isLoadingState.value = true;
+
                                   SiginResult result = await _signin(ref,
                                       signinRequest: UserSiginRequest(
                                           username: usernameController.text,
