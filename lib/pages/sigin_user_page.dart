@@ -28,6 +28,7 @@ class SiginUserPage extends HookConsumerWidget {
     final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
     final isLoadingState = useState(false);
+    final obscurePassword = useState(true);
 
     return Scaffold(
       body: SafeArea(
@@ -89,12 +90,19 @@ class SiginUserPage extends HookConsumerWidget {
                               TextFormField(
                                 controller: passwordController,
                                 validator: minumumLenght8AndMaximum18,
-                                obscureText: true,
-                                decoration: const InputDecoration(
-                                  label: Text("Senha"),
+                                obscureText: obscurePassword.value,
+                                decoration: InputDecoration(
+                                  label: const Text("Senha"),
                                   filled: true,
-                                  border: UnderlineInputBorder(
+                                  border: const UnderlineInputBorder(
                                       borderSide: BorderSide.none),
+                                      suffixIcon: IconButton(
+                                    icon: Icon(obscurePassword.value
+                                        ? Icons.remove_red_eye_rounded
+                                        : Icons.remove_red_eye_outlined),
+                                    onPressed: () => obscurePassword.value =
+                                        !obscurePassword.value,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 15),
@@ -103,6 +111,8 @@ class SiginUserPage extends HookConsumerWidget {
                                   if (!_siginFormKey.currentState!.validate()) {
                                     return;
                                   }
+                                  isLoadingState.value = true;
+
                                   SiginResult result = await _signin(ref,
                                       signinRequest: UserSiginRequest(
                                           username: usernameController.text,

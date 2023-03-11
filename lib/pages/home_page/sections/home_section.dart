@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/book_model.dart';
@@ -17,6 +18,7 @@ import 'package:volume_vault/shared/widgets/book_search_result_tile.dart';
 import 'package:volume_vault/shared/widgets/fetcher_list_grid.dart';
 import 'package:volume_vault/shared/widgets/placeholders/no_registered_book_placeholder.dart';
 import 'package:volume_vault/shared/widgets/search_floating_card.dart';
+import 'package:volume_vault/shared/widgets/widget_switcher.dart';
 
 class HomeSection extends HookConsumerWidget {
   VisualizationType? viewType;
@@ -85,16 +87,13 @@ class HomeSection extends HookConsumerWidget {
           content: const Text("Deseja realmente sair da conta?"),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: () => Navigator.pop(context),
               child: const Text("Cancelar"),
             ),
             TextButton(
               onPressed: () {
                 exit = true;
-                Navigator.pushNamedAndRemoveUntil(
-                    context, AppRoutes.loginPageRoute, (route) => false);
+                Navigator.pop(context);
               },
               child: const Text("Sair"),
             ),
@@ -102,7 +101,9 @@ class HomeSection extends HookConsumerWidget {
     );
 
     if (exit) {
-      ref.read(userSessionNotifierProvider.notifier).clear();
+      await ref.read(userSessionNotifierProvider.notifier).clear();
+      Navigator.pushNamedAndRemoveUntil(
+                    context, AppRoutes.loginPageRoute, (_) => false);
     }
   }
 
@@ -170,29 +171,29 @@ class HomeSection extends HookConsumerWidget {
                   Text(
                     "Volume Vault",
                     style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  userInfo.maybeWhen(
-                      data: (data) {
-                        if (data == null) return const SizedBox();
-
-                        return Text("Olá, ${data.username}");
-                      },
-                      orElse: () => const SizedBox())
+                  )
                 ],
               ),
             ),
             ListTile(
               leading: const Icon(Icons.logout_rounded),
               title: const Text("Sair da conta"),
-              onTap: () async {
-                await _showLogoutDialog(context, ref);
-              },
+              onTap: () async => await _showLogoutDialog(context, ref),
             )
           ],
         ),
       ),
       appBar: AppBar(
-        title: const Text("Início"),
+        title: 
+        WidgetSwitcher(first: const Text("Início"), second: userInfo
+                    .maybeWhen(
+                        data: (data) {
+                          if (data == null) return const SizedBox();
+
+                          return Text("Olá, ${data.username}");
+                        },
+                        loading: () => const Text("Bem-vindo(a)"),
+                        orElse: () => const SizedBox())),
         actions: [
           IconButton(
               onPressed: () async {

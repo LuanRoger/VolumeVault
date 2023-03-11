@@ -57,7 +57,7 @@ String? maximumLenght50(String? value) {
 String? maximumLenght100(String? value) {
   if (value == null || value.isEmpty) return null;
 
-  if (StringValidators.maximumLengh(value, lenght: 100)) {
+  if (!StringValidators.maximumLengh(value, lenght: 100)) {
     return "Este campo deve conter menos do que 100 characteres";
   }
 

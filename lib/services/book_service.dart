@@ -28,6 +28,7 @@ class BookService {
   String get _baseUrl =>
       "${_apiConfig.protocol}://${_apiConfig.host}:${_apiConfig.port}/book";
   String get _bookRootUrl => _baseUrl;
+  String get _bookGenresUrl => "$_baseUrl/genres";
   String get _bookAndIdUrl => "$_bookRootUrl/"; // + bookId
   String get _searchBookUrl => "$_bookRootUrl/search";
 
@@ -52,6 +53,13 @@ class BookService {
     }
 
     return userBooks;
+  }
+
+  Future<List<String>> getBooksGenres() async {
+    HttpResponse response = await _httpModule.get(_bookGenresUrl);
+    if (response.statusCode != HttpCode.OK) return List.empty();
+
+    return (response.body as List).map((e) => e as String).toList();
   }
 
   Future<BookModel?> registerBook(RegisterBookRequest book) async {

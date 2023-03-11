@@ -199,7 +199,7 @@ class BookInfoViewerPage extends HookConsumerWidget {
                       children: [
                         Chip(
                           avatar: const Icon(Icons.numbers_rounded),
-                          label: Text("${book.edition ?? "-"}"),
+                          label: Text(book.edition != null ? "Ed. ${book.edition}" : "-"),
                         ),
                         Chip(
                           avatar: const Icon(Icons.insert_drive_file_rounded),

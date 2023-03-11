@@ -96,6 +96,7 @@ class _SeachCard extends HookConsumerWidget {
                   child: searchFuture.hasData
                       ? ListView(
                           key: UniqueKey(),
+                          padding: EdgeInsets.zero,
                           children: searchFuture.data!,
                         )
                       : const SizedBox()),

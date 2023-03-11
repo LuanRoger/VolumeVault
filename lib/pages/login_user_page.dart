@@ -27,6 +27,7 @@ class LoginUserPage extends HookConsumerWidget {
     final usernameController = useTextEditingController();
     final passwordController = useTextEditingController();
     final isLoadingState = useState(false);
+    final obscurePassword = useState(true);
 
     return Scaffold(
         body: SafeArea(
@@ -80,12 +81,19 @@ class LoginUserPage extends HookConsumerWidget {
                               TextFormField(
                                 controller: passwordController,
                                 validator: minumumLenght8AndMaximum18,
-                                obscureText: true,
-                                decoration: const InputDecoration(
-                                  label: Text("Senha"),
+                                obscureText: obscurePassword.value,
+                                decoration: InputDecoration(
+                                  label: const Text("Senha"),
                                   filled: true,
-                                  border: UnderlineInputBorder(
+                                  border: const UnderlineInputBorder(
                                       borderSide: BorderSide.none),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(obscurePassword.value
+                                        ? Icons.remove_red_eye_rounded
+                                        : Icons.remove_red_eye_outlined),
+                                    onPressed: () => obscurePassword.value =
+                                        !obscurePassword.value,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 15),
@@ -110,7 +118,7 @@ class LoginUserPage extends HookConsumerWidget {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(const SnackBar(
                                             content:
-                                                Text("O usuário não existe."),
+                                                Text("Suas credenciais estão incorretas."),
                                           ));
                                           break;
                                         default:
