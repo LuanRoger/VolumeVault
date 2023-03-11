@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide BottomSheet;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -205,13 +206,14 @@ class RegisterEditBookPage extends HookConsumerWidget {
   }
 
   void _showAditionalInfoModal(BuildContext context,
-      {BookFormat? bookFormat,
+      {ValueNotifier<BookFormat>? bookFormat,
       TextEditingController? pageNumbController,
       TextEditingController? genreController,
       TextEditingController? buyLinkController}) {
     String pageNumbMemento = pageNumbController?.text ?? "";
     String genreMemento = genreController?.text ?? "";
     String buyLinkMemento = buyLinkController?.text ?? "";
+    BookFormat? bookFormatMemento = bookFormat?.value ?? BookFormat.HARDCOVER;
 
     BottomSheet(
       action: (context) => FilledButton(
@@ -222,6 +224,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
         pageNumbController?.text = pageNumbMemento;
         genreController?.text = genreMemento;
         buyLinkController?.text = buyLinkMemento;
+        bookFormat?.value = bookFormatMemento;
       },
       items: [
         Form(
@@ -229,7 +232,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
           child: Column(
             children: [
               DropdownButtonFormField(
-                value: bookFormat,
+                value: bookFormat?.value,
                 validator: null,
                 style: Theme.of(context).textTheme.bodyMedium,
                 items: [
@@ -250,7 +253,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
                     child: Text(BookFormat.EBOOK.name),
                   )
                 ],
-                onChanged: (newValue) => bookFormat = newValue,
+                onChanged: (newValue) => bookFormat?.value = newValue ?? BookFormat.HARDCOVER,
               ),
               const SizedBox(height: 15),
               TextFormField(
@@ -385,7 +388,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
                             trailing: const Icon(Icons.navigate_next_rounded),
                             onTap: () => _showAditionalInfoModal(
                               context,
-                              bookFormat: bookFormatState.value,
+                              bookFormat: bookFormatState,
                               buyLinkController: buyLinkController,
                               genreController: genreController,
                               pageNumbController: pageNumbController,
