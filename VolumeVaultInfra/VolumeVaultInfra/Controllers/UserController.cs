@@ -66,7 +66,7 @@ public class UserController : IUserController
             _logger.Error(ex, ex.Message);
             throw ex;   
         }
-        _logger.Information("Siging new user: Username[{0}].", userWrite.username);
+        _logger.Information("Signing new user: Username[{0}].", userWrite.username);
 
         RelatedInformation userInformationToHash = new();
         userInformationToHash.AddInformation(userWrite.username);

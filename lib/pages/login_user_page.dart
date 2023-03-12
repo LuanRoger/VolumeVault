@@ -117,8 +117,8 @@ class LoginUserPage extends HookConsumerWidget {
                                         case HttpCode.NOT_FOUND:
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(const SnackBar(
-                                            content:
-                                                Text("Suas credenciais estão incorretas."),
+                                            content: Text(
+                                                "Suas credenciais estão incorretas."),
                                           ));
                                           break;
                                         default:
@@ -155,7 +155,7 @@ class LoginUserPage extends HookConsumerWidget {
                             TextButton(
                               onPressed: () => Navigator.of(context)
                                   .pushNamedAndRemoveUntil(
-                                      AppRoutes.siginPageRoute, (_) => false),
+                                      AppRoutes.signinPageRoute, (_) => false),
                               child: const Text("Registre-se"),
                             ),
                           ],

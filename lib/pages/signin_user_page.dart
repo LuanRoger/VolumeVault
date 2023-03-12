@@ -3,21 +3,21 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/http_code.dart';
 import 'package:volume_vault/providers/providers.dart';
-import 'package:volume_vault/services/models/sigin_result.dart';
-import 'package:volume_vault/services/models/user_sigin_request.dart';
+import 'package:volume_vault/services/models/signin_result.dart';
+import 'package:volume_vault/services/models/user_signin_request.dart';
 import 'package:volume_vault/shared/assets/app_images.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/validators/text_field_validator.dart';
 
-class SiginUserPage extends HookConsumerWidget {
-  final GlobalKey<FormState> _siginFormKey = GlobalKey<FormState>();
+class SigninUserPage extends HookConsumerWidget {
+  final GlobalKey<FormState> _signinFormKey = GlobalKey<FormState>();
 
-  SiginUserPage({super.key});
+  SigninUserPage({super.key});
 
-  Future<SiginResult> _signin(WidgetRef ref,
-      {required UserSiginRequest signinRequest}) async {
+  Future<SigninResult> _signin(WidgetRef ref,
+      {required UserSigninRequest signinRequest}) async {
     final loginProvider = await ref.read(authServiceProvider.future);
-    SiginResult result = await loginProvider.sigin(signinRequest);
+    SigninResult result = await loginProvider.signin(signinRequest);
 
     return result;
   }
@@ -62,7 +62,7 @@ class SiginUserPage extends HookConsumerWidget {
                               .copyWith(fontWeight: FontWeight.bold),
                         ),
                         Form(
-                          key: _siginFormKey,
+                          key: _signinFormKey,
                           child: Column(
                             children: [
                               TextFormField(
@@ -96,7 +96,7 @@ class SiginUserPage extends HookConsumerWidget {
                                   filled: true,
                                   border: const UnderlineInputBorder(
                                       borderSide: BorderSide.none),
-                                      suffixIcon: IconButton(
+                                  suffixIcon: IconButton(
                                     icon: Icon(obscurePassword.value
                                         ? Icons.remove_red_eye_rounded
                                         : Icons.remove_red_eye_outlined),
@@ -108,13 +108,14 @@ class SiginUserPage extends HookConsumerWidget {
                               const SizedBox(height: 15),
                               ElevatedButton(
                                 onPressed: () async {
-                                  if (!_siginFormKey.currentState!.validate()) {
+                                  if (!_signinFormKey.currentState!
+                                      .validate()) {
                                     return;
                                   }
                                   isLoadingState.value = true;
 
-                                  SiginResult result = await _signin(ref,
-                                      signinRequest: UserSiginRequest(
+                                  SigninResult result = await _signin(ref,
+                                      signinRequest: UserSigninRequest(
                                           username: usernameController.text,
                                           email: emailController.text,
                                           password: passwordController.text));

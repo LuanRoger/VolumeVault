@@ -31,7 +31,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("API Key", new()
     {
-        Description = "API Key for login and sigin requests",
+        Description = "API Key for login and signin requests",
         Type = SecuritySchemeType.ApiKey,
         Name = ProgramConsts.API_KEY_REQUEST_HEADER,
         In = ParameterLocation.Header,

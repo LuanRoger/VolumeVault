@@ -6,7 +6,7 @@ import 'package:volume_vault/pages/home_page/home_page.dart';
 import 'package:volume_vault/pages/login_user_page.dart';
 import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
 import 'package:volume_vault/pages/register_edit_book_page/sub_pages/large_info_input.dart';
-import 'package:volume_vault/pages/sigin_user_page.dart';
+import 'package:volume_vault/pages/signin_user_page.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 
 class RouteDriver {
@@ -21,8 +21,8 @@ class RouteDriver {
         return gotoHomePage();
       case AppRoutes.loginPageRoute:
         return gotoLoginPage();
-      case AppRoutes.siginPageRoute:
-        return gotoSiginPage();
+      case AppRoutes.signinPageRoute:
+        return gotoSigninPage();
       case AppRoutes.bookInfoViewerPageRoute:
         return gotoBookInfoViewerPage(pageArgs![0] as BookModel);
       case AppRoutes.registerEditBookPageRoute:
@@ -39,7 +39,8 @@ class RouteDriver {
 
   static gotoHomePage() => MaterialPageRoute(builder: (_) => const HomePage());
   static gotoLoginPage() => MaterialPageRoute(builder: (_) => LoginUserPage());
-  static gotoSiginPage() => MaterialPageRoute(builder: (_) => SiginUserPage());
+  static gotoSigninPage() =>
+      MaterialPageRoute(builder: (_) => SigninUserPage());
   static gotoBookInfoViewerPage(BookModel bookModel) =>
       MaterialPageRoute<bool>(builder: (_) => BookInfoViewerPage(bookModel));
   static gotoRegisterEditBookPage({BookModel? bookToEdit}) => MaterialPageRoute(
