@@ -1,6 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import 'package:volume_vault/models/http_code.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/login_result.dart';
@@ -35,10 +37,15 @@ class LoginUserPage extends HookConsumerWidget {
         padding: const EdgeInsets.all(8.0),
         child: isLoadingState.value
             ? const Center(child: CircularProgressIndicator())
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+            : ResponsiveRowColumn(
+                columnCrossAxisAlignment: CrossAxisAlignment.center,
+                layout: ResponsiveWrapper.of(context).isSmallerThan(DESKTOP)
+                    ? ResponsiveRowColumnType.COLUMN
+                    : ResponsiveRowColumnType.ROW,
                 children: [
-                  Expanded(
+                  ResponsiveRowColumnItem(
+                    rowFlex: 2,
+                    columnFlex: 1,
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
@@ -51,9 +58,16 @@ class LoginUserPage extends HookConsumerWidget {
                       ),
                     ),
                   ),
-                  Expanded(
-                    flex: 4,
+                  if (ResponsiveWrapper.of(context).isDesktop)
+                    const ResponsiveRowColumnItem(child: SizedBox(width: 20)),
+                  ResponsiveRowColumnItem(
+                    rowFlex: 1,
+                    columnFlex: 3,
                     child: Column(
+                      mainAxisAlignment: ResponsiveWrapper.of(context).isDesktop
+                          ? MainAxisAlignment.center
+                          : MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
                           "Bem-vindo(a) de volta",
