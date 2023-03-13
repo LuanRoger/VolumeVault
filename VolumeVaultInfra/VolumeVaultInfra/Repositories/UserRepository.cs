@@ -6,9 +6,9 @@ namespace VolumeVaultInfra.Repositories;
 
 public class UserRepository : IUserRepository
 {
-    private DatabaseBaseContext _userDb { get; }
+    private DatabaseContext _userDb { get; }
     
-    public UserRepository(DatabaseBaseContext userDb)
+    public UserRepository(DatabaseContext userDb)
     {
         _userDb = userDb;
     }

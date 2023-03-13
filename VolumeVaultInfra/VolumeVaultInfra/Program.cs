@@ -68,26 +68,21 @@ builder.Logging.AddSerilog(logger);
 builder.Host.UseSerilog(logger);
 
 #region General Services
+builder.Services.AddDbContext<DatabaseContext>(optionsBuilder =>
+{
+    string? connString = builder.Configuration
+        .GetConnectionString("PostgresConnectionString");
+    if(string.IsNullOrEmpty(connString))
+        throw new RequiredConfigurationException("PostgresConnectionString");
+    
+    if(builder.Environment.IsProduction())
+        connString = EnvironmentVariables.FormatVvPostgresConnectionString(connString);
+
+    optionsBuilder.UseNpgsql(connString);
+});
 builder.Services.AddHealthChecks()
     .AddCheck<HealthCheckService>(nameof(HealthCheckService))
     .ForwardToPrometheus();
-builder.Services.AddDbContext<DatabaseBaseContext, DatabaseContext>(optionsBuilder =>
-{
-    if(builder.Environment.IsDevelopment())
-    {
-        optionsBuilder.UseNpgsql(builder.Configuration
-            .GetConnectionString("PostgresConnectionString")!);
-        return;
-    }
-    
-    string? connStringHolder = builder.Configuration
-        .GetConnectionString("PostgresConnectionString");
-    if(string.IsNullOrEmpty(connStringHolder))
-        throw new RequiredConfigurationException("PostgresConnectionString");
-    
-    string connString = EnvironmentVariables.FormatVvPostgresConnectionString(connStringHolder); 
-    optionsBuilder.UseNpgsql(connString);
-});
 builder.Services.AddSingleton<IMongoClient, MongoClient>(_ =>
 {
     if(builder.Environment.IsDevelopment())
@@ -169,7 +164,12 @@ if (app.Environment.IsDevelopment())
 using (IServiceScope scope = app.Services.CreateScope())
 {
     DatabaseContext? context = scope.ServiceProvider.GetService<DatabaseContext>();
-    context?.Database.EnsureCreated();
+    if(context is null) return;
+    
+    context.Database.EnsureCreated();
+    
+    if (context.Database.GetPendingMigrations().Any())
+        context.Database.Migrate();
 }
 
 app.UseStaticFiles();
