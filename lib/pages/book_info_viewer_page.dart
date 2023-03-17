@@ -94,7 +94,7 @@ class BookInfoViewerPage extends HookConsumerWidget {
                   }
                   isLoadingState.value = false;
                 },
-                icon: const Icon(Icons.more_vert_rounded))
+                icon: const Icon(Icons.more_vert_rounded),)
           ],
         ),
         body: BookInfoViwerBodyPage(
