@@ -12,6 +12,7 @@ import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_pa
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
 import 'package:volume_vault/services/models/user_book_result.dart';
+import 'package:volume_vault/shared/hooks/fetcher_list_grid_controller_hook.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info_card.dart';
 import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info_grid_card.dart';
@@ -116,14 +117,12 @@ class HomeSection extends HookConsumerWidget {
     }
   }
 
-  FetcherListGridController<BookModel> fetcherController =
-      FetcherListGridController<BookModel>();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userInfo = ref.watch(userInfoProvider);
     final bookOnViwer = useState<BookModel?>(null);
 
-    final fetchLastPageKey = useState(UniqueKey());
+    final fetcherListController = useFetcherListGridController<BookModel>();
     final booksFetcherRequest = useState(GetUserBookRequest(page: 1));
 
     final visualizationType =
@@ -232,7 +231,7 @@ class HomeSection extends HookConsumerWidget {
                       child: child),
               child: FetcherListGrid<BookModel>(
                 key: ValueKey(visualizationType.value),
-                controller: fetcherController,
+                controller: fetcherListController,
                 fetcher: (page) async =>
                     (await _fetchUserBooks(ref, GetUserBookRequest(page: page)))
                         .books,
@@ -249,7 +248,7 @@ class HomeSection extends HookConsumerWidget {
                   return _buildBookView(context,
                       books: data,
                       viewType: visualizationType.value,
-                      onUpdate: () => fetchLastPageKey.value = UniqueKey(),
+                      onUpdate: fetcherListController.refresh,
                       onSelect: (book) {
                         if (ResponsiveWrapper.of(context).isDesktop) {
                           bookOnViwer.value =
@@ -279,7 +278,7 @@ class HomeSection extends HookConsumerWidget {
         clipBehavior: Clip.none,
         openColor: Theme.of(context).colorScheme.background,
         closedColor: Theme.of(context).colorScheme.background,
-        onClosed: (_) => fetchLastPageKey.value = UniqueKey(),
+        onClosed: (_) => fetcherListController.refresh(),
         closedShape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         closedBuilder: (_, open) => FloatingActionButton(

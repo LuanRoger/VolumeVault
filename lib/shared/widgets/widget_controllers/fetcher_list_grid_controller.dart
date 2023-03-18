@@ -6,7 +6,8 @@ class FetcherListGridController<T> extends ChangeNotifier {
   FetcherListGridController(
       {List<T>? data,
       VisualizationType visualizationType = VisualizationType.LIST})
-      : _bridge = _FetcherListGridControllerBridge(data = const [], visualizationType);
+      : _bridge = _FetcherListGridControllerBridge(
+            data = const [], visualizationType);
 
   List<T> get data => List.from(_bridge.data);
   set data(List<T> children) {
@@ -20,14 +21,16 @@ class FetcherListGridController<T> extends ChangeNotifier {
     notifyListeners();
   }
 
-  void dispose() {
-    super.dispose();
+  void refresh() {
+    _bridge.refreshListKey.value = UniqueKey();
   }
 }
 
 class _FetcherListGridControllerBridge<T> {
   List<T> data;
   VisualizationType visualizationType;
+
+  ValueNotifier<UniqueKey> refreshListKey = ValueNotifier(UniqueKey());
 
   _FetcherListGridControllerBridge(this.data, this.visualizationType);
 }
