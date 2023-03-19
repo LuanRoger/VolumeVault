@@ -3,20 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/book_search_result.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
+import 'package:volume_vault/pages/book_info_viewer_page.dart';
 import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
 import 'package:volume_vault/services/models/user_book_result.dart';
+import 'package:volume_vault/shared/hooks/fetcher_list_grid_controller_hook.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info_card.dart';
 import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info_grid_card.dart';
 import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info_list_card.dart';
 import 'package:volume_vault/shared/widgets/book_search_result_tile.dart';
 import 'package:volume_vault/shared/widgets/fetcher_list_grid.dart';
-import 'package:volume_vault/shared/widgets/placeholders/no_registered_book_placeholder.dart';
 import 'package:volume_vault/shared/widgets/search_floating_card.dart';
 import 'package:volume_vault/shared/widgets/widget_switcher.dart';
 
@@ -25,7 +27,7 @@ class HomeSection extends HookConsumerWidget {
 
   HomeSection({super.key, this.viewType});
 
-  void _onCardPress(BuildContext context, BookModel bookModel,
+  void _onMobileBookSelect(BuildContext context, BookModel bookModel,
       {void Function()? onUpdate}) {
     Navigator.pushNamed<bool>(context, AppRoutes.bookInfoViewerPageRoute,
         arguments: [bookModel]).then((value) {
@@ -37,25 +39,25 @@ class HomeSection extends HookConsumerWidget {
 
   Future<UserBookResult> _fetchUserBooks(
       WidgetRef ref, GetUserBookRequest getUserBookRequest) async {
-    final bookService = await ref.read(bookServiceProvider.future);
-    if (bookService == null) return UserBookResult.empty();
+    final bookController = await ref.read(bookControllerProvider.future);
 
     UserBookResult userBookResult =
-        await bookService.getUserBook(getUserBookRequest);
+        await bookController.getUserBooks(getUserBookRequest);
     return userBookResult;
   }
 
   Future<List<BookSearchResult>> _search(String query, WidgetRef ref) async {
-    final bookService = await ref.read(bookServiceProvider.future);
-    if (bookService == null) return List.empty();
+    final bookController = await ref.read(bookControllerProvider.future);
 
-    List<BookSearchResult> searchResult = await bookService.searchBook(query);
+    List<BookSearchResult> searchResult =
+        await bookController.searchUserBooks(query);
     return searchResult;
   }
 
   List<BookInfoCard> _buildBookView(BuildContext context,
       {required List<BookModel> books,
       void Function()? onUpdate,
+      void Function(BookModel)? onSelect,
       VisualizationType viewType = VisualizationType.LIST}) {
     switch (viewType) {
       case VisualizationType.LIST:
@@ -63,7 +65,10 @@ class HomeSection extends HookConsumerWidget {
           for (final book in books)
             BookInfoListCard(
               book,
-              onPressed: () => _onCardPress(context, book, onUpdate: onUpdate),
+              onPressed: onSelect != null
+                  ? () => onSelect(book)
+                  : () =>
+                      _onMobileBookSelect(context, book, onUpdate: onUpdate),
             ),
         ];
       case VisualizationType.GRID:
@@ -71,7 +76,10 @@ class HomeSection extends HookConsumerWidget {
           for (final book in books)
             BookInfoGridCard(
               book,
-              onPressed: () => _onCardPress(context, book, onUpdate: onUpdate),
+              onPressed: onSelect != null
+                  ? () => onSelect(book)
+                  : () =>
+                      _onMobileBookSelect(context, book, onUpdate: onUpdate),
             ),
         ];
     }
@@ -103,59 +111,20 @@ class HomeSection extends HookConsumerWidget {
     if (exit) {
       await ref.read(userSessionNotifierProvider.notifier).clear();
       Navigator.pushNamedAndRemoveUntil(
-                    context, AppRoutes.loginPageRoute, (_) => false);
+          context, AppRoutes.loginPageRoute, (_) => false);
     }
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userInfo = ref.watch(userInfoProvider);
+    final bookOnViwer = useState<BookModel?>(null);
 
-    final fetchLastPageKey = useState(UniqueKey());
+    final fetcherListController = useFetcherListGridController<BookModel>();
     final booksFetcherRequest = useState(GetUserBookRequest(page: 1));
-    final userBooks = useState(List<BookModel>.empty());
-    final fetchMemoizer = useMemoized(
-        () => _fetchUserBooks(ref, booksFetcherRequest.value),
-        [booksFetcherRequest.value, fetchLastPageKey.value]);
-    final fetchFuture = useFuture(fetchMemoizer, preserveState: false);
 
-    final lastDataPage = useState(1);
     final visualizationType =
         useState<VisualizationType>(viewType ?? VisualizationType.LIST);
-
-    useEffect(() {
-      if (fetchFuture.hasData &&
-          fetchFuture.connectionState == ConnectionState.done &&
-          fetchFuture.data!.books.isNotEmpty &&
-          userBooks.value.length != fetchFuture.data!.books.length) {
-        final List<BookModel> newBooks = List.from(fetchFuture.data!.books);
-        final List<BookModel> booksFromList = List.from(userBooks.value);
-        List<BookModel> updatedBooks;
-        if (newBooks.length > booksFromList.length) {
-          final leftBooks =
-              newBooks.sublist(booksFromList.length, newBooks.length);
-          updatedBooks = [...booksFromList, ...leftBooks];
-        } else {
-          int startRange =
-              (booksFromList.length ~/ booksFetcherRequest.value.limitPerPage) *
-                  booksFetcherRequest.value.limitPerPage;
-          booksFromList.removeRange(startRange, booksFromList.length);
-          updatedBooks = [...booksFromList, ...newBooks];
-        }
-
-        userBooks.value = updatedBooks;
-        lastDataPage.value = booksFetcherRequest.value.page;
-      }
-
-      if (fetchFuture.hasData &&
-          fetchFuture.data!.books.isEmpty &&
-          booksFetcherRequest.value.page > 1) {
-        booksFetcherRequest.value = booksFetcherRequest.value
-            .copyWith(page: booksFetcherRequest.value.page - 1);
-        lastDataPage.value = booksFetcherRequest.value.page;
-      }
-      return () {};
-    }, [fetchFuture.connectionState, fetchLastPageKey.value]);
 
     final searchTextController = useTextEditingController();
 
@@ -184,16 +153,16 @@ class HomeSection extends HookConsumerWidget {
         ),
       ),
       appBar: AppBar(
-        title: 
-        WidgetSwitcher(first: const Text("Início"), second: userInfo
-                    .maybeWhen(
-                        data: (data) {
-                          if (data == null) return const SizedBox();
+        title: WidgetSwitcher(
+            first: const Text("Início"),
+            second: userInfo.maybeWhen(
+                data: (data) {
+                  if (data == null) return const SizedBox();
 
-                          return Text("Olá, ${data.username}");
-                        },
-                        loading: () => const Text("Bem-vindo(a)"),
-                        orElse: () => const SizedBox())),
+                  return Text("Olá, ${data.username}");
+                },
+                loading: () => const Text("Bem-vindo(a)"),
+                orElse: () => const SizedBox())),
         actions: [
           IconButton(
               onPressed: () async {
@@ -207,9 +176,9 @@ class HomeSection extends HookConsumerWidget {
                                 onTap: () async {
                                   Navigator.pop(dialogContext);
                                   final bookService = await ref
-                                      .read(bookServiceProvider.future);
+                                      .read(bookControllerProvider.future);
                                   final BookModel? book = await bookService
-                                      ?.getUserBookById(bookResult.id);
+                                      .getBookInfoById(bookResult.id);
                                   if (bookService == null || book == null) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
@@ -219,7 +188,7 @@ class HomeSection extends HookConsumerWidget {
                                     );
                                     return;
                                   }
-                                  _onCardPress(context, book);
+                                  _onMobileBookSelect(context, book);
                                 },
                               )
                           ]);
@@ -245,48 +214,69 @@ class HomeSection extends HookConsumerWidget {
           ),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          userBooks.value = List.empty();
-          booksFetcherRequest.value = booksFetcherRequest.value.copyWith(
-            page: 1,
-          );
-          await Future.delayed(const Duration(milliseconds: 500));
-        },
-        child: PageTransitionSwitcher(
-          transitionBuilder: (child, animation, secondaryAnimation) =>
-              FadeThroughTransition(
-                  animation: animation,
-                  secondaryAnimation: secondaryAnimation,
-                  child: child),
-          child: userBooks.value.isEmpty
-              ? const Center(child: NoRegisteredBookPlaceholder())
-              : FetcherListGrid(
-                  key: ValueKey(visualizationType.value),
-                  visualizationType: visualizationType.value,
-                  reachScrollBottom: () {
-                    if (booksFetcherRequest.value.page > lastDataPage.value) {
+      body: ResponsiveRowColumn(
+        layout: ResponsiveWrapper.of(context).isDesktop
+            ? ResponsiveRowColumnType.ROW
+            : ResponsiveRowColumnType.COLUMN,
+        children: [
+          ResponsiveRowColumnItem(
+            rowFlex: 1,
+            child: PageTransitionSwitcher(
+              transitionBuilder: (child, animation, secondaryAnimation) =>
+                  FadeThroughTransition(
+                      animation: animation,
+                      secondaryAnimation: secondaryAnimation,
+                      child: child),
+              child: FetcherListGrid<BookModel>(
+                key: ValueKey(visualizationType.value),
+                controller: fetcherListController,
+                fetcher: (page) async =>
+                    (await _fetchUserBooks(ref, GetUserBookRequest(page: page)))
+                        .books,
+                reachScrollBottom: (page) {
+                  if (booksFetcherRequest.value.page > page) {
+                    return;
+                  }
+                  booksFetcherRequest.value =
+                      booksFetcherRequest.value.copyWith(
+                    page: booksFetcherRequest.value.page + 1,
+                  );
+                },
+                builder: (data) {
+                  return _buildBookView(context,
+                      books: data,
+                      viewType: visualizationType.value,
+                      onUpdate: fetcherListController.refresh,
+                      onSelect: (book) {
+                    if (ResponsiveWrapper.of(context).isDesktop) {
+                      bookOnViwer.value =
+                          book.id != bookOnViwer.value?.id ? book : null;
                       return;
                     }
-                    booksFetcherRequest.value =
-                        booksFetcherRequest.value.copyWith(
-                      page: booksFetcherRequest.value.page + 1,
-                    );
-                  },
-                  children: _buildBookView(
-                    context,
-                    books: userBooks.value,
-                    viewType: visualizationType.value,
-                    onUpdate: () => fetchLastPageKey.value = UniqueKey(),
-                  ),
-                ),
-        ),
+                    _onMobileBookSelect(context, book);
+                  });
+                },
+              ),
+            ),
+          ),
+          if (ResponsiveWrapper.of(context).isDesktop &&
+              bookOnViwer.value != null)
+            ResponsiveRowColumnItem(
+              rowFlex: 1,
+              child: BookInfoViwerBodyPage(
+                bookOnViwer.value!,
+                onRefresh: () async {
+                  return Future.delayed(const Duration(seconds: 2));
+                },
+              ),
+            )
+        ],
       ),
       floatingActionButton: OpenContainer(
         clipBehavior: Clip.none,
         openColor: Theme.of(context).colorScheme.background,
         closedColor: Theme.of(context).colorScheme.background,
-        onClosed: (_) => fetchLastPageKey.value = UniqueKey(),
+        onClosed: (_) => fetcherListController.refresh(),
         closedShape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         closedBuilder: (_, open) => FloatingActionButton(

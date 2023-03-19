@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:volume_vault/models/api_config_params.dart';
+import 'package:volume_vault/models/enums/login_result_status.dart';
 import 'package:volume_vault/models/http_response.dart';
 import 'package:volume_vault/models/interfaces/http_module.dart';
 import 'package:volume_vault/services/models/login_result.dart';
@@ -36,7 +37,9 @@ class AuthService {
         await _httpModule.post(_signinUrl, body: userJsonInfo);
 
     return SigninResult(
-        jwtToken: response.body, requestCode: response.statusCode);
+      jwtToken: response.body,
+      resultStatus: AuthResultStatus.fromHttpCode(response.statusCode),
+    );
   }
 
   Future<LoginResult> login(UserLoginRequest userRequest) async {
@@ -45,6 +48,7 @@ class AuthService {
         await _httpModule.post(_loginUrl, body: jsonRequestBody);
 
     return LoginResult(
-        jwtToken: response.body, requestCode: response.statusCode);
+        jwtToken: response.body,
+        resultStatus: AuthResultStatus.fromHttpCode(response.statusCode));
   }
 }

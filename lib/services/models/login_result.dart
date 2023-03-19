@@ -1,8 +1,9 @@
-import 'package:volume_vault/models/http_code.dart';
+import 'package:volume_vault/models/enums/login_result_status.dart';
+
 
 class LoginResult {
   String? jwtToken;
-  HttpCode requestCode;
+  AuthResultStatus resultStatus;
 
-  LoginResult({required this.jwtToken, required this.requestCode});
+  LoginResult({required this.jwtToken, required this.resultStatus});
 }

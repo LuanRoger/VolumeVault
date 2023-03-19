@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:volume_vault/models/enums/authorization_status.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
-import 'package:volume_vault/models/http_code.dart';
 import 'package:volume_vault/pages/home_page/sections/home_section.dart';
 import 'package:volume_vault/providers/providers.dart';
 
@@ -10,21 +10,19 @@ class HomePageMobile extends HookConsumerWidget {
   const HomePageMobile({super.key});
 
   Future<bool> _checkConnection(WidgetRef ref) async {
-    final utilsService = await ref.read(utilsServiceProvider.future);
+    final utilsController = await ref.read(utilsControllerProvider.future);
 
-    final result = await utilsService.ping();
-
-    return result.statusCode != HttpCode.OK;
+    return !(await utilsController.ping());
   }
 
   Future<bool> _checkUserAuthToken(WidgetRef ref) async {
-    final utilsService = await ref.read(utilsServiceProvider.future);
+    final utilsController = await ref.read(utilsControllerProvider.future);
     final userSession = await ref.read(userSessionNotifierProvider.future);
     if (userSession.token.isEmpty) return false;
 
-    final result = await utilsService.checkAuthToken(userSession.token);
+    final result = await utilsController.checkAuthorizationStatus(userSession.token);
 
-    return result.statusCode != HttpCode.OK;
+    return result != AuthorizationStatus.authorized;
   }
 
   Future<List<bool>> _checkout(WidgetRef ref) async {
@@ -64,7 +62,8 @@ class HomePageMobile extends HookConsumerWidget {
       Future.delayed(
         Duration.zero,
         () => _showErrorDialog(context,
-            connectionError: checkout.data![0], authValidationError: checkout.data![1]),
+            connectionError: checkout.data![0],
+            authValidationError: checkout.data![1]),
       );
     }
 
