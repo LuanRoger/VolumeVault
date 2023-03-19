@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:volume_vault/controllers/auth_controller.dart';
-import 'package:volume_vault/controllers/controller_providers.dart';
 import 'package:volume_vault/models/enums/login_result_status.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/login_result.dart';

@@ -19,7 +19,6 @@ import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info
 import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info_list_card.dart';
 import 'package:volume_vault/shared/widgets/book_search_result_tile.dart';
 import 'package:volume_vault/shared/widgets/fetcher_list_grid.dart';
-import 'package:volume_vault/shared/widgets/placeholders/no_registered_book_placeholder.dart';
 import 'package:volume_vault/shared/widgets/search_floating_card.dart';
 import 'package:volume_vault/shared/widgets/widget_switcher.dart';
 
@@ -40,19 +39,18 @@ class HomeSection extends HookConsumerWidget {
 
   Future<UserBookResult> _fetchUserBooks(
       WidgetRef ref, GetUserBookRequest getUserBookRequest) async {
-    final bookService = await ref.read(bookServiceProvider.future);
-    if (bookService == null) return UserBookResult.empty();
+    final bookController = await ref.read(bookControllerProvider.future);
 
     UserBookResult userBookResult =
-        await bookService.getUserBook(getUserBookRequest);
+        await bookController.getUserBooks(getUserBookRequest);
     return userBookResult;
   }
 
   Future<List<BookSearchResult>> _search(String query, WidgetRef ref) async {
-    final bookService = await ref.read(bookServiceProvider.future);
-    if (bookService == null) return List.empty();
+    final bookController = await ref.read(bookControllerProvider.future);
 
-    List<BookSearchResult> searchResult = await bookService.searchBook(query);
+    List<BookSearchResult> searchResult =
+        await bookController.searchUserBooks(query);
     return searchResult;
   }
 
@@ -178,9 +176,9 @@ class HomeSection extends HookConsumerWidget {
                                 onTap: () async {
                                   Navigator.pop(dialogContext);
                                   final bookService = await ref
-                                      .read(bookServiceProvider.future);
+                                      .read(bookControllerProvider.future);
                                   final BookModel? book = await bookService
-                                      ?.getUserBookById(bookResult.id);
+                                      .getBookInfoById(bookResult.id);
                                   if (bookService == null || book == null) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
@@ -250,13 +248,13 @@ class HomeSection extends HookConsumerWidget {
                       viewType: visualizationType.value,
                       onUpdate: fetcherListController.refresh,
                       onSelect: (book) {
-                        if (ResponsiveWrapper.of(context).isDesktop) {
-                          bookOnViwer.value =
-                              book.id != bookOnViwer.value?.id ? book : null;
-                          return;
-                        }
-                        _onMobileBookSelect(context, book);
-                      });
+                    if (ResponsiveWrapper.of(context).isDesktop) {
+                      bookOnViwer.value =
+                          book.id != bookOnViwer.value?.id ? book : null;
+                      return;
+                    }
+                    _onMobileBookSelect(context, book);
+                  });
                 },
               ),
             ),

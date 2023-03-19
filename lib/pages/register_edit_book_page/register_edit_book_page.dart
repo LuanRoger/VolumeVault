@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide BottomSheet;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -27,26 +26,6 @@ class RegisterEditBookPage extends HookConsumerWidget {
   final _aditionalInfoFormKey = GlobalKey<FormState>();
 
   RegisterEditBookPage({super.key, this.editBookModel});
-
-  Future<bool> _registerNewBook(WidgetRef ref,
-      {required RegisterBookRequest book}) async {
-    final bookService = await ref.read(bookServiceProvider.future);
-    if (bookService == null) return false;
-
-    final BookModel? registeredBook = await bookService.registerBook(book);
-
-    return registeredBook != null;
-  }
-
-  Future<bool> _updateBook(WidgetRef ref,
-      {required EditBookRequest newInfosBook, required int bookId}) async {
-    final bookService = await ref.read(bookServiceProvider.future);
-    if (bookService == null) return false;
-
-    final updatedBook = await bookService.updateBook(bookId, newInfosBook);
-
-    return updatedBook;
-  }
 
   Future<bool> _showConfirmEditDialog(BuildContext context) async {
     bool saveUpdates = false;
@@ -253,7 +232,8 @@ class RegisterEditBookPage extends HookConsumerWidget {
                     child: Text(BookFormat.EBOOK.name),
                   )
                 ],
-                onChanged: (newValue) => bookFormat?.value = newValue ?? BookFormat.HARDCOVER,
+                onChanged: (newValue) =>
+                    bookFormat?.value = newValue ?? BookFormat.HARDCOVER,
               ),
               const SizedBox(height: 15),
               TextFormField(
@@ -452,6 +432,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
                           ElevatedButton(
                               onPressed: () async {
                                 loadingState.value = true;
+                                final bookController = await ref
+                                    .read(bookControllerProvider.future);
+
                                 if (editMode) {
                                   final updatedBook = EditBookRequest(
                                     title: titleController.text.isNotEmpty
@@ -501,9 +484,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                       await _showConfirmEditDialog(context);
                                   if (!saveInfos) return;
 
-                                  final updateResult = await _updateBook(ref,
-                                      newInfosBook: updatedBook,
-                                      bookId: editBookModel!.id);
+                                  final updateResult =
+                                      await bookController.updateBookInfo(
+                                          editBookModel!.id, updatedBook);
                                   if (!updateResult) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
@@ -556,8 +539,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                   lastModification: DateTime.now().toUtc(),
                                 );
 
-                                final bool success =
-                                    await _registerNewBook(ref, book: newBook);
+                                final bool success = (await bookController
+                                        .registerBook(newBook)) ==
+                                    null;
                                 if (success) {
                                   Navigator.pop(context);
                                   return;

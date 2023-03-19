@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:volume_vault/controllers/controller_providers.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
@@ -69,32 +68,33 @@ class BookInfoViewerPage extends HookConsumerWidget {
                   onPressed: () => _launchBuyPage(book.buyLink!),
                   icon: const Icon(Icons.shopping_cart_rounded)),
             PopupMenuButton(
-                itemBuilder: (_) =>
-                    [const PopupMenuItem(value: 0, child: Text("Deletar"))],
-                onSelected: (value) async {
-                  switch (value) {
-                    case 0:
-                      bool delete = await _showDeleteBookDialog(context);
-                      if (!delete) break;
-                      isLoadingState.value = true;
+              itemBuilder: (_) =>
+                  [const PopupMenuItem(value: 0, child: Text("Deletar"))],
+              onSelected: (value) async {
+                switch (value) {
+                  case 0:
+                    bool delete = await _showDeleteBookDialog(context);
+                    if (!delete) break;
+                    isLoadingState.value = true;
 
-                      final controller =
-                          await ref.read(bookControllerProvider.future);
-                      final result = await controller.deleteBook(book.id);
-                      if (!result) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Erro ao deletar livro"),
-                          ),
-                        );
-                      } else {
-                        Navigator.pop(context, true);
-                      }
-                      break;
-                  }
-                  isLoadingState.value = false;
-                },
-                icon: const Icon(Icons.more_vert_rounded),)
+                    final controller =
+                        await ref.read(bookControllerProvider.future);
+                    final result = await controller.deleteBook(book.id);
+                    if (!result) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Erro ao deletar livro"),
+                        ),
+                      );
+                    } else {
+                      Navigator.pop(context, true);
+                    }
+                    break;
+                }
+                isLoadingState.value = false;
+              },
+              icon: const Icon(Icons.more_vert_rounded),
+            )
           ],
         ),
         body: BookInfoViwerBodyPage(
@@ -103,7 +103,7 @@ class BookInfoViewerPage extends HookConsumerWidget {
           onRefresh: () async {
             final controller = await ref.read(bookControllerProvider.future);
             final BookModel? newInfos =
-                await controller.updateBookInfo(book.id);
+                await controller.getBookInfoById(book.id);
 
             if (newInfos == null) {
               ScaffoldMessenger.of(context).showSnackBar(
