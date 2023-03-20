@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
 
-part 'widget_controllers/fetcher_list_grid_controller.dart';
+part 'controllers/fetcher_list_grid_controller.dart';
 
 class FetcherListGrid<T> extends HookConsumerWidget {
   FetcherListGridController<T> controller;
@@ -29,7 +29,6 @@ class FetcherListGrid<T> extends HookConsumerWidget {
         return ListView(
           controller: scrollController,
           scrollDirection: Axis.vertical,
-          shrinkWrap: true,
           physics: const AlwaysScrollableScrollPhysics(),
           children: children,
         );
@@ -37,7 +36,6 @@ class FetcherListGrid<T> extends HookConsumerWidget {
         return GridView(
           controller: scrollController,
           scrollDirection: Axis.vertical,
-          shrinkWrap: true,
           physics: const AlwaysScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2, childAspectRatio: 0.5),
@@ -49,12 +47,12 @@ class FetcherListGrid<T> extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scrollController = useScrollController();
-    final visualizationTypeState = useState(controller.visualizationType);
     final dataState = useState<List<T>>(List.empty());
     final lastDataPage = useState(1);
-    final fetchMemoizer = useMemoized(() => fetcher(lastDataPage.value),
-        [controller._bridge.refreshListKey.value]);
+    final fetchMemoizer = useMemoized(() => fetcher(lastDataPage.value));
     final fetchFuture = useFuture(fetchMemoizer, preserveState: false);
+
+    useListenable(controller);
 
     useEffect(
       () {
@@ -64,21 +62,10 @@ class FetcherListGrid<T> extends HookConsumerWidget {
           reachScrollBottom?.call(lastDataPage.value);
         }
 
-        controllerListener() {
-          if (controller.visualizationType != visualizationTypeState.value) {
-            visualizationTypeState.value = controller.visualizationType;
-          }
-          dataState.value = controller.data;
-
-          controller.refresh();
-        }
-
         scrollController.addListener(scrollListener);
-        controller.addListener(controllerListener);
 
         return () {
           scrollController.removeListener(scrollListener);
-          controller.removeListener(controllerListener);
         };
       },
     );
