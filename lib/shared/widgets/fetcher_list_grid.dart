@@ -49,10 +49,16 @@ class FetcherListGrid<T> extends HookConsumerWidget {
     final scrollController = useScrollController();
     final dataState = useState<List<T>>(List.empty());
     final lastDataPage = useState(1);
-    final fetchMemoizer = useMemoized(() => fetcher(lastDataPage.value));
+    final refreshKey = useState(UniqueKey());
+    final fetchMemoizer =
+        useMemoized(() => fetcher(lastDataPage.value), [refreshKey.value]);
     final fetchFuture = useFuture(fetchMemoizer, preserveState: false);
 
     useListenable(controller);
+    if (controller._bridge.needToRefresh) {
+      controller._bridge.needToRefresh = false;
+      refreshKey.value = UniqueKey();
+    }
 
     useEffect(
       () {
@@ -102,7 +108,11 @@ class FetcherListGrid<T> extends HookConsumerWidget {
       return () {};
     }, [fetchFuture.connectionState]);
 
-    return _buildBookView(builder(dataState.value),
-        scrollController: scrollController);
+    return fetchFuture.connectionState == ConnectionState.waiting
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : _buildBookView(builder(dataState.value),
+            scrollController: scrollController);
   }
 }

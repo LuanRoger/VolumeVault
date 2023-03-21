@@ -3,8 +3,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
 import 'package:volume_vault/shared/widgets/fetcher_list_grid.dart';
 
-FetcherListGridController<T> useFetcherListGridController<T>() =>
-    use(_FetcherListGridControllerHook<T>());
+FetcherListGridController<T> useFetcherListGridController<T>({List<T>? data, VisualizationType visualizationType = VisualizationType.LIST}) =>
+    use(_FetcherListGridControllerHook<T>(data: data, visualizationType: visualizationType));
 
 class _FetcherListGridControllerHook<T>
     extends Hook<FetcherListGridController<T>> {
@@ -13,7 +13,7 @@ class _FetcherListGridControllerHook<T>
 
   const _FetcherListGridControllerHook(
       {this.data,
-      this.visualizationType = VisualizationType.LIST});
+      required this.visualizationType});
 
   @override
   HookState<FetcherListGridController<T>, Hook<FetcherListGridController<T>>>

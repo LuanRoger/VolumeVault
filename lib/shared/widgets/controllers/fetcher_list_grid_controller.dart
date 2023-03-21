@@ -22,15 +22,15 @@ class FetcherListGridController<T> extends ChangeNotifier {
   }
 
   void refresh() {
-    _bridge.refreshListKey.value = UniqueKey();
+    _bridge.needToRefresh = true;
+    notifyListeners();
   }
 }
 
 class _FetcherListGridControllerBridge<T> {
   List<T> data;
   VisualizationType visualizationType;
-
-  ValueNotifier<UniqueKey> refreshListKey = ValueNotifier(UniqueKey());
+  bool needToRefresh = false;
 
   _FetcherListGridControllerBridge(this.data, this.visualizationType);
 }
