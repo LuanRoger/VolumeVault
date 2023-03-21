@@ -7,5 +7,8 @@ class HomeSectionDesktopCommands extends HomeSectionLayoutStrategy {
 
   @override
   void onBookSelect(BuildContext context, BookModel bookModel,
-      {void Function()? onUpdate}) {}
+      {void Function()? onUpdate}) {
+        //Implemented on the caller, because this method change some state.
+        //Check the method reference.
+      }
 }
