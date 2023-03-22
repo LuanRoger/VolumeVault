@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:volume_vault/models/book_model.dart';
-import 'package:volume_vault/pages/book_info_viewer_page.dart';
+import 'package:volume_vault/pages/book_info_view/book_info_viewer_page.dart';
 import 'package:volume_vault/pages/configuration_page.dart';
 import 'package:volume_vault/pages/home_page/home_page.dart';
 import 'package:volume_vault/pages/login_user_page.dart';
