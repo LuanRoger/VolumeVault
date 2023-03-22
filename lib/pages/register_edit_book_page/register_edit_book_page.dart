@@ -540,7 +540,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                 );
 
                                 final bool success = (await bookController
-                                        .registerBook(newBook)) ==
+                                        .registerBook(newBook)) !=
                                     null;
                                 if (success) {
                                   Navigator.pop(context);

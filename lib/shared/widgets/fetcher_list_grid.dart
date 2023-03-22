@@ -66,6 +66,7 @@ class FetcherListGrid<T> extends HookConsumerWidget {
           if (scrollController.position.maxScrollExtent !=
               scrollController.offset) return;
           reachScrollBottom?.call(lastDataPage.value);
+          refreshKey.value = UniqueKey();
         }
 
         scrollController.addListener(scrollListener);
