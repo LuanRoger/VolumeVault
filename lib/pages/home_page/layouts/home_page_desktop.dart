@@ -40,6 +40,7 @@ class HomePageDesktop extends HookConsumerWidget {
                       clipBehavior: Clip.none,
                       openColor: Theme.of(context).colorScheme.background,
                       closedColor: Theme.of(context).colorScheme.background,
+                      onClosed: (_) => fetcherListController.refresh(),
                       closedShape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18)),
                       closedBuilder: (_, open) => FloatingActionButton(
