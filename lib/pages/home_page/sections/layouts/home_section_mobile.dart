@@ -2,17 +2,19 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
 import 'package:volume_vault/pages/home_page/sections/commands/home_section_mobile_command.dart';
 import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
-import 'package:volume_vault/shared/hooks/fetcher_list_grid_controller_hook.dart';
+import 'package:volume_vault/services/models/user_book_result.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
-import 'package:volume_vault/shared/widgets/fetcher_list_grid.dart';
+import 'package:volume_vault/shared/widgets/paging_list_grid.dart';
 import 'package:volume_vault/shared/widgets/search_floating_card.dart';
 import 'package:volume_vault/shared/widgets/widget_switcher.dart';
+import 'package:volume_vault/shared/hooks/paging_controller_hook.dart';
 
 class HomeSectionMobile extends HookConsumerWidget {
   final HomeSectionMobileCommand _commands = const HomeSectionMobileCommand();
@@ -25,13 +27,31 @@ class HomeSectionMobile extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userInfo = ref.watch(userInfoProvider);
 
-    final fetcherListController = useFetcherListGridController<BookModel>();
-    final booksFetcherRequest = useState(GetUserBookRequest(page: 1));
+    final pagingController =
+        usePagingController<int, BookModel>(firstPageKey: 1);
 
-    final visualizationType =
+    final visualizationTypeState =
         useState<VisualizationType>(viewType ?? VisualizationType.LIST);
 
     final searchTextController = useTextEditingController();
+
+    useEffect(() {
+      bookFetcher(pageKey) async {
+        UserBookResult result = await _commands.fetchUserBooks(
+          ref,
+          GetUserBookRequest(page: pageKey),
+        );
+        if (result.books.isEmpty) {
+          pagingController.appendLastPage(result.books);
+          return;
+        }
+        pagingController.appendPage(result.books, pageKey + 1);
+      }
+
+      pagingController.addPageRequestListener(bookFetcher);
+
+      return () => pagingController.removePageRequestListener(bookFetcher);
+    });
 
     return Scaffold(
       drawer: Drawer(
@@ -81,12 +101,12 @@ class HomeSectionMobile extends HookConsumerWidget {
               icon: const Icon(Icons.search_rounded)),
           IconButton(
             onPressed: () {
-              visualizationType.value =
-                  visualizationType.value == VisualizationType.LIST
+              visualizationTypeState.value =
+                  visualizationTypeState.value == VisualizationType.LIST
                       ? VisualizationType.GRID
                       : VisualizationType.LIST;
             },
-            icon: Icon(visualizationType.value == VisualizationType.LIST
+            icon: Icon(visualizationTypeState.value == VisualizationType.LIST
                 ? Icons.grid_view_rounded
                 : Icons.view_list_rounded),
           ),
@@ -98,44 +118,31 @@ class HomeSectionMobile extends HookConsumerWidget {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () async => fetcherListController.refresh(),
+        onRefresh: () async => pagingController.refresh(),
         child: PageTransitionSwitcher(
           transitionBuilder: (child, animation, secondaryAnimation) =>
               FadeThroughTransition(
                   animation: animation,
                   secondaryAnimation: secondaryAnimation,
                   child: child),
-          child: FetcherListGrid<BookModel>(
-            key: ValueKey(visualizationType.value),
-            controller: fetcherListController,
-            fetcher: (page) async => (await _commands.fetchUserBooks(
-                    ref, GetUserBookRequest(page: page)))
-                .books,
-            reachScrollBottom: (page) {
-              if (booksFetcherRequest.value.page > page) {
-                return;
-              }
-              booksFetcherRequest.value = booksFetcherRequest.value.copyWith(
-                page: booksFetcherRequest.value.page + 1,
-              );
-            },
-            builder: (data) {
-              return _commands.buildBookView(
-                context,
-                books: data,
-                viewType: visualizationType.value,
-                onUpdate: fetcherListController.refresh,
-                onSelect: (book) => _commands.onBookSelect(context, book),
-              );
-            },
-          ),
+          child: PagingListGrid<int, BookModel>(
+                    pagingController: pagingController,
+                    visualizationType: visualizationTypeState.value,
+                    itemBuilder: (_, data, index) {
+                        return _commands.buildBookView(context,
+                            book: data,
+                            viewType: visualizationTypeState.value,
+                            onUpdate: pagingController.refresh,
+                            onSelect: (book) => _commands.onBookSelect(context, book));
+                      },
+                  ),
         ),
       ),
       floatingActionButton: OpenContainer(
         clipBehavior: Clip.none,
         openColor: Theme.of(context).colorScheme.background,
         closedColor: Theme.of(context).colorScheme.background,
-        onClosed: (_) => fetcherListController.refresh(),
+        onClosed: (_) => pagingController.refresh(),
         closedShape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         closedBuilder: (_, open) => FloatingActionButton(

@@ -54,32 +54,26 @@ abstract class HomeSectionLayoutStrategy {
     return userBookResult;
   }
 
-  List<BookInfoCard> buildBookView(BuildContext context,
-      {required List<BookModel> books,
+  BookInfoCard buildBookView(BuildContext context,
+      {required BookModel book,
       void Function()? onUpdate,
       void Function(BookModel)? onSelect,
       VisualizationType viewType = VisualizationType.LIST}) {
     switch (viewType) {
       case VisualizationType.LIST:
-        return [
-          for (final book in books)
-            BookInfoListCard(
-              book,
-              onPressed: onSelect != null
-                  ? () => onSelect(book)
-                  : () => onBookSelect(context, book, onUpdate: onUpdate),
-            ),
-        ];
+        return BookInfoListCard(
+          book,
+          onPressed: onSelect != null
+              ? () => onSelect(book)
+              : () => onBookSelect(context, book, onUpdate: onUpdate),
+        );
       case VisualizationType.GRID:
-        return [
-          for (final book in books)
-            BookInfoGridCard(
-              book,
-              onPressed: onSelect != null
-                  ? () => onSelect(book)
-                  : () => onBookSelect(context, book, onUpdate: onUpdate),
-            ),
-        ];
+        return BookInfoGridCard(
+          book,
+          onPressed: onSelect != null
+              ? () => onSelect(book)
+              : () => onBookSelect(context, book, onUpdate: onUpdate),
+        );
     }
   }
 
