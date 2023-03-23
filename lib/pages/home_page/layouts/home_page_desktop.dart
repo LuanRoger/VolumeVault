@@ -7,7 +7,7 @@ import 'package:volume_vault/pages/configuration_page.dart';
 import 'package:volume_vault/pages/home_page/commands/home_page_desktop_commands.dart';
 import 'package:volume_vault/pages/home_page/sections/layouts/home_section_desktop.dart';
 import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
-import 'package:volume_vault/shared/hooks/fetcher_list_grid_controller_hook.dart';
+import 'package:volume_vault/shared/hooks/paging_controller_hook.dart';
 
 class HomePageDesktop extends HookConsumerWidget {
   final HomePageDesktopCommands _commands = const HomePageDesktopCommands();
@@ -19,7 +19,8 @@ class HomePageDesktop extends HookConsumerWidget {
     final checkoutMemoize = useMemoized(() => _commands.checkout(context, ref));
     final checkout = useFuture(checkoutMemoize);
 
-    final fetcherListController = useFetcherListGridController<BookModel>();
+    final fetcherListController =
+        usePagingController<int, BookModel>(firstPageKey: 1);
 
     final navigationIndexState = useState(0);
     final sectionState = useState<Widget>(
