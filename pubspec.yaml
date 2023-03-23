@@ -28,6 +28,7 @@ dependencies:
   dio: ^5.0.1
   envied: ^0.3.0
   realm: ^1.0.2
+  infinite_scroll_pagination: ^3.2.0
 
 dev_dependencies:
   flutter_test:
