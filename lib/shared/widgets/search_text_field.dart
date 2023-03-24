@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class SearchTextField extends HookWidget {
-  double? width;
-  double? height;
-  String? label;
+  final double? width;
+  final double? height;
+  final String? label;
+  final bool showClearButton;
 
   final TextEditingController controller;
 
@@ -13,7 +14,8 @@ class SearchTextField extends HookWidget {
       required this.controller,
       this.width,
       this.height,
-      this.label});
+      this.label,
+      this.showClearButton = true});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class SearchTextField extends HookWidget {
         filled: true,
         isDense: true,
         contentPadding: const EdgeInsets.all(8.0),
-        suffixIcon: controller.text.isNotEmpty
+        suffixIcon: showClearButton
             ? IconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: controller.clear,
