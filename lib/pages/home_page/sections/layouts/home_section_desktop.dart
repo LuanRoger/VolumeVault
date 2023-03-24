@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -13,17 +14,17 @@ import 'package:volume_vault/services/models/user_book_result.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/widgets/paging_list_grid.dart';
 import 'package:volume_vault/shared/widgets/placeholders/no_book_selected_placeholder.dart';
+import 'package:volume_vault/shared/widgets/search_result_list.dart';
 import 'package:volume_vault/shared/widgets/search_text_field.dart';
 import 'package:volume_vault/shared/widgets/widget_switcher.dart';
 
 class HomeSectionDesktop extends HookConsumerWidget {
-  final HomeSectionDesktopCommands _commands =
-      const HomeSectionDesktopCommands();
+  final HomeSectionDesktopCommands _commands = HomeSectionDesktopCommands();
   final _bookCommnads = const BookInfoViewerCommand();
 
   final PagingController<int, BookModel> pagingController;
 
-  const HomeSectionDesktop(this.pagingController, {super.key});
+  HomeSectionDesktop(this.pagingController, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,6 +32,7 @@ class HomeSectionDesktop extends HookConsumerWidget {
     final bookTaskLoadingState = useState(false);
 
     final searchTextController = useTextEditingController();
+    useListenable(searchTextController);
     final userInfo = ref.watch(userInfoProvider);
     final visualizationTypeState = useState(VisualizationType.LIST);
 
@@ -50,6 +52,11 @@ class HomeSectionDesktop extends HookConsumerWidget {
       pagingController.addPageRequestListener(bookFetcher);
 
       return () => pagingController.removePageRequestListener(bookFetcher);
+    });
+    useEffect(() {
+      _commands.bookOnViwerState = bookOnViwer;
+
+      return () {};
     });
 
     return Scaffold(
@@ -118,6 +125,8 @@ class HomeSectionDesktop extends HookConsumerWidget {
                         child: SearchTextField(
                             controller: searchTextController,
                             label: "Pesquisar livros",
+                            showClearButton:
+                                searchTextController.text.isNotEmpty,
                             height: 40),
                       ),
                       const SizedBox(width: 8.0),
@@ -132,22 +141,35 @@ class HomeSectionDesktop extends HookConsumerWidget {
                   ),
                 ),
                 Expanded(
-                  flex: 1,
-                  child: PagingListGrid<int, BookModel>(
-                    pagingController: pagingController,
-                    visualizationType: visualizationTypeState.value,
-                    itemBuilder: (_, data, index) {
-                        return _commands.buildBookView(context,
-                            book: data,
-                            viewType: visualizationTypeState.value,
-                            onUpdate: pagingController.refresh,
-                            onSelect: (book) {
-                          bookOnViwer.value = book;
-                          _commands.onBookSelect(context, book);
-                        });
-                      },
-                  ),
-                ),
+                    flex: 1,
+                    child: PageTransitionSwitcher(
+                      transitionBuilder:
+                          (child, animation, secondaryAnimation) =>
+                              SharedAxisTransition(
+                                  animation: animation,
+                                  secondaryAnimation: secondaryAnimation,
+                                  transitionType:
+                                      SharedAxisTransitionType.horizontal,
+                                  child: child),
+                      child: searchTextController.text.isEmpty
+                          ? PagingListGrid<int, BookModel>(
+                              pagingController: pagingController,
+                              visualizationType: visualizationTypeState.value,
+                              itemBuilder: (_, data, index) {
+                                return _commands.buildBookView(context,
+                                    book: data,
+                                    viewType: visualizationTypeState.value,
+                                    onUpdate: pagingController.refresh,
+                                    onSelect: (book) =>
+                                        _commands.onBookSelect(context, book));
+                              },
+                            )
+                          : SearchResultList(
+                              key: ValueKey(searchTextController.text),
+                              textController: searchTextController,
+                              search: (query, context) => _commands
+                                  .buildSearhResultTiles(query, context, ref)),
+                    )),
               ],
             ),
           ),
