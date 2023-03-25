@@ -7,7 +7,7 @@ import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
 import 'package:volume_vault/pages/book_info_view/book_info_viewer_page.dart';
 import 'package:volume_vault/pages/book_info_view/commands/book_info_viewer_command.dart';
-import 'package:volume_vault/pages/home_page/sections/commands/home_section_desktop_commands.dart';
+import 'package:volume_vault/pages/home_page/sections/commands/home_section_desktop_command.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
 import 'package:volume_vault/services/models/user_book_result.dart';
@@ -19,7 +19,7 @@ import 'package:volume_vault/shared/widgets/search_text_field.dart';
 import 'package:volume_vault/shared/widgets/widget_switcher.dart';
 
 class HomeSectionDesktop extends HookConsumerWidget {
-  final HomeSectionDesktopCommands _commands = HomeSectionDesktopCommands();
+  final HomeSectionDesktopCommand _commands = HomeSectionDesktopCommand();
   final _bookCommnads = const BookInfoViewerCommand();
 
   final PagingController<int, BookModel> pagingController;
@@ -187,9 +187,20 @@ class HomeSectionDesktop extends HookConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(
-                              onPressed: () => Navigator.pushNamed(
-                                  context, AppRoutes.registerEditBookPageRoute,
-                                  arguments: [bookOnViwer.value!]),
+                              onPressed: () async {
+                                final bool? refresh =
+                                    await Navigator.pushNamed<bool>(context,
+                                        AppRoutes.registerEditBookPageRoute,
+                                        arguments: [bookOnViwer.value!]);
+                                if (refresh == null || !refresh) return;
+
+                                pagingController.refresh();
+
+                                if (bookOnViwer.value == null) return;
+                                bookOnViwer.value =
+                                    await _bookCommnads.refreshBookInfo(
+                                        context, ref, bookOnViwer.value!.id);
+                              },
                               icon: const Icon(Icons.edit_rounded)),
                           if (bookOnViwer.value!.buyLink != null)
                             IconButton(
@@ -225,11 +236,22 @@ class HomeSectionDesktop extends HookConsumerWidget {
                     ),
                   ),
                 Flexible(
-                    flex: 1,
-                    child: Card(
-                        elevation: 0,
-                        color: Theme.of(context).colorScheme.surfaceVariant,
-                        child: _CardBookViewContent(book: bookOnViwer.value))),
+                  flex: 1,
+                  child: Card(
+                    elevation: 0,
+                    color: Theme.of(context).colorScheme.surfaceVariant,
+                    child: _CardBookViewContent(
+                        book: bookOnViwer.value,
+                        onRefresh: () async {
+                          final BookModel? newInfoBook =
+                              await _bookCommnads.refreshBookInfo(
+                                  context, ref, bookOnViwer.value!.id);
+                          if (newInfoBook == null) return;
+
+                          bookOnViwer.value = newInfoBook;
+                        }),
+                  ),
+                ),
               ],
             ),
           ),
@@ -241,8 +263,10 @@ class HomeSectionDesktop extends HookConsumerWidget {
 
 class _CardBookViewContent extends ConsumerWidget {
   final BookModel? book;
+  final Future<void> Function() onRefresh;
 
-  const _CardBookViewContent({super.key, required this.book});
+  const _CardBookViewContent(
+      {super.key, required this.book, required this.onRefresh});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -255,9 +279,7 @@ class _CardBookViewContent extends ConsumerWidget {
         child: book != null
             ? BookInfoViwerBodyPage(
                 book!,
-                onRefresh: () async {
-                  return Future.delayed(const Duration(seconds: 2));
-                },
+                onRefresh: onRefresh,
               )
             : const NoBookSelectedPlaceholder(),
       ),
