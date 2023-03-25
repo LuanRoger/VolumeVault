@@ -32,18 +32,18 @@ class RegisterEditBookPage extends HookConsumerWidget {
 
     await showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text("Editar livro"),
         content: const Text("Deseja salvar as alterações?"),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
+            onPressed: () => Navigator.pop(dialogContext, false),
             child: const Text("Não"),
           ),
           TextButton(
             onPressed: () {
               saveUpdates = true;
-              Navigator.pop(context, true);
+              Navigator.pop(dialogContext, true);
             },
             child: const Text("Sim"),
           ),
@@ -375,16 +375,27 @@ class RegisterEditBookPage extends HookConsumerWidget {
                             ),
                           ),
                           ListTile(
-                            leading: const Icon(Icons.text_snippet_rounded),
-                            title: const Text("Sinopse e observação"),
-                            trailing: const Icon(Icons.navigate_next_rounded),
-                            onTap: () => Navigator.pushNamed(
-                                context, AppRoutes.largeInfoInputPageRoute,
-                                arguments: [
-                                  observationController,
-                                  synopsisController
-                                ]),
-                          ),
+                              leading: const Icon(Icons.text_snippet_rounded),
+                              title: const Text("Sinopse e observação"),
+                              trailing: const Icon(Icons.navigate_next_rounded),
+                              onTap: () async {
+                                final List<String>? observationSynopsisValue =
+                                    await Navigator.pushNamed(context,
+                                        AppRoutes.largeInfoInputPageRoute,
+                                        arguments: [
+                                      observationController.text,
+                                      synopsisController.text
+                                    ]);
+                                if (observationSynopsisValue == null ||
+                                    observationSynopsisValue.length != 2) {
+                                  return;
+                                }
+
+                                observationController.text =
+                                    observationSynopsisValue[0];
+                                synopsisController.text =
+                                    observationSynopsisValue[1];
+                              }),
                           ListTile(
                             title: const Text("Lido"),
                             trailing: Switch(
@@ -497,7 +508,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                     return;
                                   }
 
-                                  Navigator.pop(context);
+                                  Navigator.pop(context, true);
                                   return;
                                 }
 
@@ -542,16 +553,19 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                 final bool success = (await bookController
                                         .registerBook(newBook)) !=
                                     null;
-                                if (success) {
-                                  Navigator.pop(context);
+
+                                if (!context.mounted) return;
+                                if (!success) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Erro ao registrar livro"),
+                                    ),
+                                  );
+                                  loadingState.value = false;
                                   return;
                                 }
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Erro ao registrar livro"),
-                                  ),
-                                );
-                                loadingState.value = false;
+
+                                Navigator.pop(context, true);
                               },
                               child: const Text("Confirmar"))
                         ],
