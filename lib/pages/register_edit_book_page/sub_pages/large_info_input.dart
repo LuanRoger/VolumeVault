@@ -1,26 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:volume_vault/shared/validators/text_field_validator.dart';
 
-class LargeInfoInput extends StatelessWidget {
+class LargeInfoInput extends HookWidget {
   final _largeFormKey = GlobalKey<FormState>();
 
-  final TextEditingController observationController;
-  final TextEditingController synopsisController;
+  final String? initialObservationText;
+  final String? initialSynopsisText;
 
-  LargeInfoInput(
-      {super.key,
-      required this.observationController,
-      required this.synopsisController});
+  LargeInfoInput({super.key, this.initialObservationText, this.initialSynopsisText});
 
   @override
   Widget build(BuildContext context) {
+    final observationController = useTextEditingController(text: initialObservationText);
+    final synopsisController = useTextEditingController(text: initialSynopsisText);
+
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
               onPressed: () {
                 bool allGood = _largeFormKey.currentState!.validate();
-                if (allGood) Navigator.pop(context);
+                if (allGood) {
+                  Navigator.pop(context,
+                      [observationController.text, synopsisController.text]);
+                }
               },
               icon: const Icon(Icons.check_rounded))
         ],

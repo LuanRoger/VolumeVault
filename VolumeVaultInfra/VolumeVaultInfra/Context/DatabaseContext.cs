@@ -1,8 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using VolumeVaultInfra.Models.Book;
+using VolumeVaultInfra.Models.User;
 
 namespace VolumeVaultInfra.Context;
 
-public class DatabaseContext : DatabaseBaseContext
+public class DatabaseContext : DbContext
 {
-    public DatabaseContext(DbContextOptions options) : base(options) { }
+    public DbSet<UserModel> users { get; set; } = null!;
+    public DbSet<BookModel> books { get; set; } = null!;
+    
+    public DatabaseContext(DbContextOptions<DatabaseContext> options)
+        : base(options) { }
 }

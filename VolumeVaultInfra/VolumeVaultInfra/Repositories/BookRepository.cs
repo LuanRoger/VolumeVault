@@ -6,9 +6,9 @@ namespace VolumeVaultInfra.Repositories;
 
 public class BookRepository : IBookRepository
 {
-    private DatabaseBaseContext _bookDb { get; }
+    private DatabaseContext _bookDb { get; }
 
-    public BookRepository(DatabaseBaseContext bookDb)
+    public BookRepository(DatabaseContext bookDb)
     {
         _bookDb = bookDb;
     }

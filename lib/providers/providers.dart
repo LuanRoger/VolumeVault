@@ -1,7 +1,8 @@
-import 'dart:convert';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:volume_vault/controllers/auth_controller.dart';
+import 'package:volume_vault/controllers/book_controller.dart';
+import 'package:volume_vault/controllers/utils_controller.dart';
 import 'package:volume_vault/models/api_config_params.dart';
 import 'package:volume_vault/models/http_code.dart';
 import 'package:volume_vault/models/http_response.dart';
@@ -12,13 +13,13 @@ import 'package:volume_vault/providers/interfaces/theme_preferences_state.dart';
 import 'package:volume_vault/providers/interfaces/user_session_notifier.dart';
 import 'package:volume_vault/services/auth_service.dart';
 import 'package:volume_vault/services/book_service.dart';
-import 'package:volume_vault/services/models/get_user_book_request.dart';
-import 'package:volume_vault/services/models/user_book_result.dart';
 import 'package:volume_vault/services/utils_service.dart';
 import 'package:volume_vault/shared/preferences/models/graphics_preferences.dart';
 import 'package:volume_vault/shared/preferences/models/theme_preferences.dart';
 import 'package:volume_vault/shared/storage/models/server_config.dart';
 import 'package:volume_vault/shared/storage/models/user_session.dart';
+
+part '../controllers/controller_providers.dart';
 
 final userSessionNotifierProvider =
     AsyncNotifierProvider<UserSessionNotifier, UserSession>(
@@ -40,7 +41,7 @@ final graphicsPreferencesStateProvider =
 
 final userInfoProvider = FutureProvider<UserInfoModel?>((ref) async {
   final userSession = await ref.watch(userSessionNotifierProvider.future);
-  final authService = await ref.watch(authServiceProvider.future);
+  final authService = await ref.watch(_authServiceProvider.future);
 
   if (userSession.token.isEmpty) return null;
 
@@ -52,7 +53,7 @@ final userInfoProvider = FutureProvider<UserInfoModel?>((ref) async {
 
   return userInfo;
 });
-final authServiceProvider = FutureProvider<AuthService>((ref) async {
+final _authServiceProvider = FutureProvider<AuthService>((ref) async {
   final serverConfig = await ref.watch(serverConfigNotifierProvider.future);
 
   return AuthService(
@@ -63,7 +64,7 @@ final authServiceProvider = FutureProvider<AuthService>((ref) async {
         protocol: serverConfig.serverProtocol),
   );
 });
-final bookServiceProvider = FutureProvider<BookService?>((ref) async {
+final _bookServiceProvider = FutureProvider<BookService?>((ref) async {
   final serverConfig = await ref.watch(serverConfigNotifierProvider.future);
   final userSession = await ref.watch(userSessionNotifierProvider.future);
 
@@ -78,15 +79,7 @@ final bookServiceProvider = FutureProvider<BookService?>((ref) async {
         protocol: serverConfig.serverProtocol),
   );
 });
-final fetchUserBooksProvider = FutureProvider.family<UserBookResult, GetUserBookRequest>((ref, userBooksRequest) async {
-  final bookService = await ref.read(bookServiceProvider.future);
-  if (bookService == null) return UserBookResult.empty();
-
-  UserBookResult userBookResult =
-      await bookService.getUserBook(userBooksRequest);
-  return userBookResult;
-});
-final utilsServiceProvider = FutureProvider<UtilsService>((ref) async {
+final _utilsServiceProvider = FutureProvider<UtilsService>((ref) async {
   final serverConfig = await ref.watch(serverConfigNotifierProvider.future);
 
   return UtilsService(

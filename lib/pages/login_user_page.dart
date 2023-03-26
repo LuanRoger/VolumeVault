@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:volume_vault/models/http_code.dart';
+import 'package:responsive_framework/responsive_framework.dart';
+import 'package:volume_vault/controllers/auth_controller.dart';
+import 'package:volume_vault/models/enums/login_result_status.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/login_result.dart';
 import 'package:volume_vault/services/models/user_login_request.dart';
 import 'package:volume_vault/shared/assets/app_images.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
+import 'package:volume_vault/shared/ui_utils/snackbar_utils.dart';
 import 'package:volume_vault/shared/validators/text_field_validator.dart';
 
 class LoginUserPage extends HookConsumerWidget {
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
 
   LoginUserPage({super.key});
-
-  Future<LoginResult> _login(WidgetRef ref,
-      {required UserLoginRequest loginRequest}) async {
-    final loginProvider = await ref.read(authServiceProvider.future);
-    LoginResult result = await loginProvider.login(loginRequest);
-
-    return result;
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,10 +30,15 @@ class LoginUserPage extends HookConsumerWidget {
         padding: const EdgeInsets.all(8.0),
         child: isLoadingState.value
             ? const Center(child: CircularProgressIndicator())
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+            : ResponsiveRowColumn(
+                columnCrossAxisAlignment: CrossAxisAlignment.center,
+                layout: ResponsiveWrapper.of(context).isSmallerThan(DESKTOP)
+                    ? ResponsiveRowColumnType.COLUMN
+                    : ResponsiveRowColumnType.ROW,
                 children: [
-                  Expanded(
+                  ResponsiveRowColumnItem(
+                    rowFlex: 2,
+                    columnFlex: 1,
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
@@ -51,9 +51,16 @@ class LoginUserPage extends HookConsumerWidget {
                       ),
                     ),
                   ),
-                  Expanded(
-                    flex: 4,
+                  if (ResponsiveWrapper.of(context).isDesktop)
+                    const ResponsiveRowColumnItem(child: SizedBox(width: 20)),
+                  ResponsiveRowColumnItem(
+                    rowFlex: 1,
+                    columnFlex: 3,
                     child: Column(
+                      mainAxisAlignment: ResponsiveWrapper.of(context).isDesktop
+                          ? MainAxisAlignment.center
+                          : MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
                           "Bem-vindo(a) de volta",
@@ -105,32 +112,20 @@ class LoginUserPage extends HookConsumerWidget {
                                     }
                                     isLoadingState.value = true;
 
-                                    LoginResult result = await _login(
-                                      ref,
-                                      loginRequest: UserLoginRequest(
+                                    AuthController controller = await ref
+                                        .read(authControllerProvider.future);
+                                    LoginResult loginResult =
+                                        await controller.loginUser(
+                                      UserLoginRequest(
                                           username: usernameController.text,
                                           password: passwordController.text),
                                     );
-
-                                    if (result.requestCode != HttpCode.OK) {
-                                      switch (result.requestCode) {
-                                        case HttpCode.NOT_FOUND:
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(const SnackBar(
-                                            content: Text(
-                                                "Suas credenciais estão incorretas."),
-                                          ));
-                                          break;
-                                        default:
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                  "Occoreu um error. (${result.requestCode.code})"),
-                                            ),
-                                          );
-                                          break;
-                                      }
+                                    if (loginResult.resultStatus !=
+                                        AuthResultStatus.success) {
+                                      SnackbarUtils.showUserAuthErrorSnackbar(
+                                          context,
+                                          authResultStatus:
+                                              loginResult.resultStatus);
                                       isLoadingState.value = false;
                                       return;
                                     }
@@ -139,9 +134,12 @@ class LoginUserPage extends HookConsumerWidget {
                                         .read(userSessionNotifierProvider
                                             .notifier)
                                         .changeUserSessionToken(
-                                            result.jwtToken!);
-                                    Navigator.pushNamedAndRemoveUntil(context,
-                                        AppRoutes.homePageRoute, (_) => false);
+                                            loginResult.jwtToken!);
+                                    Navigator.pushNamedAndRemoveUntil(
+                                      context,
+                                      AppRoutes.homePageRoute,
+                                      (_) => false,
+                                    );
                                   },
                                   child: const Text("Entrar")),
                             ],

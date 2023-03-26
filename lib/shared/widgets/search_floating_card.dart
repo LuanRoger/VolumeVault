@@ -1,7 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:volume_vault/shared/widgets/search_result_list.dart';
 
 class SearchFloatingCard {
   final TextEditingController controller;
@@ -9,9 +9,7 @@ class SearchFloatingCard {
   final Size? size;
 
   SearchFloatingCard(
-      {required this.controller,
-      required this.search,
-      this.size});
+      {required this.controller, required this.search, this.size});
 
   Future<void> show(BuildContext context) {
     final Size dialogSize = size ?? MediaQuery.of(context).size;
@@ -19,46 +17,30 @@ class SearchFloatingCard {
     return showGeneralDialog(
         context: context,
         barrierDismissible: true,
-        barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+        barrierLabel:
+            MaterialLocalizations.of(context).modalBarrierDismissLabel,
         pageBuilder: (context, animation, secondaryAnimation) {
           return Align(
             alignment: Alignment.center,
             child: SizedBox(
               width: dialogSize.width * 0.8,
               height: dialogSize.height * 0.9,
-              child: _SeachCard(
-                  controller: controller,
-                  search: search),
+              child: _SeachCard(controller: controller, search: search),
             ),
           );
         });
   }
 }
 
-class _SeachCard extends HookConsumerWidget {
+class _SeachCard extends HookWidget {
   final TextEditingController controller;
   final Future<List<Widget>> Function(String, BuildContext) search;
 
-  const _SeachCard(
-      {required this.controller, required this.search});
+  const _SeachCard({required this.controller, required this.search});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final searchQueryChangeKey = useState(UniqueKey());
-    final searchMemoize = useMemoized(
-        () => search(controller.text, context), [searchQueryChangeKey.value]);
-    final searchFuture = useFuture(searchMemoize,
-        initialData: List<Widget>.empty(), preserveState: false);
-
-    useEffect(() {
-      textListener() {
-        searchQueryChangeKey.value = UniqueKey();
-      }
-
-      controller.addListener(textListener);
-
-      return () => controller.removeListener(textListener);
-    });
+  Widget build(BuildContext context) {
+    useListenable(controller);
 
     return Card(
         clipBehavior: Clip.hardEdge,
@@ -86,21 +68,16 @@ class _SeachCard extends HookConsumerWidget {
               ),
             ),
             Expanded(
-              child: PageTransitionSwitcher(
-                  transitionBuilder: (child, animation, secondaryAnimation) =>
-                      SharedAxisTransition(
-                          animation: animation,
-                          secondaryAnimation: secondaryAnimation,
-                          transitionType: SharedAxisTransitionType.horizontal,
-                          child: child),
-                  child: searchFuture.hasData
-                      ? ListView(
-                          key: UniqueKey(),
-                          padding: EdgeInsets.zero,
-                          children: searchFuture.data!,
-                        )
-                      : const SizedBox()),
-            ),
+                child: PageTransitionSwitcher(
+              transitionBuilder: (child, animation, secondaryAnimation) =>
+                  SharedAxisTransition(
+                      animation: animation,
+                      secondaryAnimation: secondaryAnimation,
+                      transitionType: SharedAxisTransitionType.horizontal,
+                      child: child),
+              child: SearchResultList(
+                  key: UniqueKey(), search: search, textController: controller),
+            )),
           ],
         ));
   }

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide BottomSheet;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -28,43 +27,23 @@ class RegisterEditBookPage extends HookConsumerWidget {
 
   RegisterEditBookPage({super.key, this.editBookModel});
 
-  Future<bool> _registerNewBook(WidgetRef ref,
-      {required RegisterBookRequest book}) async {
-    final bookService = await ref.read(bookServiceProvider.future);
-    if (bookService == null) return false;
-
-    final BookModel? registeredBook = await bookService.registerBook(book);
-
-    return registeredBook != null;
-  }
-
-  Future<bool> _updateBook(WidgetRef ref,
-      {required EditBookRequest newInfosBook, required int bookId}) async {
-    final bookService = await ref.read(bookServiceProvider.future);
-    if (bookService == null) return false;
-
-    final updatedBook = await bookService.updateBook(bookId, newInfosBook);
-
-    return updatedBook;
-  }
-
   Future<bool> _showConfirmEditDialog(BuildContext context) async {
     bool saveUpdates = false;
 
     await showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text("Editar livro"),
         content: const Text("Deseja salvar as alterações?"),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
+            onPressed: () => Navigator.pop(dialogContext, false),
             child: const Text("Não"),
           ),
           TextButton(
             onPressed: () {
               saveUpdates = true;
-              Navigator.pop(context, true);
+              Navigator.pop(dialogContext, true);
             },
             child: const Text("Sim"),
           ),
@@ -253,7 +232,8 @@ class RegisterEditBookPage extends HookConsumerWidget {
                     child: Text(BookFormat.EBOOK.name),
                   )
                 ],
-                onChanged: (newValue) => bookFormat?.value = newValue ?? BookFormat.HARDCOVER,
+                onChanged: (newValue) =>
+                    bookFormat?.value = newValue ?? BookFormat.HARDCOVER,
               ),
               const SizedBox(height: 15),
               TextFormField(
@@ -395,16 +375,27 @@ class RegisterEditBookPage extends HookConsumerWidget {
                             ),
                           ),
                           ListTile(
-                            leading: const Icon(Icons.text_snippet_rounded),
-                            title: const Text("Sinopse e observação"),
-                            trailing: const Icon(Icons.navigate_next_rounded),
-                            onTap: () => Navigator.pushNamed(
-                                context, AppRoutes.largeInfoInputPageRoute,
-                                arguments: [
-                                  observationController,
-                                  synopsisController
-                                ]),
-                          ),
+                              leading: const Icon(Icons.text_snippet_rounded),
+                              title: const Text("Sinopse e observação"),
+                              trailing: const Icon(Icons.navigate_next_rounded),
+                              onTap: () async {
+                                final List<String>? observationSynopsisValue =
+                                    await Navigator.pushNamed(context,
+                                        AppRoutes.largeInfoInputPageRoute,
+                                        arguments: [
+                                      observationController.text,
+                                      synopsisController.text
+                                    ]);
+                                if (observationSynopsisValue == null ||
+                                    observationSynopsisValue.length != 2) {
+                                  return;
+                                }
+
+                                observationController.text =
+                                    observationSynopsisValue[0];
+                                synopsisController.text =
+                                    observationSynopsisValue[1];
+                              }),
                           ListTile(
                             title: const Text("Lido"),
                             trailing: Switch(
@@ -452,6 +443,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
                           ElevatedButton(
                               onPressed: () async {
                                 loadingState.value = true;
+                                final bookController = await ref
+                                    .read(bookControllerProvider.future);
+
                                 if (editMode) {
                                   final updatedBook = EditBookRequest(
                                     title: titleController.text.isNotEmpty
@@ -501,9 +495,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                       await _showConfirmEditDialog(context);
                                   if (!saveInfos) return;
 
-                                  final updateResult = await _updateBook(ref,
-                                      newInfosBook: updatedBook,
-                                      bookId: editBookModel!.id);
+                                  final updateResult =
+                                      await bookController.updateBookInfo(
+                                          editBookModel!.id, updatedBook);
                                   if (!updateResult) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
@@ -514,7 +508,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                     return;
                                   }
 
-                                  Navigator.pop(context);
+                                  Navigator.pop(context, true);
                                   return;
                                 }
 
@@ -556,18 +550,22 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                   lastModification: DateTime.now().toUtc(),
                                 );
 
-                                final bool success =
-                                    await _registerNewBook(ref, book: newBook);
-                                if (success) {
-                                  Navigator.pop(context);
+                                final bool success = (await bookController
+                                        .registerBook(newBook)) !=
+                                    null;
+
+                                if (!context.mounted) return;
+                                if (!success) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Erro ao registrar livro"),
+                                    ),
+                                  );
+                                  loadingState.value = false;
                                   return;
                                 }
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Erro ao registrar livro"),
-                                  ),
-                                );
-                                loadingState.value = false;
+
+                                Navigator.pop(context);
                               },
                               child: const Text("Confirmar"))
                         ],

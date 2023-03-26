@@ -2,7 +2,7 @@ name: volume_vault
 description: A new Flutter project.
 publish_to: 'none'
 
-version: 0.1.1
+version: 0.1.2
 
 environment:
   sdk: '>=2.19.2 <3.0.0'
@@ -28,6 +28,7 @@ dependencies:
   dio: ^5.0.1
   envied: ^0.3.0
   realm: ^1.0.2
+  infinite_scroll_pagination: ^3.2.0
 
 dev_dependencies:
   flutter_test:
@@ -50,6 +51,7 @@ flutter:
   assets:
     - assets/images/login_page_image.jpg
     - assets/images/signin_page_image.jpg
+    - assets/images/home_page_desktop.jpg
 
   # fonts:
   #   - family: Schyler

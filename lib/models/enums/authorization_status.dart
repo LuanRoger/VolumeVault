@@ -1,0 +1,4 @@
+enum AuthorizationStatus {
+  authorized,
+  denied
+}
