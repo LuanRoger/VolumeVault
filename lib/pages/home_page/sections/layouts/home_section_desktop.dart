@@ -265,24 +265,25 @@ class _CardBookViewContent extends ConsumerWidget {
   final BookModel? book;
   final Future<void> Function() onRefresh;
 
-  const _CardBookViewContent(
-      {super.key, required this.book, required this.onRefresh});
+  const _CardBookViewContent({required this.book, required this.onRefresh});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: AnimatedSize(
-        alignment: Alignment.topCenter,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOutQuart,
-        child: book != null
-            ? BookInfoViwerBodyPage(
-                book!,
-                onRefresh: onRefresh,
-              )
-            : const NoBookSelectedPlaceholder(),
-      ),
+          alignment: Alignment.topCenter,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOutQuart,
+          child: SizedBox(
+            width: double.infinity,
+            child: book != null
+                ? BookInfoViwerBodyPage(
+                    book!,
+                    onRefresh: onRefresh,
+                  )
+                : const NoBookSelectedPlaceholder(),
+          )),
     );
   }
 }

@@ -565,7 +565,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                   return;
                                 }
 
-                                Navigator.pop(context, true);
+                                Navigator.pop(context);
                               },
                               child: const Text("Confirmar"))
                         ],
