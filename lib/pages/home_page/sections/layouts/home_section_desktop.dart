@@ -270,7 +270,7 @@ class _CardBookViewContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: AnimatedSize(
           alignment: Alignment.topCenter,
           duration: const Duration(milliseconds: 300),
