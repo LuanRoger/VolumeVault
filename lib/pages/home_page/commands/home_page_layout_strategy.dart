@@ -30,17 +30,17 @@ abstract class HomePageLayoutStrategy {
 
   Future<void> checkout(BuildContext context, WidgetRef ref) async {
     final bool connection = await checkConnection(ref);
-    final bool token = await checkUserAuthToken(ref);
+    final bool token = await checkUserAuthToken(ref) ?? true;
     if(connection && token) return;
 
     await showErrorDialog(context,
         connectionError: connection, authValidationError: token);
   }
 
-  Future<bool> checkUserAuthToken(WidgetRef ref) async {
+  Future<bool?> checkUserAuthToken(WidgetRef ref) async {
     final utilsController = await ref.read(utilsControllerProvider.future);
     final userSession = await ref.read(userSessionNotifierProvider.future);
-    if (userSession.token.isEmpty) return false;
+    if (userSession.token.isEmpty) return null;
 
     final result =
         await utilsController.checkAuthorizationStatus(userSession.token);

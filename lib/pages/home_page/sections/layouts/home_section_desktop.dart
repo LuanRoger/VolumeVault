@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
 import 'package:volume_vault/pages/book_info_view/book_info_viewer_page.dart';
@@ -96,7 +97,7 @@ class HomeSectionDesktop extends HookConsumerWidget {
               orElse: () => const SizedBox()),
         ),
         actions: [
-          IconButton(
+          if(!ResponsiveWrapper.of(context).isTablet) IconButton(
             onPressed: () {
               visualizationTypeState.value =
                   visualizationTypeState.value == VisualizationType.LIST
