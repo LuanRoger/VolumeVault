@@ -6,23 +6,21 @@ import 'package:volume_vault/pages/home_page/commands/home_page_mobile_command.d
 import 'package:volume_vault/pages/home_page/sections/layouts/home_section_mobile.dart';
 
 class HomePageMobile extends HookConsumerWidget {
-  final HomePageMobileCommands _commands = HomePageMobileCommands();
+  final HomePageMobileCommands _commands = const HomePageMobileCommands();
 
-  HomePageMobile({super.key});
+  const HomePageMobile({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final checkoutMemoize = useMemoized(() => _commands.checkout(context, ref));
     final checkout = useFuture(checkoutMemoize);
 
-    return Scaffold(
-      body: checkout.connectionState == ConnectionState.waiting
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : HomeSectionMobile(
-              viewType: VisualizationType.LIST,
-            ),
-    );
+    return checkout.connectionState == ConnectionState.waiting
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : const HomeSectionMobile(
+            viewType: VisualizationType.LIST,
+          );
   }
 }

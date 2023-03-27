@@ -14,8 +14,8 @@ TextTheme get _textTheme => TextTheme(
     );
 InputDecorationTheme _inputDecorationTheme(BuildContext context) =>
     InputDecorationTheme(border: const OutlineInputBorder(), hintStyle: Theme.of(context).textTheme.bodyMedium);
-DialogTheme _dialogTheme(BuildContext context) => DialogTheme(
-      titleTextStyle: Theme.of(context).textTheme.titleLarge,
+DialogTheme _dialogTheme(BuildContext context, {required bool isDarkTheme}) => DialogTheme(
+      titleTextStyle: Theme.of(context).textTheme.titleLarge!.copyWith(color: isDarkTheme ? Colors.white : Colors.black),
     );
 AppBarTheme _appBarTheme(bool darkTheme) => AppBarTheme(
       titleTextStyle: _defaultStyle.copyWith(
@@ -32,7 +32,7 @@ ThemeData lightTheme(BuildContext context) => ThemeData(
     colorScheme: _lightColorScheme,
     textTheme: _textTheme,
     inputDecorationTheme: _inputDecorationTheme(context),
-    dialogTheme: _dialogTheme(context),
+    dialogTheme: _dialogTheme(context, isDarkTheme: false),
     appBarTheme: _appBarTheme(false),
     listTileTheme: _listTileTheme);
 ThemeData darkTheme(BuildContext context) => ThemeData(
@@ -40,6 +40,6 @@ ThemeData darkTheme(BuildContext context) => ThemeData(
     colorScheme: _darkColorScheme,
     textTheme: _textTheme,
     inputDecorationTheme: _inputDecorationTheme(context),
-    dialogTheme: _dialogTheme(context),
+    dialogTheme: _dialogTheme(context, isDarkTheme: true),
     appBarTheme: _appBarTheme(true),
     listTileTheme: _listTileTheme);

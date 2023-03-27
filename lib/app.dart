@@ -22,15 +22,18 @@ class App extends ConsumerWidget {
         darkTheme: darkTheme(context),
         onGenerateRoute: RouteDriver.driver,
         initialRoute: userSession.maybeWhen(
-          data: (userSession) => userSession.token.isEmpty ? AppRoutes.loginPageRoute : AppRoutes.homePageRoute,
-          orElse: () => AppRoutes.loginPageRoute),
+            data: (userSession) => userSession.token.isEmpty
+                ? AppRoutes.loginPageRoute
+                : AppRoutes.homePageRoute,
+            orElse: () => AppRoutes.loginPageRoute),
         builder: (context, child) => ResponsiveWrapper.builder(
               child,
-              minWidth: 375,
+              minWidth: 480,
               defaultScale: true,
               breakpoints: const [
-                ResponsiveBreakpoint.resize(375, name: MOBILE),
-                ResponsiveBreakpoint.resize(1200, name: DESKTOP)
+                ResponsiveBreakpoint.resize(480, name: MOBILE),
+                ResponsiveBreakpoint.autoScale(700, name: TABLET),
+                ResponsiveBreakpoint.resize(1000, name: DESKTOP)
               ],
             ));
   }
