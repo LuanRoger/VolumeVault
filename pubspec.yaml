@@ -45,6 +45,10 @@ flutter_icons:
   image_path: "assets/icon/icon.png"
   adaptive_icon_background: "#3EA6EB"
 
+  windows:
+    generate: true
+    icon_size: 48
+
 flutter:
   uses-material-design: true
   
