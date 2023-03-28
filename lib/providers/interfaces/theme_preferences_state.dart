@@ -19,7 +19,8 @@ class ThemePreferencesState extends StateNotifier<ThemePreferences> {
 
   void reset() {
     state = const ThemePreferences(themeBrightnes: ThemeBrightness.LIGHT);
-    
-    _preferences.setInt(PreferencesKey.themeModePrefKey, state.themeBrightnes.index);
+
+    _preferences.setInt(
+        PreferencesKey.themeModePrefKey, state.themeBrightnes.index);
   }
 }

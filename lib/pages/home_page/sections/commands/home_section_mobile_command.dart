@@ -9,8 +9,9 @@ class HomeSectionMobileCommand extends HomeSectionLayoutStrategy {
   @override
   Future<bool> onBookSelect(BuildContext context, BookModel bookModel,
       {void Function()? onUpdate}) async {
-    return await Navigator.pushNamed<bool>(context, AppRoutes.bookInfoViewerPageRoute,
-        arguments: [bookModel]).then((hasChange) {
+    return await Navigator.pushNamed<bool>(
+            context, AppRoutes.bookInfoViewerPageRoute, arguments: [bookModel])
+        .then((hasChange) {
       if (hasChange == null) return false;
 
       onUpdate?.call();

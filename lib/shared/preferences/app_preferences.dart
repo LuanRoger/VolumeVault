@@ -6,5 +6,6 @@ class AppPreferences extends ChangeNotifier {
   final ThemePreferences themePreferences;
   final GraphicsPreferences graphicsPreferences;
 
-  AppPreferences({required this.themePreferences, required this.graphicsPreferences});
+  AppPreferences(
+      {required this.themePreferences, required this.graphicsPreferences});
 }

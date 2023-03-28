@@ -15,6 +15,7 @@ class AuthController {
 
     return result;
   }
+
   Future<SigninResult> signinUser(UserSigninRequest signinRequest) async {
     SigninResult result = await _service.signin(signinRequest);
 

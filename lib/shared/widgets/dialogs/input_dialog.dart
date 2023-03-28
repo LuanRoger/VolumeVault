@@ -25,11 +25,7 @@ class InputDialog {
         useSafeArea: true,
         builder: (context) => AlertDialog(
               alignment: Alignment.center,
-              title: title != null
-                  ? Text(
-                      title!
-                    )
-                  : null,
+              title: title != null ? Text(title!) : null,
               icon: icon,
               content: TextField(
                   controller: controller,

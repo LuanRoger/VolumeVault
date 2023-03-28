@@ -93,10 +93,11 @@ class BookService {
     final response = await _httpModule.get(_searchBookUrl, query: {
       "query": query,
     });
-    if(response.statusCode != HttpCode.OK) return List.empty();
+    if (response.statusCode != HttpCode.OK) return List.empty();
 
     List<BookSearchResult> searchResult = (response.body as List)
-    .map((bookJson) => BookSearchResult.fromJson(bookJson)).toList();
+        .map((bookJson) => BookSearchResult.fromJson(bookJson))
+        .toList();
 
     return searchResult;
   }

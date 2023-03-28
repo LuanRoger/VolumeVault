@@ -8,12 +8,15 @@ class LargeInfoInput extends HookWidget {
   final String? initialObservationText;
   final String? initialSynopsisText;
 
-  LargeInfoInput({super.key, this.initialObservationText, this.initialSynopsisText});
+  LargeInfoInput(
+      {super.key, this.initialObservationText, this.initialSynopsisText});
 
   @override
   Widget build(BuildContext context) {
-    final observationController = useTextEditingController(text: initialObservationText);
-    final synopsisController = useTextEditingController(text: initialSynopsisText);
+    final observationController =
+        useTextEditingController(text: initialObservationText);
+    final synopsisController =
+        useTextEditingController(text: initialSynopsisText);
 
     return Scaffold(
       appBar: AppBar(

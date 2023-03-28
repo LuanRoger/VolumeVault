@@ -8,7 +8,8 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveWrapper.of(context).isDesktop || ResponsiveWrapper.of(context).isTablet
+    return ResponsiveWrapper.of(context).isDesktop ||
+            ResponsiveWrapper.of(context).isTablet
         ? const HomePageDesktop()
         : const HomePageMobile();
   }

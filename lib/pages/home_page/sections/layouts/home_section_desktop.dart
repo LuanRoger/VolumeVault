@@ -97,17 +97,18 @@ class HomeSectionDesktop extends HookConsumerWidget {
               orElse: () => const SizedBox()),
         ),
         actions: [
-          if(!ResponsiveWrapper.of(context).isTablet) IconButton(
-            onPressed: () {
-              visualizationTypeState.value =
-                  visualizationTypeState.value == VisualizationType.LIST
-                      ? VisualizationType.GRID
-                      : VisualizationType.LIST;
-            },
-            icon: Icon(visualizationTypeState.value == VisualizationType.LIST
-                ? Icons.grid_view_rounded
-                : Icons.view_list_rounded),
-          ),
+          if (!ResponsiveWrapper.of(context).isTablet)
+            IconButton(
+              onPressed: () {
+                visualizationTypeState.value =
+                    visualizationTypeState.value == VisualizationType.LIST
+                        ? VisualizationType.GRID
+                        : VisualizationType.LIST;
+              },
+              icon: Icon(visualizationTypeState.value == VisualizationType.LIST
+                  ? Icons.grid_view_rounded
+                  : Icons.view_list_rounded),
+            ),
         ],
       ),
       body: Row(

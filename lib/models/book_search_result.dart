@@ -17,11 +17,7 @@ class BookSearchResult {
   DateTime lastModification;
   int ownerId;
 
-  BookSearchResult(
-      this.id,
-      this.title,
-      this.author,
-      this.isbn,
+  BookSearchResult(this.id, this.title, this.author, this.isbn,
       {this.publicationYear,
       this.publisher,
       this.edition,
@@ -34,22 +30,20 @@ class BookSearchResult {
       required this.lastModification,
       required this.ownerId});
 
-  factory BookSearchResult.fromJson(Map<String, dynamic> json) => BookSearchResult(
-      json["id"],
-      json["title"],
-      json["author"],
-      json["isbn"],
-      publicationYear: json["publicationYear"],
-      publisher: json["publisher"],
-      edition: json["edition"],
-      pagesNumber: json["pagesNumber"],
-      genre: json["genre"],
-      format: json["format"] != null ? BookFormat.values[json["format"]] : null,
-      readed: json["readed"],
-      tags: json["tags"] != null ? 
-      (json["tags"] as List).map((e) => e as String).toSet()
-       : null,
-      createdAt: DateTime.parse(json["createdAt"]),
-      lastModification: DateTime.parse(json["lastModification"]),
-      ownerId: json["ownerId"]);
+  factory BookSearchResult.fromJson(Map<String, dynamic> json) =>
+      BookSearchResult(json["id"], json["title"], json["author"], json["isbn"],
+          publicationYear: json["publicationYear"],
+          publisher: json["publisher"],
+          edition: json["edition"],
+          pagesNumber: json["pagesNumber"],
+          genre: json["genre"],
+          format:
+              json["format"] != null ? BookFormat.values[json["format"]] : null,
+          readed: json["readed"],
+          tags: json["tags"] != null
+              ? (json["tags"] as List).map((e) => e as String).toSet()
+              : null,
+          createdAt: DateTime.parse(json["createdAt"]),
+          lastModification: DateTime.parse(json["lastModification"]),
+          ownerId: json["ownerId"]);
 }

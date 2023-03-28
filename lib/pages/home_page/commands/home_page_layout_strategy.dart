@@ -31,7 +31,7 @@ abstract class HomePageLayoutStrategy {
   Future<void> checkout(BuildContext context, WidgetRef ref) async {
     final bool connection = await checkConnection(ref);
     final bool token = await checkUserAuthToken(ref) ?? true;
-    if(connection && token) return;
+    if (connection && token) return;
 
     await showErrorDialog(context,
         connectionError: connection, authValidationError: token);

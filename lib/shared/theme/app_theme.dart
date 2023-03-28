@@ -13,9 +13,15 @@ TextTheme get _textTheme => TextTheme(
       titleSmall: _titleStyle,
     );
 InputDecorationTheme _inputDecorationTheme(BuildContext context) =>
-    InputDecorationTheme(border: const OutlineInputBorder(), hintStyle: Theme.of(context).textTheme.bodyMedium);
-DialogTheme _dialogTheme(BuildContext context, {required bool isDarkTheme}) => DialogTheme(
-      titleTextStyle: Theme.of(context).textTheme.titleLarge!.copyWith(color: isDarkTheme ? Colors.white : Colors.black),
+    InputDecorationTheme(
+        border: const OutlineInputBorder(),
+        hintStyle: Theme.of(context).textTheme.bodyMedium);
+DialogTheme _dialogTheme(BuildContext context, {required bool isDarkTheme}) =>
+    DialogTheme(
+      titleTextStyle: Theme.of(context)
+          .textTheme
+          .titleLarge!
+          .copyWith(color: isDarkTheme ? Colors.white : Colors.black),
     );
 AppBarTheme _appBarTheme(bool darkTheme) => AppBarTheme(
       titleTextStyle: _defaultStyle.copyWith(

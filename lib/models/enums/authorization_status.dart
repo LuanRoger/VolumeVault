@@ -1,4 +1,1 @@
-enum AuthorizationStatus {
-  authorized,
-  denied
-}
+enum AuthorizationStatus { authorized, denied }

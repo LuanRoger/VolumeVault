@@ -70,9 +70,8 @@ class BookModel {
         edition: json["edition"],
         pagesNumber: json["pagesNumber"],
         genre: json["genre"],
-        format: json["format"] != null
-            ? BookFormat.values[json["format"]]
-            : null,
+        format:
+            json["format"] != null ? BookFormat.values[json["format"]] : null,
         observation: json["observation"],
         synopsis: json["synopsis"],
         coverLink: json["coverLink"],

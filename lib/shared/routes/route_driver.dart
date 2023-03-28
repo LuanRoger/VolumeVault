@@ -28,8 +28,8 @@ class RouteDriver {
       case AppRoutes.registerEditBookPageRoute:
         return gotoRegisterEditBookPage(bookToEdit: pageArgs?[0] as BookModel);
       case AppRoutes.largeInfoInputPageRoute:
-        return gotoLargeInfoInputPage(pageArgs![0] as String,
-            pageArgs[1] as String);
+        return gotoLargeInfoInputPage(
+            pageArgs![0] as String, pageArgs[1] as String);
       case AppRoutes.configurationsPageRoute:
         return gotoConfigurationPage();
       default:
@@ -43,10 +43,10 @@ class RouteDriver {
       MaterialPageRoute(builder: (_) => SigninUserPage());
   static gotoBookInfoViewerPage(BookModel bookModel) =>
       MaterialPageRoute<bool>(builder: (_) => BookInfoViewerPage(bookModel));
-  static gotoRegisterEditBookPage({BookModel? bookToEdit}) => MaterialPageRoute<bool>(
-      builder: (_) => RegisterEditBookPage(editBookModel: bookToEdit));
-  static gotoLargeInfoInputPage(String observationText,
-          String synopsisText) =>
+  static gotoRegisterEditBookPage({BookModel? bookToEdit}) =>
+      MaterialPageRoute<bool>(
+          builder: (_) => RegisterEditBookPage(editBookModel: bookToEdit));
+  static gotoLargeInfoInputPage(String observationText, String synopsisText) =>
       MaterialPageRoute<List<String>>(
         builder: (_) => LargeInfoInput(
           initialObservationText: observationText,
