@@ -8,16 +8,16 @@ using VolumeVaultInfra.Services.Jwt;
 using VolumeVaultInfra.Services.Metrics;
 using VolumeVaultInfra.Validators;
 
-namespace VolumeVaultInfra.Test.ControllersTests;
+namespace VolumeVaultInfra.Test.ControllersTests.UserControllerTest;
 
-public class UserControllerTest
+public class UserSigninTest
 {
     private Mock<IUserRepository> _userRepositoryMock { get; } = new();
     private Mock<IUserControllerMetrics> _userControllerMetricsMock { get; } = new();
     private Mock<ILogger> _logger { get; } = new();
     private UserController _userController { get; }
 
-    public UserControllerTest()
+    public UserSigninTest()
     {
         const string fakeSymetricKeyTest = "ce6b2e594abd903a1a12300f4604832d6ce905eb4b72f7ed71fe70e25c1e152c";
         JwtService jwtService = new(fakeSymetricKeyTest);
@@ -27,30 +27,10 @@ public class UserControllerTest
             validator, _logger.Object);
     }
     
-    private static UserModel userTestDumy => new()
-    {
-        id = 1,
-        username = "test",
-        email = "test@test.com",
-        password = "0+Yf74CcualNvW/7BnpJW6pFcivVb4Mc6/ye2qETuLqZsw9m6jENtOL/QBjAiKUQDIIYMzLXs8IbH2fBCw8bKw=="
-    };
-    
-    private static UserWriteModel userWriteTestDumy => new()
-    {
-        username = "test",
-        email = "test@test.com",
-        password = "test1234"
-    };
-    private static UserLoginRequestModel loginRequestTestDumy => new()
-    {
-        username = "test",
-        password = "test1234"
-    };
-    
     [Fact]
     public async void SignValidUserTest()
     {
-        UserWriteModel userWrite = userWriteTestDumy;
+        UserWriteModel userWrite = UserFakeModels.userWriteTestDumy;
         
         _userRepositoryMock.Setup(ex => ex
                 .AddUser(It.IsAny<UserModel>()))
@@ -63,22 +43,6 @@ public class UserControllerTest
             });
 
         string jwt = await _userController.SigninUser(userWrite);
-        
-        Assert.NotEmpty(jwt);
-        Assert.Matches(TestConts.JWT_VALID_REGEX, jwt);
-    }
-
-    [Fact]
-    public async void LoginValidUserTest()
-    {
-        UserLoginRequestModel loginRequest = loginRequestTestDumy;
-        UserModel user = userTestDumy;
-        
-        _userRepositoryMock.Setup(ex => 
-                ex.GetUserByUsername(It.IsAny<string>()))
-            .ReturnsAsync(user);
-        
-        string jwt = await _userController.LoginUser(loginRequest);
         
         Assert.NotEmpty(jwt);
         Assert.Matches(TestConts.JWT_VALID_REGEX, jwt);
