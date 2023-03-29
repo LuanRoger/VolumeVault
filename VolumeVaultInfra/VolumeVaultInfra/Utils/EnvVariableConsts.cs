@@ -15,4 +15,8 @@ public static class EnvVariableConsts
     public const string VV_MONGO_USER = "VV_MONGO_USER";
     public const string VV_MONGO_PASSWORD = "VV_MONGO_PASSWORD";
     public const string VV_MONGO_DB_NAME = "VV_MONGO_DB_NAME"; 
+    public const string VV_MEILISEARCH_HOST = "VV_MEILISEARCH_HOST";
+    public const string VV_MEILISEARCH_PORT = "VV_MEILISEARCH_PORT";
+    public const string VV_MEILISEARCH_ENVIRONMENT = "VV_MEILISEARCH_ENVIRONMENT";
+    public const string MEILISEARCH_MASTER_KEY = "MEILISEARCH_MASTER_KEY";
 }

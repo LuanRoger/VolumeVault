@@ -29,6 +29,9 @@ services:
       - VV_MONGO_USER
       - VV_MONGO_PASSWORD
       - VV_MONGO_DB_NAME
+      - VV_MEILISEARCH_HOST
+      - VV_MEILISEARCH_PORT
+      - MEILISEARCH_MASTER_KEY
     ports:
       - 5081:80
     networks:

@@ -72,4 +72,25 @@ public static class EnvironmentVariables
         
         return string.Format(baseString, username, password, host, port);
     }
+    
+    public static string? GetVvMeiliseachHost() => 
+        Environment.GetEnvironmentVariable(EnvVariableConsts.VV_MEILISEARCH_HOST);
+    public static string? GetVvMeiliseachPort() =>
+        Environment.GetEnvironmentVariable(EnvVariableConsts.VV_MEILISEARCH_PORT);
+    public static string? GetVvMeiliseachEnvironment() =>
+        Environment.GetEnvironmentVariable(EnvVariableConsts.VV_MEILISEARCH_ENVIRONMENT);
+    public static string? GetMeiliseachMasterKey() =>
+        Environment.GetEnvironmentVariable(EnvVariableConsts.MEILISEARCH_MASTER_KEY);
+    public static string FormatVvMeilisearchConnectionString(string baseString)
+    {
+        string? host = GetVvMeiliseachHost();
+        string? port = GetVvMeiliseachPort();
+
+        if(string.IsNullOrEmpty(host))
+            throw new EnvironmentVariableNotProvidedException(EnvVariableConsts.VV_MEILISEARCH_HOST);
+        if(string.IsNullOrEmpty(port))
+            throw new EnvironmentVariableNotProvidedException(EnvVariableConsts.VV_MEILISEARCH_PORT);
+
+        return string.Format(baseString, host, port);
+    }
 }
