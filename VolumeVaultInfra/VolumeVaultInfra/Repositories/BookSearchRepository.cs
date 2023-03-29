@@ -17,10 +17,9 @@ public class BookSearchRepository : IBookSearchRepository
         searchCollection = mongoClient
             .GetDatabase(this.databaseName)
             .GetCollection<BookSearchModel>(COLLECTION_NAME);
-        CreateDefaultSearchIndexes();
     }
     
-    private void CreateDefaultSearchIndexes()
+    public async Task EnsureCreatedAndReady()
     {
         var textIndex = Builders<BookSearchModel>.IndexKeys
             .Text("$**");
@@ -35,7 +34,7 @@ public class BookSearchRepository : IBookSearchRepository
             .Descending(book => book.pagesNumber);
         CreateIndexOptions pageNumbIndexOptions = new() { Name = "pageNumb_index" };
 
-        searchCollection.Indexes.CreateMany(new []
+        await searchCollection.Indexes.CreateManyAsync(new []
         {
             new CreateIndexModel<BookSearchModel>(textIndex, textIndexOptions),
             new CreateIndexModel<BookSearchModel>(pubYearIndex, pubYearIndexOptions),
@@ -43,7 +42,7 @@ public class BookSearchRepository : IBookSearchRepository
             new CreateIndexModel<BookSearchModel>(pageNumbIndex, pageNumbIndexOptions),
         });
     }
-    
+
     public async Task MadeBookSearchable(BookSearchModel bookSearchModel) => 
         await searchCollection.InsertOneAsync(bookSearchModel);
     public async Task<bool> DeleteBookFromSearch(int id)
@@ -61,10 +60,10 @@ public class BookSearchRepository : IBookSearchRepository
         await searchCollection.ReplaceOneAsync(bookFilter, bookSearchModel);
     }
     
-    public async Task<IReadOnlyList<BookSearchModel>> SearchBook(int userId, string sentence, int limitPerSection)
+    public async Task<IReadOnlyList<BookSearchModel>> SearchBook(int userId, string query, int limitPerSection)
     {
         var bookFilter = Builders<BookSearchModel>.Filter
-            .Text(sentence, new TextSearchOptions
+            .Text(query, new TextSearchOptions
             {
                 CaseSensitive = false
             });
