@@ -2,6 +2,7 @@ import 'package:volume_vault/models/http_code.dart';
 
 enum AuthResultStatus {
   success(200),
+  created(201),
   wrongInformations(401),
   userNotFound(404),
   undefined(-1);

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:volume_vault/models/api_config_params.dart';
-import 'package:volume_vault/models/enums/login_result_status.dart';
+import 'package:volume_vault/models/enums/auth_result_status.dart';
 import 'package:volume_vault/models/http_response.dart';
 import 'package:volume_vault/models/interfaces/http_module.dart';
 import 'package:volume_vault/services/models/login_result.dart';

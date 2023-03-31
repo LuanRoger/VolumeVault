@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:volume_vault/models/enums/login_result_status.dart';
+import 'package:volume_vault/models/enums/auth_result_status.dart';
 
 abstract class SnackbarUtils {
   static void showUserAuthErrorSnackbar(BuildContext context,

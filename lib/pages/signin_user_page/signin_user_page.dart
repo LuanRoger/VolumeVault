@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:volume_vault/controllers/auth_controller.dart';
-import 'package:volume_vault/models/enums/login_result_status.dart';
+import 'package:volume_vault/models/enums/auth_result_status.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/signin_result.dart';
 import 'package:volume_vault/services/models/user_signin_request.dart';
@@ -136,7 +136,7 @@ class SigninUserPage extends HookConsumerWidget {
                                       );
 
                                       if (signinResult.resultStatus !=
-                                          AuthResultStatus.success) {
+                                          AuthResultStatus.created) {
                                         SnackbarUtils.showUserAuthErrorSnackbar(
                                             context,
                                             authResultStatus:
