@@ -35,7 +35,7 @@ public class BookUpdateModelValidationTest
     {
         return new[]
         {
-            new BookUpdateModel {},
+            new BookUpdateModel(),
             new BookUpdateModel
             {
                 title = "test",
@@ -356,7 +356,7 @@ public class BookUpdateModelValidationTest
                 publisher = "test",
                 edition = 1,
                 pagesNumber = 1,
-                genre = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                genre = new('a', 50),
                 format = 0,
                 observation = "test",
                 readed = true,
