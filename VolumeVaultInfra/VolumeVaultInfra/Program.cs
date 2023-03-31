@@ -1,11 +1,11 @@
 using System.Globalization;
 using System.Text;
 using FluentValidation;
+using Meilisearch;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MongoDB.Driver;
 using Serilog;
 using VolumeVaultInfra.Context;
 using VolumeVaultInfra.Controllers;
@@ -46,19 +46,6 @@ CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
 ILogger logger = new LoggerConfiguration()
     .Enrich.WithMachineName()
-    .WriteTo.MongoDBBson(configurations =>
-    {
-        string mongoConnStringHolder = builder.Configuration
-            .GetConnectionString("MongoDBConnectionString")!;
-        string mongoConnString = builder.Environment.IsDevelopment() ? mongoConnStringHolder : 
-            EnvironmentVariables.FormatVvMongoConnectionString(mongoConnStringHolder);
-        
-        MongoClient loggerClient = new(mongoConnString);
-        IMongoDatabase loggerDatabase = loggerClient
-            .GetDatabase(EnvironmentVariables.GetVvMongoDbName());
-        
-        configurations.SetMongoDatabase(loggerDatabase);
-    })
     .WriteTo.Console()
     .Enrich.WithProperty("Environment", EnvVariableConsts.ASPNETCORE_ENVIRONMENT)
     .ReadFrom.Configuration(builder.Configuration)
@@ -83,18 +70,18 @@ builder.Services.AddDbContext<DatabaseContext>(optionsBuilder =>
 builder.Services.AddHealthChecks()
     .AddCheck<HealthCheckService>(nameof(HealthCheckService))
     .ForwardToPrometheus();
-builder.Services.AddSingleton<IMongoClient, MongoClient>(_ =>
+builder.Services.AddSingleton<MeilisearchClient>(_ =>
 {
+    string? masterKey = EnvironmentVariables.GetMeiliseachMasterKey();
+    if(masterKey is null)
+        throw new EnvironmentVariableNotProvidedException(EnvVariableConsts.MEILISEARCH_MASTER_KEY);
+    
+    string connStringHolder = builder.Configuration.GetConnectionString("MeilisearchConnectionString")!;
     if(builder.Environment.IsDevelopment())
-        return new(builder.Configuration.GetConnectionString("MongoDBConnectionString")!);
-    
-    string connStringHolder = builder.Configuration.GetConnectionString("MongoDBConnectionString")!;
-    if(string.IsNullOrEmpty(connStringHolder))
-        throw new RequiredConfigurationException("MongoDBConnectionString");
-    
-    string connString = EnvironmentVariables
-        .FormatVvMongoConnectionString(connStringHolder);
-    return new(connString);
+        return new(connStringHolder, masterKey);
+
+    string connString = EnvironmentVariables.FormatVvMeilisearchConnectionString(connStringHolder);
+    return new(connString, masterKey);
 });
 builder.Services.AddSingleton<JwtService>(_ =>
 {
@@ -107,15 +94,17 @@ builder.Services.AddSingleton<JwtService>(_ =>
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
-builder.Services.AddScoped<IBookSearchRepository, BookSearchRepository>(provider =>
+/*builder.Services.AddScoped<IBookSearchRepository, BookSearchRepository>(provider =>
 {
     string? secundaryDbName = EnvironmentVariables.GetVvMongoDbName();
     if(secundaryDbName is null)
         throw new EnvironmentVariableNotProvidedException(EnvVariableConsts.VV_MONGO_DB_NAME);
     
     return new(provider.GetRequiredService<IMongoClient>(), secundaryDbName);
-});
-    builder.Services.AddScoped<IUserController, UserController>();
+});*/
+builder.Services.AddScoped<IBookSearchRepository, BookSearchRepository>(provider => 
+    new(provider.GetRequiredService<MeilisearchClient>()));
+builder.Services.AddScoped<IUserController, UserController>();
 builder.Services.AddScoped<IBookController, BookController>();
 builder.Services.AddScoped<IBookControllerMetrics, BookControllerMetrics>();
 builder.Services.AddScoped<IUserControllerMetrics, UserControllerMetrics>();
@@ -163,13 +152,20 @@ if (app.Environment.IsDevelopment())
 
 using (IServiceScope scope = app.Services.CreateScope())
 {
-    DatabaseContext? context = scope.ServiceProvider.GetService<DatabaseContext>();
-    if(context is null) return;
-    
+    DatabaseContext context = scope.ServiceProvider
+        .GetRequiredService<DatabaseContext>();
+
     context.Database.EnsureCreated();
     
     if (context.Database.GetPendingMigrations().Any())
         context.Database.Migrate();
+}
+
+using (IServiceScope scope = app.Services.CreateScope())
+{
+    IBookSearchRepository repository = scope.ServiceProvider
+        .GetRequiredService<IBookSearchRepository>();
+    await repository.EnsureCreatedAndReady();
 }
 
 app.UseStaticFiles();

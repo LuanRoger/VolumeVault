@@ -1,82 +1,64 @@
-using MongoDB.Bson;
-using MongoDB.Driver;
+using Meilisearch;
 using VolumeVaultInfra.Models.Book;
-// ReSharper disable MemberCanBePrivate.Global
+using Index = Meilisearch.Index;
 
 namespace VolumeVaultInfra.Repositories;
 
 public class BookSearchRepository : IBookSearchRepository
 {
-    private IMongoCollection<BookSearchModel> searchCollection { get; }
-    public string databaseName { get; }
-    public const string COLLECTION_NAME = "search_storage";
-
-    public BookSearchRepository(IMongoClient mongoClient, string databaseName)
+    private MeilisearchClient _client { get; }
+    private Index bookSearchIndex { get; }
+    
+    private const string BOOK_INDEX_PRIMARY_KEY = "id";
+    
+    public BookSearchRepository(MeilisearchClient client)
     {
-        this.databaseName = databaseName;
-        searchCollection = mongoClient
-            .GetDatabase(this.databaseName)
-            .GetCollection<BookSearchModel>(COLLECTION_NAME);
-        CreateDefaultSearchIndexes();
+        _client = client;
+        bookSearchIndex = _client.Index("book");
     }
     
-    private void CreateDefaultSearchIndexes()
+    public async Task EnsureCreatedAndReady()
     {
-        var textIndex = Builders<BookSearchModel>.IndexKeys
-            .Text("$**");
-        CreateIndexOptions textIndexOptions = new() { Name = "text_index" };
-        var pubYearIndex = Builders<BookSearchModel>.IndexKeys
-            .Ascending(book => book.publicationYear);
-        CreateIndexOptions pubYearIndexOptions = new() { Name = "pubYear_index" };
-        var editionIndex = Builders<BookSearchModel>.IndexKeys
-            .Ascending(book => book.edition);
-        CreateIndexOptions editionIndexOptions = new() { Name = "edition_index" };
-        var pageNumbIndex = Builders<BookSearchModel>.IndexKeys
-            .Descending(book => book.pagesNumber);
-        CreateIndexOptions pageNumbIndexOptions = new() { Name = "pageNumb_index" };
-
-        searchCollection.Indexes.CreateMany(new []
+        await _client.CreateIndexAsync("book", BOOK_INDEX_PRIMARY_KEY);
+        Settings bookIndexSettings = new()
         {
-            new CreateIndexModel<BookSearchModel>(textIndex, textIndexOptions),
-            new CreateIndexModel<BookSearchModel>(pubYearIndex, pubYearIndexOptions),
-            new CreateIndexModel<BookSearchModel>(editionIndex, editionIndexOptions),
-            new CreateIndexModel<BookSearchModel>(pageNumbIndex, pageNumbIndexOptions),
-        });
+            FilterableAttributes = new[] { "ownerId" },
+            SortableAttributes = new[] { "title", "author", "publicationYear", "readed" }
+        };
+        await bookSearchIndex.UpdateSettingsAsync(bookIndexSettings);
     }
     
-    public async Task MadeBookSearchable(BookSearchModel bookSearchModel) => 
-        await searchCollection.InsertOneAsync(bookSearchModel);
-    public async Task<bool> DeleteBookFromSearch(int id)
+    public async Task MadeBookSearchable(BookSearchModel bookSearchModel)
     {
-        var bookFilter = Builders<BookSearchModel>.Filter
-            .Eq(book => book.id, id);
-
-        return (await searchCollection.DeleteOneAsync(bookFilter)).IsAcknowledged;
+        await bookSearchIndex
+            .AddDocumentsAsync(new List<BookSearchModel> { bookSearchModel },
+                primaryKey: BOOK_INDEX_PRIMARY_KEY);
     }
+    
     public async Task UpdateSearchBook(int bookId, BookSearchModel bookSearchModel)
     {
-        var bookFilter = Builders<BookSearchModel>.Filter
-            .Eq(book => book.id, bookId);
-        
-        await searchCollection.ReplaceOneAsync(bookFilter, bookSearchModel);
+        await bookSearchIndex.UpdateDocumentsAsync(new[] { bookSearchModel }, 
+            primaryKey: BOOK_INDEX_PRIMARY_KEY);
     }
     
-    public async Task<IReadOnlyList<BookSearchModel>> SearchBook(int userId, string sentence, int limitPerSection)
+    public async Task<bool> DeleteBookFromSearch(int id)
     {
-        var bookFilter = Builders<BookSearchModel>.Filter
-            .Text(sentence, new TextSearchOptions
-            {
-                CaseSensitive = false
-            });
-        var sortDefinition = new SortDefinitionBuilder<BookSearchModel>();
-        sortDefinition.Ascending(book => book.title);
+        TaskInfo taskInfo = await bookSearchIndex.DeleteDocumentsAsync(new[] { id });
+        TaskResource endResources = await _client.WaitForTaskAsync(taskInfo.TaskUid);
+        
+        return endResources.Error is null;
+    }
 
-        var searchResult = await searchCollection.FindAsync(bookFilter, new FindOptions<BookSearchModel>
-        {
-            Limit = limitPerSection,
-            Sort = new BsonDocumentSortDefinition<BookSearchModel>(sortDefinition.ToBsonDocument()),
-        });
-
-        return await searchResult.ToListAsync();
+    public async Task<IReadOnlyList<BookSearchModel>> SearchBook(int userId, string query, int limitPerSection)
+    {
+        SearchQuery searchQuery = new()
+            { 
+                Filter = $"ownerId = {userId}",
+                Limit = limitPerSection
+            };
+        var result = 
+            await bookSearchIndex.SearchAsync<BookSearchModel>(query, searchQuery);
+        
+        return result.Hits.ToList();
     }
 }

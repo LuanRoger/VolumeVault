@@ -2,11 +2,10 @@ version: '3.9'
 
 networks:
   prom:
-  db:
+  api:
 
 volumes:
   primary-db:
-  secundary-db:
   grafana-vol:
 
 services:
@@ -29,10 +28,13 @@ services:
       - VV_MONGO_USER
       - VV_MONGO_PASSWORD
       - VV_MONGO_DB_NAME
+      - VV_MEILISEARCH_HOST
+      - VV_MEILISEARCH_PORT
+      - MEILISEARCH_MASTER_KEY
     ports:
       - 5081:80
     networks:
-      - db
+      - api
       - prom
     depends_on:
       - postgres
@@ -47,23 +49,17 @@ services:
     ports:
       - 5432:5432
     networks:
-      - db
+      - api
     volumes:
       - primary-db:/var/lib/postgresql/data
   
-  mongo:
-    container_name: mongo-db
-    image: mongo
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME
-      - MONGO_INITDB_ROOT_PASSWORD
-      - MONGO_INITDB_DATABASE
+  meilisearch:
+    container_name: meilisearch
+    image:  getmeili/meilisearch
     ports:
-      - 27017:27017
-    volumes:
-      - secundary-db:/data/db
+      - 7700:7700
     networks:
-      - db
+      - api
 
   prometheus:
     container_name: prometheus
