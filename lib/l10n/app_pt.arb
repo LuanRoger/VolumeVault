@@ -1,0 +1,66 @@
+{
+    "appName": "Volume Vault",
+
+    "wellcomeBackLoginPage": "Bem-vindo(a) de volta.",
+    "userTextFieldHint": "Usuário",
+    "passwordTextFieldHint": "Senha",
+    "loginButtonLoginPage": "Entrar",
+    "doesNotHaveAccountLoginPage": "Não tem uma conta?",
+    "signinButtonLoginPage": "Crie uma conta",
+
+    "keepYourBooksSafeSigninPage": "Mantenha seus livros salvos.",
+    "emailTextFieldHint": "E-mail",
+    "signinButtonSigninPage": "Registrar-se",
+    "alreadyHaveAccountSigninPage": "Já tem uma conta?",
+    "loginButtonSigninPage": "Entre",
+
+    "titleAppBarHomePage": "Início",
+    "helloUserAppBarHomePage": "Olá, {user}",
+    "wellcomeBackAppBarHomePage": "Bem-vindo(a) de volta.",
+    "@helloUserAppBarHomePage": {
+        "placeholders": {
+            "user": {
+                "type": "String"
+            }
+        }
+    },
+    "homeSectionLabelHomePage": "Início",
+    "configurationsSectionLabelHomePage": "Configurações",
+    "searchBookTextFieldHint": "Pesquisar por titulo, author, ISBN...",
+    "pickBookToView": "Selecione um livro para visualizar.",
+    "signoutButtonHomePage": "Sair da conta",
+
+    "synopsisBookViewerPage": "Sinopse",
+    "informationsBookViewerPage": "Informações",
+    "isbnBookViewerPage": "ISBN",
+    "publisherBookViewerPage": "Editora",
+    "releaseYearBookViewerPage": "Ano de lançamento",
+    "formatBookViewerPage": "Formato",
+    "readedBookViewerPage": "Lido",
+    "readedYesBookViewerPage": "Sim",
+    "readedNoBookViewerPage": "Não",
+    "createdAtBookViewerPage": "Criado em",
+    "lastUpdateBookViewerPage": "Última modificação",
+    "observationsBookViewerPage": "Observações",
+    "tagsBookViewerPage": "Tags",
+
+    "newBookAppBarTitle": "Novo livro",
+    "editBookAppBarTitle": "Editar livro",
+    "mandatoryFieldsWarning": "Seções que tem \"*\" possuem campos obrigatorios.",
+    "bookInformationRegisterBookPage": "Informações do livro *",
+    "publisherInformationRegisterBookPage": "Informações da editora",
+    "aditionalInformationRegisterBookPage": "Informações adicionais",
+    "synopsisAndObservationsRegisterBookPage": "Sinopse e observações",
+    "readedRegisterBookPage": "Lido",
+    "tagsRegisterBookPage": "Tags",
+    "addTagButtonRegisterBookPage": "Adicionar",
+    "confirmButtonRegisterBookPage": "Confirmar",
+
+    "configurationsAppBarTitle": "Configurações",
+    "aperenceSectionTitleConfigurationsPage": "Aparência",
+    "themeOptionConfigurationsPage": "Tema",
+    "ghaphicsSectionTitleConfigurationsPage": "Gráficos",
+    "lightEffectOptionConfigurationsPage": "Efeito de luz",
+    "otherSectionTitleConfigurationsPage": "Outros",
+    "restoreDefaultConfigurationsPage": "Restaurar configurações padrão"
+}
