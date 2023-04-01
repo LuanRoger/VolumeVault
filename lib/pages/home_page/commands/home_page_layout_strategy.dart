@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/enums/authorization_status.dart';
 import 'package:volume_vault/providers/providers.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 abstract class HomePageLayoutStrategy {
   const HomePageLayoutStrategy();
@@ -10,18 +11,18 @@ abstract class HomePageLayoutStrategy {
       {required bool connectionError,
       required bool authValidationError}) async {
     final String message = authValidationError
-        ? "Não foi possível validar o token de autenticação. Faça login novamente."
-        : "Não foi possível conectar ao servidor";
+        ? AppLocalizations.of(context)!.authErrorDialogMessage
+        : AppLocalizations.of(context)!.serverConnectionErrorDialogMessage;
 
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Um problema ocorreu"),
+        title: Text(AppLocalizations.of(context)!.problemDialogTitle),
         content: Text(message),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Ok"),
+            child: Text(AppLocalizations.of(context)!.okDialogButton),
           ),
         ],
       ),

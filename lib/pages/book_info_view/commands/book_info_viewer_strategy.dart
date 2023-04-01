@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/providers/providers.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 abstract class BookInfoViewerStrategy {
   const BookInfoViewerStrategy();
@@ -29,19 +30,19 @@ abstract class BookInfoViewerStrategy {
     await showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text("Deletar livro"),
-        content: const Text("Tem certeza que deseja deletar este livro?"),
+        title: Text(AppLocalizations.of(context)!.deleteBookDialogTitle),
+        content: Text(AppLocalizations.of(context)!.deleteBookDialogMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Cancelar"),
+            child: Text(AppLocalizations.of(context)!.cancelDialogButton),
           ),
           FilledButton(
             onPressed: () {
               delete = true;
               Navigator.pop(context);
             },
-            child: const Text("Deletar"),
+            child: Text(AppLocalizations.of(context)!.deleteDialogButton),
           ),
         ],
       ),

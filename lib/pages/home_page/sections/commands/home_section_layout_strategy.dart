@@ -11,6 +11,7 @@ import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info
 import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info_grid_card.dart';
 import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info_list_card.dart';
 import 'package:volume_vault/shared/widgets/book_search_result_tile.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 abstract class HomeSectionLayoutStrategy {
   const HomeSectionLayoutStrategy();
@@ -83,19 +84,19 @@ abstract class HomeSectionLayoutStrategy {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-          title: const Text("Sair da conta?"),
-          content: const Text("Deseja realmente sair da conta?"),
+          title: Text(AppLocalizations.of(context)!.signoutDialogTitle),
+          content: Text(AppLocalizations.of(context)!.signoutDialogMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text("Cancelar"),
+              child: Text(AppLocalizations.of(context)!.cancelDialogButton),
             ),
             TextButton(
               onPressed: () {
                 exit = true;
                 Navigator.pop(context);
               },
-              child: const Text("Sair"),
+              child: Text(AppLocalizations.of(context)!.exitDialogButton),
             ),
           ]),
     );

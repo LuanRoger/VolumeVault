@@ -34,19 +34,19 @@ class RegisterEditBookPage extends HookConsumerWidget {
     await showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text("Editar livro"),
-        content: const Text("Deseja salvar as alterações?"),
+        title: Text(AppLocalizations.of(context)!.editBookDialogTitle),
+        content: Text(AppLocalizations.of(context)!.editBookDialogMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text("Não"),
+            child: Text(AppLocalizations.of(context)!.cancelDialogButton),
           ),
           TextButton(
             onPressed: () {
               saveUpdates = true;
               Navigator.pop(dialogContext, true);
             },
-            child: const Text("Sim"),
+            child: Text(AppLocalizations.of(context)!.confirmDialogButton),
           ),
         ],
       ),
@@ -60,8 +60,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
     await InputDialog(
       controller: coverTextController,
       icon: const Icon(Icons.image),
-      title: "Imagem da capa",
-      textFieldLabel: const Text("URL"),
+      title: AppLocalizations.of(context)!.bookCoverUrlInputDialogTitle,
+      textFieldLabel:
+          Text(AppLocalizations.of(context)!.bookCoverUrlInputDialogHint),
       prefixIcon: const Icon(Icons.link_rounded),
     ).show(context);
   }
@@ -71,8 +72,8 @@ class RegisterEditBookPage extends HookConsumerWidget {
     await InputDialog(
       controller: tagLabelController,
       icon: const Icon(Icons.tag_rounded),
-      title: "Adicionar tag",
-      textFieldLabel: const Text("Tag"),
+      title: AppLocalizations.of(context)!.tagInputDialogTitle,
+      textFieldLabel: Text(AppLocalizations.of(context)!.tagInputDialogHint),
     ).show(context);
   }
 
@@ -95,7 +96,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
     BottomSheet(
       action: (context) => FilledButton(
           onPressed: () => validateAndPop(context, _bookInfoFormKey),
-          child: const Text("Salvar")),
+          child: Text(AppLocalizations.of(context)!.saveBottomSheetButton)),
       onClose: () {
         titleController?.text = titleMemento;
         authorController?.text = authorMemento;
@@ -109,19 +110,24 @@ class RegisterEditBookPage extends HookConsumerWidget {
               TextFormField(
                 controller: titleController,
                 validator: mandatoryNotEmpty,
-                decoration: const InputDecoration(labelText: "Titulo *"),
+                decoration: InputDecoration(
+                    labelText:
+                        AppLocalizations.of(context)!.bookTitleTextFieldHint),
               ),
               const SizedBox(height: 15),
               TextFormField(
                 controller: authorController,
                 validator: mandatoryNotEmpty,
-                decoration: const InputDecoration(labelText: "Autor *"),
+                decoration: InputDecoration(
+                    labelText:
+                        AppLocalizations.of(context)!.authorTextFieldHint),
               ),
               const SizedBox(height: 15),
               TextFormField(
                 controller: isbnController,
                 validator: mandatoryNotEmptyExactLenght17,
-                decoration: const InputDecoration(labelText: "ISBN *"),
+                decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.isbnTextFieldHint),
                 keyboardType: TextInputType.number,
                 inputFormatters: [isbnInputFormater],
               ),
@@ -143,7 +149,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
     BottomSheet(
       action: (context) => FilledButton(
           onPressed: () => validateAndPop(context, _publisherInfoFormKey),
-          child: const Text("Salvar")),
+          child: Text(AppLocalizations.of(context)!.saveBottomSheetButton)),
       onClose: () {
         publisherController?.text = publisherMemento;
         publishYearController?.text = publishYearMemento;
@@ -159,14 +165,17 @@ class RegisterEditBookPage extends HookConsumerWidget {
                 validator: maximumLenght100,
                 maxLength: 100,
                 maxLines: 1,
-                decoration: const InputDecoration(labelText: "Editora"),
+                decoration: InputDecoration(
+                    labelText:
+                        AppLocalizations.of(context)!.publisherTextFieldHint),
               ),
               const SizedBox(height: 15),
               TextFormField(
                 controller: publishYearController,
                 validator: greaterThanOrEqualTo1,
-                decoration:
-                    const InputDecoration(labelText: "Ano de publicação"),
+                decoration: InputDecoration(
+                    labelText:
+                        AppLocalizations.of(context)!.releaseYearTextFieldHint),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
@@ -174,7 +183,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
               TextFormField(
                 controller: editionController,
                 validator: greaterThanOrEqualTo1,
-                decoration: const InputDecoration(labelText: "Edição"),
+                decoration: InputDecoration(
+                    labelText:
+                        AppLocalizations.of(context)!.editionTextFieldHint),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
@@ -198,7 +209,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
     BottomSheet(
       action: (context) => FilledButton(
         onPressed: () => validateAndPop(context, _aditionalInfoFormKey),
-        child: const Text("Salvar"),
+        child: Text(AppLocalizations.of(context)!.saveBottomSheetButton),
       ),
       onClose: () {
         pageNumbController?.text = pageNumbMemento;
@@ -240,7 +251,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
               TextFormField(
                 controller: pageNumbController,
                 validator: greaterThanOrEqualTo1,
-                decoration: const InputDecoration(labelText: "N° de páginas"),
+                decoration: InputDecoration(
+                    labelText:
+                        AppLocalizations.of(context)!.pageNumbersTextFieldHint),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
@@ -250,7 +263,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
                 validator: maximumLenght50,
                 maxLength: 50,
                 maxLines: 1,
-                decoration: const InputDecoration(labelText: "Genero"),
+                decoration: InputDecoration(
+                    labelText:
+                        AppLocalizations.of(context)!.genreTextFieldHint),
                 enableSuggestions: true,
                 autocorrect: true,
                 enableIMEPersonalizedLearning: true,
@@ -259,7 +274,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
               TextFormField(
                 controller: buyLinkController,
                 validator: maximumLenght500,
-                decoration: const InputDecoration(labelText: "Link de compra"),
+                decoration: InputDecoration(
+                    labelText:
+                        AppLocalizations.of(context)!.buyLinkTextFieldHint),
                 maxLength: 500,
                 maxLines: 1,
               ),

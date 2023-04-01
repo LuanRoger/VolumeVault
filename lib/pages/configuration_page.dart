@@ -15,24 +15,26 @@ class ConfigurationPage extends HookConsumerWidget {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Restaurar configurações padrão?",
+        title: Text(
+            AppLocalizations.of(context)!
+                .restoreDefaultConfigurationsDialogTitle,
             style: Theme.of(context).textTheme.titleLarge),
-        content: const Text(
-            "Todas as configurações serão restauradas para o padrão. Deseja continuar?"),
+        content: Text(AppLocalizations.of(context)!
+            .restoreDefaultConfigurationsDialogMessage),
         actions: [
           TextButton(
             onPressed: () {
               resetConfig = false;
               Navigator.pop(context);
             },
-            child: const Text("Cancelar"),
+            child: Text(AppLocalizations.of(context)!.cancelDialogButton),
           ),
           FilledButton.tonal(
             onPressed: () {
               resetConfig = true;
               Navigator.pop(context);
             },
-            child: const Text("Confirmar"),
+            child: Text(AppLocalizations.of(context)!.confirmDialogButton),
           ),
         ],
       ),
@@ -57,17 +59,18 @@ class ConfigurationPage extends HookConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Cancelar"),
+            child: Text(AppLocalizations.of(context)!.cancelDialogButton),
           )
         ],
-        title: const Text("Tema"),
+        title: Text(AppLocalizations.of(context)!.themeSelectionDialogTitle),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text("Selecione o tema desejado:"),
+            Text(AppLocalizations.of(context)!.themeSelectionDialogMessage),
             const SizedBox(height: 8),
             RadioListTile<ThemeBrightness>(
-              title: const Text("Claro"),
+              title: Text(AppLocalizations.of(context)!
+                  .lightThemeSelectionDialogOption),
               value: ThemeBrightness.LIGHT,
               groupValue: themeBrightness.themeBrightnes,
               onChanged: (newValue) {
@@ -80,7 +83,8 @@ class ConfigurationPage extends HookConsumerWidget {
               },
             ),
             RadioListTile<ThemeBrightness>(
-              title: const Text("Escuro"),
+              title: Text(
+                  AppLocalizations.of(context)!.darkThemeSelectionDialogOption),
               value: ThemeBrightness.DARK,
               groupValue: themeBrightness.themeBrightnes,
               onChanged: (newValue) {
@@ -93,7 +97,8 @@ class ConfigurationPage extends HookConsumerWidget {
               },
             ),
             RadioListTile<ThemeBrightness>(
-              title: const Text("Sistema"),
+              title: Text(AppLocalizations.of(context)!
+                  .systemThemeSelectionDialogOption),
               value: ThemeBrightness.SYSTEM,
               groupValue: themeBrightness.themeBrightnes,
               onChanged: (newValue) {
@@ -115,10 +120,6 @@ class ConfigurationPage extends HookConsumerWidget {
     final graphicsPrefernces =
         ref.read(graphicsPreferencesStateProvider.notifier);
     graphicsPrefernces.lightEffect = newValue;
-  }
-
-  void _toggleUserEnvVars(WidgetRef ref) {
-    ref.read(serverConfigNotifierProvider.notifier).toggleUseEnvVars();
   }
 
   @override
