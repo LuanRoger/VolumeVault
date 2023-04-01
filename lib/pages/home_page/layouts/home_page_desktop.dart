@@ -8,6 +8,7 @@ import 'package:volume_vault/pages/home_page/commands/home_page_desktop_commands
 import 'package:volume_vault/pages/home_page/sections/layouts/home_section_desktop.dart';
 import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
 import 'package:volume_vault/shared/hooks/paging_controller_hook.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePageDesktop extends HookConsumerWidget {
   final HomePageDesktopCommands _commands = const HomePageDesktopCommands();
@@ -49,14 +50,14 @@ class HomePageDesktop extends HookConsumerWidget {
                           child: const Icon(Icons.add_rounded)),
                       openBuilder: (_, __) => RegisterEditBookPage(),
                     ),
-                    destinations: const [
+                    destinations: [
                       NavigationRailDestination(
-                        icon: Icon(Icons.home_rounded),
-                        label: Text("Início"),
+                        icon: const Icon(Icons.home_rounded),
+                        label: Text(AppLocalizations.of(context)!.homeSectionLabelHomePage),
                       ),
                       NavigationRailDestination(
-                        icon: Icon(Icons.settings_rounded),
-                        label: Text("Configurações"),
+                        icon: const Icon(Icons.settings_rounded),
+                        label: Text(AppLocalizations.of(context)!.configurationsSectionLabelHomePage),
                       )
                     ],
                     onDestinationSelected: (newValue) {

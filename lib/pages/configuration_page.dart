@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/enums/theme_brightness.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/widgets/text_body_title.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ConfigurationPage extends HookConsumerWidget {
   const ConfigurationPage({super.key});
@@ -124,31 +125,30 @@ class ConfigurationPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themePreferences = ref.watch(themePreferencesStateProvider);
     final graphicsPreferences = ref.watch(graphicsPreferencesStateProvider);
-    final serverConfig = ref.watch(serverConfigNotifierProvider);
-
-    final serverHostController = useTextEditingController();
-    final serverPortController = useTextEditingController();
-    final serverApiKeyController = useTextEditingController();
 
     final resetConfigLoadingState = useState(false);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Configurações"),
+        title: Text(AppLocalizations.of(context)!.configurationsAppBarTitle),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView(
           children: [
-            TextBodyTitle("Aparencia"),
+            TextBodyTitle(AppLocalizations.of(context)!
+                .aperenceSectionTitleConfigurationsPage),
             ListTile(
-              title: const Text("Tema"),
+              title: Text(
+                  AppLocalizations.of(context)!.themeOptionConfigurationsPage),
               onTap: () async => await _showThemeChangeDialog(context, ref),
               trailing: Text(themePreferences.themeBrightnes.name),
             ),
-            TextBodyTitle("Gráficos"),
+            TextBodyTitle(AppLocalizations.of(context)!
+                .ghaphicsSectionTitleConfigurationsPage),
             ListTile(
-              title: const Text("Efeito de luz"),
+              title: Text(AppLocalizations.of(context)!
+                  .lightEffectOptionConfigurationsPage),
               onTap: () =>
                   _toggleLightEffect(ref, !graphicsPreferences.lightEffect),
               trailing: Switch(
@@ -156,7 +156,8 @@ class ConfigurationPage extends HookConsumerWidget {
                 onChanged: (newValue) => _toggleLightEffect(ref, newValue),
               ),
             ),
-            TextBodyTitle("Outros"),
+            TextBodyTitle(AppLocalizations.of(context)!
+                .otherSectionTitleConfigurationsPage),
             ElevatedButton(
               onPressed: !resetConfigLoadingState.value
                   ? () async {
@@ -165,7 +166,8 @@ class ConfigurationPage extends HookConsumerWidget {
                       resetConfigLoadingState.value = false;
                     }
                   : null,
-              child: const Text("Restaurar configurações padrão"),
+              child: Text(AppLocalizations.of(context)!
+                  .restoreDefaultConfigurationsPage),
             )
           ],
         ),

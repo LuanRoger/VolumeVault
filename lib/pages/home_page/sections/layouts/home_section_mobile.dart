@@ -14,6 +14,7 @@ import 'package:volume_vault/shared/widgets/paging_list_grid.dart';
 import 'package:volume_vault/shared/widgets/search_floating_card.dart';
 import 'package:volume_vault/shared/widgets/widget_switcher.dart';
 import 'package:volume_vault/shared/hooks/paging_controller_hook.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeSectionMobile extends HookConsumerWidget {
   final HomeSectionMobileCommand _commands = const HomeSectionMobileCommand();
@@ -62,7 +63,7 @@ class HomeSectionMobile extends HookConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Volume Vault",
+                    AppLocalizations.of(context)!.appName,
                     style: Theme.of(context).textTheme.titleLarge,
                   )
                 ],
@@ -70,7 +71,7 @@ class HomeSectionMobile extends HookConsumerWidget {
             ),
             ListTile(
               leading: const Icon(Icons.logout_rounded),
-              title: const Text("Sair da conta"),
+              title: Text(AppLocalizations.of(context)!.signoutButtonHomePage),
               onTap: () async => await _commands.showLogoutDialog(context, ref),
             )
           ],
@@ -78,14 +79,14 @@ class HomeSectionMobile extends HookConsumerWidget {
       ),
       appBar: AppBar(
         title: WidgetSwitcher(
-            first: const Text("Início"),
+            first: Text(AppLocalizations.of(context)!.titleAppBarHomePage),
             second: userInfo.maybeWhen(
                 data: (data) {
                   if (data == null) return const SizedBox();
 
-                  return Text("Olá, ${data.username}");
+                  return Text(AppLocalizations.of(context)!.helloUserAppBarHomePage(data.username));
                 },
-                loading: () => const Text("Bem-vindo(a)"),
+                loading: () => Text(AppLocalizations.of(context)!.wellcomeBackAppBarHomePage),
                 orElse: () => const SizedBox())),
         actions: [
           IconButton(
