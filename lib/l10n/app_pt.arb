@@ -26,7 +26,7 @@
     },
     "homeSectionLabelHomePage": "Início",
     "configurationsSectionLabelHomePage": "Configurações",
-    "searchBookTextFieldHint": "Pesquisar por titulo, author, ISBN...",
+    "searchBookTextFieldHint": "Pesquisar por titulo, autor, ISBN...",
     "pickBookToView": "Selecione um livro para visualizar.",
     "signoutButtonHomePage": "Sair da conta",
 
@@ -88,7 +88,7 @@
     "themeSelectionDialogMessage": "Selecione o tema desejado:",
     "lightThemeSelectionDialogOption": "Claro",
     "darkThemeSelectionDialogOption": "Escuro",
-    "systemThemeSelectionDialogOption": "System",
+    "systemThemeSelectionDialogOption": "Sistema",
 
     "saveBottomSheetButton": "Salvar",
 

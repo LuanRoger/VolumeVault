@@ -124,6 +124,12 @@ class ConfigurationPage extends HookConsumerWidget {
     graphicsPrefernces.lightEffect = newValue;
   }
 
+  void _changeLanguage(WidgetRef ref, SupportedLocales newLocale) {
+    final localizationPreferences =
+        ref.read(localizationPreferencesStateProvider.notifier);
+    localizationPreferences.changeLocalization(newLocale);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themePreferences = ref.watch(themePreferencesStateProvider);
@@ -163,19 +169,23 @@ class ConfigurationPage extends HookConsumerWidget {
             ),
             TextBodyTitle("Idioma"),
             DropdownButtonFormField<SupportedLocales>(
-                value: localizationPreferences.localization,
-                style: Theme.of(context).textTheme.bodyMedium,
-                items: const [
-                  DropdownMenuItem(
-                    value: SupportedLocales.ptBR,
-                    child: Text("Português"),
-                  ),
-                  DropdownMenuItem(
-                    value: SupportedLocales.enUS,
-                    child: Text("English"),
-                  ),
-                ],
-                onChanged: (newValue) {}),
+              value: localizationPreferences.localization,
+              style: Theme.of(context).textTheme.bodyMedium,
+              items: const [
+                DropdownMenuItem(
+                  value: SupportedLocales.ptBR,
+                  child: Text("Português"),
+                ),
+                DropdownMenuItem(
+                  value: SupportedLocales.enUS,
+                  child: Text("English"),
+                ),
+              ],
+              onChanged: (newValue) {
+                if (newValue == null) return;
+                _changeLanguage(ref, newValue);
+              },
+            ),
             TextBodyTitle(AppLocalizations.of(context)!
                 .otherSectionTitleConfigurationsPage),
             ElevatedButton(
