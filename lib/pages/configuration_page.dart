@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:volume_vault/l10n/l10n.dart';
+import 'package:volume_vault/l10n/supported_locales.dart';
 import 'package:volume_vault/models/enums/theme_brightness.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/widgets/text_body_title.dart';
@@ -126,6 +128,8 @@ class ConfigurationPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themePreferences = ref.watch(themePreferencesStateProvider);
     final graphicsPreferences = ref.watch(graphicsPreferencesStateProvider);
+    final localizationPreferences =
+        ref.watch(localizationPreferencesStateProvider);
 
     final resetConfigLoadingState = useState(false);
 
@@ -157,6 +161,21 @@ class ConfigurationPage extends HookConsumerWidget {
                 onChanged: (newValue) => _toggleLightEffect(ref, newValue),
               ),
             ),
+            TextBodyTitle("Idioma"),
+            DropdownButtonFormField<SupportedLocales>(
+                value: localizationPreferences.localization,
+                style: Theme.of(context).textTheme.bodyMedium,
+                items: const [
+                  DropdownMenuItem(
+                    value: SupportedLocales.ptBR,
+                    child: Text("Português"),
+                  ),
+                  DropdownMenuItem(
+                    value: SupportedLocales.enUS,
+                    child: Text("English"),
+                  ),
+                ],
+                onChanged: (newValue) {}),
             TextBodyTitle(AppLocalizations.of(context)!
                 .otherSectionTitleConfigurationsPage),
             ElevatedButton(

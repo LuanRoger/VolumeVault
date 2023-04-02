@@ -8,6 +8,7 @@ import 'package:volume_vault/models/http_code.dart';
 import 'package:volume_vault/models/http_response.dart';
 import 'package:volume_vault/models/user_info_model.dart';
 import 'package:volume_vault/providers/interfaces/graphics_preferences_state.dart';
+import 'package:volume_vault/providers/interfaces/localization_preferences_state.dart';
 import 'package:volume_vault/providers/interfaces/server_config_notifier.dart';
 import 'package:volume_vault/providers/interfaces/theme_preferences_state.dart';
 import 'package:volume_vault/providers/interfaces/user_session_notifier.dart';
@@ -15,6 +16,7 @@ import 'package:volume_vault/services/auth_service.dart';
 import 'package:volume_vault/services/book_service.dart';
 import 'package:volume_vault/services/utils_service.dart';
 import 'package:volume_vault/shared/preferences/models/graphics_preferences.dart';
+import 'package:volume_vault/shared/preferences/models/localization_preferences.dart';
 import 'package:volume_vault/shared/preferences/models/theme_preferences.dart';
 import 'package:volume_vault/shared/storage/models/server_config.dart';
 import 'package:volume_vault/shared/storage/models/user_session.dart';
@@ -38,6 +40,8 @@ final themePreferencesStateProvider =
 final graphicsPreferencesStateProvider =
     StateNotifierProvider<GraphicsPreferencesState, GraphicsPreferences>(
         (_) => throw UnimplementedError());
+final localizationPreferencesStateProvider =
+    StateNotifierProvider<LocalizationPreferencesState, LocalizationPreferences>((_) => throw UnimplementedError());
 
 final userInfoProvider = FutureProvider<UserInfoModel?>((ref) async {
   final userSession = await ref.watch(userSessionNotifierProvider.future);

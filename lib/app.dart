@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
+import 'package:volume_vault/l10n/l10n.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/routes/route_driver.dart';
@@ -15,6 +16,8 @@ class App extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeBrightness =
         ref.watch(themePreferencesStateProvider).themeBrightnes;
+    final localizationPreferences =
+        ref.watch(localizationPreferencesStateProvider);
     final userSession = ref.watch(userSessionNotifierProvider);
 
     return MaterialApp(
@@ -38,15 +41,13 @@ class App extends ConsumerWidget {
           ResponsiveBreakpoint.resize(1000, name: DESKTOP)
         ],
       ),
+      locale: localizationPreferences.localization.locale,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale("pt"),
-        //const Locale("es", "ES"),
-      ],
+      supportedLocales: L10n.locales,
     );
   }
 }
