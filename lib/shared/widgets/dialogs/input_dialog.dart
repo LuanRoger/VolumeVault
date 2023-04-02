@@ -31,8 +31,7 @@ class InputDialog {
               content: TextField(
                   controller: controller,
                   decoration: InputDecoration(
-                      label: textFieldLabel ??
-                          const Text("Enter a value"),
+                      label: textFieldLabel ?? const Text("Enter a value"),
                       filled: true,
                       prefixIcon: prefixIcon,
                       border: const UnderlineInputBorder())),
@@ -42,10 +41,12 @@ class InputDialog {
                       controller.text = textMemento;
                       Navigator.pop(context);
                     },
-                    child: Text(AppLocalizations.of(context)!.cancelDialogButton)),
+                    child:
+                        Text(AppLocalizations.of(context)!.cancelDialogButton)),
                 TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: Text(AppLocalizations.of(context)!.confirmDialogButton)),
+                    child: Text(
+                        AppLocalizations.of(context)!.confirmDialogButton)),
                 ...?actions
               ],
             ));

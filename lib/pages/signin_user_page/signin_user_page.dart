@@ -178,7 +178,9 @@ class SigninUserPage extends HookConsumerWidget {
                                             .pushNamedAndRemoveUntil(
                                                 AppRoutes.loginPageRoute,
                                                 (_) => false),
-                                        child: Text(AppLocalizations.of(context)!.loginButtonSigninPage),
+                                        child: Text(
+                                            AppLocalizations.of(context)!
+                                                .loginButtonSigninPage),
                                       ),
                                     ],
                                   ),

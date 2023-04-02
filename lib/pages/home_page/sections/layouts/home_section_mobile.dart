@@ -84,9 +84,11 @@ class HomeSectionMobile extends HookConsumerWidget {
                 data: (data) {
                   if (data == null) return const SizedBox();
 
-                  return Text(AppLocalizations.of(context)!.helloUserAppBarHomePage(data.username));
+                  return Text(AppLocalizations.of(context)!
+                      .helloUserAppBarHomePage(data.username));
                 },
-                loading: () => Text(AppLocalizations.of(context)!.wellcomeBackAppBarHomePage),
+                loading: () => Text(
+                    AppLocalizations.of(context)!.wellcomeBackAppBarHomePage),
                 orElse: () => const SizedBox())),
         actions: [
           IconButton(

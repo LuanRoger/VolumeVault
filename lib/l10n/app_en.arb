@@ -27,7 +27,6 @@
     "homeSectionLabelHomePage": "Home",
     "configurationsSectionLabelHomePage": "Settings",
     "searchBookTextFieldHint": "Search for title, author, ISBN...",
-    "pickBookToView": "Select a book to view.",
     "signoutButtonHomePage": "Signout",
 
     "synopsisBookViewerPage": "Synopsis",
@@ -55,6 +54,10 @@
     "tagsRegisterBookPage": "Tags",
     "addTagButtonRegisterBookPage": "Add tag",
     "confirmButtonRegisterBookPage": "Confirm",
+    "hardcoverRegisterBookFormatOption": "Hardcover",
+    "hardbackRegisterBookFormatOption": "Hardback",
+    "paperbackRegisterBookFormatOption": "Paperback",
+    "ebookRegisterBookFormatOption": "Ebook",
 
     "configurationsAppBarTitle": "Settings",
     "aperenceSectionTitleConfigurationsPage": "Apearance",
@@ -103,5 +106,8 @@
     "genreTextFieldHint": "Genre",
     "buyLinkTextFieldHint": "Buy link",
     "observationsTextFieldHint": "Remarks",
-    "synopsisTextFieldHint": "Synopsis"
+    "synopsisTextFieldHint": "Synopsis",
+
+    "noBookSelectedPlaceholderText": "Select a book to view.",
+    "noRegisteredBooksPlaceholderText": "No book registered."
 }

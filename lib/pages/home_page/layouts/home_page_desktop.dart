@@ -53,11 +53,13 @@ class HomePageDesktop extends HookConsumerWidget {
                     destinations: [
                       NavigationRailDestination(
                         icon: const Icon(Icons.home_rounded),
-                        label: Text(AppLocalizations.of(context)!.homeSectionLabelHomePage),
+                        label: Text(AppLocalizations.of(context)!
+                            .homeSectionLabelHomePage),
                       ),
                       NavigationRailDestination(
                         icon: const Icon(Icons.settings_rounded),
-                        label: Text(AppLocalizations.of(context)!.configurationsSectionLabelHomePage),
+                        label: Text(AppLocalizations.of(context)!
+                            .configurationsSectionLabelHomePage),
                       )
                     ],
                     onDestinationSelected: (newValue) {

@@ -27,7 +27,6 @@
     "homeSectionLabelHomePage": "Início",
     "configurationsSectionLabelHomePage": "Configurações",
     "searchBookTextFieldHint": "Pesquisar por titulo, autor, ISBN...",
-    "pickBookToView": "Selecione um livro para visualizar.",
     "signoutButtonHomePage": "Sair da conta",
 
     "synopsisBookViewerPage": "Sinopse",
@@ -55,6 +54,10 @@
     "tagsRegisterBookPage": "Tags",
     "addTagButtonRegisterBookPage": "Adicionar",
     "confirmButtonRegisterBookPage": "Confirmar",
+    "hardcoverRegisterBookFormatOption": "Capa dura com proteção",
+    "hardbackRegisterBookFormatOption": "Capa dura",
+    "paperbackRegisterBookFormatOption": "Bolso",
+    "ebookRegisterBookFormatOption": "Digital",
 
     "configurationsAppBarTitle": "Configurações",
     "aperenceSectionTitleConfigurationsPage": "Aparência",
@@ -103,5 +106,8 @@
     "genreTextFieldHint": "Gênero",
     "buyLinkTextFieldHint": "Link de compra",
     "observationsTextFieldHint": "Observações",
-    "synopsisTextFieldHint": "Sinopse"
+    "synopsisTextFieldHint": "Sinopse",
+
+    "noBookSelectedPlaceholderText": "Selecione um livro para visualizar.",
+    "noRegisteredBooksPlaceholderText": "Nenhum livro cadastrado."
 }

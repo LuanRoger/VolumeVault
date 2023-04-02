@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NoRegisteredBookPlaceholder extends StatelessWidget {
   const NoRegisteredBookPlaceholder({super.key});
@@ -10,7 +11,7 @@ class NoRegisteredBookPlaceholder extends StatelessWidget {
       children: [
         const Icon(Icons.book, size: 100),
         Text(
-          "Nenhum livro cadastrado.",
+          AppLocalizations.of(context)!.noRegisteredBooksPlaceholderText,
           style: Theme.of(context).textTheme.headlineSmall,
         )
       ],

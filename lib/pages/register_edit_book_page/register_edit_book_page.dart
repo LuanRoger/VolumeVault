@@ -204,7 +204,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
     String pageNumbMemento = pageNumbController?.text ?? "";
     String genreMemento = genreController?.text ?? "";
     String buyLinkMemento = buyLinkController?.text ?? "";
-    BookFormat? bookFormatMemento = bookFormat?.value ?? BookFormat.HARDCOVER;
+    BookFormat? bookFormatMemento = bookFormat?.value ?? BookFormat.hardcover;
 
     BottomSheet(
       action: (context) => FilledButton(
@@ -228,24 +228,28 @@ class RegisterEditBookPage extends HookConsumerWidget {
                 style: Theme.of(context).textTheme.bodyMedium,
                 items: [
                   DropdownMenuItem(
-                    value: BookFormat.HARDCOVER,
-                    child: Text(BookFormat.HARDCOVER.name),
+                    value: BookFormat.hardcover,
+                    child: Text(AppLocalizations.of(context)!
+                        .hardcoverRegisterBookFormatOption),
                   ),
                   DropdownMenuItem(
-                    value: BookFormat.HARDBACK,
-                    child: Text(BookFormat.HARDBACK.name),
+                    value: BookFormat.hardback,
+                    child: Text(AppLocalizations.of(context)!
+                        .hardbackRegisterBookFormatOption),
                   ),
                   DropdownMenuItem(
-                    value: BookFormat.PAPERBACK,
-                    child: Text(BookFormat.PAPERBACK.name),
+                    value: BookFormat.paperback,
+                    child: Text(AppLocalizations.of(context)!
+                        .paperbackRegisterBookFormatOption),
                   ),
                   DropdownMenuItem(
-                    value: BookFormat.EBOOK,
-                    child: Text(BookFormat.EBOOK.name),
+                    value: BookFormat.ebook,
+                    child: Text(AppLocalizations.of(context)!
+                        .ebookRegisterBookFormatOption),
                   )
                 ],
                 onChanged: (newValue) =>
-                    bookFormat?.value = newValue ?? BookFormat.HARDCOVER,
+                    bookFormat?.value = newValue ?? BookFormat.hardcover,
               ),
               const SizedBox(height: 15),
               TextFormField(
@@ -308,7 +312,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
         useTextEditingController(text: editBookModel?.publisher);
 
     final bookFormatState =
-        useState<BookFormat>(editBookModel?.format ?? BookFormat.HARDCOVER);
+        useState<BookFormat>(editBookModel?.format ?? BookFormat.hardcover);
     final buyLinkController =
         useTextEditingController(text: editBookModel?.buyLink);
     final genreController =

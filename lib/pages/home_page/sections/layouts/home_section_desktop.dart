@@ -95,7 +95,8 @@ class HomeSectionDesktop extends HookConsumerWidget {
                 return Text(AppLocalizations.of(context)!
                     .helloUserAppBarHomePage(data.username));
               },
-              loading: () => Text(AppLocalizations.of(context)!.wellcomeBackAppBarHomePage),
+              loading: () => Text(
+                  AppLocalizations.of(context)!.wellcomeBackAppBarHomePage),
               orElse: () => const SizedBox()),
         ),
         actions: [
@@ -128,7 +129,8 @@ class HomeSectionDesktop extends HookConsumerWidget {
                       Flexible(
                         child: SearchTextField(
                             controller: searchTextController,
-                            label: AppLocalizations.of(context)!.searchBookTextFieldHint,
+                            label: AppLocalizations.of(context)!
+                                .searchBookTextFieldHint,
                             showClearButton:
                                 searchTextController.text.isNotEmpty,
                             height: 40),

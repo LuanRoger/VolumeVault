@@ -40,8 +40,9 @@ final themePreferencesStateProvider =
 final graphicsPreferencesStateProvider =
     StateNotifierProvider<GraphicsPreferencesState, GraphicsPreferences>(
         (_) => throw UnimplementedError());
-final localizationPreferencesStateProvider =
-    StateNotifierProvider<LocalizationPreferencesState, LocalizationPreferences>((_) => throw UnimplementedError());
+final localizationPreferencesStateProvider = StateNotifierProvider<
+    LocalizationPreferencesState,
+    LocalizationPreferences>((_) => throw UnimplementedError());
 
 final userInfoProvider = FutureProvider<UserInfoModel?>((ref) async {
   final userSession = await ref.watch(userSessionNotifierProvider.future);
