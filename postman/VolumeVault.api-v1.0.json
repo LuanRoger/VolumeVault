@@ -1,0 +1,493 @@
+{
+	"info": {
+		"_postman_id": "431edc97-fe06-402a-b22b-c7ec04be9a33",
+		"name": "VolumeVault",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25215552"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "AuthSignin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"username\",\r\n    \"email\": \"useremail@gmail.com\",\r\n    \"password\": \"userpassword\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5081/auth/signin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5081",
+							"path": [
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AuthLogin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"username\",\r\n    \"password\": \"userpassword\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5081/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5081",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AuthGetUserInfo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6IjEiLCJhdWQiOiJWb2x1bWVWYWx0IiwiZXhwIjoxNjgxMTU0NTI5LCJpc3MiOiJWb2x1bWVWYXVsdEluZnJhIiwiaWF0IjoxNjgwNTQ5NzI5LCJuYmYiOjE2ODA1NDk3Mjl9.83bPNb0y_NMmaX1ml1_N-XSQLjBt7g9WaMEEQ1uEimY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "ccae6d912a41bfefd569a77b5cd86603cde92e53cdd45813cba9e5bf080b3734",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5081/auth",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5081",
+							"path": [
+								"auth"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Book",
+			"item": [
+				{
+					"name": "RegisterBook",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6IjEiLCJhdWQiOiJWb2x1bWVWYWx0IiwiZXhwIjoxNjgxMTUzMTczLCJpc3MiOiJWb2x1bWVWYXVsdEluZnJhIiwiaWF0IjoxNjgwNTQ4MzczLCJuYmYiOjE2ODA1NDgzNzN9.lrFYa4MavrT4AcRmCGEjGxdxy8u8Z8mn1Tr20PdIgjg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "ccae6d912a41bfefd569a77b5cd86603cde92e53cdd45813cba9e5bf080b3734",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Harry Potter\",\r\n  \"author\": \"J.K. Rowling\",\r\n  \"isbn\": \"978-85-7683-393-2\",\r\n  \"publicationYear\": 2017,\r\n  \"publisher\": \"Rocco\",\r\n  \"edition\": 1,\r\n  \"pagesNumber\": 208,\r\n  \"genre\": \"Fantasia\",\r\n  \"format\": 0,\r\n  \"observation\": \"I need to reed more\",\r\n  \"synopsis\": \"Harry Potter é um garoto cujos pais, feiticeiros, foram assassinados por um poderosíssimo bruxo quando ele ainda era um bebê.\",\r\n  \"coverLink\": \"https://m.media-amazon.com/images/I/81ibfYk4qmL.jpg\",\r\n  \"buyLink\": \"https://www.amazon.com.br/Harry-Potter-Pedra-Filosofal-Rowling/dp/8532530788/ref=asc_df_8532530788/?tag=googleshopp00-20&linkCode=df0&hvadid=379795242161&hvpos=&hvnetw=g&hvrand=4863720407530529741&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9074237&hvtargid=pla-569630960550&psc=1\",\r\n  \"readed\": true,\r\n  \"createdAt\": \"2023-01-26T13:54:08.015Z\",\r\n  \"lastModification\": \"2023-01-26T13:54:08.015Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5081/book",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5081",
+							"path": [
+								"book"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetBookById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6IjEiLCJhdWQiOiJWb2x1bWVWYWx0IiwiZXhwIjoxNjc4MzYyNjcxLCJpc3MiOiJWb2x1bWVWYXVsdEluZnJhIiwiaWF0IjoxNjc3NzU3ODcxLCJuYmYiOjE2Nzc3NTc4NzF9.a_pbUwCy5hcWKTNMdT86et_MrUKnCITA4xraWsQZBrA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "ccae6d912a41bfefd569a77b5cd86603cde92e53cdd45813cba9e5bf080b3734",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5081/book/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5081",
+							"path": [
+								"book",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetBooksGenres",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6IjEiLCJhdWQiOiJWb2x1bWVWYWx0IiwiZXhwIjoxNjc4NzE1NzQ4LCJpc3MiOiJWb2x1bWVWYXVsdEluZnJhIiwiaWF0IjoxNjc4MTEwOTQ4LCJuYmYiOjE2NzgxMTA5NDl9.DVe2dk0q4N6YX1Y6mj3pm2k8Uwg7hY_kJCAqlTbDaII",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "ccae6d912a41bfefd569a77b5cd86603cde92e53cdd45813cba9e5bf080b3734",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5081/book/genres",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5081",
+							"path": [
+								"book",
+								"genres"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetUserBooks",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6IjEiLCJhdWQiOiJWb2x1bWVWYWx0IiwiZXhwIjoxNjgxMTUzMTczLCJpc3MiOiJWb2x1bWVWYXVsdEluZnJhIiwiaWF0IjoxNjgwNTQ4MzczLCJuYmYiOjE2ODA1NDgzNzN9.lrFYa4MavrT4AcRmCGEjGxdxy8u8Z8mn1Tr20PdIgjg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "ccae6d912a41bfefd569a77b5cd86603cde92e53cdd45813cba9e5bf080b3734",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5081/book?limitPerPage=10&page=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5081",
+							"path": [
+								"book"
+							],
+							"query": [
+								{
+									"key": "limitPerPage",
+									"value": "10"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteBook",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6IjEiLCJhdWQiOiJWb2x1bWVWYWx0IiwiZXhwIjoxNjgwNzE3MjU0LCJpc3MiOiJWb2x1bWVWYXVsdEluZnJhIiwiaWF0IjoxNjgwMTEyNDU0LCJuYmYiOjE2ODAxMTI0NTR9.7TD32wB9hVTwkRixmTLPHR0gSR1fzh91gJleq2AlqDM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "ccae6d912a41bfefd569a77b5cd86603cde92e53cdd45813cba9e5bf080b3734",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5081/book/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5081",
+							"path": [
+								"book",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateBook",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6IjEiLCJhdWQiOiJWb2x1bWVWYWx0IiwiZXhwIjoxNjgwNzE3MjU0LCJpc3MiOiJWb2x1bWVWYXVsdEluZnJhIiwiaWF0IjoxNjgwMTEyNDU0LCJuYmYiOjE2ODAxMTI0NTR9.7TD32wB9hVTwkRixmTLPHR0gSR1fzh91gJleq2AlqDM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "ccae6d912a41bfefd569a77b5cd86603cde92e53cdd45813cba9e5bf080b3734",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Changed\",\r\n  \"author\": \"Changed\",\r\n  \"isbn\": \"000-00-0000-000-0\",\r\n  \"publicationYear\": 2000,\r\n  \"publisher\": \"Changed\",\r\n  \"edition\": 0,\r\n  \"pagesNumber\": 20,\r\n  \"genre\": \"Changed\",\r\n  \"format\": 0,\r\n  \"observation\": \"Changed\",\r\n  \"synopsis\": \"Changed\",\r\n  \"coverLink\": \"Changed\",\r\n  \"buyLink\": \"Changed\",\r\n  \"readed\": false,\r\n  \"tags\": [\r\n    \"Changed\",\r\n    \"ChangedTest\"\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5081/book/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5081",
+							"path": [
+								"book",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Utils",
+			"item": [
+				{
+					"name": "BookSearch",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6IjEiLCJhdWQiOiJWb2x1bWVWYWx0IiwiZXhwIjoxNjgwNzE3MjU0LCJpc3MiOiJWb2x1bWVWYXVsdEluZnJhIiwiaWF0IjoxNjgwMTEyNDU0LCJuYmYiOjE2ODAxMTI0NTR9.7TD32wB9hVTwkRixmTLPHR0gSR1fzh91gJleq2AlqDM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "ccae6d912a41bfefd569a77b5cd86603cde92e53cdd45813cba9e5bf080b3734",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5081/book/search?query=harry",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5081",
+							"path": [
+								"book",
+								"search"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "harry"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UtilsPing",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5081/utils/ping",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5081",
+							"path": [
+								"utils",
+								"ping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UtilsCheckAuthToken",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6IjEiLCJhdWQiOiJWb2x1bWVWYWx0IiwiZXhwIjoxNjc4MzEwMzE5LCJpc3MiOiJWb2x1bWVWYXVsdEluZnJhIiwiaWF0IjoxNjc3NzA1NTE5LCJuYmYiOjE2Nzc3MDU1MTl9.JHnKpxoCtIoVtA1JTSiaO6aEaiz7OGW9kv1FyHxetZo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "ccae6d912a41bfefd569a77b5cd86603cde92e53cdd45813cba9e5bf080b3734",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5081/utils/check_auth_token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5081",
+							"path": [
+								"utils",
+								"check_auth_token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "ccae6d912a41bfefd569a77b5cd86603cde92e53cdd45813cba9e5bf080b3734",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "X-Api-Key",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
