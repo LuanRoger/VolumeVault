@@ -6,6 +6,7 @@ networks:
 
 volumes:
   primary-db:
+  meili-vol:
   grafana-vol:
 
 services:
@@ -60,6 +61,8 @@ services:
       - 7700:7700
     networks:
       - api
+    volumes:
+      - meili-vol:/meili_data
 
   prometheus:
     container_name: prometheus
