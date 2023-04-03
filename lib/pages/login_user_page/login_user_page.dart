@@ -11,6 +11,7 @@ import 'package:volume_vault/shared/assets/app_images.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/ui_utils/snackbar_utils.dart';
 import 'package:volume_vault/shared/validators/text_field_validator.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginUserPage extends HookConsumerWidget {
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
@@ -63,7 +64,7 @@ class LoginUserPage extends HookConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          "Bem-vindo(a) de volta",
+                          AppLocalizations.of(context)!.wellcomeBackLoginPage,
                           style: Theme.of(context)
                               .textTheme
                               .displaySmall!
@@ -77,10 +78,11 @@ class LoginUserPage extends HookConsumerWidget {
                               TextFormField(
                                 controller: usernameController,
                                 validator: minumumLenght3,
-                                decoration: const InputDecoration(
-                                  label: Text("Usuário"),
+                                decoration: InputDecoration(
+                                  label: Text(AppLocalizations.of(context)!
+                                      .userTextFieldHint),
                                   filled: true,
-                                  border: UnderlineInputBorder(
+                                  border: const UnderlineInputBorder(
                                       borderSide: BorderSide.none),
                                 ),
                               ),
@@ -90,7 +92,8 @@ class LoginUserPage extends HookConsumerWidget {
                                 validator: minumumLenght8AndMaximum18,
                                 obscureText: obscurePassword.value,
                                 decoration: InputDecoration(
-                                  label: const Text("Senha"),
+                                  label: Text(AppLocalizations.of(context)!
+                                      .passwordTextFieldHint),
                                   filled: true,
                                   border: const UnderlineInputBorder(
                                       borderSide: BorderSide.none),
@@ -141,7 +144,8 @@ class LoginUserPage extends HookConsumerWidget {
                                       (_) => false,
                                     );
                                   },
-                                  child: const Text("Entrar")),
+                                  child: Text(AppLocalizations.of(context)!
+                                      .loginButtonLoginPage)),
                             ],
                           ),
                         ),
@@ -149,12 +153,14 @@ class LoginUserPage extends HookConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const Text("Não tem uma conta?"),
+                            Text(AppLocalizations.of(context)!
+                                .doesNotHaveAccountLoginPage),
                             TextButton(
                               onPressed: () => Navigator.of(context)
                                   .pushNamedAndRemoveUntil(
                                       AppRoutes.signinPageRoute, (_) => false),
-                              child: const Text("Registre-se"),
+                              child: Text(AppLocalizations.of(context)!
+                                  .signinButtonLoginPage),
                             ),
                           ],
                         ),

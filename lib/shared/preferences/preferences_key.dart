@@ -5,4 +5,5 @@ class PreferencesKey {
   static const String serverPortPrefKey = "serverPort";
   static const String serverApiKeyPrefKey = "serverApiKey";
   static const String serverProtocolPrefKey = "serverProtocol";
+  static const String localizationPrefKey = "localization";
 }

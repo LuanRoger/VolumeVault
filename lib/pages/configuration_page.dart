@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:volume_vault/l10n/l10n.dart';
+import 'package:volume_vault/l10n/supported_locales.dart';
 import 'package:volume_vault/models/enums/theme_brightness.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/widgets/text_body_title.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ConfigurationPage extends HookConsumerWidget {
   const ConfigurationPage({super.key});
@@ -14,24 +17,26 @@ class ConfigurationPage extends HookConsumerWidget {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Restaurar configurações padrão?",
+        title: Text(
+            AppLocalizations.of(context)!
+                .restoreDefaultConfigurationsDialogTitle,
             style: Theme.of(context).textTheme.titleLarge),
-        content: const Text(
-            "Todas as configurações serão restauradas para o padrão. Deseja continuar?"),
+        content: Text(AppLocalizations.of(context)!
+            .restoreDefaultConfigurationsDialogMessage),
         actions: [
           TextButton(
             onPressed: () {
               resetConfig = false;
               Navigator.pop(context);
             },
-            child: const Text("Cancelar"),
+            child: Text(AppLocalizations.of(context)!.cancelDialogButton),
           ),
           FilledButton.tonal(
             onPressed: () {
               resetConfig = true;
               Navigator.pop(context);
             },
-            child: const Text("Confirmar"),
+            child: Text(AppLocalizations.of(context)!.confirmDialogButton),
           ),
         ],
       ),
@@ -56,17 +61,18 @@ class ConfigurationPage extends HookConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Cancelar"),
+            child: Text(AppLocalizations.of(context)!.cancelDialogButton),
           )
         ],
-        title: const Text("Tema"),
+        title: Text(AppLocalizations.of(context)!.themeSelectionDialogTitle),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text("Selecione o tema desejado:"),
+            Text(AppLocalizations.of(context)!.themeSelectionDialogMessage),
             const SizedBox(height: 8),
             RadioListTile<ThemeBrightness>(
-              title: const Text("Claro"),
+              title: Text(AppLocalizations.of(context)!
+                  .lightThemeSelectionDialogOption),
               value: ThemeBrightness.LIGHT,
               groupValue: themeBrightness.themeBrightnes,
               onChanged: (newValue) {
@@ -79,7 +85,8 @@ class ConfigurationPage extends HookConsumerWidget {
               },
             ),
             RadioListTile<ThemeBrightness>(
-              title: const Text("Escuro"),
+              title: Text(
+                  AppLocalizations.of(context)!.darkThemeSelectionDialogOption),
               value: ThemeBrightness.DARK,
               groupValue: themeBrightness.themeBrightnes,
               onChanged: (newValue) {
@@ -92,7 +99,8 @@ class ConfigurationPage extends HookConsumerWidget {
               },
             ),
             RadioListTile<ThemeBrightness>(
-              title: const Text("Sistema"),
+              title: Text(AppLocalizations.of(context)!
+                  .systemThemeSelectionDialogOption),
               value: ThemeBrightness.SYSTEM,
               groupValue: themeBrightness.themeBrightnes,
               onChanged: (newValue) {
@@ -116,39 +124,42 @@ class ConfigurationPage extends HookConsumerWidget {
     graphicsPrefernces.lightEffect = newValue;
   }
 
-  void _toggleUserEnvVars(WidgetRef ref) {
-    ref.read(serverConfigNotifierProvider.notifier).toggleUseEnvVars();
+  void _changeLanguage(WidgetRef ref, SupportedLocales newLocale) {
+    final localizationPreferences =
+        ref.read(localizationPreferencesStateProvider.notifier);
+    localizationPreferences.changeLocalization(newLocale);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themePreferences = ref.watch(themePreferencesStateProvider);
     final graphicsPreferences = ref.watch(graphicsPreferencesStateProvider);
-    final serverConfig = ref.watch(serverConfigNotifierProvider);
-
-    final serverHostController = useTextEditingController();
-    final serverPortController = useTextEditingController();
-    final serverApiKeyController = useTextEditingController();
+    final localizationPreferences =
+        ref.watch(localizationPreferencesStateProvider);
 
     final resetConfigLoadingState = useState(false);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Configurações"),
+        title: Text(AppLocalizations.of(context)!.configurationsAppBarTitle),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView(
           children: [
-            TextBodyTitle("Aparencia"),
+            TextBodyTitle(AppLocalizations.of(context)!
+                .aperenceSectionTitleConfigurationsPage),
             ListTile(
-              title: const Text("Tema"),
+              title: Text(
+                  AppLocalizations.of(context)!.themeOptionConfigurationsPage),
               onTap: () async => await _showThemeChangeDialog(context, ref),
               trailing: Text(themePreferences.themeBrightnes.name),
             ),
-            TextBodyTitle("Gráficos"),
+            TextBodyTitle(AppLocalizations.of(context)!
+                .ghaphicsSectionTitleConfigurationsPage),
             ListTile(
-              title: const Text("Efeito de luz"),
+              title: Text(AppLocalizations.of(context)!
+                  .lightEffectOptionConfigurationsPage),
               onTap: () =>
                   _toggleLightEffect(ref, !graphicsPreferences.lightEffect),
               trailing: Switch(
@@ -156,7 +167,27 @@ class ConfigurationPage extends HookConsumerWidget {
                 onChanged: (newValue) => _toggleLightEffect(ref, newValue),
               ),
             ),
-            TextBodyTitle("Outros"),
+            TextBodyTitle("Idioma"),
+            DropdownButtonFormField<SupportedLocales>(
+              value: localizationPreferences.localization,
+              style: Theme.of(context).textTheme.bodyMedium,
+              items: const [
+                DropdownMenuItem(
+                  value: SupportedLocales.ptBR,
+                  child: Text("Português"),
+                ),
+                DropdownMenuItem(
+                  value: SupportedLocales.enUS,
+                  child: Text("English"),
+                ),
+              ],
+              onChanged: (newValue) {
+                if (newValue == null) return;
+                _changeLanguage(ref, newValue);
+              },
+            ),
+            TextBodyTitle(AppLocalizations.of(context)!
+                .otherSectionTitleConfigurationsPage),
             ElevatedButton(
               onPressed: !resetConfigLoadingState.value
                   ? () async {
@@ -165,7 +196,8 @@ class ConfigurationPage extends HookConsumerWidget {
                       resetConfigLoadingState.value = false;
                     }
                   : null,
-              child: const Text("Restaurar configurações padrão"),
+              child: Text(AppLocalizations.of(context)!
+                  .restoreDefaultConfigurationsPage),
             )
           ],
         ),

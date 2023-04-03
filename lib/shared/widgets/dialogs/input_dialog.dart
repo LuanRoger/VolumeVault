@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InputDialog {
   Icon? icon;
@@ -30,7 +31,7 @@ class InputDialog {
               content: TextField(
                   controller: controller,
                   decoration: InputDecoration(
-                      label: textFieldLabel ?? const Text("URL"),
+                      label: textFieldLabel ?? const Text("Enter a value"),
                       filled: true,
                       prefixIcon: prefixIcon,
                       border: const UnderlineInputBorder())),
@@ -40,10 +41,12 @@ class InputDialog {
                       controller.text = textMemento;
                       Navigator.pop(context);
                     },
-                    child: const Text("Cancelar")),
+                    child:
+                        Text(AppLocalizations.of(context)!.cancelDialogButton)),
                 TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text("Aceitar")),
+                    child: Text(
+                        AppLocalizations.of(context)!.confirmDialogButton)),
                 ...?actions
               ],
             ));

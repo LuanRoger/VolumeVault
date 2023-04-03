@@ -15,6 +15,7 @@ import 'package:volume_vault/shared/widgets/bottom_sheet.dart';
 import 'package:volume_vault/shared/widgets/chip_list.dart';
 import 'package:volume_vault/shared/widgets/dialogs/input_dialog.dart';
 import 'package:volume_vault/shared/widgets/icon_text.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegisterEditBookPage extends HookConsumerWidget {
   ///If this model is not null, the page enter in edit mode.
@@ -33,19 +34,19 @@ class RegisterEditBookPage extends HookConsumerWidget {
     await showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text("Editar livro"),
-        content: const Text("Deseja salvar as alterações?"),
+        title: Text(AppLocalizations.of(context)!.editBookDialogTitle),
+        content: Text(AppLocalizations.of(context)!.editBookDialogMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text("Não"),
+            child: Text(AppLocalizations.of(context)!.cancelDialogButton),
           ),
           TextButton(
             onPressed: () {
               saveUpdates = true;
               Navigator.pop(dialogContext, true);
             },
-            child: const Text("Sim"),
+            child: Text(AppLocalizations.of(context)!.confirmDialogButton),
           ),
         ],
       ),
@@ -59,8 +60,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
     await InputDialog(
       controller: coverTextController,
       icon: const Icon(Icons.image),
-      title: "Imagem da capa",
-      textFieldLabel: const Text("URL"),
+      title: AppLocalizations.of(context)!.bookCoverUrlInputDialogTitle,
+      textFieldLabel:
+          Text(AppLocalizations.of(context)!.bookCoverUrlInputDialogHint),
       prefixIcon: const Icon(Icons.link_rounded),
     ).show(context);
   }
@@ -70,8 +72,8 @@ class RegisterEditBookPage extends HookConsumerWidget {
     await InputDialog(
       controller: tagLabelController,
       icon: const Icon(Icons.tag_rounded),
-      title: "Adicionar tag",
-      textFieldLabel: const Text("Tag"),
+      title: AppLocalizations.of(context)!.tagInputDialogTitle,
+      textFieldLabel: Text(AppLocalizations.of(context)!.tagInputDialogHint),
     ).show(context);
   }
 
@@ -94,7 +96,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
     BottomSheet(
       action: (context) => FilledButton(
           onPressed: () => validateAndPop(context, _bookInfoFormKey),
-          child: const Text("Salvar")),
+          child: Text(AppLocalizations.of(context)!.saveBottomSheetButton)),
       onClose: () {
         titleController?.text = titleMemento;
         authorController?.text = authorMemento;
@@ -108,19 +110,24 @@ class RegisterEditBookPage extends HookConsumerWidget {
               TextFormField(
                 controller: titleController,
                 validator: mandatoryNotEmpty,
-                decoration: const InputDecoration(labelText: "Titulo *"),
+                decoration: InputDecoration(
+                    labelText:
+                        AppLocalizations.of(context)!.bookTitleTextFieldHint),
               ),
               const SizedBox(height: 15),
               TextFormField(
                 controller: authorController,
                 validator: mandatoryNotEmpty,
-                decoration: const InputDecoration(labelText: "Autor *"),
+                decoration: InputDecoration(
+                    labelText:
+                        AppLocalizations.of(context)!.authorTextFieldHint),
               ),
               const SizedBox(height: 15),
               TextFormField(
                 controller: isbnController,
                 validator: mandatoryNotEmptyExactLenght17,
-                decoration: const InputDecoration(labelText: "ISBN *"),
+                decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.isbnTextFieldHint),
                 keyboardType: TextInputType.number,
                 inputFormatters: [isbnInputFormater],
               ),
@@ -142,7 +149,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
     BottomSheet(
       action: (context) => FilledButton(
           onPressed: () => validateAndPop(context, _publisherInfoFormKey),
-          child: const Text("Salvar")),
+          child: Text(AppLocalizations.of(context)!.saveBottomSheetButton)),
       onClose: () {
         publisherController?.text = publisherMemento;
         publishYearController?.text = publishYearMemento;
@@ -158,14 +165,17 @@ class RegisterEditBookPage extends HookConsumerWidget {
                 validator: maximumLenght100,
                 maxLength: 100,
                 maxLines: 1,
-                decoration: const InputDecoration(labelText: "Editora"),
+                decoration: InputDecoration(
+                    labelText:
+                        AppLocalizations.of(context)!.publisherTextFieldHint),
               ),
               const SizedBox(height: 15),
               TextFormField(
                 controller: publishYearController,
                 validator: greaterThanOrEqualTo1,
-                decoration:
-                    const InputDecoration(labelText: "Ano de publicação"),
+                decoration: InputDecoration(
+                    labelText:
+                        AppLocalizations.of(context)!.releaseYearTextFieldHint),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
@@ -173,7 +183,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
               TextFormField(
                 controller: editionController,
                 validator: greaterThanOrEqualTo1,
-                decoration: const InputDecoration(labelText: "Edição"),
+                decoration: InputDecoration(
+                    labelText:
+                        AppLocalizations.of(context)!.editionTextFieldHint),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
@@ -192,12 +204,12 @@ class RegisterEditBookPage extends HookConsumerWidget {
     String pageNumbMemento = pageNumbController?.text ?? "";
     String genreMemento = genreController?.text ?? "";
     String buyLinkMemento = buyLinkController?.text ?? "";
-    BookFormat? bookFormatMemento = bookFormat?.value ?? BookFormat.HARDCOVER;
+    BookFormat? bookFormatMemento = bookFormat?.value ?? BookFormat.hardcover;
 
     BottomSheet(
       action: (context) => FilledButton(
         onPressed: () => validateAndPop(context, _aditionalInfoFormKey),
-        child: const Text("Salvar"),
+        child: Text(AppLocalizations.of(context)!.saveBottomSheetButton),
       ),
       onClose: () {
         pageNumbController?.text = pageNumbMemento;
@@ -216,30 +228,36 @@ class RegisterEditBookPage extends HookConsumerWidget {
                 style: Theme.of(context).textTheme.bodyMedium,
                 items: [
                   DropdownMenuItem(
-                    value: BookFormat.HARDCOVER,
-                    child: Text(BookFormat.HARDCOVER.name),
+                    value: BookFormat.hardcover,
+                    child: Text(AppLocalizations.of(context)!
+                        .hardcoverRegisterBookFormatOption),
                   ),
                   DropdownMenuItem(
-                    value: BookFormat.HARDBACK,
-                    child: Text(BookFormat.HARDBACK.name),
+                    value: BookFormat.hardback,
+                    child: Text(AppLocalizations.of(context)!
+                        .hardbackRegisterBookFormatOption),
                   ),
                   DropdownMenuItem(
-                    value: BookFormat.PAPERBACK,
-                    child: Text(BookFormat.PAPERBACK.name),
+                    value: BookFormat.paperback,
+                    child: Text(AppLocalizations.of(context)!
+                        .paperbackRegisterBookFormatOption),
                   ),
                   DropdownMenuItem(
-                    value: BookFormat.EBOOK,
-                    child: Text(BookFormat.EBOOK.name),
+                    value: BookFormat.ebook,
+                    child: Text(AppLocalizations.of(context)!
+                        .ebookRegisterBookFormatOption),
                   )
                 ],
                 onChanged: (newValue) =>
-                    bookFormat?.value = newValue ?? BookFormat.HARDCOVER,
+                    bookFormat?.value = newValue ?? BookFormat.hardcover,
               ),
               const SizedBox(height: 15),
               TextFormField(
                 controller: pageNumbController,
                 validator: greaterThanOrEqualTo1,
-                decoration: const InputDecoration(labelText: "N° de páginas"),
+                decoration: InputDecoration(
+                    labelText:
+                        AppLocalizations.of(context)!.pageNumbersTextFieldHint),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
@@ -249,7 +267,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
                 validator: maximumLenght50,
                 maxLength: 50,
                 maxLines: 1,
-                decoration: const InputDecoration(labelText: "Genero"),
+                decoration: InputDecoration(
+                    labelText:
+                        AppLocalizations.of(context)!.genreTextFieldHint),
                 enableSuggestions: true,
                 autocorrect: true,
                 enableIMEPersonalizedLearning: true,
@@ -258,7 +278,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
               TextFormField(
                 controller: buyLinkController,
                 validator: maximumLenght500,
-                decoration: const InputDecoration(labelText: "Link de compra"),
+                decoration: InputDecoration(
+                    labelText:
+                        AppLocalizations.of(context)!.buyLinkTextFieldHint),
                 maxLength: 500,
                 maxLines: 1,
               ),
@@ -290,7 +312,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
         useTextEditingController(text: editBookModel?.publisher);
 
     final bookFormatState =
-        useState<BookFormat>(editBookModel?.format ?? BookFormat.HARDCOVER);
+        useState<BookFormat>(editBookModel?.format ?? BookFormat.hardcover);
     final buyLinkController =
         useTextEditingController(text: editBookModel?.buyLink);
     final genreController =
@@ -311,7 +333,11 @@ class RegisterEditBookPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(!editMode ? "Novo livro" : "Editar livro"),
+        title: Text(
+          !editMode
+              ? AppLocalizations.of(context)!.newBookAppBarTitle
+              : AppLocalizations.of(context)!.editBookAppBarTitle,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -334,7 +360,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
                           )),
                       const SizedBox(height: 5.0),
                       Text(
-                        "Seções que tem \"*\" possuem campos obrigatorios",
+                        AppLocalizations.of(context)!.mandatoryFieldsWarning,
                         style: Theme.of(context)
                             .textTheme
                             .bodySmall!
@@ -346,7 +372,8 @@ class RegisterEditBookPage extends HookConsumerWidget {
                         children: [
                           ListTile(
                             leading: const Icon(Icons.book_rounded),
-                            title: const Text("Informações do livro *"),
+                            title: Text(AppLocalizations.of(context)!
+                                .bookInformationRegisterBookPage),
                             trailing: const Icon(Icons.navigate_next_rounded),
                             onTap: () => _showBookInfoModal(context,
                                 titleController: titleController,
@@ -355,7 +382,8 @@ class RegisterEditBookPage extends HookConsumerWidget {
                           ),
                           ListTile(
                             leading: const Icon(Icons.business_rounded),
-                            title: const Text("Informações da editora"),
+                            title: Text(AppLocalizations.of(context)!
+                                .publisherInformationRegisterBookPage),
                             trailing: const Icon(Icons.navigate_next_rounded),
                             onTap: () => _showPublisherInfoModal(context,
                                 publisherController: publisherController,
@@ -364,7 +392,8 @@ class RegisterEditBookPage extends HookConsumerWidget {
                           ),
                           ListTile(
                             leading: const Icon(Icons.info_rounded),
-                            title: const Text("Informações adicionais"),
+                            title: Text(AppLocalizations.of(context)!
+                                .aditionalInformationRegisterBookPage),
                             trailing: const Icon(Icons.navigate_next_rounded),
                             onTap: () => _showAditionalInfoModal(
                               context,
@@ -376,7 +405,8 @@ class RegisterEditBookPage extends HookConsumerWidget {
                           ),
                           ListTile(
                               leading: const Icon(Icons.text_snippet_rounded),
-                              title: const Text("Sinopse e observação"),
+                              title: Text(AppLocalizations.of(context)!
+                                  .synopsisAndObservationsRegisterBookPage),
                               trailing: const Icon(Icons.navigate_next_rounded),
                               onTap: () async {
                                 final List<String>? observationSynopsisValue =
@@ -397,16 +427,18 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                     observationSynopsisValue[1];
                               }),
                           ListTile(
-                            title: const Text("Lido"),
+                            title: Text(AppLocalizations.of(context)!
+                                .readedRegisterBookPage),
                             trailing: Switch(
                                 value: readedState.value,
                                 onChanged: (newValue) =>
                                     readedState.value = newValue),
                             onTap: () => readedState.value = !readedState.value,
                           ),
-                          const IconText(
+                          IconText(
                             icon: Icons.tag_rounded,
-                            text: "Tags",
+                            text: AppLocalizations.of(context)!
+                                .tagsRegisterBookPage,
                           ),
                           Align(
                             alignment: Alignment.centerRight,
@@ -428,7 +460,8 @@ class RegisterEditBookPage extends HookConsumerWidget {
 
                                 tagController.dispose();
                               },
-                              child: const Text("Adicionar"),
+                              child: Text(AppLocalizations.of(context)!
+                                  .addTagButtonRegisterBookPage),
                             ),
                           ),
                           ChipList(
@@ -441,94 +474,34 @@ class RegisterEditBookPage extends HookConsumerWidget {
                             },
                           ),
                           ElevatedButton(
-                              onPressed: () async {
-                                loadingState.value = true;
-                                final bookController = await ref
-                                    .read(bookControllerProvider.future);
+                            onPressed: () async {
+                              loadingState.value = true;
+                              final bookController =
+                                  await ref.read(bookControllerProvider.future);
 
-                                if (editMode) {
-                                  final updatedBook = EditBookRequest(
-                                    title: titleController.text.isNotEmpty
-                                        ? titleController.text
-                                        : null,
-                                    author: authorController.text.isNotEmpty
-                                        ? authorController.text
-                                        : null,
-                                    isbn: isbnController.text.isNotEmpty
-                                        ? isbnController.text
-                                        : null,
-                                    publicationYear: int.tryParse(
-                                        publishYearController.text),
-                                    publisher:
-                                        publisherController.text.isNotEmpty
-                                            ? publisherController.text
-                                            : null,
-                                    edition:
-                                        int.tryParse(editionController.text),
-                                    pagesNumber:
-                                        int.tryParse(pageNumbController.text),
-                                    genre: genreController.text.isNotEmpty
-                                        ? genreController.text
-                                        : null,
-                                    format: bookFormatState.value.index,
-                                    observation:
-                                        observationController.text.isNotEmpty
-                                            ? observationController.text
-                                            : null,
-                                    synopsis: synopsisController.text.isNotEmpty
-                                        ? synopsisController.text
-                                        : null,
-                                    coverLink:
-                                        coverUrlController.text.isNotEmpty
-                                            ? coverUrlController.text
-                                            : null,
-                                    buyLink: buyLinkController.text.isNotEmpty
-                                        ? buyLinkController.text
-                                        : null,
-                                    readed: readedState.value,
-                                    tags: tagLabelsState.value.isNotEmpty
-                                        ? tagLabelsState.value
-                                        : null,
-                                    lastModification: DateTime.now().toUtc(),
-                                  );
-                                  final bool saveInfos =
-                                      await _showConfirmEditDialog(context);
-                                  if (!saveInfos) return;
-
-                                  final updateResult =
-                                      await bookController.updateBookInfo(
-                                          editBookModel!.id, updatedBook);
-                                  if (!updateResult) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                            "Não foi possível atualizar o livro"),
-                                      ),
-                                    );
-                                    return;
-                                  }
-
-                                  Navigator.pop(context, true);
-                                  return;
-                                }
-
-                                final RegisterBookRequest newBook =
-                                    RegisterBookRequest(
-                                  title: titleController.text,
-                                  author: authorController.text,
-                                  isbn: isbnController.text,
-                                  publisher: publisherController.text.isNotEmpty
-                                      ? publisherController.text
+                              if (editMode) {
+                                final updatedBook = EditBookRequest(
+                                  title: titleController.text.isNotEmpty
+                                      ? titleController.text
+                                      : null,
+                                  author: authorController.text.isNotEmpty
+                                      ? authorController.text
+                                      : null,
+                                  isbn: isbnController.text.isNotEmpty
+                                      ? isbnController.text
                                       : null,
                                   publicationYear:
                                       int.tryParse(publishYearController.text),
+                                  publisher: publisherController.text.isNotEmpty
+                                      ? publisherController.text
+                                      : null,
                                   edition: int.tryParse(editionController.text),
-                                  format: bookFormatState.value.index,
+                                  pagesNumber:
+                                      int.tryParse(pageNumbController.text),
                                   genre: genreController.text.isNotEmpty
                                       ? genreController.text
                                       : null,
-                                  pagesNumber:
-                                      int.tryParse(pageNumbController.text),
+                                  format: bookFormatState.value.index,
                                   observation:
                                       observationController.text.isNotEmpty
                                           ? observationController.text
@@ -536,38 +509,97 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                   synopsis: synopsisController.text.isNotEmpty
                                       ? synopsisController.text
                                       : null,
-                                  readed: readedState.value,
-                                  tags: tagLabelsState.value.isNotEmpty
-                                      ? tagLabelsState.value
-                                      : null,
                                   coverLink: coverUrlController.text.isNotEmpty
                                       ? coverUrlController.text
                                       : null,
                                   buyLink: buyLinkController.text.isNotEmpty
                                       ? buyLinkController.text
                                       : null,
-                                  createdAt: DateTime.now().toUtc(),
+                                  readed: readedState.value,
+                                  tags: tagLabelsState.value.isNotEmpty
+                                      ? tagLabelsState.value
+                                      : null,
                                   lastModification: DateTime.now().toUtc(),
                                 );
+                                final bool saveInfos =
+                                    await _showConfirmEditDialog(context);
+                                if (!saveInfos) return;
 
-                                final bool success = (await bookController
-                                        .registerBook(newBook)) !=
-                                    null;
-
-                                if (!context.mounted) return;
-                                if (!success) {
+                                final updateResult =
+                                    await bookController.updateBookInfo(
+                                        editBookModel!.id, updatedBook);
+                                if (!updateResult) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text("Erro ao registrar livro"),
+                                      content: Text(
+                                          "Não foi possível atualizar o livro"),
                                     ),
                                   );
-                                  loadingState.value = false;
                                   return;
                                 }
 
-                                Navigator.pop(context);
-                              },
-                              child: const Text("Confirmar"))
+                                Navigator.pop(context, true);
+                                return;
+                              }
+
+                              final RegisterBookRequest newBook =
+                                  RegisterBookRequest(
+                                title: titleController.text,
+                                author: authorController.text,
+                                isbn: isbnController.text,
+                                publisher: publisherController.text.isNotEmpty
+                                    ? publisherController.text
+                                    : null,
+                                publicationYear:
+                                    int.tryParse(publishYearController.text),
+                                edition: int.tryParse(editionController.text),
+                                format: bookFormatState.value.index,
+                                genre: genreController.text.isNotEmpty
+                                    ? genreController.text
+                                    : null,
+                                pagesNumber:
+                                    int.tryParse(pageNumbController.text),
+                                observation:
+                                    observationController.text.isNotEmpty
+                                        ? observationController.text
+                                        : null,
+                                synopsis: synopsisController.text.isNotEmpty
+                                    ? synopsisController.text
+                                    : null,
+                                readed: readedState.value,
+                                tags: tagLabelsState.value.isNotEmpty
+                                    ? tagLabelsState.value
+                                    : null,
+                                coverLink: coverUrlController.text.isNotEmpty
+                                    ? coverUrlController.text
+                                    : null,
+                                buyLink: buyLinkController.text.isNotEmpty
+                                    ? buyLinkController.text
+                                    : null,
+                                createdAt: DateTime.now().toUtc(),
+                                lastModification: DateTime.now().toUtc(),
+                              );
+
+                              final bool success = (await bookController
+                                      .registerBook(newBook)) !=
+                                  null;
+
+                              if (!context.mounted) return;
+                              if (!success) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Erro ao registrar livro"),
+                                  ),
+                                );
+                                loadingState.value = false;
+                                return;
+                              }
+
+                              Navigator.pop(context);
+                            },
+                            child: Text(AppLocalizations.of(context)!
+                                .confirmButtonRegisterBookPage),
+                          )
                         ],
                       )
                     ]),

@@ -11,6 +11,7 @@ import 'package:volume_vault/shared/assets/app_images.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/ui_utils/snackbar_utils.dart';
 import 'package:volume_vault/shared/validators/text_field_validator.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SigninUserPage extends HookConsumerWidget {
   final GlobalKey<FormState> _signinFormKey = GlobalKey<FormState>();
@@ -66,7 +67,8 @@ class SigninUserPage extends HookConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "Mantenha seus livros salvos",
+                              AppLocalizations.of(context)!
+                                  .keepYourBooksSafeSigninPage,
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall!
@@ -79,10 +81,11 @@ class SigninUserPage extends HookConsumerWidget {
                                   TextFormField(
                                     controller: usernameController,
                                     validator: minumumLenght3,
-                                    decoration: const InputDecoration(
-                                      label: Text("Usuário"),
+                                    decoration: InputDecoration(
+                                      label: Text(AppLocalizations.of(context)!
+                                          .userTextFieldHint),
                                       filled: true,
-                                      border: UnderlineInputBorder(
+                                      border: const UnderlineInputBorder(
                                           borderSide: BorderSide.none),
                                     ),
                                   ),
@@ -90,10 +93,11 @@ class SigninUserPage extends HookConsumerWidget {
                                   TextFormField(
                                     controller: emailController,
                                     validator: matchEmailRegex,
-                                    decoration: const InputDecoration(
-                                      label: Text("Email"),
+                                    decoration: InputDecoration(
+                                      label: Text(AppLocalizations.of(context)!
+                                          .emailTextFieldHint),
                                       filled: true,
-                                      border: UnderlineInputBorder(
+                                      border: const UnderlineInputBorder(
                                           borderSide: BorderSide.none),
                                     ),
                                   ),
@@ -103,7 +107,8 @@ class SigninUserPage extends HookConsumerWidget {
                                     validator: minumumLenght8AndMaximum18,
                                     obscureText: obscurePassword.value,
                                     decoration: InputDecoration(
-                                      label: const Text("Senha"),
+                                      label: Text(AppLocalizations.of(context)!
+                                          .passwordTextFieldHint),
                                       filled: true,
                                       border: const UnderlineInputBorder(
                                           borderSide: BorderSide.none),
@@ -156,20 +161,26 @@ class SigninUserPage extends HookConsumerWidget {
                                         (_) => false,
                                       );
                                     },
-                                    child: const Text("Registrar-se"),
+                                    child: Text(AppLocalizations.of(context)!
+                                        .signinButtonSigninPage),
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      const Text("Já possui uma conta?"),
+                                      Text(
+                                        AppLocalizations.of(context)!
+                                            .alreadyHaveAccountSigninPage,
+                                      ),
                                       TextButton(
                                         onPressed: () => Navigator.of(context)
                                             .pushNamedAndRemoveUntil(
                                                 AppRoutes.loginPageRoute,
                                                 (_) => false),
-                                        child: const Text("Entre aqui"),
+                                        child: Text(
+                                            AppLocalizations.of(context)!
+                                                .loginButtonSigninPage),
                                       ),
                                     ],
                                   ),

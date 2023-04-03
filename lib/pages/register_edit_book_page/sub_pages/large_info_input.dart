@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:volume_vault/shared/validators/text_field_validator.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LargeInfoInput extends HookWidget {
   final _largeFormKey = GlobalKey<FormState>();
@@ -42,10 +43,12 @@ class LargeInfoInput extends HookWidget {
               child: TextFormField(
                 controller: observationController,
                 expands: true,
-                decoration: const InputDecoration(
-                    labelText: "Observação",
+                decoration: InputDecoration(
+                    labelText:
+                        AppLocalizations.of(context)!.observationsTextFieldHint,
                     filled: true,
-                    border: UnderlineInputBorder(borderSide: BorderSide.none)),
+                    border: const UnderlineInputBorder(
+                        borderSide: BorderSide.none)),
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
               ),
@@ -57,10 +60,12 @@ class LargeInfoInput extends HookWidget {
                 controller: synopsisController,
                 validator: maximumLenght300,
                 expands: true,
-                decoration: const InputDecoration(
-                    labelText: "Sinopse",
+                decoration: InputDecoration(
+                    labelText:
+                        AppLocalizations.of(context)!.synopsisTextFieldHint,
                     filled: true,
-                    border: UnderlineInputBorder(borderSide: BorderSide.none)),
+                    border: const UnderlineInputBorder(
+                        borderSide: BorderSide.none)),
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 maxLength: 300,

@@ -13,6 +13,7 @@ import 'package:volume_vault/shared/widgets/book_showcase.dart';
 import 'package:volume_vault/shared/widgets/chip_list.dart';
 import 'package:volume_vault/shared/widgets/icon_text.dart';
 import 'package:volume_vault/shared/widgets/title_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BookInfoViewerPage extends HookConsumerWidget {
   final BookModel _book;
@@ -184,42 +185,56 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
           const SizedBox(height: 5),
           if (book.synopsis != null)
             TitleCard(
-              title: "Sinopse",
+              title: AppLocalizations.of(context)!.synopsisBookViewerPage,
               content: book.synopsis!,
               expand: true,
             ),
           const SizedBox(height: 5),
-          const IconText(icon: Icons.menu_book_rounded, text: "Informações"),
+          IconText(
+              icon: Icons.menu_book_rounded,
+              text: AppLocalizations.of(context)!.informationsBookViewerPage),
           ListView(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             children: [
-              ListTile(title: const Text("ISBN"), trailing: Text(book.isbn)),
+              ListTile(
+                  title: Text(AppLocalizations.of(context)!.isbnBookViewerPage),
+                  trailing: Text(book.isbn)),
               if (book.publisher != null)
                 ListTile(
-                    title: const Text("Editora"),
+                    title: Text(
+                        AppLocalizations.of(context)!.publisherBookViewerPage),
                     trailing: Text(book.publisher!)),
               if (book.publicationYear != null)
                 ListTile(
-                    title: const Text("Ano de lançamento"),
+                    title: Text(AppLocalizations.of(context)!
+                        .releaseYearBookViewerPage),
                     trailing: Text(book.publicationYear.toString())),
               if (book.format != null)
                 ListTile(
-                    title: const Text("Formato"),
+                    title: Text(
+                        AppLocalizations.of(context)!.formatBookViewerPage),
                     trailing: Text(book.format!.name)),
               if (book.readed != null)
                 ListTile(
-                    title: const Text("Lido"),
-                    trailing:
-                        book.readed! ? const Text("Sim") : const Text("Não")),
+                  title:
+                      Text(AppLocalizations.of(context)!.readedBookViewerPage),
+                  trailing: book.readed!
+                      ? Text(
+                          AppLocalizations.of(context)!.readedYesBookViewerPage)
+                      : Text(
+                          AppLocalizations.of(context)!.readedNoBookViewerPage),
+                ),
               ListTile(
-                title: const Text("Criado em"),
+                title:
+                    Text(AppLocalizations.of(context)!.createdAtBookViewerPage),
                 trailing: Text(
                   dayMonthYearFormat.format(book.createdAt),
                 ),
               ),
               ListTile(
-                title: const Text("Ultima modificação"),
+                title: Text(
+                    AppLocalizations.of(context)!.lastUpdateBookViewerPage),
                 trailing: Text(
                   dayMonthYearFormat.format(book.lastModification),
                 ),
@@ -229,7 +244,7 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
           const SizedBox(height: 5),
           if (book.observation != null)
             TitleCard(
-              title: "Obsevação",
+              title: AppLocalizations.of(context)!.observationsBookViewerPage,
               content: book.observation!,
               expand: true,
             ),
@@ -238,7 +253,9 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const IconText(icon: Icons.tag_rounded, text: "Tags"),
+                IconText(
+                    icon: Icons.tag_rounded,
+                    text: AppLocalizations.of(context)!.tagsBookViewerPage),
                 const SizedBox(height: 5),
                 ChipList(book.tags!.toSet()),
               ],
