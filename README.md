@@ -1,5 +1,8 @@
-# Volume Vault
-Keep your books informations safe and sound.
+<img src="https://github.com/LuanRoger/VolumeVault/blob/main/images/icon.png" align="left" height="110">
+<h1>Volume Vault</h1>
+<h3>Keep your books informations safe and sound.</h3>
+
+[![VolumeVaultInfra CI](https://github.com/LuanRoger/VolumeVault/actions/workflows/VolumeVaultInfra-CI.yml/badge.svg?branch=main)](https://github.com/LuanRoger/VolumeVault/actions/workflows/VolumeVaultInfra-CI.yml)
 
 ## Features
 - 📖 Save your books informations.
@@ -15,6 +18,12 @@ Keep your books informations safe and sound.
 - 🔍 Really fast search with [Meilisearch](https://www.meilisearch.com).
 - 🧱 Very concise micro-service architecture.
 - 🐋 Docker and Docker Compose support.
+
+## Other techs, tools and libs
+- JWT
+- Argon2
+- EntityFramework
+- Postgres
 
 # Front-end client
 The front-end was build with Flutter and have a responsive interface using Responsive Framework package, was created interface for Mobile (480), Tablet (700) and Desktop (1000) screen sizes.
@@ -35,7 +44,7 @@ flutter run --release
 The API was created with ASP.NET and supports Swagger UI for documentation available on [http://localhost:5081](http://localhost:5081).
 
 ### Endpoints
-![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
+[![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)](https://github.com/LuanRoger/VolumeVault/tree/main/postman)
 
 - POST `/auth/signin`
 - POST `/auth/login`
@@ -82,7 +91,7 @@ And to start Meilisearch in development mode you can use:
 ```powershell
 docker run --name meilisearch -p 7700:7700 -e MEILI_ENV="development" -d getmeili/meilisearch
 ```
-Check the Meilisearch's official documentation for more advanced Docker setups [here](https://docs.meilisearch.com/learn/cookbooks/docker.html#download-meilisearch-with-docker).
+Check the [Meilisearch's official documentation](https://docs.meilisearch.com/learn/cookbooks/docker.html#download-meilisearch-with-docker) for more advanced Docker setups.
 
 Don't forget to change the [appsettings.Development.json](https://github.com/LuanRoger/VolumeVault/blob/main/VolumeVaultInfra/VolumeVaultInfra/appsettings.Development.json) file.
 
@@ -124,3 +133,9 @@ docker-compose up -d
 [![DigitalOcean Referral Badge](https://web-platforms.sfo2.digitaloceanspaces.com/WWW/Badge%203.svg)](https://www.digitalocean.com/?refcode=dddd7d890760&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
 
 ## Screenshots
+|                                                                            |
+|----------------------------------------------------------------------------|
+| ![https://github.com/LuanRoger/VolumeVault/blob/main/images/home_page01.png](https://github.com/LuanRoger/VolumeVault/blob/main/images/home_page01.png) |
+| ![https://github.com/LuanRoger/VolumeVault/blob/main/images/home_page03.png](https://github.com/LuanRoger/VolumeVault/blob/main/images/home_page03.png) |
+| ![https://github.com/LuanRoger/VolumeVault/blob/main/images/home_page02.png](https://github.com/LuanRoger/VolumeVault/blob/main/images/home_page02.png) |
+| ![https://github.com/LuanRoger/VolumeVault/blob/main/images/home_page04.png](https://github.com/LuanRoger/VolumeVault/blob/main/images/home_page04.png) |
