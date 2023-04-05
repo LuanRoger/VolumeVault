@@ -25,6 +25,11 @@
 - EntityFramework
 - Postgres
 
+## Prerequisite
+- Flutter
+- Docker
+- Docker Compose
+
 # Front-end client
 The front-end was build with Flutter and have a responsive interface using Responsive Framework package, was created interface for Mobile (480), Tablet (700) and Desktop (1000) screen sizes.
 
