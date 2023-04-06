@@ -38,9 +38,10 @@ class RouteDriver {
   }
 
   static gotoHomePage() => MaterialPageRoute(builder: (_) => const HomePage());
-  static gotoLoginPage() => MaterialPageRoute(builder: (_) => LoginUserPage());
+  static gotoLoginPage() =>
+      MaterialPageRoute(builder: (_) => const LoginUserPage());
   static gotoSigninPage() =>
-      MaterialPageRoute(builder: (_) => SigninUserPage());
+      MaterialPageRoute(builder: (_) => const SigninUserPage());
   static gotoBookInfoViewerPage(BookModel bookModel) =>
       MaterialPageRoute<bool>(builder: (_) => BookInfoViewerPage(bookModel));
   static gotoRegisterEditBookPage({BookModel? bookToEdit}) =>
