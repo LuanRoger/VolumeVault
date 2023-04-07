@@ -37,7 +37,7 @@ class App extends ConsumerWidget {
         defaultScale: true,
         breakpoints: const [
           ResponsiveBreakpoint.resize(480, name: MOBILE),
-          ResponsiveBreakpoint.autoScale(700, name: TABLET),
+          ResponsiveBreakpoint.resize(700, name: TABLET),
           ResponsiveBreakpoint.resize(1000, name: DESKTOP)
         ],
       ),

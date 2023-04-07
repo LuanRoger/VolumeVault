@@ -34,8 +34,10 @@ abstract class HomePageLayoutStrategy {
     final bool token = await checkUserAuthToken(ref) ?? true;
     if (connection && token) return;
 
-    await showErrorDialog(context,
+    if(context.mounted) {
+      await showErrorDialog(context,
         connectionError: connection, authValidationError: token);
+    }
   }
 
   Future<bool?> checkUserAuthToken(WidgetRef ref) async {
