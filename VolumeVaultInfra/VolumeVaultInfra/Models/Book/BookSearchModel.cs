@@ -50,7 +50,7 @@ public class BookSearchModel
         genre = bookModel.genre,
         format = bookModel.format,
         readStatus = bookModel.readStatus,
-        readStartDay = bookModel.readEndDay,
+        readStartDay = bookModel.readStartDay,
         readEndDay = bookModel.readEndDay,
         tags = bookModel.tags,
         createdAt = bookModel.createdAt,

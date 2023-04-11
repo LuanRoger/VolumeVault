@@ -65,7 +65,7 @@ public class BookReadModel
         coverLink = bookModel.coverLink,
         buyLink = bookModel.buyLink,
         readStatus = bookModel.readStatus,
-        readStartDay = bookModel.readEndDay,
+        readStartDay = bookModel.readStartDay,
         readEndDay = bookModel.readEndDay,
         tags = bookModel.tags,
         createdAt = bookModel.createdAt,
