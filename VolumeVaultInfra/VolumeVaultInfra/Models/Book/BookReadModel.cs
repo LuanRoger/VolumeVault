@@ -34,7 +34,11 @@ public class BookReadModel
     
     public string? buyLink { get; init; }
     
-    public bool? readed { get; init; }
+    public ReadStatus? readStatus { get; init; }
+    
+    public DateTime? readStartDay { get; init; }
+    
+    public DateTime? readEndDay { get; init; }
     
     public List<string>? tags { get; init; }
 
@@ -60,7 +64,9 @@ public class BookReadModel
         synopsis = bookModel.synopsis,
         coverLink = bookModel.coverLink,
         buyLink = bookModel.buyLink,
-        readed = bookModel.readed,
+        readStatus = bookModel.readStatus,
+        readStartDay = bookModel.readEndDay,
+        readEndDay = bookModel.readEndDay,
         tags = bookModel.tags,
         createdAt = bookModel.createdAt,
         lastModification = bookModel.lastModification,
