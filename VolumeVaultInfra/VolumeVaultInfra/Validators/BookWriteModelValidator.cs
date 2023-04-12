@@ -56,11 +56,8 @@ public class BookWriteModelValidator : AbstractValidator<BookWriteModel>
             .Null()
             .When(book => book.readStatus is not null && book.readStatus == ReadStatus.NotRead);
         RuleFor(book => book.readEndDay)
-            .GreaterThan(book => book.readStartDay)
+            .GreaterThanOrEqualTo(book => book.readStartDay)
             .When(book => book.readStartDay is not null);
-        RuleFor(book => book.readStatus)
-            .NotEmpty()
-            .When(book => book.readStatus is not null);
         RuleForEach(book => book.tags)
             .NotEmpty()
             .MaximumLength(20)

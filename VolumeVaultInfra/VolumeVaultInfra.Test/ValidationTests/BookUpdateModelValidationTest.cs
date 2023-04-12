@@ -1,6 +1,7 @@
 using FluentValidation;
 using FluentValidation.Results;
 using VolumeVaultInfra.Models.Book;
+using VolumeVaultInfra.Models.Enums;
 using VolumeVaultInfra.Validators;
 
 namespace VolumeVaultInfra.Test.ValidationTests;
@@ -127,7 +128,9 @@ public class BookUpdateModelValidationTest
               genre = "test",
               format = 0,
               observation = "test",
-              readed = false,
+              readStatus = ReadStatus.HasReaded,
+              readStartDay = new DateTime(2023, 1, 1),
+              readEndDay = new DateTime(2023, 1, 7)
           },
           new BookUpdateModel
           {
@@ -141,7 +144,9 @@ public class BookUpdateModelValidationTest
               genre = "test",
               format = 0,
               observation = "test",
-              readed = false,
+              readStatus = ReadStatus.HasReaded,
+              readStartDay = new DateTime(2023, 1, 1),
+              readEndDay = new DateTime(2023, 1, 7),
               tags = new () { "test" }
           }
         };
@@ -171,7 +176,9 @@ public class BookUpdateModelValidationTest
                 genre = "",
                 format = 0,
                 observation = "",
-                readed = true,
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
                 tags = new() { "" }
             },
             //Title
@@ -187,7 +194,9 @@ public class BookUpdateModelValidationTest
                 genre = "test",
                 format = 0,
                 observation = "test",
-                readed = true,
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
                 tags = new() { "test" }
             },
             //Author
@@ -203,7 +212,9 @@ public class BookUpdateModelValidationTest
                 genre = "test",
                 format = 0,
                 observation = "test",
-                readed = true,
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
                 tags = new() { "test" }
             },
             //ISBN
@@ -219,7 +230,9 @@ public class BookUpdateModelValidationTest
                 genre = "test",
                 format = 0,
                 observation = "test",
-                readed = true,
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
                 tags = new() { "test" }
             },
             new BookUpdateModel
@@ -234,7 +247,9 @@ public class BookUpdateModelValidationTest
                 genre = "test",
                 format = 0,
                 observation = "test",
-                readed = true,
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
                 tags = new() { "test" }
             },
             new BookUpdateModel
@@ -249,7 +264,9 @@ public class BookUpdateModelValidationTest
                 genre = "test",
                 format = 0,
                 observation = "test",
-                readed = true,
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
                 tags = new() { "test" }
             },
             //Publication year
@@ -265,7 +282,9 @@ public class BookUpdateModelValidationTest
                 genre = "test",
                 format = 0,
                 observation = "test",
-                readed = true,
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
                 tags = new() { "test" }
             },
             //Publisher
@@ -281,7 +300,9 @@ public class BookUpdateModelValidationTest
                 genre = "test",
                 format = 0,
                 observation = "test",
-                readed = true,
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
                 tags = new() { "test" }
             },
             new BookUpdateModel
@@ -290,13 +311,15 @@ public class BookUpdateModelValidationTest
                 author = "test",
                 isbn = "000-00-0000-000-0",
                 publicationYear = 0,
-                publisher = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                publisher = new string('a', 101),
                 edition = 1,
                 pagesNumber = 1,
                 genre = "test",
                 format = 0,
                 observation = "test",
-                readed = true,
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
                 tags = new() { "test" }
             },
             //Edition
@@ -312,7 +335,9 @@ public class BookUpdateModelValidationTest
                 genre = "test",
                 format = 0,
                 observation = "test",
-                readed = true,
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
                 tags = new() { "test" }
             },
             //Page number
@@ -328,7 +353,9 @@ public class BookUpdateModelValidationTest
                 genre = "test",
                 format = 0,
                 observation = "test",
-                readed = true,
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
                 tags = new() { "test" }
             },
             new BookUpdateModel
@@ -343,7 +370,9 @@ public class BookUpdateModelValidationTest
                 genre = "",
                 format = 0,
                 observation = "test",
-                readed = true,
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
                 tags = new() { "test" }
             },
             //Genre
@@ -359,7 +388,9 @@ public class BookUpdateModelValidationTest
                 genre = new('a', 50),
                 format = 0,
                 observation = "test",
-                readed = true,
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
                 tags = new() { "test" }
             },
             //Observation
@@ -375,8 +406,81 @@ public class BookUpdateModelValidationTest
                 genre = "test",
                 format = 0,
                 observation = "",
-                readed = true,
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
                 tags = new() { "test" }
+            },
+            //ReadStatus/ReadStartDay/ReadEndDay
+            new BookUpdateModel
+            {
+                title = "test",
+                author = "test",
+                isbn = "000-00-0000-000-0",
+                publicationYear = 0,
+                publisher = "test",
+                edition = 1,
+                pagesNumber = 1,
+                genre = "test",
+                format = 0,
+                observation = "test",
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 7),
+                readEndDay = new DateTime(2023, 1, 1),
+                tags = new() { "test" },
+                lastModification = DateTime.Today
+            },
+            new BookUpdateModel
+            {
+                title = "test",
+                author = "test",
+                isbn = "000-00-0000-000-0",
+                publicationYear = 0,
+                publisher = "test",
+                edition = 1,
+                pagesNumber = 1,
+                genre = "test",
+                format = 0,
+                observation = "test",
+                readStatus = ReadStatus.NotRead,
+                readStartDay = new DateTime(2023, 1, 1),
+                tags = new() { "test" },
+                lastModification = DateTime.Today
+            },
+            new BookUpdateModel
+            {
+                title = "test",
+                author = "test",
+                isbn = "000-00-0000-000-0",
+                publicationYear = 0,
+                publisher = "test",
+                edition = 1,
+                pagesNumber = 1,
+                genre = "test",
+                format = 0,
+                observation = "test",
+                readStatus = ReadStatus.NotRead,
+                readEndDay = new DateTime(2023, 1, 7),
+                tags = new() { "test" },
+                lastModification = DateTime.Today
+            },
+            new BookUpdateModel
+            {
+                title = "test",
+                author = "test",
+                isbn = "000-00-0000-000-0",
+                publicationYear = 0,
+                publisher = "test",
+                edition = 1,
+                pagesNumber = 1,
+                genre = "test",
+                format = 0,
+                observation = "test",
+                readStatus = ReadStatus.NotRead,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
+                tags = new() { "test" },
+                lastModification = DateTime.Today,
             },
             //Tags
             new BookUpdateModel
@@ -391,7 +495,9 @@ public class BookUpdateModelValidationTest
                 genre = "test",
                 format = 0,
                 observation = "test",
-                readed = true,
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
                 tags = new() { "" }
             },
             new BookUpdateModel
@@ -406,7 +512,9 @@ public class BookUpdateModelValidationTest
                 genre = "test",
                 format = 0,
                 observation = "test",
-                readed = true,
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
                 tags = new() { "", "" }
             },
             new BookUpdateModel
@@ -421,7 +529,9 @@ public class BookUpdateModelValidationTest
                 genre = "test",
                 format = 0,
                 observation = "test",
-                readed = true,
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
                 tags = new() { "", "", "" }
             }
         };

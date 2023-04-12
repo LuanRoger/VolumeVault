@@ -59,6 +59,9 @@ public class BookUpdateModelValidator : AbstractValidator<BookUpdateModel>
         RuleFor(book => book.readEndDay)
             .Null()
             .When(book => book.readStatus is not null && book.readStatus == ReadStatus.NotRead);
+        RuleFor(book => book.readEndDay)
+            .GreaterThanOrEqualTo(book => book.readStartDay)
+            .When(book => book.readStartDay is not null);
         RuleFor(book => book.readStatus)
             .NotEmpty()
             .When(book => book.readStatus is not null);
