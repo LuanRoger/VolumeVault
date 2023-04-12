@@ -1,5 +1,4 @@
 ﻿using VolumeVaultInfra.Models.Enums;
-// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace VolumeVaultInfra.Models.Book;
 
@@ -23,9 +22,13 @@ public class BookSearchModel
     public string? genre { get; init; }
     
     public BookFormat? format { get; init; }
-
-    public bool? readed { get; init; }
     
+    public ReadStatus? readStatus { get; init; }
+    
+    public DateTime? readStartDay { get; init; }
+    
+    public DateTime? readEndDay { get; init; }
+
     public List<string>? tags { get; init; }
     
     public required DateTime createdAt { get; init; }
@@ -46,7 +49,9 @@ public class BookSearchModel
         pagesNumber = bookModel.pagesNumber,
         genre = bookModel.genre,
         format = bookModel.format,
-        readed = bookModel.readed,
+        readStatus = bookModel.readStatus,
+        readStartDay = bookModel.readStartDay,
+        readEndDay = bookModel.readEndDay,
         tags = bookModel.tags,
         createdAt = bookModel.createdAt,
         lastModification = bookModel.lastModification,

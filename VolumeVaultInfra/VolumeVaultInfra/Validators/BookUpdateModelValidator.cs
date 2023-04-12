@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using VolumeVaultInfra.Models.Book;
+using VolumeVaultInfra.Models.Enums;
 
 namespace VolumeVaultInfra.Validators;
 
@@ -52,9 +53,18 @@ public class BookUpdateModelValidator : AbstractValidator<BookUpdateModel>
             .NotEmpty()
             .MaximumLength(500)
             .When(book => book.buyLink is not null);
-        RuleFor(book => book.readed)
+        RuleFor(book => book.readStartDay)
+            .Null()
+            .When(book => book.readStatus is not null && book.readStatus == ReadStatus.NotRead);
+        RuleFor(book => book.readEndDay)
+            .Null()
+            .When(book => book.readStatus is not null && book.readStatus == ReadStatus.NotRead);
+        RuleFor(book => book.readEndDay)
+            .GreaterThanOrEqualTo(book => book.readStartDay)
+            .When(book => book.readStartDay is not null);
+        RuleFor(book => book.readStatus)
             .NotEmpty()
-            .When(book => book.readed is not null);
+            .When(book => book.readStatus is not null);
         RuleForEach(book => book.tags)
             .NotEmpty()
             .MaximumLength(20)

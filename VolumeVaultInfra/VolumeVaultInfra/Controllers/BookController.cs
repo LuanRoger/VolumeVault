@@ -108,7 +108,9 @@ public class BookController : IBookController
             synopsis = book.synopsis,
             coverLink = book.coverLink,
             buyLink = book.buyLink,
-            readed = book.readed,
+            readStatus = book.readStatus,
+            readStartDay = book.readStartDay,
+            readEndDay = book.readEndDay,
             tags = book.tags,
             createdAt = book.createdAt,
             lastModification = book.lastModification,
@@ -262,9 +264,9 @@ public class BookController : IBookController
             book.buyLink = bookUpdate.buyLink;
             hasBeenModified = true;
         }
-        if(bookUpdate.readed is not null)
+        if(bookUpdate.readStatus is not null)
         {
-            book.readed = bookUpdate.readed;
+            book.readStatus = bookUpdate.readStatus;
             hasBeenModified = true;
         }
         if(bookUpdate.tags is not null)

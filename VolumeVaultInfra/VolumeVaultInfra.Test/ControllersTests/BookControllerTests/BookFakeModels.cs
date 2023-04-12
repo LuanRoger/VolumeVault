@@ -18,7 +18,9 @@ internal static class BookFakeModels
         genre = "test",
         format = 0,
         observation = "test",
-        readed = true,
+        readStatus = ReadStatus.HasReaded,
+        readStartDay = new DateTime(2023, 1, 1),
+        readEndDay = new DateTime(2023, 1, 7),
         tags = new() { "test" },
         createdAt = DateTime.Today,
         lastModification = DateTime.Today,
@@ -42,7 +44,9 @@ internal static class BookFakeModels
         genre = "test",
         format = 0,
         observation = "test",
-        readed = true,
+        readStatus = ReadStatus.HasReaded,
+        readStartDay = new DateTime(2023, 1, 1),
+        readEndDay = new DateTime(2023, 1, 7),
         tags = new()
         {
             "test"
@@ -65,7 +69,7 @@ internal static class BookFakeModels
         synopsis = "changed",
         coverLink = "changed",
         buyLink = "changed",
-        readed = false,
+        readStatus = ReadStatus.NotRead,
         tags = new() { "changed", "changed" },
         lastModification = DateTime.Now
     };

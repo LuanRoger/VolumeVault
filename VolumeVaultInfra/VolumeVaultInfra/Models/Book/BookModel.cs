@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.InteropServices.JavaScript;
 using VolumeVaultInfra.Models.Enums;
 using VolumeVaultInfra.Models.User;
 
@@ -61,7 +62,13 @@ public class BookModel
     public string? buyLink { get; set; }
     
     [Column("Readed")]
-    public bool? readed { get; set; }
+    public ReadStatus? readStatus { get; set; }
+    
+    [Column("ReadStartDay")]
+    public DateTime? readStartDay { get; set; }
+    
+    [Column("ReadEndDay")]
+    public DateTime? readEndDay { get; set; }
     
     [Column("Tags")]
     public List<string>? tags { get; set; }

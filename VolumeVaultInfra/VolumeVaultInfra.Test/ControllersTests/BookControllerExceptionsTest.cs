@@ -47,7 +47,9 @@ public class BookControllerExceptionsTest
         synopsis = "test",
         coverLink = "test",
         buyLink = "test",
-        readed = true,
+        readStatus = ReadStatus.HasReaded,
+        readStartDay = new DateTime(2023, 1, 1),
+        readEndDay = new DateTime(2023, 1, 7),
         tags = new() { "test" },
         createdAt = DateTime.Today,
         lastModification = DateTime.Today,
@@ -74,7 +76,9 @@ public class BookControllerExceptionsTest
         synopsis = "test",
         coverLink = "test",
         buyLink = "test",
-        readed = true,
+        readStatus = ReadStatus.HasReaded,
+        readStartDay = new DateTime(2023, 1, 1),
+        readEndDay = new DateTime(2023, 1, 7),
         tags = new() { "test" },
         lastModification = DateTime.Today,
         createdAt = DateTime.Today
@@ -94,7 +98,9 @@ public class BookControllerExceptionsTest
         synopsis = "test",
         coverLink = "test",
         buyLink = "test",
-        readed = true,
+        readStatus = ReadStatus.HasReaded,
+        readStartDay = new DateTime(2023, 1, 1),
+        readEndDay = new DateTime(2023, 1, 7),
         tags = new() { "test" },
         lastModification = DateTime.Today,
         createdAt = DateTime.Today
@@ -114,7 +120,7 @@ public class BookControllerExceptionsTest
         synopsis = "test",
         coverLink = "test",
         buyLink = "test",
-        readed = false,
+        readStatus = ReadStatus.NotRead,
         tags = new() { "changed", "changed" }
     };
     private static BookUpdateModel invalidBookUpdateModelTestDumy => new()
@@ -132,7 +138,7 @@ public class BookControllerExceptionsTest
         synopsis = "changed",
         coverLink = "changed",
         buyLink = "changed",
-        readed = false,
+        readStatus = ReadStatus.NotRead,
         tags = new() { "changed", "changed" }
     };
     private static UserModel userModelTestDumy => new()

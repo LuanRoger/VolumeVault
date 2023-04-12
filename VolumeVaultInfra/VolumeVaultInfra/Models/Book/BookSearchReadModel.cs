@@ -24,9 +24,13 @@ public class BookSearchReadModel
     public string? genre { get; init; }
     
     public BookFormat? format { get; init; }
-
-    public bool? readed { get; init; }
     
+    public ReadStatus? readStatus { get; init; }
+    
+    public DateTime? readStartDay { get; init; }
+    
+    public DateTime? readEndDay { get; init; }
+
     public List<string>? tags { get; init; }
     
     public required DateTime createdAt { get; init; }
@@ -47,7 +51,9 @@ public class BookSearchReadModel
         pagesNumber = bookSearchModel.pagesNumber,
         genre = bookSearchModel.genre,
         format = bookSearchModel.format,
-        readed = bookSearchModel.readed,
+        readStatus = bookSearchModel.readStatus,
+        readStartDay = bookSearchModel.readEndDay,
+        readEndDay = bookSearchModel.readEndDay,
         tags = bookSearchModel.tags,
         createdAt = bookSearchModel.createdAt,
         lastModification = bookSearchModel.lastModification,

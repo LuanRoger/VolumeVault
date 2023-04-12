@@ -30,7 +30,11 @@ public class BookUpdateModel
     
     public string? buyLink { get; init; }
     
-    public bool? readed { get; init; }
+    public ReadStatus? readStatus { get; init; }
+    
+    public DateTime? readStartDay { get; init; }
+    
+    public DateTime? readEndDay { get; init; }
     
     public List<string>? tags { get; init; }
     

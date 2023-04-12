@@ -1,4 +1,5 @@
 using VolumeVaultInfra.Models.Book;
+using VolumeVaultInfra.Models.Enums;
 
 namespace VolumeVaultInfra.Test.ControllersTests.BookControllerTests;
 
@@ -20,7 +21,9 @@ internal static class BookFakeGenerators
                 genre = "test",
                 format = 0,
                 observation = "test",
-                readed = true,
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
                 tags = new() { "test" },
                 createdAt = DateTime.Today,
                 lastModification = DateTime.Today,
@@ -48,7 +51,9 @@ internal static class BookFakeGenerators
                 pagesNumber = 1,
                 genre = "test",
                 format = 0,
-                readed = true,
+                readStatus = ReadStatus.HasReaded,
+                readStartDay = new DateTime(2023, 1, 1),
+                readEndDay = new DateTime(2023, 1, 7),
                 tags = new() { "test" },
                 createdAt = DateTime.Today,
                 lastModification = DateTime.Today,
@@ -73,7 +78,7 @@ internal static class BookFakeGenerators
                 pagesNumber = 1,
                 genre = "test",
                 format = 0,
-                readed = true,
+                readStatus = ReadStatus.NotRead,
                 tags = new() { "test" },
                 createdAt = DateTime.Today,
                 lastModification = DateTime.Today,

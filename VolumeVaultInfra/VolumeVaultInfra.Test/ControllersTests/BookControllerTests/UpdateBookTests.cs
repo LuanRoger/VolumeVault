@@ -54,7 +54,7 @@ public class UpdateBookTests
         Assert.Equal(book.genre, bookUpdate.genre);
         Assert.Equal(book.format, bookUpdate.format);
         Assert.Equal(book.observation, bookUpdate.observation);
-        Assert.Equal(book.readed, bookUpdate.readed);
+        Assert.Equal(book.readStatus, bookUpdate.readStatus);
         Assert.Equal(book.tags, bookUpdate.tags);
         Assert.Equal(book.lastModification, bookUpdate.lastModification);
     }
@@ -86,7 +86,7 @@ public class UpdateBookTests
         Assert.NotEqual(book.genre, bookUpdate.genre);
         Assert.NotEqual(book.format, bookUpdate.format);
         Assert.NotEqual(book.observation, bookUpdate.observation);
-        Assert.NotEqual(book.readed, bookUpdate.readed);
+        Assert.NotEqual(book.readStatus, bookUpdate.readStatus);
         Assert.NotEqual(book.tags, bookUpdate.tags);
         Assert.NotEqual(book.lastModification, bookUpdate.lastModification);
     }
