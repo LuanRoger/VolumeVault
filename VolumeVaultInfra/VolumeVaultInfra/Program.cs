@@ -94,18 +94,11 @@ builder.Services.AddSingleton<JwtService>(_ =>
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
-/*builder.Services.AddScoped<IBookSearchRepository, BookSearchRepository>(provider =>
-{
-    string? secundaryDbName = EnvironmentVariables.GetVvMongoDbName();
-    if(secundaryDbName is null)
-        throw new EnvironmentVariableNotProvidedException(EnvVariableConsts.VV_MONGO_DB_NAME);
-    
-    return new(provider.GetRequiredService<IMongoClient>(), secundaryDbName);
-});*/
-builder.Services.AddScoped<IBookSearchRepository, BookSearchRepository>(provider => 
-    new(provider.GetRequiredService<MeilisearchClient>()));
+builder.Services.AddScoped<IStatsRepository, StatsRepository>();
+builder.Services.AddScoped<IBookSearchRepository, BookSearchRepository>();
 builder.Services.AddScoped<IUserController, UserController>();
 builder.Services.AddScoped<IBookController, BookController>();
+builder.Services.AddScoped<IStatsController, StatsController>();
 builder.Services.AddScoped<IBookControllerMetrics, BookControllerMetrics>();
 builder.Services.AddScoped<IUserControllerMetrics, UserControllerMetrics>();
 #endregion
@@ -182,28 +175,28 @@ app.UseEndpoints(endpointOptions => endpointOptions.MapMetrics());
 #pragma warning restore ASP0014
 #endregion
 
-#region UserEndpoint
 // The user endpoint use the API Key filter to authenticate, this is to eliminate anonymous request.
 // Just validate requests from trusted clients.
 RouteGroupBuilder authGroup = app.MapGroup("auth")
     .WithTags("auth")
     .AddEndpointFilter<ApiKeyFilter>();
 authGroup.MapAuthEndpoints();
-#endregion
 
-#region BooksEndpoint
 RouteGroupBuilder bookGroup = app.MapGroup("book")
     .WithTags("book")
     .AddEndpointFilter<ApiKeyFilter>()
     .RequireAuthorization(PolicyAuthDelegateTemplates.JWTRequiredIdClaimPolicy);
 bookGroup.MapBookEndpoints();
-#endregion
 
-#region UtilsEndpoint
+RouteGroupBuilder statsGroup = app.MapGroup("stats")
+    .WithTags("stats")
+    .AddEndpointFilter<ApiKeyFilter>()
+    .RequireAuthorization(PolicyAuthDelegateTemplates.JWTRequiredIdClaimPolicy);
+statsGroup.MapStatsEndpoints();
+
 RouteGroupBuilder utilsGroup = app.MapGroup("utils")
     .WithTags("utils")
     .AddEndpointFilter<ApiKeyFilter>();
 utilsGroup.MapUtilsEndpoints();
-#endregion
 
 app.Run();
