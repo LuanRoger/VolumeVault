@@ -14,6 +14,7 @@ public class BookSearchRepository : IBookSearchRepository
     public BookSearchRepository(MeilisearchClient client)
     {
         _client = client;
+        
         bookSearchIndex = _client.Index("book");
     }
     
@@ -23,7 +24,9 @@ public class BookSearchRepository : IBookSearchRepository
         Settings bookIndexSettings = new()
         {
             FilterableAttributes = new[] { "ownerId" },
-            SortableAttributes = new[] { "title", "author", "publicationYear", "readed" }
+            SortableAttributes = new[] { "title", "author", "publicationYear", "readed" },
+            SearchableAttributes = new[] { "title", "author", "isbn", "publicationYear", "publisher", "edition",
+                "pagesNumber", "genre", "tags" }
         };
         await bookSearchIndex.UpdateSettingsAsync(bookIndexSettings);
     }
