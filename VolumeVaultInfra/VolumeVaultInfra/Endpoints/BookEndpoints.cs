@@ -19,7 +19,7 @@ internal static class BookEndpoints
                 int idClaim = int.Parse(context.User.Claims
                     .First(claim => claim.Type == "ID").Value);
 
-                IReadOnlyList<BookReadModel> userBooks;
+                BookUserRelatedReadModel userBooks;
                 try
                 {
                     userBooks = await bookController
