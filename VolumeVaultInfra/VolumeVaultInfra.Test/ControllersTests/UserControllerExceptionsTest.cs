@@ -104,4 +104,14 @@ public class UserControllerExceptionsTest
         
         await Assert.ThrowsAsync<InvalidUserCredentialsException>(() => _userController.LoginUser(loginRequest));
     }
+    
+    [Fact]
+    public async void GetNonExitingUserInfo()
+    {
+        _userRepositoryMock.Setup(ex => 
+                ex.GetUserById(It.IsAny<int>()))
+            .ReturnsAsync(() => null);
+        
+        await Assert.ThrowsAsync<UserIdIsNotRegisteredException>(() => _userController.GetUserInfo(1));
+    }
 }
