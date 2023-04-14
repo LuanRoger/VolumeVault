@@ -20,8 +20,8 @@ class BookController {
   Future<UserBookResult> fetcherBooks(GetUserBookRequest request) async {
     if (_service == null) return UserBookResult.empty();
 
-    UserBookResult userBookResult = await _service!.getUserBook(request);
-    return userBookResult;
+    UserBookResult? userBookResult = await _service!.getUserBook(request);
+    return userBookResult ?? UserBookResult.empty();
   }
 
   //Return the dialog result and operation result
@@ -34,7 +34,9 @@ class BookController {
   Future<UserBookResult> getUserBooks(GetUserBookRequest request) async {
     if (_service == null) return UserBookResult.empty();
 
-    return await _service!.getUserBook(request);
+    UserBookResult? userBookResult = await _service!.getUserBook(request);
+
+    return userBookResult ?? UserBookResult.empty();
   }
 
   Future<BookModel?> getBookInfoById(int bookId) async {

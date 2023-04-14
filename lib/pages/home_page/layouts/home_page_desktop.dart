@@ -17,9 +17,6 @@ class HomePageDesktop extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final checkoutMemoize = useMemoized(() => _commands.checkout(context, ref));
-    final checkout = useFuture(checkoutMemoize);
-
     final fetcherListController =
         usePagingController<int, BookModel>(firstPageKey: 1);
 
@@ -29,11 +26,7 @@ class HomePageDesktop extends HookConsumerWidget {
     );
 
     return Scaffold(
-      body: checkout.connectionState == ConnectionState.waiting
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : Row(
+      body: Row(
               children: [
                 Flexible(
                   flex: 0,

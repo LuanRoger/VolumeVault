@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:volume_vault/models/enums/authorization_status.dart';
-import 'package:volume_vault/providers/providers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 abstract class HomePageLayoutStrategy {
@@ -27,33 +24,5 @@ abstract class HomePageLayoutStrategy {
         ],
       ),
     );
-  }
-
-  Future<void> checkout(BuildContext context, WidgetRef ref) async {
-    final bool connection = await checkConnection(ref);
-    final bool token = await checkUserAuthToken(ref) ?? true;
-    if (connection && token) return;
-
-    if(context.mounted) {
-      await showErrorDialog(context,
-        connectionError: connection, authValidationError: token);
-    }
-  }
-
-  Future<bool?> checkUserAuthToken(WidgetRef ref) async {
-    final utilsController = await ref.read(utilsControllerProvider.future);
-    final userSession = await ref.read(userSessionNotifierProvider.future);
-    if (userSession.token.isEmpty) return null;
-
-    final result =
-        await utilsController.checkAuthorizationStatus(userSession.token);
-
-    return result == AuthorizationStatus.authorized;
-  }
-
-  Future<bool> checkConnection(WidgetRef ref) async {
-    final utilsController = await ref.read(utilsControllerProvider.future);
-
-    return await utilsController.ping();
   }
 }
