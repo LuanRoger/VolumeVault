@@ -134,6 +134,7 @@ class SigninUserPageMobile extends HookConsumerWidget {
                                             context,
                                             authResultStatus: signinResult);
                                         isLoadingState.value = false;
+                                        return;
                                       }
 
                                       Navigator.pushNamedAndRemoveUntil(
