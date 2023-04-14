@@ -39,17 +39,20 @@ public class GetBookTests
     public async void GetBookFromUserTest(int page, int limitPerPage)
     {
         UserModel user = UserFakeModels.userTestDumy;
-        _userRepository.Setup(ex => ex.GetUserById(It.IsAny<int>()))
+        List<BookModel> dumyBooks = BookFakeGenerators.GenerateDumyBooks(limitPerPage).ToList();
+        _userRepository.Setup(ex => ex.GetUserById(user.id))
             .ReturnsAsync(user);
         _bookRepository.Setup(ex => 
             ex.GetUserOwnedBooksSplited(user.id, page, limitPerPage))
-            .ReturnsAsync(BookFakeGenerators.GenerateDumyBooks(limitPerPage).ToList);
+            .ReturnsAsync(dumyBooks);
         
-        var books = await _bookController
+        BookUserRelatedReadModel booksResult = await _bookController
             .GetAllUserReleatedBooks(user.id, page, limitPerPage);
         
-        Assert.Equal(limitPerPage, books.Count);
+        Assert.Equal(page, booksResult.page);
+        Assert.Equal(limitPerPage, booksResult.limitPerPage);
     }
+    
     [Fact]
     public async void GetUserBooksGenres()
     {
