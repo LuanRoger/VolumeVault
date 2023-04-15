@@ -2,9 +2,12 @@ import 'package:flutter/material.dart' hide BottomSheet;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:volume_vault/l10n/l10n.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/enums/book_format.dart';
+import 'package:volume_vault/models/enums/read_status.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/edit_book_request.dart';
 import 'package:volume_vault/services/models/register_book_request.dart';
@@ -13,9 +16,11 @@ import 'package:volume_vault/shared/validators/text_field_validator.dart';
 import 'package:volume_vault/shared/widgets/book_image_viewer.dart';
 import 'package:volume_vault/shared/widgets/bottom_sheet.dart';
 import 'package:volume_vault/shared/widgets/chip_list.dart';
+import 'package:volume_vault/shared/widgets/date_text_field.dart';
 import 'package:volume_vault/shared/widgets/dialogs/input_dialog.dart';
 import 'package:volume_vault/shared/widgets/icon_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:volume_vault/shared/widgets/radio_text.dart';
 
 class RegisterEditBookPage extends HookConsumerWidget {
   ///If this model is not null, the page enter in edit mode.
@@ -325,7 +330,11 @@ class RegisterEditBookPage extends HookConsumerWidget {
     final synopsisController =
         useTextEditingController(text: editBookModel?.synopsis);
 
-    final readedState = useState(false);
+    final readState = useState<ReadStatus>(ReadStatus.not_read);
+    final readStartDay = useState<DateTime?>(null);
+    final readStartDayController = useTextEditingController();
+    final readEndDay = useState<DateTime?>(null);
+    final readEndDayController = useTextEditingController();
     final tagLabelsState = useState<Set<String>>(editBookModel?.tags ?? {});
     final editMode = editBookModel != null;
 
@@ -426,14 +435,108 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                 synopsisController.text =
                                     observationSynopsisValue[1];
                               }),
-                          ListTile(
-                            title: Text(AppLocalizations.of(context)!
-                                .readedRegisterBookPage),
-                            trailing: Switch(
-                                value: readedState.value,
-                                onChanged: (newValue) =>
-                                    readedState.value = newValue),
-                            onTap: () => readedState.value = !readedState.value,
+                          Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Status de leitura",
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      RadioText(
+                                        text: "Não lido",
+                                        value: ReadStatus.not_read,
+                                        groupValue: readState.value,
+                                        onChanged: (_) => readState.value =
+                                            ReadStatus.not_read,
+                                      ),
+                                      RadioText(
+                                        text: "Lendo",
+                                        value: ReadStatus.reading,
+                                        groupValue: readState.value,
+                                        onChanged: (_) => readState.value =
+                                            ReadStatus.reading,
+                                      ),
+                                      RadioText(
+                                        text: "Lido",
+                                        value: ReadStatus.has_read,
+                                        groupValue: readState.value,
+                                        onChanged: (_) => readState.value =
+                                            ReadStatus.has_read,
+                                      )
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      if (readState.value ==
+                                              ReadStatus.reading ||
+                                          readState.value ==
+                                              ReadStatus.has_read)
+                                        Expanded(
+                                          flex: 10,
+                                          child: DateTextField(
+                                            label: "Data de início",
+                                            controller: readStartDayController,
+                                            onDateSelected: (newDate) {
+                                              final localizationPreferences =
+                                                  ref.read(
+                                                      localizationPreferencesStateProvider);
+
+                                              readStartDay.value = newDate;
+                                              readStartDayController.text =
+                                                  L10n.formatDateByLocale(
+                                                      localizationPreferences
+                                                          .localization,
+                                                      newDate);
+                                            },
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime(1900),
+                                            lastDate: DateTime.now(),
+                                          ),
+                                        ),
+                                      if (readState.value ==
+                                          ReadStatus.has_read)
+                                        const Spacer(),
+                                      if (readState.value ==
+                                          ReadStatus.has_read)
+                                        Expanded(
+                                          flex: 10,
+                                          child: DateTextField(
+                                            label: "Data de término",
+                                            controller: readEndDayController,
+                                            onDateSelected: (newDate) {
+                                              final localizationPreferences =
+                                                  ref.read(
+                                                      localizationPreferencesStateProvider);
+
+                                              readEndDay.value = newDate;
+                                              readEndDayController.text =
+                                                  L10n.formatDateByLocale(
+                                                      localizationPreferences
+                                                          .localization,
+                                                      newDate);
+                                            },
+                                            initialDate: DateTime.now(),
+                                            firstDate: readStartDay.value ??
+                                                DateTime.now(),
+                                            lastDate: DateTime.now(),
+                                          ),
+                                        )
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
                           ),
                           IconText(
                             icon: Icons.tag_rounded,
@@ -515,7 +618,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                   buyLink: buyLinkController.text.isNotEmpty
                                       ? buyLinkController.text
                                       : null,
-                                  readed: readedState.value,
+                                  readed: true,
                                   tags: tagLabelsState.value.isNotEmpty
                                       ? tagLabelsState.value
                                       : null,
@@ -566,7 +669,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                 synopsis: synopsisController.text.isNotEmpty
                                     ? synopsisController.text
                                     : null,
-                                readed: readedState.value,
+                                readed: true,
                                 tags: tagLabelsState.value.isNotEmpty
                                     ? tagLabelsState.value
                                     : null,
