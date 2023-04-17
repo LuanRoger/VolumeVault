@@ -1,3 +1,5 @@
+import 'package:volume_vault/models/enums/read_status.dart';
+
 class EditBookRequest {
   String? title;
   String? author;
@@ -12,7 +14,9 @@ class EditBookRequest {
   String? synopsis;
   String? coverLink;
   String? buyLink;
-  bool? readed;
+  ReadStatus? readStatus;
+  DateTime? readStartDay;
+  DateTime? readEndDay;
   Set<String>? tags;
   DateTime lastModification;
 
@@ -30,7 +34,9 @@ class EditBookRequest {
     this.synopsis,
     this.coverLink,
     this.buyLink,
-    this.readed,
+    this.readStatus,
+    this.readStartDay,
+    this.readEndDay,
     this.tags,
     required this.lastModification,
   });
@@ -50,7 +56,9 @@ class EditBookRequest {
         "coverLink": coverLink,
         "buyLink": buyLink,
         "tags": tags?.toList(),
-        "readed": readed,
+        "readStatus": readStatus?.index,
+        "readStartDay": readStartDay?.toIso8601String(),
+        "readEndDay": readEndDay?.toIso8601String(),
         "lastModification": lastModification.toIso8601String(),
       };
 }

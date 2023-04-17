@@ -1,3 +1,5 @@
+import 'package:volume_vault/models/enums/read_status.dart';
+
 class RegisterBookRequest {
   String title;
   String author;
@@ -12,7 +14,9 @@ class RegisterBookRequest {
   String? synopsis;
   String? coverLink;
   String? buyLink;
-  bool? readed;
+  ReadStatus? readStatus;
+  DateTime? readStartDay;
+  DateTime? readEndDay;
   Set<String>? tags;
   DateTime createdAt;
   DateTime lastModification;
@@ -31,7 +35,9 @@ class RegisterBookRequest {
     this.synopsis,
     this.coverLink,
     this.buyLink,
-    this.readed,
+    this.readStatus,
+    this.readStartDay,
+    this.readEndDay,
     this.tags,
     required this.createdAt,
     required this.lastModification,
@@ -51,7 +57,9 @@ class RegisterBookRequest {
         if (synopsis != null) "synopsis": synopsis,
         if (coverLink != null) "coverLink": coverLink,
         if (buyLink != null) "buyLink": buyLink,
-        "readed": readed ?? false,
+        if (readStatus != null) "readStatus": readStatus!.index,
+        if (readStartDay != null) "readStartDay": readStartDay!.toIso8601String(),
+        if (readEndDay != null) "readEndDay": readEndDay!.toIso8601String(),
         if (tags != null) "tags": tags!.toList(),
         "createdAt": createdAt.toIso8601String(),
         "lastModification": lastModification.toIso8601String(),
