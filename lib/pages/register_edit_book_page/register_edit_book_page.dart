@@ -2,7 +2,6 @@ import 'package:flutter/material.dart' hide BottomSheet;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:volume_vault/l10n/l10n.dart';
 import 'package:volume_vault/models/book_model.dart';
@@ -298,6 +297,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final localizationPreferences =
+        ref.read(localizationPreferencesStateProvider);
+
     final coverUrlController =
         useTextEditingController(text: editBookModel?.coverLink);
     // ignore: unused_local_variable
@@ -330,11 +332,20 @@ class RegisterEditBookPage extends HookConsumerWidget {
     final synopsisController =
         useTextEditingController(text: editBookModel?.synopsis);
 
-    final readState = useState<ReadStatus>(ReadStatus.not_read);
-    final readStartDay = useState<DateTime?>(null);
-    final readStartDayController = useTextEditingController();
-    final readEndDay = useState<DateTime?>(null);
-    final readEndDayController = useTextEditingController();
+    final readState =
+        useState<ReadStatus>(editBookModel?.readStatus ?? ReadStatus.notRead);
+    final readStartDay = useState<DateTime?>(editBookModel?.readStartDay);
+    final readStartDayController = useTextEditingController(
+        text: editBookModel?.readStartDay != null
+            ? L10n.formatDateByLocale(localizationPreferences.localization,
+                editBookModel!.readStartDay!)
+            : null);
+    final readEndDay = useState<DateTime?>(editBookModel?.readEndDay);
+    final readEndDayController = useTextEditingController(
+        text: editBookModel?.readEndDay != null
+            ? L10n.formatDateByLocale(localizationPreferences.localization,
+                editBookModel!.readEndDay!)
+            : null);
     final tagLabelsState = useState<Set<String>>(editBookModel?.tags ?? {});
     final editMode = editBookModel != null;
 
@@ -453,10 +464,10 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                     children: [
                                       RadioText(
                                         text: "Não lido",
-                                        value: ReadStatus.not_read,
+                                        value: ReadStatus.notRead,
                                         groupValue: readState.value,
                                         onChanged: (_) => readState.value =
-                                            ReadStatus.not_read,
+                                            ReadStatus.notRead,
                                       ),
                                       RadioText(
                                         text: "Lendo",
@@ -467,10 +478,10 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                       ),
                                       RadioText(
                                         text: "Lido",
-                                        value: ReadStatus.has_read,
+                                        value: ReadStatus.hasRead,
                                         groupValue: readState.value,
                                         onChanged: (_) => readState.value =
-                                            ReadStatus.has_read,
+                                            ReadStatus.hasRead,
                                       )
                                     ],
                                   ),
@@ -480,8 +491,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                     children: [
                                       if (readState.value ==
                                               ReadStatus.reading ||
-                                          readState.value ==
-                                              ReadStatus.has_read)
+                                          readState.value == ReadStatus.hasRead)
                                         Expanded(
                                           flex: 10,
                                           child: DateTextField(
@@ -504,21 +514,15 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                             lastDate: DateTime.now(),
                                           ),
                                         ),
-                                      if (readState.value ==
-                                          ReadStatus.has_read)
+                                      if (readState.value == ReadStatus.hasRead)
                                         const Spacer(),
-                                      if (readState.value ==
-                                          ReadStatus.has_read)
+                                      if (readState.value == ReadStatus.hasRead)
                                         Expanded(
                                           flex: 10,
                                           child: DateTextField(
                                             label: "Data de término",
                                             controller: readEndDayController,
                                             onDateSelected: (newDate) {
-                                              final localizationPreferences =
-                                                  ref.read(
-                                                      localizationPreferencesStateProvider);
-
                                               readEndDay.value = newDate;
                                               readEndDayController.text =
                                                   L10n.formatDateByLocale(
@@ -618,7 +622,16 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                   buyLink: buyLinkController.text.isNotEmpty
                                       ? buyLinkController.text
                                       : null,
-                                  readed: true,
+                                  readStatus: readState.value,
+                                  readStartDay: readState.value ==
+                                              ReadStatus.reading ||
+                                          readState.value == ReadStatus.hasRead
+                                      ? readStartDay.value?.toUtc()
+                                      : null,
+                                  readEndDay:
+                                      readState.value == ReadStatus.hasRead
+                                          ? readEndDay.value?.toUtc()
+                                          : null,
                                   tags: tagLabelsState.value.isNotEmpty
                                       ? tagLabelsState.value
                                       : null,
@@ -669,7 +682,16 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                 synopsis: synopsisController.text.isNotEmpty
                                     ? synopsisController.text
                                     : null,
-                                readed: true,
+                                readStatus: readState.value,
+                                readStartDay: readState.value ==
+                                            ReadStatus.reading ||
+                                        readState.value == ReadStatus.hasRead
+                                    ? readStartDay.value
+                                    : null,
+                                readEndDay:
+                                    readState.value == ReadStatus.hasRead
+                                        ? readEndDay.value
+                                        : null,
                                 tags: tagLabelsState.value.isNotEmpty
                                     ? tagLabelsState.value
                                     : null,

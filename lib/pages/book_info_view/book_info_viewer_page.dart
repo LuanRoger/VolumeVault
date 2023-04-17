@@ -12,6 +12,7 @@ import 'package:volume_vault/shared/utils/image_utils.dart';
 import 'package:volume_vault/shared/widgets/book_showcase.dart';
 import 'package:volume_vault/shared/widgets/chip_list.dart';
 import 'package:volume_vault/shared/widgets/icon_text.dart';
+import 'package:volume_vault/shared/widgets/read_progress.dart';
 import 'package:volume_vault/shared/widgets/title_card.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -215,16 +216,6 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
                     title: Text(
                         AppLocalizations.of(context)!.formatBookViewerPage),
                     trailing: Text(book.format!.name)),
-              if (book.readed != null)
-                ListTile(
-                  title:
-                      Text(AppLocalizations.of(context)!.readedBookViewerPage),
-                  trailing: book.readed!
-                      ? Text(
-                          AppLocalizations.of(context)!.readedYesBookViewerPage)
-                      : Text(
-                          AppLocalizations.of(context)!.readedNoBookViewerPage),
-                ),
               ListTile(
                 title:
                     Text(AppLocalizations.of(context)!.createdAtBookViewerPage),
@@ -241,6 +232,18 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
               ),
             ],
           ),
+          const SizedBox(height: 5),
+          if (book.readStatus != null)
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ReadProgress(
+                  readStatus: book.readStatus!,
+                  readStartDay: book.readStartDay,
+                  readEndDay: book.readEndDay,
+                ),
+              ),
+            ),
           const SizedBox(height: 5),
           if (book.observation != null)
             TitleCard(
