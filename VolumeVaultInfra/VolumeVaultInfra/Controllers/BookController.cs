@@ -277,6 +277,16 @@ public class BookController : IBookController
             book.readStatus = bookUpdate.readStatus;
             hasBeenModified = true;
         }
+        if(bookUpdate.readStartDay is not null)
+        {
+            book.readStartDay = bookUpdate.readStartDay;
+            hasBeenModified = true;
+        }
+        if(bookUpdate.readEndDay is not null)
+        {
+            book.readEndDay = bookUpdate.readEndDay;
+            hasBeenModified = true;
+        }
         if(bookUpdate.tags is not null)
         {
             book.tags = bookUpdate.tags;
