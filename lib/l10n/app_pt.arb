@@ -35,13 +35,12 @@
     "publisherBookViewerPage": "Editora",
     "releaseYearBookViewerPage": "Ano de lançamento",
     "formatBookViewerPage": "Formato",
-    "readedBookViewerPage": "Lido",
-    "readedYesBookViewerPage": "Sim",
-    "readedNoBookViewerPage": "Não",
+    "readProgressBookViewerPage": "Progresso da leitura",
     "createdAtBookViewerPage": "Criado em",
     "lastUpdateBookViewerPage": "Última modificação",
     "observationsBookViewerPage": "Observações",
     "tagsBookViewerPage": "Tags",
+    "deletePopupButtonBookViewerPage": "Deletar",
 
     "newBookAppBarTitle": "Novo livro",
     "editBookAppBarTitle": "Editar livro",
@@ -51,6 +50,12 @@
     "aditionalInformationRegisterBookPage": "Informações adicionais",
     "synopsisAndObservationsRegisterBookPage": "Sinopse e observações",
     "readedRegisterBookPage": "Lido",
+    "readStatusRegisterBookPage": "Progresso da leitura",
+    "notReadedStatusRegisterBookPage": "Não lido",
+    "readingStatusRegisterBookPage": "Lendo",
+    "readedStatusRegisterBookPage": "Lido",
+    "readStartDayRegisterBookPage": "Início da leitura",
+    "readEndDayRegisterBookPage": "Fim da leitura",
     "tagsRegisterBookPage": "Tags",
     "addTagButtonRegisterBookPage": "Adicionar",
     "confirmButtonRegisterBookPage": "Confirmar",
@@ -109,5 +114,12 @@
     "synopsisTextFieldHint": "Sinopse",
 
     "noBookSelectedPlaceholderText": "Selecione um livro para visualizar.",
-    "noRegisteredBooksPlaceholderText": "Nenhum livro cadastrado."
+    "noRegisteredBooksPlaceholderText": "Nenhum livro cadastrado.",
+
+    "notReadedReadProgressWidget": "Não lido",
+    "readStartReadProgressWidget": "Início",
+    "readEndProgressWidget": "Término",
+
+    "wasNotPossibleToUpdateTheBookSnackbarMessage": "Não foi possível atualizar o livro.",
+    "registerBookErrorSnackbarMessage": "Não foi possível cadastrar o livro."
 }

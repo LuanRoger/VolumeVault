@@ -112,10 +112,12 @@ class LoginUserPageMobile extends HookConsumerWidget {
                                     // ignore: use_build_context_synchronously
                                     if (!context.mounted) return;
                                     if (loginResult !=
-                                        AuthResultStatus.created) {
+                                        AuthResultStatus.success) {
                                       SnackbarUtils.showUserAuthErrorSnackbar(
                                           context,
                                           authResultStatus: loginResult);
+                                      isLoadingState.value = false;
+                                      return;
                                     }
 
                                     Navigator.pushNamedAndRemoveUntil(

@@ -12,7 +12,7 @@ abstract class LoginUserStrategy {
     LoginResult loginResult = await controller.loginUser(
       request,
     );
-    if (loginResult.resultStatus != AuthResultStatus.success) {
+    if (loginResult.resultStatus == AuthResultStatus.success) {
       ref
           .read(userSessionNotifierProvider.notifier)
           .changeUserSessionToken(loginResult.jwtToken!);

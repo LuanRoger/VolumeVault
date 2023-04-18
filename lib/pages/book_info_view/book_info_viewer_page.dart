@@ -10,9 +10,11 @@ import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/time_formats.dart';
 import 'package:volume_vault/shared/utils/image_utils.dart';
 import 'package:volume_vault/shared/widgets/book_showcase.dart';
+import 'package:volume_vault/shared/widgets/cards/title_card.dart';
+import 'package:volume_vault/shared/widgets/cards/title_text_card.dart';
 import 'package:volume_vault/shared/widgets/chip_list.dart';
 import 'package:volume_vault/shared/widgets/icon_text.dart';
-import 'package:volume_vault/shared/widgets/title_card.dart';
+import 'package:volume_vault/shared/widgets/read_progress.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BookInfoViewerPage extends HookConsumerWidget {
@@ -57,8 +59,12 @@ class BookInfoViewerPage extends HookConsumerWidget {
                   onPressed: () => _command.launchBuyPage(book.buyLink!),
                   icon: const Icon(Icons.shopping_cart_rounded)),
             PopupMenuButton(
-              itemBuilder: (_) =>
-                  [const PopupMenuItem(value: 0, child: Text("Deletar"))],
+              itemBuilder: (_) => [
+                PopupMenuItem(
+                    value: 0,
+                    child: Text(AppLocalizations.of(context)!
+                        .deletePopupButtonBookViewerPage))
+              ],
               onSelected: (value) async {
                 switch (value) {
                   case 0:
@@ -184,7 +190,7 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
           ),
           const SizedBox(height: 5),
           if (book.synopsis != null)
-            TitleCard(
+            TitleTextCard(
               title: AppLocalizations.of(context)!.synopsisBookViewerPage,
               content: book.synopsis!,
               expand: true,
@@ -215,16 +221,6 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
                     title: Text(
                         AppLocalizations.of(context)!.formatBookViewerPage),
                     trailing: Text(book.format!.name)),
-              if (book.readed != null)
-                ListTile(
-                  title:
-                      Text(AppLocalizations.of(context)!.readedBookViewerPage),
-                  trailing: book.readed!
-                      ? Text(
-                          AppLocalizations.of(context)!.readedYesBookViewerPage)
-                      : Text(
-                          AppLocalizations.of(context)!.readedNoBookViewerPage),
-                ),
               ListTile(
                 title:
                     Text(AppLocalizations.of(context)!.createdAtBookViewerPage),
@@ -242,8 +238,22 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
             ],
           ),
           const SizedBox(height: 5),
-          if (book.observation != null)
+          if (book.readStatus != null)
             TitleCard(
+              title: Text(
+                  AppLocalizations.of(context)!.readProgressBookViewerPage),
+              content: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ReadProgress(
+                  readStatus: book.readStatus!,
+                  readStartDay: book.readStartDay,
+                  readEndDay: book.readEndDay,
+                ),
+              ),
+            ),
+          const SizedBox(height: 5),
+          if (book.observation != null)
+            TitleTextCard(
               title: AppLocalizations.of(context)!.observationsBookViewerPage,
               content: book.observation!,
               expand: true,

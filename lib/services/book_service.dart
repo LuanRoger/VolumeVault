@@ -40,17 +40,13 @@ class BookService {
     return BookModel.fromJson(response.body as Map<String, dynamic>);
   }
 
-  Future<UserBookResult> getUserBook(
+  Future<UserBookResult?> getUserBook(
       GetUserBookRequest getUserBookRequest) async {
     HttpResponse response =
         await _httpModule.get(_baseUrl, query: getUserBookRequest.forRequest());
-    final UserBookResult userBooks =
-        UserBookResult(books: List.empty(growable: true));
-    if (response.statusCode != HttpCode.OK) return userBooks;
+    if (response.statusCode != HttpCode.OK) return null;
 
-    for (Map<String, dynamic> jsonBook in response.body as List) {
-      userBooks.books.add(BookModel.fromJson(jsonBook));
-    }
+    UserBookResult userBooks = UserBookResult.fromJson(response.body);
 
     return userBooks;
   }

@@ -99,25 +99,29 @@ class LoginUserPageDesktop extends HookConsumerWidget {
                               const SizedBox(height: 15),
                               ElevatedButton(
                                   onPressed: () async {
-                                    if (!_loginFormKey.currentState!.validate()) {
+                                    if (!_loginFormKey.currentState!
+                                        .validate()) {
                                       return;
                                     }
                                     isLoadingState.value = true;
-                  
+
                                     final loginResult = await _command.login(
                                         ref,
                                         UserLoginRequest(
                                             username: usernameController.text,
                                             password: passwordController.text));
-                  
+
                                     // ignore: use_build_context_synchronously
                                     if (!context.mounted) return;
-                                    if (loginResult != AuthResultStatus.created) {
+                                    if (loginResult !=
+                                        AuthResultStatus.success) {
                                       SnackbarUtils.showUserAuthErrorSnackbar(
                                           context,
                                           authResultStatus: loginResult);
+                                      isLoadingState.value = false;
+                                      return;
                                     }
-                  
+
                                     Navigator.pushNamedAndRemoveUntil(
                                       context,
                                       AppRoutes.homePageRoute,

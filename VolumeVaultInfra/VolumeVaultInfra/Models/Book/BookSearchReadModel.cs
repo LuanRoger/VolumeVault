@@ -52,7 +52,7 @@ public class BookSearchReadModel
         genre = bookSearchModel.genre,
         format = bookSearchModel.format,
         readStatus = bookSearchModel.readStatus,
-        readStartDay = bookSearchModel.readEndDay,
+        readStartDay = bookSearchModel.readStartDay,
         readEndDay = bookSearchModel.readEndDay,
         tags = bookSearchModel.tags,
         createdAt = bookSearchModel.createdAt,

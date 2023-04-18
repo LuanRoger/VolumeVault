@@ -128,7 +128,7 @@ public class BookController : IBookController
         return BookReadModel.FromBookModel(registeredBook);
     }
 
-    public async Task<IReadOnlyList<BookReadModel>> GetAllUserReleatedBooks(int userId, int page, int limitPerPage)
+    public async Task<BookUserRelatedReadModel> GetAllUserReleatedBooks(int userId, int page, int limitPerPage)
     {
         UserModel? relatedUser = await _userRepository.GetUserById(userId);
         if(relatedUser is null)
@@ -139,15 +139,23 @@ public class BookController : IBookController
         }
             
         _logger.Information("Getting books from user ID[{0}].", relatedUser.id);
-        _logger.Information("{0}: {1}, {2}: {3}.", nameof(page), page,
+        _logger.Information("{0}: {1}, {2}: {3}", nameof(page), page,
             nameof(limitPerPage), limitPerPage);
 
         _logger.Information("Geting results from database.");
         IReadOnlyList<BookReadModel> userBooks = 
             (await _bookRepository.GetUserOwnedBooksSplited(relatedUser.id, page, limitPerPage))
             .Select(BookReadModel.FromBookModel).ToList();
-
-        return userBooks;
+        
+        BookUserRelatedReadModel userRelatedBooks = new()
+        {
+            page = page,
+            limitPerPage = limitPerPage,
+            countInPage = userBooks.Count,
+            books = userBooks
+        };
+        
+        return userRelatedBooks;
     }
 
     public async Task<IReadOnlyList<BookSearchReadModel>> SearchBook(int userId, string searchQuery, int limitPerPage)
@@ -267,6 +275,16 @@ public class BookController : IBookController
         if(bookUpdate.readStatus is not null)
         {
             book.readStatus = bookUpdate.readStatus;
+            hasBeenModified = true;
+        }
+        if(bookUpdate.readStartDay is not null)
+        {
+            book.readStartDay = bookUpdate.readStartDay;
+            hasBeenModified = true;
+        }
+        if(bookUpdate.readEndDay is not null)
+        {
+            book.readEndDay = bookUpdate.readEndDay;
             hasBeenModified = true;
         }
         if(bookUpdate.tags is not null)

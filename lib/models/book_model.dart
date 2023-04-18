@@ -1,4 +1,5 @@
 import 'package:volume_vault/models/enums/book_format.dart';
+import 'package:volume_vault/models/enums/read_status.dart';
 import 'package:volume_vault/models/user_info_model.dart';
 
 class BookModel {
@@ -16,7 +17,9 @@ class BookModel {
   String? synopsis;
   String? coverLink;
   String? buyLink;
-  bool? readed;
+  ReadStatus? readStatus;
+  DateTime? readStartDay;
+  DateTime? readEndDay;
   Set<String>? tags;
   DateTime createdAt;
   DateTime lastModification;
@@ -33,7 +36,9 @@ class BookModel {
       this.synopsis,
       this.coverLink,
       this.buyLink,
-      this.readed,
+      this.readStatus,
+      this.readStartDay,
+      this.readEndDay,
       this.tags,
       required this.createdAt,
       required this.lastModification,
@@ -54,7 +59,9 @@ class BookModel {
         "synopsis": synopsis,
         "coverLink": coverLink,
         "buyLink": buyLink,
-        "readed": readed,
+        "readStatus": readStatus?.index,
+        "readStartDay": readStartDay?.toIso8601String(),
+        "readEndDay": readEndDay?.toIso8601String(),
         "tags": tags?.toList(),
         "createdAt": createdAt.toIso8601String(),
         "lastModification": lastModification.toIso8601String(),
@@ -76,7 +83,11 @@ class BookModel {
         synopsis: json["synopsis"],
         coverLink: json["coverLink"],
         buyLink: json["buyLink"],
-        readed: json["readed"],
+        readStatus: json["readStatus"] != null
+            ? ReadStatus.values[json["readStatus"]]
+            : null,
+        readStartDay: json["readStartDay"] != null ? DateTime.parse(json["readStartDay"]) : null,
+        readEndDay: json["readEndDay"] != null ? DateTime.parse(json["readEndDay"]) : null,
         tags: json["tags"] != null
             ? (json["tags"] as List).map((e) => e as String).toSet()
             : null,

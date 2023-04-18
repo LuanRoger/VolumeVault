@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:volume_vault/l10n/supported_locales.dart';
 
 class L10n {
@@ -10,6 +11,17 @@ class L10n {
       return SupportedLocales.values.firstWhere((e) => e.code == code);
     } catch (_) {
       return SupportedLocales.ptBR;
+    }
+  }
+
+  static String formatDateByLocale(SupportedLocales locale, DateTime date) {
+    switch (locale) {
+      case SupportedLocales.enUS:
+        return DateFormat('MM/dd/yyyy').format(date);
+      case SupportedLocales.ptBR:
+        return DateFormat('dd/MM/yyyy').format(date);
+      default:
+        return DateFormat('MM/dd/yyyy').format(date);
     }
   }
 }
