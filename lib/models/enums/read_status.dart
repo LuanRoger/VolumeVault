@@ -1,5 +1,5 @@
 enum ReadStatus {
-  not_read,
+  notRead,
   reading,
-  has_read,
+  hasRead,
 }
