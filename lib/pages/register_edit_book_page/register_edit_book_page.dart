@@ -14,6 +14,7 @@ import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/validators/text_field_validator.dart';
 import 'package:volume_vault/shared/widgets/book_image_viewer.dart';
 import 'package:volume_vault/shared/widgets/bottom_sheet.dart';
+import 'package:volume_vault/shared/widgets/cards/title_card.dart';
 import 'package:volume_vault/shared/widgets/chip_list.dart';
 import 'package:volume_vault/shared/widgets/date_text_field.dart';
 import 'package:volume_vault/shared/widgets/dialogs/input_dialog.dart';
@@ -446,100 +447,99 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                 synopsisController.text =
                                     observationSynopsisValue[1];
                               }),
-                          Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Status de leitura",
-                                    style:
-                                        Theme.of(context).textTheme.titleLarge,
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      RadioText(
-                                        text: "Não lido",
-                                        value: ReadStatus.notRead,
-                                        groupValue: readState.value,
-                                        onChanged: (_) => readState.value =
-                                            ReadStatus.notRead,
-                                      ),
-                                      RadioText(
-                                        text: "Lendo",
-                                        value: ReadStatus.reading,
-                                        groupValue: readState.value,
-                                        onChanged: (_) => readState.value =
-                                            ReadStatus.reading,
-                                      ),
-                                      RadioText(
-                                        text: "Lido",
-                                        value: ReadStatus.hasRead,
-                                        groupValue: readState.value,
-                                        onChanged: (_) => readState.value =
-                                            ReadStatus.hasRead,
-                                      )
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      if (readState.value ==
-                                              ReadStatus.reading ||
-                                          readState.value == ReadStatus.hasRead)
-                                        Expanded(
-                                          flex: 10,
-                                          child: DateTextField(
-                                            label: "Data de início",
-                                            controller: readStartDayController,
-                                            onDateSelected: (newDate) {
-                                              final localizationPreferences =
-                                                  ref.read(
-                                                      localizationPreferencesStateProvider);
+                          TitleCard(
+                            title: Text(
+                              AppLocalizations.of(context)!
+                                  .readStatusRegisterBookPage,
+                            ),
+                            content: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    RadioText(
+                                      text: AppLocalizations.of(context)!
+                                          .notReadedStatusRegisterBookPage,
+                                      value: ReadStatus.notRead,
+                                      groupValue: readState.value,
+                                      onChanged: (_) =>
+                                          readState.value = ReadStatus.notRead,
+                                    ),
+                                    RadioText(
+                                      text: AppLocalizations.of(context)!
+                                          .readingStatusRegisterBookPage,
+                                      value: ReadStatus.reading,
+                                      groupValue: readState.value,
+                                      onChanged: (_) =>
+                                          readState.value = ReadStatus.reading,
+                                    ),
+                                    RadioText(
+                                      text: AppLocalizations.of(context)!
+                                          .readedStatusRegisterBookPage,
+                                      value: ReadStatus.hasRead,
+                                      groupValue: readState.value,
+                                      onChanged: (_) =>
+                                          readState.value = ReadStatus.hasRead,
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    if (readState.value == ReadStatus.reading ||
+                                        readState.value == ReadStatus.hasRead)
+                                      Expanded(
+                                        flex: 10,
+                                        child: DateTextField(
+                                          label: AppLocalizations.of(context)!
+                                              .readStartDayRegisterBookPage,
+                                          controller: readStartDayController,
+                                          onDateSelected: (newDate) {
+                                            final localizationPreferences =
+                                                ref.read(
+                                                    localizationPreferencesStateProvider);
 
-                                              readStartDay.value = newDate;
-                                              readStartDayController.text =
-                                                  L10n.formatDateByLocale(
-                                                      localizationPreferences
-                                                          .localization,
-                                                      newDate);
-                                            },
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime(1900),
-                                            lastDate: DateTime.now(),
-                                          ),
+                                            readStartDay.value = newDate;
+                                            readStartDayController.text =
+                                                L10n.formatDateByLocale(
+                                                    localizationPreferences
+                                                        .localization,
+                                                    newDate);
+                                          },
+                                          initialDate: DateTime.now(),
+                                          firstDate: DateTime(1900),
+                                          lastDate: DateTime.now(),
                                         ),
-                                      if (readState.value == ReadStatus.hasRead)
-                                        const Spacer(),
-                                      if (readState.value == ReadStatus.hasRead)
-                                        Expanded(
-                                          flex: 10,
-                                          child: DateTextField(
-                                            label: "Data de término",
-                                            controller: readEndDayController,
-                                            onDateSelected: (newDate) {
-                                              readEndDay.value = newDate;
-                                              readEndDayController.text =
-                                                  L10n.formatDateByLocale(
-                                                      localizationPreferences
-                                                          .localization,
-                                                      newDate);
-                                            },
-                                            initialDate: DateTime.now(),
-                                            firstDate: readStartDay.value ??
-                                                DateTime.now(),
-                                            lastDate: DateTime.now(),
-                                          ),
-                                        )
-                                    ],
-                                  )
-                                ],
-                              ),
+                                      ),
+                                    if (readState.value == ReadStatus.hasRead)
+                                      const Spacer(),
+                                    if (readState.value == ReadStatus.hasRead)
+                                      Expanded(
+                                        flex: 10,
+                                        child: DateTextField(
+                                          label: AppLocalizations.of(context)!
+                                              .readEndDayRegisterBookPage,
+                                          controller: readEndDayController,
+                                          onDateSelected: (newDate) {
+                                            readEndDay.value = newDate;
+                                            readEndDayController.text =
+                                                L10n.formatDateByLocale(
+                                                    localizationPreferences
+                                                        .localization,
+                                                    newDate);
+                                          },
+                                          initialDate: DateTime.now(),
+                                          firstDate: readStartDay.value ??
+                                              DateTime.now(),
+                                          lastDate: DateTime.now(),
+                                        ),
+                                      )
+                                  ],
+                                )
+                              ],
                             ),
                           ),
                           IconText(
@@ -646,9 +646,10 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                         editBookModel!.id, updatedBook);
                                 if (!updateResult) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                          "Não foi possível atualizar o livro"),
+                                    SnackBar(
+                                      content: Text(AppLocalizations.of(
+                                              context)!
+                                          .wasNotPossibleToUpdateTheBookSnackbarMessage),
                                     ),
                                   );
                                   return;
@@ -712,8 +713,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
                               if (!context.mounted) return;
                               if (!success) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Erro ao registrar livro"),
+                                  SnackBar(
+                                    content: Text(AppLocalizations.of(context)!
+                                        .registerBookErrorSnackbarMessage),
                                   ),
                                 );
                                 loadingState.value = false;

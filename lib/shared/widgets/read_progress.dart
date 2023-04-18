@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/l10n/l10n.dart';
 import 'package:volume_vault/models/enums/read_status.dart';
 import 'package:volume_vault/providers/providers.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReadProgress extends StatelessWidget {
   final ReadStatus readStatus;
@@ -33,21 +34,28 @@ class ReadProgress extends StatelessWidget {
       children: [
         LinearProgressIndicator(
             value: calculateProgressValueByReadStatus(readStatus)),
-        const Align(
+        Align(
           alignment: Alignment.centerLeft,
           child: Chip(
-            label: Text("Não lido"),
+            label:
+                Text(AppLocalizations.of(context)!.notReadedReadProgressWidget),
           ),
         ),
-       if(readStatus == ReadStatus.reading || readStatus == ReadStatus.hasRead) Align(
-            alignment: Alignment.center,
-            child: ProgressInfoTimeline(date: readStartDay, label: "Início")),
-        if(readStatus == ReadStatus.hasRead) Align(
-            alignment: Alignment.centerRight,
-            child: ProgressInfoTimeline(
-              date: readEndDay,
-              label: "Término",
-            ))
+        if (readStatus == ReadStatus.reading ||
+            readStatus == ReadStatus.hasRead)
+          Align(
+              alignment: Alignment.center,
+              child: ProgressInfoTimeline(
+                  date: readStartDay,
+                  label: AppLocalizations.of(context)!
+                      .readStartReadProgressWidget)),
+        if (readStatus == ReadStatus.hasRead)
+          Align(
+              alignment: Alignment.centerRight,
+              child: ProgressInfoTimeline(
+                date: readEndDay,
+                label: AppLocalizations.of(context)!.readEndProgressWidget,
+              ))
       ],
     );
   }
