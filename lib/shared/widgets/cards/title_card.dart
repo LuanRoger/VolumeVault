@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class TitleCard extends StatelessWidget {
-  String title;
-  String content;
+  Widget title;
+  Widget content;
   bool expand;
 
   TitleCard(
@@ -13,6 +13,8 @@ class TitleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context).textTheme.titleLarge!;
+
     return SizedBox(
       width: expand ? double.infinity : null,
       child: Card(
@@ -21,9 +23,9 @@ class TitleCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: Theme.of(context).textTheme.titleLarge),
+              DefaultTextStyle(style: theme, child: title),
               const SizedBox(height: 5),
-              Text(content)
+              content
             ],
           ),
         ),
