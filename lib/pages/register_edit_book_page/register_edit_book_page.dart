@@ -12,15 +12,15 @@ import 'package:volume_vault/services/models/edit_book_request.dart';
 import 'package:volume_vault/services/models/register_book_request.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/validators/text_field_validator.dart';
-import 'package:volume_vault/shared/widgets/book_image_viewer.dart';
-import 'package:volume_vault/shared/widgets/bottom_sheet.dart';
+import 'package:volume_vault/shared/widgets/chip/chip_list.dart';
+import 'package:volume_vault/shared/widgets/viewers/book_image_viewer.dart';
+import 'package:volume_vault/shared/widgets/bottom_sheet/bottom_sheet.dart';
 import 'package:volume_vault/shared/widgets/cards/title_card.dart';
-import 'package:volume_vault/shared/widgets/chip_list.dart';
-import 'package:volume_vault/shared/widgets/date_text_field.dart';
+import 'package:volume_vault/shared/widgets/text_fields/date_text_field.dart';
 import 'package:volume_vault/shared/widgets/dialogs/input_dialog.dart';
-import 'package:volume_vault/shared/widgets/icon_text.dart';
+import 'package:volume_vault/shared/widgets/icon/icon_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:volume_vault/shared/widgets/radio_text.dart';
+import 'package:volume_vault/shared/widgets/radio/radio_text.dart';
 
 class RegisterEditBookPage extends HookConsumerWidget {
   ///If this model is not null, the page enter in edit mode.
@@ -710,6 +710,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                       .registerBook(newBook)) !=
                                   null;
 
+                              // ignore: use_build_context_synchronously
                               if (!context.mounted) return;
                               if (!success) {
                                 ScaffoldMessenger.of(context).showSnackBar(

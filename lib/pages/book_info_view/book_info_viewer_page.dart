@@ -9,13 +9,13 @@ import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/time_formats.dart';
 import 'package:volume_vault/shared/utils/image_utils.dart';
-import 'package:volume_vault/shared/widgets/book_showcase.dart';
 import 'package:volume_vault/shared/widgets/cards/title_card.dart';
 import 'package:volume_vault/shared/widgets/cards/title_text_card.dart';
-import 'package:volume_vault/shared/widgets/chip_list.dart';
-import 'package:volume_vault/shared/widgets/icon_text.dart';
-import 'package:volume_vault/shared/widgets/read_progress.dart';
+import 'package:volume_vault/shared/widgets/chip/chip_list.dart';
+import 'package:volume_vault/shared/widgets/icon/icon_text.dart';
+import 'package:volume_vault/shared/widgets/progress_indicators/read_progress.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:volume_vault/shared/widgets/viewers/book_showcase.dart';
 
 class BookInfoViewerPage extends HookConsumerWidget {
   final BookModel _book;

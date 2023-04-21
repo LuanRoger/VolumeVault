@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:volume_vault/shared/widgets/book_image_viewer.dart';
-import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info_card.dart';
+import 'package:volume_vault/shared/widgets/viewers/book_image_viewer.dart';
+import 'package:volume_vault/shared/widgets/cards/book_info_card.dart';
 
 class BookInfoGridCard extends BookInfoCard {
   const BookInfoGridCard(super.bookModel,

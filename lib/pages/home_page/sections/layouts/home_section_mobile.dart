@@ -10,8 +10,8 @@ import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
 import 'package:volume_vault/services/models/user_book_result.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
-import 'package:volume_vault/shared/widgets/paging_list_grid.dart';
-import 'package:volume_vault/shared/widgets/search_floating_card.dart';
+import 'package:volume_vault/shared/widgets/lists/pagination_list_grid.dart';
+import 'package:volume_vault/shared/widgets/cards/search_floating_card.dart';
 import 'package:volume_vault/shared/widgets/widget_switcher.dart';
 import 'package:volume_vault/shared/hooks/paging_controller_hook.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -127,7 +127,7 @@ class HomeSectionMobile extends HookConsumerWidget {
                   animation: animation,
                   secondaryAnimation: secondaryAnimation,
                   child: child),
-          child: PagingListGrid<int, BookModel>(
+          child: PaginationListGrid<int, BookModel>(
             pagingController: pagingController,
             visualizationType: visualizationTypeState.value,
             itemBuilder: (_, data, index) {

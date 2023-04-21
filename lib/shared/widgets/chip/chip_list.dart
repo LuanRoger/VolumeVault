@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:volume_vault/shared/widgets/filled_chip.dart';
+import 'package:volume_vault/shared/widgets/chip/filled_chip.dart';
 
 class ChipList extends StatelessWidget {
   final Set<String> labels;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info_card.dart';
+import 'package:volume_vault/shared/widgets/cards/book_info_card.dart';
 
 class BookInfoListCard extends BookInfoCard {
   double? height;

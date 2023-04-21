@@ -4,7 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/shared/utils/image_utils.dart';
-import 'package:volume_vault/shared/widgets/book_image_viewer.dart';
+import 'package:volume_vault/shared/widgets/viewers/book_image_viewer.dart';
 
 class BookViewerCard extends HookConsumerWidget {
   final BookModel book;

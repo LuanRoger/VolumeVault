@@ -3,13 +3,13 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
 import 'package:volume_vault/shared/widgets/placeholders/no_registered_book_placeholder.dart';
 
-class PagingListGrid<T, K> extends StatelessWidget {
+class PaginationListGrid<T, K> extends StatelessWidget {
   final PagingController<T, K> pagingController;
   final Widget Function(BuildContext, K, int) itemBuilder;
 
   final VisualizationType visualizationType;
 
-  const PagingListGrid(
+  const PaginationListGrid(
       {super.key,
       required this.visualizationType,
       required this.pagingController,

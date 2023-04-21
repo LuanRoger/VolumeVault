@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:volume_vault/shared/widgets/book_image_viewer.dart';
-import 'package:volume_vault/shared/widgets/radial_light.dart';
+import 'package:volume_vault/shared/widgets/viewers/book_image_viewer.dart';
+import 'package:volume_vault/shared/widgets/fx/radial_light.dart';
 
 class BookShowcase extends StatelessWidget {
   final Color? color;

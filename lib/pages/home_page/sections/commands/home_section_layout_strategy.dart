@@ -7,10 +7,10 @@ import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
 import 'package:volume_vault/services/models/user_book_result.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
-import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info_card.dart';
-import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info_grid_card.dart';
-import 'package:volume_vault/shared/widgets/book_info_scrollable_tiles/book_info_list_card.dart';
-import 'package:volume_vault/shared/widgets/book_search_result_tile.dart';
+import 'package:volume_vault/shared/widgets/cards/book_info_card.dart';
+import 'package:volume_vault/shared/widgets/cards/book_info_grid_card.dart';
+import 'package:volume_vault/shared/widgets/cards/book_info_list_card.dart';
+import 'package:volume_vault/shared/widgets/list_tiles/book_search_result_tile.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 abstract class HomeSectionLayoutStrategy {

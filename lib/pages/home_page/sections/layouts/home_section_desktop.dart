@@ -13,10 +13,10 @@ import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
 import 'package:volume_vault/services/models/user_book_result.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
-import 'package:volume_vault/shared/widgets/paging_list_grid.dart';
+import 'package:volume_vault/shared/widgets/lists/pagination_list_grid.dart';
 import 'package:volume_vault/shared/widgets/placeholders/no_book_selected_placeholder.dart';
-import 'package:volume_vault/shared/widgets/search_result_list.dart';
-import 'package:volume_vault/shared/widgets/search_text_field.dart';
+import 'package:volume_vault/shared/widgets/lists/search_result_list.dart';
+import 'package:volume_vault/shared/widgets/text_fields/search_text_field.dart';
 import 'package:volume_vault/shared/widgets/widget_switcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -158,7 +158,7 @@ class HomeSectionDesktop extends HookConsumerWidget {
                                       SharedAxisTransitionType.horizontal,
                                   child: child),
                       child: searchTextController.text.isEmpty
-                          ? PagingListGrid<int, BookModel>(
+                          ? PaginationListGrid<int, BookModel>(
                               pagingController: pagingController,
                               visualizationType: visualizationTypeState.value,
                               itemBuilder: (_, data, index) {
