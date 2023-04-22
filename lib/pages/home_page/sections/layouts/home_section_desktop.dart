@@ -173,7 +173,7 @@ class HomeSectionDesktop extends HookConsumerWidget {
                           : SearchResultList(
                               key: ValueKey(searchTextController.text),
                               textController: searchTextController,
-                              search: (query, context) => _commands
+                              search: (query, context) async => await _commands
                                   .buildSearhResultTiles(query, context, ref)),
                     )),
               ],

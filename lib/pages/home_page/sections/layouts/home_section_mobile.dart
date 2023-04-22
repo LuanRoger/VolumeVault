@@ -95,7 +95,7 @@ class HomeSectionMobile extends HookConsumerWidget {
               onPressed: () async {
                 SearchFloatingCard searchFloatingCard = SearchFloatingCard(
                   controller: searchTextController,
-                  search: (query, dialogContext) => _commands
+                  search: (query, dialogContext) async => await _commands
                       .buildSearhResultTiles(query, dialogContext, ref),
                 );
                 await searchFloatingCard.show(context);
