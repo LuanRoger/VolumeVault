@@ -2,6 +2,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:volume_vault/controllers/auth_controller.dart';
 import 'package:volume_vault/controllers/book_controller.dart';
+import 'package:volume_vault/controllers/stats_controller.dart';
 import 'package:volume_vault/controllers/utils_controller.dart';
 import 'package:volume_vault/models/api_config_params.dart';
 import 'package:volume_vault/models/http_code.dart';
@@ -14,6 +15,7 @@ import 'package:volume_vault/providers/interfaces/theme_preferences_state.dart';
 import 'package:volume_vault/providers/interfaces/user_session_notifier.dart';
 import 'package:volume_vault/services/auth_service.dart';
 import 'package:volume_vault/services/book_service.dart';
+import 'package:volume_vault/services/stats_service.dart';
 import 'package:volume_vault/services/utils_service.dart';
 import 'package:volume_vault/shared/preferences/models/graphics_preferences.dart';
 import 'package:volume_vault/shared/preferences/models/localization_preferences.dart';
@@ -29,6 +31,15 @@ final userSessionNotifierProvider =
 final serverConfigNotifierProvider =
     AsyncNotifierProvider<ServerConfigNotifier, ServerConfig>(
         ServerConfigNotifier.new);
+final apiParamProvider = FutureProvider<ApiConfigParams>((ref) async {
+  final serverConfig = await ref.watch(serverConfigNotifierProvider.future);
+
+  return ApiConfigParams(
+      host: serverConfig.serverHost,
+      port: serverConfig.serverPort,
+      apiKey: serverConfig.serverApiKey,
+      protocol: serverConfig.serverProtocol);
+});
 
 final sharedPreferencesProvider =
     FutureProvider<SharedPreferences>((ref) async {
@@ -59,29 +70,28 @@ final userInfoProvider = FutureProvider<UserInfoModel?>((ref) async {
   return userInfo;
 });
 final _authServiceProvider = FutureProvider<AuthService>((ref) async {
-  final serverConfig = await ref.watch(serverConfigNotifierProvider.future);
+  final apiConfig = await ref.watch(apiParamProvider.future);
 
-  return AuthService(
-    apiConfig: ApiConfigParams(
-        host: serverConfig.serverHost,
-        port: serverConfig.serverPort,
-        apiKey: serverConfig.serverApiKey,
-        protocol: serverConfig.serverProtocol),
-  );
+  return AuthService(apiConfig: apiConfig);
 });
 final _bookServiceProvider = FutureProvider<BookService?>((ref) async {
-  final serverConfig = await ref.watch(serverConfigNotifierProvider.future);
+  final apiConfig = await ref.watch(apiParamProvider.future);
   final userSession = await ref.watch(userSessionNotifierProvider.future);
 
   if (userSession.token.isEmpty) return null;
 
   return BookService(
+    apiConfig: apiConfig,
     userAuthToken: userSession.token,
-    apiConfig: ApiConfigParams(
-        host: serverConfig.serverHost,
-        port: serverConfig.serverPort,
-        apiKey: serverConfig.serverApiKey,
-        protocol: serverConfig.serverProtocol),
+  );
+});
+final _statsServiceProvider = FutureProvider<StatsService>((ref) async {
+  final apiConfig = await ref.watch(apiParamProvider.future);
+  final userSession = await ref.watch(userSessionNotifierProvider.future);
+
+  return StatsService(
+    apiConfig: apiConfig,
+    userAuthToken: userSession.token,
   );
 });
 final _utilsServiceProvider = FutureProvider<UtilsService>((ref) async {
