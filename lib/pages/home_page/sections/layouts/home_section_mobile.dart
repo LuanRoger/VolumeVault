@@ -35,6 +35,11 @@ class HomeSectionMobile extends HookConsumerWidget {
 
     final searchTextController = useTextEditingController();
 
+    final refreshKeyState = useState(UniqueKey());
+    final bookStatsMemoize = useMemoized(
+        () => _commands.getUserBookStats(ref), [refreshKeyState.value]);
+    final bookStatsFuture = useFuture(bookStatsMemoize);
+
     useEffect(() {
       bookFetcher(pageKey) async {
         UserBookResult result = await _commands.fetchUserBooks(
@@ -119,28 +124,56 @@ class HomeSectionMobile extends HookConsumerWidget {
           ),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: () async => pagingController.refresh(),
-        child: PageTransitionSwitcher(
-          transitionBuilder: (child, animation, secondaryAnimation) =>
-              FadeThroughTransition(
-                  animation: animation,
-                  secondaryAnimation: secondaryAnimation,
-                  child: child),
-          child: PaginationListGrid<int, BookModel>(
-            pagingController: pagingController,
-            visualizationType: visualizationTypeState.value,
-            itemBuilder: (_, data, index) {
-              return _commands.buildBookView(context,
-                  book: data,
-                  viewType: visualizationTypeState.value,
-                  onUpdate: pagingController.refresh, onSelect: (book) async {
-                bool refresh = await _commands.onBookSelect(context, book);
-                if (refresh) pagingController.refresh();
-              });
-            },
+      body: Column(
+        children: [
+          Flexible(
+            flex: 0,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                      "${bookStatsFuture.hasData ? bookStatsFuture.data!.count : "-"} livros",
+                      style: Theme.of(context).textTheme.bodyLarge),
+                  IconButton(
+                      onPressed: () {}, icon: const Icon(Icons.sort_rounded))
+                ],
+              ),
+            ),
           ),
-        ),
+          Expanded(
+            flex: 1,
+            child: RefreshIndicator(
+              onRefresh: () async {
+                pagingController.refresh();
+                refreshKeyState.value = UniqueKey();
+              },
+              child: PageTransitionSwitcher(
+                transitionBuilder: (child, animation, secondaryAnimation) =>
+                    FadeThroughTransition(
+                        animation: animation,
+                        secondaryAnimation: secondaryAnimation,
+                        child: child),
+                child: PaginationListGrid<int, BookModel>(
+                  pagingController: pagingController,
+                  visualizationType: visualizationTypeState.value,
+                  itemBuilder: (_, data, index) {
+                    return _commands.buildBookView(context,
+                        book: data,
+                        viewType: visualizationTypeState.value,
+                        onUpdate: pagingController.refresh,
+                        onSelect: (book) async {
+                      bool refresh =
+                          await _commands.onBookSelect(context, book);
+                      if (refresh) pagingController.refresh();
+                    });
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: OpenContainer(
         clipBehavior: Clip.none,
