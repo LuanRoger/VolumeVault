@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:realm/realm.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
@@ -37,6 +38,13 @@ class HomeSectionDesktop extends HookConsumerWidget {
     useListenable(searchTextController);
     final userInfo = ref.watch(userInfoProvider);
     final visualizationTypeState = useState(VisualizationType.LIST);
+
+    final refreshKeyState = useState(UniqueKey());
+    final bookStatsMemoize = useMemoized(
+      () => _commands.getUserBookStats(ref),
+      [refreshKeyState.value],
+    );
+    final bookStatsFuture = useFuture(bookStatsMemoize);
 
     useEffect(() {
       bookFetcher(pageKey) async {
@@ -139,10 +147,27 @@ class HomeSectionDesktop extends HookConsumerWidget {
                       Flexible(
                         flex: 0,
                         child: IconButton(
-                          onPressed: () => pagingController.refresh(),
+                          onPressed: () {
+                            pagingController.refresh();
+                            refreshKeyState.value = UniqueKey();
+                          },
                           icon: const Icon(Icons.refresh_rounded),
                         ),
                       )
+                    ],
+                  ),
+                ),
+                Flexible(
+                  flex: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                          "${bookStatsFuture.hasData ? bookStatsFuture.data!.count : "-"} livros",
+                          style: Theme.of(context).textTheme.bodyLarge),
+                      IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.sort_rounded))
                     ],
                   ),
                 ),
@@ -173,7 +198,7 @@ class HomeSectionDesktop extends HookConsumerWidget {
                           : SearchResultList(
                               key: ValueKey(searchTextController.text),
                               textController: searchTextController,
-                              search: (query, context) => _commands
+                              search: (query, context) async => await _commands
                                   .buildSearhResultTiles(query, context, ref)),
                     )),
               ],

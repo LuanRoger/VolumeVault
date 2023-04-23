@@ -4,6 +4,7 @@ import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/book_search_result.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
 import 'package:volume_vault/providers/providers.dart';
+import 'package:volume_vault/services/models/book_stats.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
 import 'package:volume_vault/services/models/user_book_result.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
@@ -53,6 +54,13 @@ abstract class HomeSectionLayoutStrategy {
     UserBookResult userBookResult =
         await bookController.getUserBooks(getUserBookRequest);
     return userBookResult;
+  }
+
+  Future<BookStats> getUserBookStats(WidgetRef ref) async {
+    final statsController = await ref.read(statsControllerProvider.future);
+
+    BookStats bookStats = await statsController.getUserBooksCount();
+    return bookStats;
   }
 
   BookInfoCard buildBookView(BuildContext context,
