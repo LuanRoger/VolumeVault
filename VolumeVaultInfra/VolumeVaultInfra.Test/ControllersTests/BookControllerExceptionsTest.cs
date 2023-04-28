@@ -6,6 +6,7 @@ using VolumeVaultInfra.Exceptions;
 using VolumeVaultInfra.Models.Book;
 using VolumeVaultInfra.Models.Enums;
 using VolumeVaultInfra.Models.User;
+using VolumeVaultInfra.Models.Utils;
 using VolumeVaultInfra.Repositories;
 using VolumeVaultInfra.Services.Metrics;
 using VolumeVaultInfra.Validators;
@@ -183,7 +184,8 @@ public class BookControllerExceptionsTest
             .ReturnsAsync(() => null);
         
         await Assert.ThrowsAsync<UserNotFoundException>(() => 
-            _bookController.GetAllUserReleatedBooks(It.IsAny<int>(), 1, 10));
+            _bookController.GetAllUserReleatedBooks(It.IsAny<int>(), 1, 10, 
+                It.IsAny<BookSortOptions>()));
     }
     [Fact]
     public async void NotRegistredUserDeleteBookTest()
