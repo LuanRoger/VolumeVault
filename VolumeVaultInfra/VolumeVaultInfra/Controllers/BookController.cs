@@ -3,6 +3,7 @@ using FluentValidation.Results;
 using VolumeVaultInfra.Exceptions;
 using VolumeVaultInfra.Models.Book;
 using VolumeVaultInfra.Models.User;
+using VolumeVaultInfra.Models.Utils;
 using VolumeVaultInfra.Repositories;
 using VolumeVaultInfra.Services.Metrics;
 using ILogger = Serilog.ILogger;
@@ -128,7 +129,7 @@ public class BookController : IBookController
         return BookReadModel.FromBookModel(registeredBook);
     }
 
-    public async Task<BookUserRelatedReadModel> GetAllUserReleatedBooks(int userId, int page, int limitPerPage)
+    public async Task<BookUserRelatedReadModel> GetAllUserReleatedBooks(int userId, int page, int limitPerPage, BookSortOptions? bookSortOptions)
     {
         UserModel? relatedUser = await _userRepository.GetUserById(userId);
         if(relatedUser is null)
@@ -144,7 +145,7 @@ public class BookController : IBookController
 
         _logger.Information("Geting results from database.");
         IReadOnlyList<BookReadModel> userBooks = 
-            (await _bookRepository.GetUserOwnedBooksSplited(relatedUser.id, page, limitPerPage))
+            (await _bookRepository.GetUserOwnedBooksSplited(relatedUser.id, page, limitPerPage, bookSortOptions))
             .Select(BookReadModel.FromBookModel).ToList();
         
         BookUserRelatedReadModel userRelatedBooks = new()
