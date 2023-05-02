@@ -12,7 +12,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginUserPageMobile extends HookConsumerWidget {
   final LoginUserMobileCommands _command = LoginUserMobileCommands();
-  final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
+  static final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
 
   LoginUserPageMobile({super.key});
 

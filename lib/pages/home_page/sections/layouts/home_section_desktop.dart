@@ -3,19 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:realm/realm.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:volume_vault/models/book_model.dart';
+import 'package:volume_vault/models/book_sort_option.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
-import 'package:volume_vault/pages/book_info_view/book_info_viewer_page.dart';
 import 'package:volume_vault/pages/book_info_view/commands/book_info_viewer_command.dart';
 import 'package:volume_vault/pages/home_page/sections/commands/home_section_desktop_command.dart';
+import 'package:volume_vault/pages/home_page/sections/widgets/card_book_view_content.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
 import 'package:volume_vault/services/models/user_book_result.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/widgets/lists/pagination_list_grid.dart';
-import 'package:volume_vault/shared/widgets/placeholders/no_book_selected_placeholder.dart';
 import 'package:volume_vault/shared/widgets/lists/search_result_list.dart';
 import 'package:volume_vault/shared/widgets/text_fields/search_text_field.dart';
 import 'package:volume_vault/shared/widgets/widget_switcher.dart';
@@ -38,6 +37,7 @@ class HomeSectionDesktop extends HookConsumerWidget {
     useListenable(searchTextController);
     final userInfo = ref.watch(userInfoProvider);
     final visualizationTypeState = useState(VisualizationType.LIST);
+    final sortOptionState = useState(BookSortOption());
 
     final refreshKeyState = useState(UniqueKey());
     final bookStatsMemoize = useMemoized(
@@ -51,6 +51,7 @@ class HomeSectionDesktop extends HookConsumerWidget {
         UserBookResult result = await _commands.fetchUserBooks(
           ref,
           GetUserBookRequest(page: pageKey),
+          sortOptions: sortOptionState.value,
         );
         if (result.books.isEmpty) {
           pagingController.appendLastPage(result.books);
@@ -62,7 +63,7 @@ class HomeSectionDesktop extends HookConsumerWidget {
       pagingController.addPageRequestListener(bookFetcher);
 
       return () => pagingController.removePageRequestListener(bookFetcher);
-    });
+    }, [refreshKeyState.value]);
     useEffect(() {
       _commands.bookOnViwerState = bookOnViwer;
 
@@ -166,7 +167,16 @@ class HomeSectionDesktop extends HookConsumerWidget {
                           "${bookStatsFuture.hasData ? bookStatsFuture.data!.count : "-"} livros",
                           style: Theme.of(context).textTheme.bodyLarge),
                       IconButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            BookSortOption? newSortOptions =
+                                await _commands.showSortFilterDialog(context,
+                                    currentOptions: sortOptionState.value,
+                                    wrapped: true);
+                            if (newSortOptions == null) return;
+                            sortOptionState.value = newSortOptions;
+
+                            pagingController.refresh();
+                          },
                           icon: const Icon(Icons.sort_rounded))
                     ],
                   ),
@@ -271,7 +281,7 @@ class HomeSectionDesktop extends HookConsumerWidget {
                   child: Card(
                     elevation: 0,
                     color: Theme.of(context).colorScheme.surfaceVariant,
-                    child: _CardBookViewContent(
+                    child: CardBookViewContent(
                         book: bookOnViwer.value,
                         onRefresh: () async {
                           final BookModel? newInfoBook =
@@ -288,33 +298,6 @@ class HomeSectionDesktop extends HookConsumerWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _CardBookViewContent extends ConsumerWidget {
-  final BookModel? book;
-  final Future<void> Function() onRefresh;
-
-  const _CardBookViewContent({required this.book, required this.onRefresh});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: AnimatedSize(
-          alignment: Alignment.topCenter,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOutQuart,
-          child: SizedBox(
-            width: double.infinity,
-            child: book != null
-                ? BookInfoViwerBodyPage(
-                    book!,
-                    onRefresh: onRefresh,
-                  )
-                : const NoBookSelectedPlaceholder(),
-          )),
     );
   }
 }

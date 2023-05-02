@@ -27,11 +27,11 @@ class RegisterEditBookPage extends HookConsumerWidget {
   ///So when you hit the save button, the book will be updated instead of created.
   final BookModel? editBookModel;
 
-  final _bookInfoFormKey = GlobalKey<FormState>();
-  final _publisherInfoFormKey = GlobalKey<FormState>();
-  final _aditionalInfoFormKey = GlobalKey<FormState>();
+  static final _bookInfoFormKey = GlobalKey<FormState>();
+  static final _publisherInfoFormKey = GlobalKey<FormState>();
+  static final _aditionalInfoFormKey = GlobalKey<FormState>();
 
-  RegisterEditBookPage({super.key, this.editBookModel});
+  const RegisterEditBookPage({super.key, this.editBookModel});
 
   Future<bool> _showConfirmEditDialog(BuildContext context) async {
     bool saveUpdates = false;
