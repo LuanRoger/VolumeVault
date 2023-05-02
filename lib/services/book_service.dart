@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:volume_vault/models/api_config_params.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/book_search_result.dart';
+import 'package:volume_vault/models/book_sort_option.dart';
 import 'package:volume_vault/models/http_code.dart';
 import 'package:volume_vault/models/http_response.dart';
 import 'package:volume_vault/models/interfaces/http_module.dart';
@@ -41,9 +42,12 @@ class BookService {
   }
 
   Future<UserBookResult?> getUserBook(
-      GetUserBookRequest getUserBookRequest) async {
+      GetUserBookRequest getUserBookRequest, {BookSortOption? sortOption}) async {
+    Map<String, String> requestQuery = Map.of(getUserBookRequest.forRequest());
+    if(sortOption != null) requestQuery.addAll(sortOption.forRequest());
+
     HttpResponse response =
-        await _httpModule.get(_baseUrl, query: getUserBookRequest.forRequest());
+        await _httpModule.get(_baseUrl, query: requestQuery);
     if (response.statusCode != HttpCode.OK) return null;
 
     UserBookResult userBooks = UserBookResult.fromJson(response.body);
