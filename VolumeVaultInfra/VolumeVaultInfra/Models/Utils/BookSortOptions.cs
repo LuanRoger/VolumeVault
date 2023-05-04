@@ -16,6 +16,7 @@ public class BookSortOptions
         BookSort.ReleaseDate => book => book.publicationYear!,
         BookSort.Publisher => book => book.publisher!,
         BookSort.Genre => book => book.genre!,
+        BookSort.Pages => book => book.pagesNumber!,
         BookSort.ReadStartDay => book => book.readStartDay!,
         BookSort.ReadEndDay => book => book.readEndDay!,
         BookSort.CreationDate => book => book.createdAt,

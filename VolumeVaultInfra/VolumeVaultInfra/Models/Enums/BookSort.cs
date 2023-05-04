@@ -7,6 +7,7 @@ public enum BookSort
     ReleaseDate,
     Publisher,
     Genre,
+    Pages,
     ReadStartDay,
     ReadEndDay,
     CreationDate
