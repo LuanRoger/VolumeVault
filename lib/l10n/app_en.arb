@@ -27,6 +27,14 @@
     "homeSectionLabelHomePage": "Home",
     "configurationsSectionLabelHomePage": "Settings",
     "searchBookTextFieldHint": "Search for title, author, ISBN...",
+    "bookCountStatsHomePage": "{count} books",
+    "@bookCountStatsHomePage": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
     "signoutButtonHomePage": "Signout",
 
     "synopsisBookViewerPage": "Synopsis",
@@ -40,7 +48,7 @@
     "lastUpdateBookViewerPage": "Last change",
     "observationsBookViewerPage": "Observations",
     "tagsBookViewerPage": "Tags",
-    "deletePopupButtonBookViewerPage": "Deletar",
+    "deletePopupButtonBookViewerPage": "Delete",
 
     "newBookAppBarTitle": "New book",
     "editBookAppBarTitle": "Edit book",
@@ -54,8 +62,8 @@
     "notReadedStatusRegisterBookPage": "Not readed",
     "readingStatusRegisterBookPage": "Reading",
     "readedStatusRegisterBookPage": "Has readed",
-    "readStartDayRegisterBookPage": "Início da leitura",
-    "readEndDayRegisterBookPage": "Fim da leitura",
+    "readStartDayRegisterBookPage": "Start of reading",
+    "readEndDayRegisterBookPage": "End of reading",
     "tagsRegisterBookPage": "Tags",
     "addTagButtonRegisterBookPage": "Add tag",
     "confirmButtonRegisterBookPage": "Confirm",

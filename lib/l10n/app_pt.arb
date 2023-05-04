@@ -16,7 +16,6 @@
 
     "titleAppBarHomePage": "Início",
     "helloUserAppBarHomePage": "Olá, {user}",
-    "wellcomeBackAppBarHomePage": "Bem-vindo(a) de volta.",
     "@helloUserAppBarHomePage": {
         "placeholders": {
             "user": {
@@ -24,9 +23,18 @@
             }
         }
     },
+    "wellcomeBackAppBarHomePage": "Bem-vindo(a) de volta.",
     "homeSectionLabelHomePage": "Início",
     "configurationsSectionLabelHomePage": "Configurações",
     "searchBookTextFieldHint": "Pesquisar por titulo, autor, ISBN...",
+    "bookCountStatsHomePage": "{count} livros",
+    "@bookCountStatsHomePage": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
     "signoutButtonHomePage": "Sair da conta",
 
     "synopsisBookViewerPage": "Sinopse",
