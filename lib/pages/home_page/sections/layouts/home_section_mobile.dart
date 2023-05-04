@@ -134,7 +134,8 @@ class HomeSectionMobile extends HookConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                      "${bookStatsFuture.hasData ? bookStatsFuture.data!.count : "-"} livros",
+                      AppLocalizations.of(context)!.bookCountStatsHomePage(
+                          bookStatsFuture.hasData ? bookStatsFuture.data!.count : 0),
                       style: Theme.of(context).textTheme.bodyLarge),
                   IconButton(
                       onPressed: () {}, icon: const Icon(Icons.sort_rounded))

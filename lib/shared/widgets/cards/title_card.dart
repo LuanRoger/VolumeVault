@@ -18,6 +18,7 @@ class TitleCard extends StatelessWidget {
     return SizedBox(
       width: expand ? double.infinity : null,
       child: Card(
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
