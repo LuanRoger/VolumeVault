@@ -12,9 +12,10 @@ public class StatsRepository : IStatsRepository
         this.context = context;
     }
     
-    public async Task<int> GetUserBooksCount(int userId)
+    public async Task<int> GetUserBooksCount(string userId)
     {
-        return await context.books.Where(book => book.owner.id == userId)
+        return await context.books
+            .Where(book => book.owner == userId)
             .CountAsync();
     }
 }

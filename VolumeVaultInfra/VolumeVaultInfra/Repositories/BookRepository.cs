@@ -18,10 +18,10 @@ public class BookRepository : IBookRepository
     
     public async Task<BookModel?> GetBookById(int id) => await _bookDb.books.FindAsync(id);
     
-    public async Task<IReadOnlyList<string>> GetUserBooksGenres(int userId)
+    public async Task<IReadOnlyList<string>> GetUserBooksGenres(string userId)
     {
         List<string?> genresFromDb = await _bookDb.books
-            .Where(book => book.owner.id == userId)
+            .Where(book => book.owner == userId)
             .Select(book => book.genre).ToListAsync();
         var filteredGenres = genresFromDb.OfType<string>()
             .Distinct()
@@ -31,10 +31,11 @@ public class BookRepository : IBookRepository
         return filteredGenres;
     }
 
-    public async Task<IReadOnlyList<BookModel>> GetUserOwnedBooksSplited(int userId, int section, int limitPerSection, 
+    public async Task<IReadOnlyList<BookModel>> GetUserOwnedBooksSplited(string userId, int section, int limitPerSection, 
         BookSortOptions? bookSortOptions)
     {
-        var splitedBooks =  _bookDb.books.Where(book => book.owner.id == userId)
+        var splitedBooks =  _bookDb.books
+            .Where(book => book.owner == userId)
             .Skip(limitPerSection * section - limitPerSection)
             .Take(limitPerSection);
         if(bookSortOptions is not null)

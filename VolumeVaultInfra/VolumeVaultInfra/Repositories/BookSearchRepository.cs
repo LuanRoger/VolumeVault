@@ -52,7 +52,7 @@ public class BookSearchRepository : IBookSearchRepository
         return endResources.Error is null;
     }
 
-    public async Task<IReadOnlyList<BookSearchModel>> SearchBook(int userId, string query, int limitPerSection)
+    public async Task<IReadOnlyList<BookSearchModel>> SearchBook(string userId, string query, int limitPerSection)
     {
         SearchQuery searchQuery = new()
             { 

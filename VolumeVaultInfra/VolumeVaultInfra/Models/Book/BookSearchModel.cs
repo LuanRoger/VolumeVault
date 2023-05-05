@@ -35,7 +35,7 @@ public class BookSearchModel
     
     public required DateTime lastModification { get; init; }
     
-    public int ownerId { get; init; }
+    public string ownerId { get; init; }
     
     public static BookSearchModel FromBookModel(BookModel bookModel) => new()
     {
@@ -55,6 +55,6 @@ public class BookSearchModel
         tags = bookModel.tags,
         createdAt = bookModel.createdAt,
         lastModification = bookModel.lastModification,
-        ownerId = bookModel.owner.id
+        ownerId = bookModel.owner
     };
 }

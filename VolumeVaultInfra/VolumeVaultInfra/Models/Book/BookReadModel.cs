@@ -1,5 +1,4 @@
 ﻿using VolumeVaultInfra.Models.Enums;
-using VolumeVaultInfra.Models.User;
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -46,7 +45,7 @@ public class BookReadModel
     
     public required DateTime lastModification { get; init; }
 
-    public required UserReadModel owner { get; init; }
+    public required string owner { get; init; }
     
     public static BookReadModel FromBookModel(BookModel bookModel) => new()
     {
@@ -70,6 +69,6 @@ public class BookReadModel
         tags = bookModel.tags,
         createdAt = bookModel.createdAt,
         lastModification = bookModel.lastModification,
-        owner = UserReadModel.FromUserModel(bookModel.owner),
+        owner = bookModel.owner
     };
 }

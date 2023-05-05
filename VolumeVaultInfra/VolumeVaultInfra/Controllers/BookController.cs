@@ -2,7 +2,6 @@
 using FluentValidation.Results;
 using VolumeVaultInfra.Exceptions;
 using VolumeVaultInfra.Models.Book;
-using VolumeVaultInfra.Models.User;
 using VolumeVaultInfra.Models.Utils;
 using VolumeVaultInfra.Repositories;
 using VolumeVaultInfra.Services.Metrics;
@@ -14,7 +13,6 @@ public class BookController : IBookController
 {
     private IBookRepository _bookRepository { get; }
     private IBookSearchRepository _searchRepository { get; }
-    private IUserRepository _userRepository { get; }
     private IBookControllerMetrics _metrics { get; }
     private IValidator<BookWriteModel> _bookWriteModelValidator { get; }
     private IValidator<BookUpdateModel> _bookUpdateModelValidator { get; }
@@ -22,7 +20,6 @@ public class BookController : IBookController
 
     public BookController(IBookRepository bookRepository,
         IBookSearchRepository searchRepository,
-        IUserRepository userRepository,
         IBookControllerMetrics metrics,
         IValidator<BookWriteModel> bookWriteModelValidator,
         IValidator<BookUpdateModel> bookUpdateModelValidator,
@@ -30,25 +27,16 @@ public class BookController : IBookController
     {
         _bookRepository = bookRepository;
         _searchRepository = searchRepository;
-        _userRepository = userRepository;
         _metrics = metrics;
         _bookWriteModelValidator = bookWriteModelValidator;
         _bookUpdateModelValidator = bookUpdateModelValidator;
         _logger = logger;
     }
     
-    public async Task<BookReadModel> GetBookById(int userId, int bookId)
+    public async Task<BookReadModel> GetBookById(string userId, int bookId)
     {
-        UserModel? relatedUser = await _userRepository.GetUserById(userId);
-        if(relatedUser is null)
-        {
-            Exception ex = new UserNotFoundException(userId);
-            _logger.Error(ex, ex.Message);
-            throw ex;
-        }
-        
         _logger.Information("Getting book ID[{0}] owned by {1}", 
-            bookId, relatedUser.username);
+            bookId, userId);
         BookModel? book = await _bookRepository.GetBookById(bookId);
         if(book is null)
         {
@@ -56,23 +44,17 @@ public class BookController : IBookController
             _logger.Error(ex, ex.Message);
             throw ex;
         }
-        if(book.owner != relatedUser)
-        {
-            Exception ex = new NotOwnerBookException(book.title, relatedUser.username);
-            _logger.Error(ex, ex.Message);
-            throw ex;    
-        }
 
         _logger.Information("Found Title[{0}]. Sending book...", book.title);
         BookReadModel bookReadModel = BookReadModel.FromBookModel(book);
         return bookReadModel;
     }
-    public async Task<IReadOnlyList<string>> GetBooksGenre(int userId)
+    public async Task<IReadOnlyList<string>> GetBooksGenre(string userId)
     {
         return await _bookRepository.GetUserBooksGenres(userId);
     }
     
-    public async Task<BookReadModel> RegisterNewBook(int userId, BookWriteModel book)
+    public async Task<BookReadModel> RegisterNewBook(string userId, BookWriteModel book)
     {
         ValidationResult validationResult = await _bookWriteModelValidator.ValidateAsync(book);
         if(!validationResult.IsValid)
@@ -85,14 +67,7 @@ public class BookController : IBookController
         }
         _logger.Information("Registering a new book: Title {0}.", book.title);
         
-        UserModel? relatedUser = await _userRepository.GetUserById(userId);
-        if(relatedUser is null)
-        {
-            Exception ex = new UserNotFoundException(userId);
-            _logger.Error(ex, ex.Message);
-            throw ex;
-        }
-        _logger.Information("The book will be owner by ID {0}.", relatedUser.id);
+        _logger.Information("The book will be owner by ID {0}.", userId);
 
         BookModel newBook = new()
         {
@@ -115,7 +90,7 @@ public class BookController : IBookController
             tags = book.tags,
             createdAt = book.createdAt,
             lastModification = book.lastModification,
-            owner = relatedUser
+            owner = userId.ToString()
         };
         BookModel registeredBook = await _bookRepository.AddBook(newBook);
         await _bookRepository.Flush();
@@ -129,23 +104,15 @@ public class BookController : IBookController
         return BookReadModel.FromBookModel(registeredBook);
     }
 
-    public async Task<BookUserRelatedReadModel> GetAllUserReleatedBooks(int userId, int page, int limitPerPage, BookSortOptions? bookSortOptions)
+    public async Task<BookUserRelatedReadModel> GetAllUserReleatedBooks(string userId, int page, int limitPerPage, BookSortOptions? bookSortOptions)
     {
-        UserModel? relatedUser = await _userRepository.GetUserById(userId);
-        if(relatedUser is null)
-        {
-            Exception ex = new UserNotFoundException(userId);
-            _logger.Error(ex, ex.Message);
-            throw ex;
-        }
-            
-        _logger.Information("Getting books from user ID[{0}].", relatedUser.id);
+        _logger.Information("Getting books from user ID[{0}].", userId);
         _logger.Information("{0}: {1}, {2}: {3}", nameof(page), page,
             nameof(limitPerPage), limitPerPage);
 
         _logger.Information("Geting results from database.");
         IReadOnlyList<BookReadModel> userBooks = 
-            (await _bookRepository.GetUserOwnedBooksSplited(relatedUser.id, page, limitPerPage, bookSortOptions))
+            (await _bookRepository.GetUserOwnedBooksSplited(userId, page, limitPerPage, bookSortOptions))
             .Select(BookReadModel.FromBookModel).ToList();
         
         BookUserRelatedReadModel userRelatedBooks = new()
@@ -159,7 +126,7 @@ public class BookController : IBookController
         return userRelatedBooks;
     }
 
-    public async Task<IReadOnlyList<BookSearchReadModel>> SearchBook(int userId, string searchQuery, int limitPerPage)
+    public async Task<IReadOnlyList<BookSearchReadModel>> SearchBook(string userId, string searchQuery, int limitPerPage)
     {
         var searchResults = await _searchRepository.SearchBook(userId, searchQuery, limitPerPage);
         var filteredResult = 
@@ -172,7 +139,7 @@ public class BookController : IBookController
         return searchReadResults;
     }
 
-    public async Task UpdateBook(int userId, int bookId, BookUpdateModel bookUpdate)
+    public async Task UpdateBook(string userId, int bookId, BookUpdateModel bookUpdate)
     {
         ValidationResult validationResult = await _bookUpdateModelValidator.ValidateAsync(bookUpdate);
         if(!validationResult.IsValid)
@@ -184,26 +151,12 @@ public class BookController : IBookController
             throw ex;
         }
 
-        UserModel? relatedUser = await _userRepository.GetUserById(userId);
-        if(relatedUser is null)
-        {
-            Exception ex = new UserNotFoundException(userId);
-            _logger.Error(ex, ex.Message);
-            throw ex;
-        }
-        
         BookModel? book = await _bookRepository.GetBookById(bookId);
         if(book is null)
         {
             Exception ex = new BookNotFoundException(bookId);
             _logger.Error(ex, ex.Message);
             throw ex;
-        }
-        if(book.owner != relatedUser)
-        {
-            Exception ex = new NotOwnerBookException(book.title, relatedUser.username);
-            _logger.Error(ex, ex.Message);
-            throw ex;    
         }
         _logger.Information("Updating book ID[{0}]", book.id);
         bool hasBeenModified = false;
@@ -301,28 +254,14 @@ public class BookController : IBookController
         _logger.Information("Book ID[{0}] updated.", book.id);
     }
     
-    public async Task<int> DeleteBook(int userId, int bookId)
+    public async Task<int> DeleteBook(string userId, int bookId)
     {
-        UserModel? relatedUser = await _userRepository.GetUserById(userId);
-        if(relatedUser is null)
-        {
-            Exception ex = new UserNotFoundException(userId);
-            _logger.Error(ex, ex.Message);
-            throw ex;
-        }
-        
         BookModel? book = await _bookRepository.GetBookById(bookId);
         if(book is null)
         {
             Exception ex = new BookNotFoundException(bookId);
             _logger.Error(ex, ex.Message);
             throw ex;    
-        }
-        if(book.owner != relatedUser)
-        {
-            Exception ex = new NotOwnerBookException(book.title, relatedUser.username);
-            _logger.Error(ex, ex.Message);
-            throw ex;
         }
         _logger.Information("Deleting book ID[{0}].", book.id);
 

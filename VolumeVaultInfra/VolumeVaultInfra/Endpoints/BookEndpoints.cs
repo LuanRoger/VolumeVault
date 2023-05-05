@@ -23,22 +23,14 @@ internal static class BookEndpoints
             {
                 int idClaim = int.Parse(context.User.Claims
                     .First(claim => claim.Type == "ID").Value);
-
-                BookUserRelatedReadModel userBooks;
-                try
+                
+                BookSortOptions sortOptions = new()
                 {
-                    BookSortOptions sortOptions = new()
-                    {
-                        sortOptions = sort,
-                        ascending = ascending ?? true
-                    };
-                    userBooks = await bookController
-                        .GetAllUserReleatedBooks(idClaim, page, limitPerPage ?? 10, sortOptions);
-                }
-                catch (UserNotFoundException e)
-                {
-                    return Results.BadRequest(e.Message);
-                }
+                    sortOptions = sort,
+                    ascending = ascending ?? true
+                };
+                BookUserRelatedReadModel userBooks = await bookController
+                    .GetAllUserReleatedBooks(idClaim, page, limitPerPage ?? 10, sortOptions);
 
                 return Results.Ok(userBooks);
             });
@@ -55,7 +47,7 @@ internal static class BookEndpoints
                     { 
                         book = await controller.GetBookById(idClaim, id);
                     }
-                    catch (Exception e) when (e is BookNotFoundException or UserNotFoundException)
+                    catch (Exception e) when (e is BookNotFoundException)
                     {
                         return Results.BadRequest(e.Message);
                     }
@@ -98,7 +90,7 @@ internal static class BookEndpoints
                 {
                     registeredBook = await bookController.RegisterNewBook(idClaim, bookWriteInfo);
                 }
-                catch (Exception e) when (e is UserNotFoundException or NotValidBookInformationException)
+                catch (Exception e) when (e is NotValidBookInformationException)
                 {
                     return Results.BadRequest(e.Message);
                 }
@@ -118,7 +110,7 @@ internal static class BookEndpoints
                 {
                     idDeletedBook = await bookController.DeleteBook(idClaim, id);
                 }
-                catch (Exception e) when (e is UserNotFoundException or BookNotFoundException)
+                catch (Exception e) when (e is BookNotFoundException)
                 {
                     return Results.BadRequest(e.Message);
                 }
@@ -142,8 +134,7 @@ internal static class BookEndpoints
                 {
                     await bookController.UpdateBook(idClaim, id, bookUpdate);
                 }
-                catch (Exception e) when (e is UserNotFoundException or
-                                              BookNotFoundException or
+                catch (Exception e) when (e is BookNotFoundException or
                                               NotValidBookInformationException)
                 {
                     return Results.BadRequest(e.Message);

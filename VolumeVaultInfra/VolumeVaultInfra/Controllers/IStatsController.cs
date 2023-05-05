@@ -4,5 +4,5 @@ namespace VolumeVaultInfra.Controllers;
 
 public interface IStatsController
 {
-    public Task<BooksStatsReadModel> GetUserBooksStats(int userId);
+    public Task<BooksStatsReadModel> GetUserBooksStats(string userId);
 }

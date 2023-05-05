@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.InteropServices.JavaScript;
 using VolumeVaultInfra.Models.Enums;
-using VolumeVaultInfra.Models.User;
 
 namespace VolumeVaultInfra.Models.Book;
 
@@ -80,5 +78,5 @@ public class BookModel
     public required DateTime lastModification { get; set; } 
     
     [Column("Owner")]
-    public required UserModel owner { get; set; }
+    public required string owner { get; set; }
 }
