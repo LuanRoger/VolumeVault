@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using VolumeVaultInfra.Context;
 using VolumeVaultInfra.Models.Book;
+using VolumeVaultInfra.Models.Utils;
 
 namespace VolumeVaultInfra.Repositories;
 
@@ -30,13 +31,20 @@ public class BookRepository : IBookRepository
         return filteredGenres;
     }
 
-    public async Task<IReadOnlyList<BookModel>> GetUserOwnedBooksSplited(int userId, int section, int limitPerSection) =>
-        await _bookDb.books.Where(book => book.owner.id == userId)
+    public async Task<IReadOnlyList<BookModel>> GetUserOwnedBooksSplited(int userId, int section, int limitPerSection, 
+        BookSortOptions? bookSortOptions)
+    {
+        var splitedBooks =  _bookDb.books.Where(book => book.owner.id == userId)
             .Skip(limitPerSection * section - limitPerSection)
-            .Take(limitPerSection)
-            .OrderBy(book => book.id)
-            .ToListAsync();
-    
+            .Take(limitPerSection);
+        if(bookSortOptions is not null)
+            splitedBooks = bookSortOptions.ascending ? 
+                splitedBooks.OrderBy(bookSortOptions.GetExpression()) :
+                splitedBooks.OrderByDescending(bookSortOptions.GetExpression());
+        
+        return await splitedBooks.ToListAsync();
+    }
+
     public BookModel DeleteBook(BookModel book) => _bookDb.books.Remove(book).Entity;
     
     public async Task Flush() => await _bookDb.SaveChangesAsync();

@@ -58,10 +58,10 @@ class RegisterBookRequest {
         if (coverLink != null) "coverLink": coverLink,
         if (buyLink != null) "buyLink": buyLink,
         if (readStatus != null) "readStatus": readStatus!.index,
-        if (readStartDay != null) "readStartDay": readStartDay!.toIso8601String(),
-        if (readEndDay != null) "readEndDay": readEndDay!.toIso8601String(),
+        if (readStartDay != null) "readStartDay": readStartDay!.toUtc().toIso8601String(),
+        if (readEndDay != null) "readEndDay": readEndDay!.toUtc().toIso8601String(),
         if (tags != null) "tags": tags!.toList(),
-        "createdAt": createdAt.toIso8601String(),
-        "lastModification": lastModification.toIso8601String(),
+        "createdAt": createdAt.toUtc().toIso8601String(),
+        "lastModification": lastModification.toUtc().toIso8601String(),
       };
 }

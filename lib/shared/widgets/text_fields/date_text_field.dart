@@ -6,6 +6,7 @@ class DateTextField extends StatelessWidget {
   final DateTime firstDate;
   final DateTime lastDate;
   final String? label;
+  final bool? enabled;
 
   final TextEditingController? controller;
 
@@ -16,12 +17,14 @@ class DateTextField extends StatelessWidget {
       required this.firstDate,
       required this.lastDate,
       this.controller,
+      this.enabled,
       this.label});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
+      enabled: enabled,
       decoration: InputDecoration(
           border: const OutlineInputBorder(),
           icon: const Icon(Icons.calendar_month_rounded),

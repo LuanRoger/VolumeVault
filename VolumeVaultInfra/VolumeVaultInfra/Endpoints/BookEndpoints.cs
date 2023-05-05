@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using VolumeVaultInfra.Controllers;
 using VolumeVaultInfra.Exceptions;
 using VolumeVaultInfra.Models.Book;
+using VolumeVaultInfra.Models.Enums;
+using VolumeVaultInfra.Models.Utils;
+
 // ReSharper disable UnusedMethodReturnValue.Global
 
 namespace VolumeVaultInfra.Endpoints;
@@ -14,6 +17,8 @@ internal static class BookEndpoints
             async (HttpContext context,
                 [FromQuery] int page,
                 [FromQuery] int? limitPerPage,
+                [FromQuery] BookSort? sort,
+                [FromQuery] bool? ascending,
                 [FromServices] IBookController bookController) =>
             {
                 int idClaim = int.Parse(context.User.Claims
@@ -22,8 +27,13 @@ internal static class BookEndpoints
                 BookUserRelatedReadModel userBooks;
                 try
                 {
+                    BookSortOptions sortOptions = new()
+                    {
+                        sortOptions = sort,
+                        ascending = ascending ?? true
+                    };
                     userBooks = await bookController
-                        .GetAllUserReleatedBooks(idClaim, page, limitPerPage ?? 10);
+                        .GetAllUserReleatedBooks(idClaim, page, limitPerPage ?? 10, sortOptions);
                 }
                 catch (UserNotFoundException e)
                 {

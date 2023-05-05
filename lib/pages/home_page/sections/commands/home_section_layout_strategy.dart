@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/book_search_result.dart';
+import 'package:volume_vault/models/book_sort_option.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/book_stats.dart';
@@ -48,11 +49,12 @@ abstract class HomeSectionLayoutStrategy {
   }
 
   Future<UserBookResult> fetchUserBooks(
-      WidgetRef ref, GetUserBookRequest getUserBookRequest) async {
+      WidgetRef ref, GetUserBookRequest getUserBookRequest,
+      {BookSortOption? sortOptions}) async {
     final bookController = await ref.read(bookControllerProvider.future);
 
-    UserBookResult userBookResult =
-        await bookController.getUserBooks(getUserBookRequest);
+    UserBookResult userBookResult = await bookController
+        .getUserBooks(getUserBookRequest, sortOption: sortOptions);
     return userBookResult;
   }
 
@@ -115,4 +117,7 @@ abstract class HomeSectionLayoutStrategy {
           context, AppRoutes.loginPageRoute, (_) => false);
     }
   }
+
+  Future<BookSortOption?> showSortFilterDialog(BuildContext context,
+      {bool wrapped = true, BookSortOption? currentOptions});
 }

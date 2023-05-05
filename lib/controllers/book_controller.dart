@@ -1,5 +1,6 @@
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/book_search_result.dart';
+import 'package:volume_vault/models/book_sort_option.dart';
 import 'package:volume_vault/services/book_service.dart';
 import 'package:volume_vault/services/models/edit_book_request.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
@@ -31,10 +32,12 @@ class BookController {
     return await _service!.deleteBook(bookId);
   }
 
-  Future<UserBookResult> getUserBooks(GetUserBookRequest request) async {
+  Future<UserBookResult> getUserBooks(GetUserBookRequest request,
+      {BookSortOption? sortOption}) async {
     if (_service == null) return UserBookResult.empty();
 
-    UserBookResult? userBookResult = await _service!.getUserBook(request);
+    UserBookResult? userBookResult =
+        await _service!.getUserBook(request, sortOption: sortOption);
 
     return userBookResult ?? UserBookResult.empty();
   }

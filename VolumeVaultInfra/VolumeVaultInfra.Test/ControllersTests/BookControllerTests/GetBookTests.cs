@@ -5,8 +5,10 @@ using Serilog;
 using VolumeVaultInfra.Controllers;
 using VolumeVaultInfra.Models.Book;
 using VolumeVaultInfra.Models.User;
+using VolumeVaultInfra.Models.Utils;
 using VolumeVaultInfra.Repositories;
 using VolumeVaultInfra.Services.Metrics;
+using VolumeVaultInfra.Test.ControllersTests.BookControllerTests.FakeData;
 using VolumeVaultInfra.Test.ControllersTests.UserControllerTest;
 using VolumeVaultInfra.Validators;
 
@@ -29,7 +31,7 @@ public class GetBookTests
         _bookController = new(_bookRepository.Object, _bookSearchRepository.Object, _userRepository.Object, _bookControllerMetricsMock.Object,
             bookValidator, bookUpdateValidator, _logger.Object);
     }
-    
+
     [Theory]
     [InlineData(1, 10)]
     [InlineData(1, 20)]
@@ -39,15 +41,16 @@ public class GetBookTests
     public async void GetBookFromUserTest(int page, int limitPerPage)
     {
         UserModel user = UserFakeModels.userTestDumy;
+        BookSortOptions sortOptions = BookUtilsFakeModels.defaultBookSortOptions;
         List<BookModel> dumyBooks = BookFakeGenerators.GenerateDumyBooks(limitPerPage).ToList();
         _userRepository.Setup(ex => ex.GetUserById(user.id))
             .ReturnsAsync(user);
         _bookRepository.Setup(ex => 
-            ex.GetUserOwnedBooksSplited(user.id, page, limitPerPage))
+            ex.GetUserOwnedBooksSplited(user.id, page, limitPerPage, It.IsAny<BookSortOptions>()))
             .ReturnsAsync(dumyBooks);
         
         BookUserRelatedReadModel booksResult = await _bookController
-            .GetAllUserReleatedBooks(user.id, page, limitPerPage);
+            .GetAllUserReleatedBooks(user.id, page, limitPerPage, sortOptions);
         
         Assert.Equal(page, booksResult.page);
         Assert.Equal(limitPerPage, booksResult.limitPerPage);
@@ -86,6 +89,7 @@ public class GetBookTests
          
          Assert.All(result, searchBook => Assert.Equal(userId, searchBook.ownerId));
     }
+    
     [Theory]
     [InlineData(5, 5)]
     [InlineData(10, 10)]
