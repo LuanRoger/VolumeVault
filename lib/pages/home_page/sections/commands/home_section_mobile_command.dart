@@ -1,7 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide BottomSheet;
 import 'package:volume_vault/models/book_model.dart';
+import 'package:volume_vault/models/book_sort_option.dart';
+import 'package:volume_vault/models/enums/book_sort.dart';
 import 'package:volume_vault/pages/home_page/sections/commands/home_section_layout_strategy.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
+import 'package:volume_vault/shared/widgets/bottom_sheet/bottom_sheet.dart';
+import 'package:volume_vault/shared/widgets/chip/book_sort_chip_choice.dart';
+import 'package:volume_vault/shared/widgets/switcher/text_switch.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeSectionMobileCommand extends HomeSectionLayoutStrategy {
   const HomeSectionMobileCommand();
@@ -17,5 +23,56 @@ class HomeSectionMobileCommand extends HomeSectionLayoutStrategy {
       onUpdate?.call();
       return hasChange;
     });
+  }
+
+  @override
+  Future<BookSortOption?> showSortFilterDialog(BuildContext context,
+      {bool wrapped = true, BookSortOption? currentOptions}) async {
+    bool update = false;
+    bool ascending = currentOptions?.ascending ?? true;
+    BookSort? sortType = currentOptions?.sort;
+
+    BottomSheet filterSheet = BottomSheet(
+        isScrollControlled: false,
+        isDismissible: true,
+        dragable: true,
+        action: (context) => FilledButton(
+              onPressed: () {
+                update = true;
+                Navigator.pop(context);
+              },
+              child:
+                  Text(AppLocalizations.of(context)!.sortOptionApplySort),
+            ),
+        items: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              TextSwitch(
+                text: "Cresente",
+                value: ascending,
+                onChanged: (newValue) => ascending = newValue,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  sortType = null;
+                  ascending = true;
+                  update = true;
+                  Navigator.pop(context);
+                },
+                child: Text(AppLocalizations.of(context)!.sortOptionClearSort),
+              ),
+            ],
+          ),
+          BookSortChipChoice(
+            initialOption: sortType,
+            wrapped: wrapped,
+            onChanged: (newValue) => sortType = newValue,
+          ),
+        ]);
+    await filterSheet.show(context);
+
+    return update ? BookSortOption(sort: sortType, ascending: ascending) : null;
   }
 }

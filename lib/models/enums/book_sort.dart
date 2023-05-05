@@ -3,6 +3,7 @@ enum BookSort {
   author,
   releaseDate,
   genre,
+  page,
   publisher,
   readStartDay,
   readEndDay,
