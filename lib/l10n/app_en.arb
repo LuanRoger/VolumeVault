@@ -36,6 +36,8 @@
         }
     },
     "signoutButtonHomePage": "Signout",
+    "sortOptionApplySort": "Apply",
+    "sortOptionClearSort": "Clear",
 
     "synopsisBookViewerPage": "Synopsis",
     "informationsBookViewerPage": "Informations",

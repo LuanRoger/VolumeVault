@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/book_model.dart';
+import 'package:volume_vault/models/book_sort_option.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
 import 'package:volume_vault/pages/home_page/sections/commands/home_section_mobile_command.dart';
 import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
@@ -32,7 +33,7 @@ class HomeSectionMobile extends HookConsumerWidget {
 
     final visualizationTypeState =
         useState<VisualizationType>(viewType ?? VisualizationType.LIST);
-
+    final sortOptionState = useState(BookSortOption());
     final searchTextController = useTextEditingController();
 
     final refreshKeyState = useState(UniqueKey());
@@ -43,9 +44,8 @@ class HomeSectionMobile extends HookConsumerWidget {
     useEffect(() {
       bookFetcher(pageKey) async {
         UserBookResult result = await _commands.fetchUserBooks(
-          ref,
-          GetUserBookRequest(page: pageKey),
-        );
+            ref, GetUserBookRequest(page: pageKey),
+            sortOptions: sortOptionState.value);
         if (result.books.isEmpty) {
           pagingController.appendLastPage(result.books);
           return;
@@ -135,10 +135,26 @@ class HomeSectionMobile extends HookConsumerWidget {
                 children: [
                   Text(
                       AppLocalizations.of(context)!.bookCountStatsHomePage(
-                          bookStatsFuture.hasData ? bookStatsFuture.data!.count : 0),
+                          bookStatsFuture.hasData
+                              ? bookStatsFuture.data!.count
+                              : 0),
                       style: Theme.of(context).textTheme.bodyLarge),
-                  IconButton(
-                      onPressed: () {}, icon: const Icon(Icons.sort_rounded))
+                  Badge(
+                    alignment: AlignmentDirectional.bottomEnd,
+                    isLabelVisible: sortOptionState.value.sort != null,
+                    child: IconButton(
+                        onPressed: () async {
+                          BookSortOption? newSortOptions =
+                              await _commands.showSortFilterDialog(context,
+                                  currentOptions: sortOptionState.value,
+                                  wrapped: true);
+                          if (newSortOptions == null) return;
+                          sortOptionState.value = newSortOptions;
+
+                          pagingController.refresh();
+                        },
+                        icon: const Icon(Icons.sort_rounded)),
+                  )
                 ],
               ),
             ),
