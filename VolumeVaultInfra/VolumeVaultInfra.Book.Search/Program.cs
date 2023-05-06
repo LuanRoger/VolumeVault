@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentValidation;
 using Meilisearch;
 using Serilog;
 using VolumeVaultInfra.Book.Search;
@@ -8,6 +9,7 @@ using VolumeVaultInfra.Book.Search.Models;
 using VolumeVaultInfra.Book.Search.Repositories;
 using VolumeVaultInfra.Book.Search.Services;
 using VolumeVaultInfra.Book.Search.Utils.EnviromentVars;
+using VolumeVaultInfra.Book.Search.Validators;
 using ILogger = Serilog.ILogger;
 
 
@@ -35,8 +37,6 @@ builder.Services.AddSingleton<MeilisearchClient>(_ =>
     
     return new(meilisearchHost, meilisearchMasterKey);
 });
-builder.Services.AddScoped<IBookSearchRepository, BookSearchRepository>();
-
 builder.Services.AddSingleton<IMapper>(_ =>
 {
     MapperConfiguration mapperConfig = new(config =>
@@ -46,9 +46,14 @@ builder.Services.AddSingleton<IMapper>(_ =>
         
         config.CreateMap<GrpcBookSearchModel, BookSearchModel>();
         config.CreateMap<BookSearchModel, GrpcBookSearchModel>();
+        config.CreateMap<GrpcBookSearchUpdateModel, BookSearchUpdateModel>();
     });
     return mapperConfig.CreateMapper();
 });
+
+builder.Services.AddScoped<IBookSearchRepository, BookSearchRepository>();
+builder.Services.AddScoped<IValidator<BookSearchModel>, BookSearchModelValidator>();
+builder.Services.AddScoped<IValidator<BookSearchUpdateModel>, BookSearchUpdateModelValidator>();
 
 WebApplication app = builder.Build();
 
