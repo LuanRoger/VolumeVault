@@ -1,4 +1,4 @@
-using VolumeVaultInfra.Services.Jwt;
+using VolumeVaultInfra.Book.Services.Jwt;
 
 namespace VolumeVaultInfra.Test.ServicesTests;
 

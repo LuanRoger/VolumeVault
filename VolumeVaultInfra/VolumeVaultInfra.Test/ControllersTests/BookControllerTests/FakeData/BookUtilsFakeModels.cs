@@ -1,5 +1,5 @@
-using VolumeVaultInfra.Models.Enums;
-using VolumeVaultInfra.Models.Utils;
+using VolumeVaultInfra.Book.Models.Enums;
+using VolumeVaultInfra.Book.Models.Utils;
 
 namespace VolumeVaultInfra.Test.ControllersTests.BookControllerTests.FakeData;
 

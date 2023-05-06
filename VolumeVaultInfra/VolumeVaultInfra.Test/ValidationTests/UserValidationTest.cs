@@ -1,7 +1,7 @@
 using FluentValidation;
 using FluentValidation.Results;
-using VolumeVaultInfra.Models.User;
-using VolumeVaultInfra.Validators;
+using VolumeVaultInfra.Book.Models.User;
+using VolumeVaultInfra.Book.Validators;
 
 namespace VolumeVaultInfra.Test.ValidationTests;
 

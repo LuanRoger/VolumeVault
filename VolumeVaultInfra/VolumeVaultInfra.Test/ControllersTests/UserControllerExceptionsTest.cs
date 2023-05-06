@@ -1,13 +1,13 @@
 using FluentValidation;
 using Moq;
 using Serilog;
-using VolumeVaultInfra.Controllers;
-using VolumeVaultInfra.Exceptions;
-using VolumeVaultInfra.Models.User;
-using VolumeVaultInfra.Repositories;
-using VolumeVaultInfra.Services.Jwt;
-using VolumeVaultInfra.Services.Metrics;
-using VolumeVaultInfra.Validators;
+using VolumeVaultInfra.Book.Controllers;
+using VolumeVaultInfra.Book.Exceptions;
+using VolumeVaultInfra.Book.Models.User;
+using VolumeVaultInfra.Book.Repositories;
+using VolumeVaultInfra.Book.Services.Jwt;
+using VolumeVaultInfra.Book.Services.Metrics;
+using VolumeVaultInfra.Book.Validators;
 
 namespace VolumeVaultInfra.Test.ControllersTests;
 
