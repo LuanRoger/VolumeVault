@@ -3,6 +3,7 @@
 public class BookSearchModel
 {
     public required int id { get; init; }
+    
     public required string title { get; init; }
     
     public required string author { get; init; }
