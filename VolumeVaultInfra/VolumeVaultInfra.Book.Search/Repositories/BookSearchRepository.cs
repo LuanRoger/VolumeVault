@@ -6,21 +6,21 @@ namespace VolumeVaultInfra.Book.Search.Repositories;
 
 public class BookSearchRepository : IBookSearchRepository
 {
-    private MeilisearchClient _client { get; }
+    private MeilisearchClient client { get; }
     private Index bookSearchIndex { get; }
     
     private const string BOOK_INDEX_PRIMARY_KEY = "id";
     
     public BookSearchRepository(MeilisearchClient client)
     {
-        _client = client;
+        this.client = client;
         
-        bookSearchIndex = _client.Index("book");
+        bookSearchIndex = this.client.Index("book");
     }
     
     public async Task EnsureCreatedAndReady()
     {
-        await _client.CreateIndexAsync("book", BOOK_INDEX_PRIMARY_KEY);
+        await client.CreateIndexAsync("book", BOOK_INDEX_PRIMARY_KEY);
         Settings bookIndexSettings = new()
         {
             FilterableAttributes = new[] { "ownerId" },
@@ -30,7 +30,19 @@ public class BookSearchRepository : IBookSearchRepository
         };
         await bookSearchIndex.UpdateSettingsAsync(bookIndexSettings);
     }
-    
+
+    public async Task<BookSearchModel?> GetBookInSearchById(int bookId, string ownerId)
+    {
+        BookSearchModel bookResult;
+        try
+        {
+            bookResult = await bookSearchIndex.GetDocumentAsync<BookSearchModel>(bookId);
+        }
+        catch (Exception){ return null; }
+        
+        return bookResult;
+    }
+
     public async Task MadeBookSearchable(BookSearchModel bookSearchModel)
     {
         await bookSearchIndex
@@ -38,25 +50,26 @@ public class BookSearchRepository : IBookSearchRepository
                 primaryKey: BOOK_INDEX_PRIMARY_KEY);
     }
     
-    public async Task UpdateSearchBook(int bookId, BookSearchModel bookSearchModel)
+    public async Task UpdateSearchBook(int bookId, BookSearchModel updateModel)
     {
-        await bookSearchIndex.UpdateDocumentsAsync(new[] { bookSearchModel }, 
+        await bookSearchIndex.UpdateDocumentsAsync(new[] { updateModel }, 
             primaryKey: BOOK_INDEX_PRIMARY_KEY);
     }
     
-    public async Task<bool> DeleteBookFromSearch(int id)
+    public async Task<bool> DeleteBookFromSearch(int bookId)
     {
-        TaskInfo taskInfo = await bookSearchIndex.DeleteDocumentsAsync(new[] { id });
-        TaskResource endResources = await _client.WaitForTaskAsync(taskInfo.TaskUid);
+        TaskInfo taskInfo = await bookSearchIndex.DeleteDocumentsAsync(new[] { bookId });
+        TaskResource endResources = await client.WaitForTaskAsync(taskInfo.TaskUid);
         
         return endResources.Error is null;
     }
 
-    public async Task<IReadOnlyList<BookSearchModel>> SearchBook(string userId, string query, int limitPerSection)
+    public async Task<IReadOnlyList<BookSearchModel>> SearchBook(string owenerId, string query, int limitPerSection)
     {
         SearchQuery searchQuery = new()
             { 
-                Filter = $"ownerId = {userId}",
+                Filter = $"ownerId = {owenerId}",
+                Limit = limitPerSection
             };
         var result = 
             await bookSearchIndex.SearchAsync<BookSearchModel>(query, searchQuery);
