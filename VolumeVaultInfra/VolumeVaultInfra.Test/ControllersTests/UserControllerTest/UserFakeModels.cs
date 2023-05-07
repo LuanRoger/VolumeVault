@@ -1,4 +1,4 @@
-using VolumeVaultInfra.Models.User;
+using VolumeVaultInfra.Book.Models.User;
 
 namespace VolumeVaultInfra.Test.ControllersTests.UserControllerTest;
 

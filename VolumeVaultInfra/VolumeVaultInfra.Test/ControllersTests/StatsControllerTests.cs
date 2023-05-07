@@ -1,10 +1,10 @@
 using Moq;
 using Serilog;
-using VolumeVaultInfra.Controllers;
-using VolumeVaultInfra.Models.Stats;
-using VolumeVaultInfra.Models.User;
-using VolumeVaultInfra.Repositories;
-using VolumeVaultInfra.Test.ControllersTests.UserControllerTest;
+using VolumeVaultInfra.Book.Controllers;
+using VolumeVaultInfra.Book.Models.Stats;
+using VolumeVaultInfra.Book.Models.User;
+using VolumeVaultInfra.Book.Repositories;
+using VolumeVaultInfra.Book.Test.ControllersTests.UserControllerTest;
 
 namespace VolumeVaultInfra.Test.ControllersTests;
 
