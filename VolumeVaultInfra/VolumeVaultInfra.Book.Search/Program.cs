@@ -1,10 +1,9 @@
-using AutoMapper;
 using FluentValidation;
 using Meilisearch;
 using Serilog;
-using VolumeVaultInfra.Book.Search;
 using VolumeVaultInfra.Book.Search.Exceptions;
-using VolumeVaultInfra.Book.Search.MapperResolver;
+using VolumeVaultInfra.Book.Search.Interceptors;
+using VolumeVaultInfra.Book.Search.MapperProfiles;
 using VolumeVaultInfra.Book.Search.Models;
 using VolumeVaultInfra.Book.Search.Repositories;
 using VolumeVaultInfra.Book.Search.Services;
@@ -14,8 +13,6 @@ using ILogger = Serilog.ILogger;
 
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-builder.Services.AddGrpc();
-builder.Services.AddGrpcReflection();
 
 ILogger logger = new LoggerConfiguration()
     .Enrich.WithMachineName()
@@ -25,6 +22,12 @@ ILogger logger = new LoggerConfiguration()
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 builder.Host.UseSerilog(logger);
+
+builder.Services.AddGrpc(options =>
+{
+    options.Interceptors.Add<ApiKeyInterceptor>();
+});
+builder.Services.AddGrpcReflection();
 
 builder.Services.AddSingleton<MeilisearchClient>(_ =>
 {

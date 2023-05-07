@@ -40,7 +40,7 @@ public class BookSearchService : Search.SearchBase
                 .Select(error => error.ErrorMessage));
             logger.Error(exception, "The book informations is not valid");
             
-            throw exception;
+            throw new RpcException(new(StatusCode.InvalidArgument, exception.Message));
         }
 
         await searchRepository.MadeBookSearchable(searchModel);
