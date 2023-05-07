@@ -26,8 +26,8 @@ message GrpcBookSearchModel {
     string isbn = 4;
     optional int32 publicationYear = 5;
     optional string publisher = 6;
-    optional uint32 edition = 7;
-    optional uint32 pagesNumber = 8;
+    optional int32 edition = 7;
+    optional int32 pagesNumber = 8;
     optional string genre = 9;
     optional BookFormat format = 10;
     optional ReadStatus readStatus = 11;
@@ -45,8 +45,8 @@ message GrpcBookSearchUpdateModel {
     optional string isbn = 4;
     optional int32 publicationYear = 5;
     optional string publisher = 6;
-    optional uint32 edition = 7;
-    optional uint32 pagesNumber = 8;
+    optional int32 edition = 7;
+    optional int32 pagesNumber = 8;
     optional string genre = 9;
     optional BookFormat format = 10;
     optional ReadStatus readStatus = 11;

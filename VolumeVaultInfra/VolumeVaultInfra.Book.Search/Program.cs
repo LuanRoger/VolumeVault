@@ -44,9 +44,11 @@ builder.Services.AddSingleton<IMapper>(_ =>
         config.CreateMap<Date, DateTime>().ConvertUsing<GrpcDateResolver>();
         config.CreateMap<DateTime, Date>().ConvertUsing<DateTimeGrpcDateResolver>();
         
-        config.CreateMap<GrpcBookSearchModel, BookSearchModel>();
+        config.CreateMap<GrpcBookSearchModel, BookSearchModel>()
+            .ConvertUsing<GrpcBookSearchModelBookSearchModelResolver>();
         config.CreateMap<BookSearchModel, GrpcBookSearchModel>();
-        config.CreateMap<GrpcBookSearchUpdateModel, BookSearchUpdateModel>();
+        config.CreateMap<GrpcBookSearchUpdateModel, BookSearchUpdateModel>()
+            .ConvertUsing<GrpcBookSearchUpdateModelBookSearchModelResolver>();
     });
     return mapperConfig.CreateMapper();
 });
