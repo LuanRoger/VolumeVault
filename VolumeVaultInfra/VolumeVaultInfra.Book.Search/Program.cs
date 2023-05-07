@@ -37,21 +37,9 @@ builder.Services.AddSingleton<MeilisearchClient>(_ =>
     
     return new(meilisearchHost, meilisearchMasterKey);
 });
-builder.Services.AddSingleton<IMapper>(_ =>
-{
-    MapperConfiguration mapperConfig = new(config =>
-    {
-        config.CreateMap<Date, DateTime>().ConvertUsing<GrpcDateResolver>();
-        config.CreateMap<DateTime, Date>().ConvertUsing<DateTimeGrpcDateResolver>();
-        
-        config.CreateMap<GrpcBookSearchModel, BookSearchModel>()
-            .ConvertUsing<GrpcBookSearchModelBookSearchModelResolver>();
-        config.CreateMap<BookSearchModel, GrpcBookSearchModel>();
-        config.CreateMap<GrpcBookSearchUpdateModel, BookSearchUpdateModel>()
-            .ConvertUsing<GrpcBookSearchUpdateModelBookSearchModelResolver>();
-    });
-    return mapperConfig.CreateMapper();
-});
+builder.Services.AddAutoMapper(typeof(DateDateTimeMapperProfile), 
+    typeof(GrpcBookSearchModelMapperProfile), 
+    typeof(GrpcBookSearchUpdateModelMapperProfile));
 
 builder.Services.AddScoped<IBookSearchRepository, BookSearchRepository>();
 builder.Services.AddScoped<IValidator<BookSearchModel>, BookSearchModelValidator>();
