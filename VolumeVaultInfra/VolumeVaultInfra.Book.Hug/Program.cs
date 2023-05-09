@@ -3,12 +3,12 @@ using Meilisearch;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using VolumeVaultInfra.Book.Hug.Contexts;
+using VolumeVaultInfra.Book.Hug.Controller;
+using VolumeVaultInfra.Book.Hug.Endpoints;
 using VolumeVaultInfra.Book.Hug.Exceptions;
 using VolumeVaultInfra.Book.Hug.Mapper.Profiles;
-using VolumeVaultInfra.Book.Hug.Mapper.Resolvers;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Repositories;
-using VolumeVaultInfra.Book.Hug.Services;
 using VolumeVaultInfra.Book.Hug.Utils;
 using VolumeVaultInfra.Book.Hug.Validators;
 using ILogger = Serilog.ILogger;
@@ -23,9 +23,6 @@ ILogger logger = new LoggerConfiguration()
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 builder.Host.UseSerilog(logger);
-
-builder.Services.AddGrpc();
-builder.Services.AddGrpcReflection();
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
@@ -52,8 +49,9 @@ builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IUserIdentifierRepository, UserIdentifierRepository>();
 builder.Services.AddScoped<IValidator<BookWriteModel>, BookWriteModelValidator>();
-builder.Services.AddAutoMapper(typeof(GrpcBookWriteModelBookWriteModelMapperProfile), 
-    typeof(BookModelProfile), typeof(BookModelGrpcBookModelMapperResolver));
+builder.Services.AddAutoMapper(typeof(BookModelProfile));
+
+builder.Services.AddScoped<IBookController, BookController>();
 
 WebApplication app = builder.Build();
 
@@ -64,7 +62,7 @@ using (IServiceScope serviceScope = app.Services.CreateScope())
     dbContext.Database.EnsureCreated();
 }
 
-app.MapGrpcService<BookService>();
-app.MapGrpcReflectionService();
+RouteGroupBuilder bookGroup = app.MapGroup("book");
+bookGroup.MapBookEndpoints();
 
 app.Run();
