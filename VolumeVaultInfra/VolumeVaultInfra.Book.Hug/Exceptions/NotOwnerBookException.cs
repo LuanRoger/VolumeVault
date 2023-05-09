@@ -1,4 +1,4 @@
-﻿namespace VolumeVaultInfra.Book.Exceptions;
+﻿namespace VolumeVaultInfra.Book.Hug.Exceptions;
 
 public class NotOwnerBookException : Exception
 {

@@ -1,0 +1,129 @@
+syntax = "proto3";
+
+option csharp_namespace = "VolumeVaultInfra.Book.Hug";
+
+import "google/protobuf/empty.proto";
+
+package book;
+
+service BookService {
+  rpc GetBooks(GetBooksRequest) returns (stream GrpcBookModel) {}
+  rpc CreateBook(CreateBookRequest) returns (GrpcBookModel) {}
+  rpc UpdateBook(UpdateBookRequest) returns (google.protobuf.Empty) {}
+  rpc DeleteBook(DeleteBookRequest) returns (google.protobuf.Empty) {}
+}
+
+message GrpcBookModel {
+  int32 id = 1;
+  string title = 2;
+  string author = 3;
+  string isbn = 4;
+  optional int32 publicationYear = 5;
+  optional string publisher = 6;
+  optional int32 edition = 7;
+  optional int32 pagesNumber = 8;
+  repeated string genre = 9;
+  optional GrpcBookFormat format = 10;
+  optional string observation = 11;
+  optional string synopsis = 12;
+  optional string coverLink = 13;
+  optional string buyLink = 14;
+  optional GrpcReadStatus readStatus = 15;
+  optional Date readStartDay = 16;
+  optional Date readEndDay = 17;
+  repeated string tags = 18;
+  Date createdAt = 19;
+  Date lastModification = 20;
+  string ownerId = 21;
+}
+
+message GrpcBookWriteModel {
+  string title = 1;
+  string author = 2;
+  string isbn = 3;
+  optional int32 publicationYear = 4;
+  optional string publisher = 5;
+  optional int32 edition = 6;
+  optional int32 pagesNumber = 7;
+  repeated string genre = 8;
+  optional GrpcBookFormat format = 9;
+  optional string observations = 10;
+  optional string synopsis = 11;
+  optional string coverLink = 12;
+  optional string buyLink = 13;
+  optional GrpcReadStatus readStatus = 14;
+  optional Date readStartDay = 15;
+  optional Date readEndDay = 16;
+  repeated string tags = 17;
+}
+
+message GrpcBookUpdateModel {
+  optional string title = 1;
+  optional string author = 2;
+  optional string isbn = 3;
+  optional int32 publicationYear = 4;
+  optional string publisher = 5;
+  optional int32 edition = 6;
+  optional int32 pagesNumber = 7;
+  repeated string genre = 8;
+  optional GrpcBookFormat format = 9;
+  optional GrpcReadStatus readStatus = 10;
+  optional Date readStartDay = 11;
+  optional Date readEndDay = 12;
+  repeated string tags = 13;
+}
+
+message GetBooksRequest {
+  string userId = 1;
+  int32 page = 2;
+  int32 limitPerPage = 3;
+  GrpcBookSort sortOption = 4;
+  bool ascending = 5;
+}
+
+message CreateBookRequest {
+  string userId = 1;
+  GrpcBookWriteModel book = 2;
+}
+
+message UpdateBookRequest {
+  string userId = 1;
+  int32 bookId = 2;
+  GrpcBookUpdateModel book = 3;
+}
+
+message DeleteBookRequest {
+  string userId = 1;
+  int32 bookId = 2;
+}
+
+enum GrpcBookFormat {
+  HARDCOVER = 0;
+  HARDBACK = 1;
+  PAPERBACK = 2;
+  EBOOK = 3;
+}
+enum GrpcReadStatus
+{
+  NOT_READ = 0;
+  READING = 1;
+  HAS_READED = 2;
+}
+
+enum GrpcBookSort {
+    Title = 0;
+    Author = 1;
+    ReleaseDate = 2;
+    Publisher = 3;
+    Genre = 4;
+    Pages = 5;
+    ReadStartDay = 6;
+    ReadEndDay = 7;
+    CreationDate = 8;
+}
+
+message Date {
+  int32 year = 1;
+  int32 month = 2;
+  int32 day = 3;
+}
