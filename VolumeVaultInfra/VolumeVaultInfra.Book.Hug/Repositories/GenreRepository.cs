@@ -13,25 +13,26 @@ public class GenreRepository : IGenreRepository
         this.genreDb = genreDb;
     }
     
-    public async Task AddGenreRange(IEnumerable<GenreModel> genres, BookModel book, UserIdentifier user)
+    public async Task RelateBookGenreRange(IEnumerable<GenreModel> genres, BookModel book, UserIdentifier user)
     {
-        List<BookGenreModel> bookGenreRelation = new();
         foreach (GenreModel genre in genres)
-        {
-            GenreModel? newGenre = await genreDb.genres.FirstOrDefaultAsync(dbGenre => dbGenre.genre == genre.genre);
-            newGenre ??= (await genreDb.genres.AddAsync(genre)).Entity;
-            
-            bookGenreRelation.Add(new()
-            {
-                book = book,
-                genre = newGenre,
-                userIdentifier = user
-            });
-        }
-        
-        await genreDb.bookGenre.AddRangeAsync(bookGenreRelation);
+            await RelateBookGenre(genre, book, user);
     }
-
+    public async Task<GenreModel> RelateBookGenre(GenreModel genre, BookModel book, UserIdentifier user)
+    {
+        GenreModel? newGenre = await genreDb.genres.FirstOrDefaultAsync(dbGenre => dbGenre.genre == genre.genre);
+        newGenre ??= (await genreDb.genres.AddAsync(genre)).Entity;
+            
+        BookGenreModel relation = new()
+        {
+            book = book,
+            genre = newGenre,
+            userIdentifier = user
+        };
+         await genreDb.bookGenre.AddAsync(relation);
+        
+        return newGenre;
+    }
     public async Task<IReadOnlyList<GenreModel>> GetUserGenres(UserIdentifier user) =>
         await genreDb.bookGenre
             .Where(genre => genre.userIdentifier.userIdentifier == user.userIdentifier)
@@ -48,7 +49,7 @@ public class GenreRepository : IGenreRepository
             .OrderBy(genre => genre.genre)
             .ToListAsync();
 
-    public async Task DeleteAllGenreFromBook(BookModel book)
+    public async Task RemoveAllGenreRalationWithBook(BookModel book)
     {
         var relationsToRemove = await genreDb.bookGenre
             .Where(relation => relation.book == book)

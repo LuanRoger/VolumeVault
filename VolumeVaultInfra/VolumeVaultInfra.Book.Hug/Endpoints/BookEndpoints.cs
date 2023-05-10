@@ -1,4 +1,3 @@
-using System.Xml.XPath;
 using Microsoft.AspNetCore.Mvc;
 using VolumeVaultInfra.Book.Hug.Controller;
 using VolumeVaultInfra.Book.Hug.Exceptions;
@@ -30,6 +29,28 @@ public static class BookEndpoints
                 }
                 
                 return Results.Ok(newBookId);
+            });
+        builder.MapPut("/{bookId:int}", 
+            async ([FromQuery] string userId,
+                [FromRoute] int bookId,
+                [FromBody] BookUpdateModel bookUpdateModel,
+                [FromServices] IBookController controller) =>
+            {
+                int updatedBookId;
+                try
+                {
+                    updatedBookId = await controller.UpdateBook(bookUpdateModel, bookId, userId);
+                }
+                catch(NotValidBookInformationException e)
+                {
+                    return Results.BadRequest(e.Message);
+                }
+                catch(UserDoesNotExistsException e)
+                {
+                    return Results.NotFound(e.Message);
+                }
+                
+                return Results.Ok(updatedBookId);
             });
         
         return builder;

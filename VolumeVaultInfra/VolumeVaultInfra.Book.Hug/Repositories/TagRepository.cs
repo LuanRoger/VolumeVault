@@ -13,22 +13,26 @@ public class TagRepository : ITagRepository
         this.tagDb = tagDb;
     }
     
-    public async Task AddTagRange(IEnumerable<TagModel> tags, BookModel book)
+    public async Task RelateBookTagRange(IEnumerable<TagModel> tags, BookModel book)
     {
-        List<BookTagModel> bookTagRelation = new();
         foreach (TagModel tag in tags)
-        {
-            TagModel? newTag = await tagDb.tags.FirstOrDefaultAsync(dbTag => dbTag.tag == tag.tag);;
-            newTag ??= (await tagDb.tags.AddAsync(tag)).Entity;
+            await RelateBookTag(tag, book);
+    }
+
+    public async Task<TagModel> RelateBookTag(TagModel tag, BookModel book)
+    {
+        TagModel? newTag = await tagDb.tags.FirstOrDefaultAsync(dbTag => dbTag.tag == tag.tag);;
+        newTag ??= (await tagDb.tags.AddAsync(tag)).Entity;
             
-            bookTagRelation.Add(new()
-            {
-                book = book,
-                tag = newTag
-            });
-        }
+        BookTagModel bookTagModel = new()
+        {
+            book = book,
+            tag = newTag
+        };
         
-        await tagDb.bookTag.AddRangeAsync(bookTagRelation);
+        await tagDb.bookTag.AddAsync(bookTagModel);
+        
+        return newTag;
     }
 
     public async Task<IReadOnlyList<TagModel>> GetBookTags(BookModel book) =>
@@ -37,7 +41,7 @@ public class TagRepository : ITagRepository
          .Select(relation => relation.tag)
          .ToListAsync();
 
-    public async Task DeleteAllTagsFromBook(BookModel book)
+    public async Task RemoveAllTagsRalationWithBook(BookModel book)
     {
         var tagsToRemove = await tagDb.bookTag
             .Where(relation => relation.book == book)

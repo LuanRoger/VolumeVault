@@ -12,6 +12,6 @@ public interface IBookRepository
         BookSortOptions? bookSortOptions);
     
     public BookModel DeleteBook(BookModel book);
-    
+
     public Task Flush();
 }
