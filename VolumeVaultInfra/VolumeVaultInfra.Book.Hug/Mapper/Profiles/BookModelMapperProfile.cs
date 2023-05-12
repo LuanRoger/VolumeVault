@@ -4,9 +4,9 @@ using VolumeVaultInfra.Book.Hug.Models.Base;
 
 namespace VolumeVaultInfra.Book.Hug.Mapper.Profiles;
 
-public class BookModelProfile : Profile
+public class BookModelMapperProfile : Profile
 {
-    public BookModelProfile()
+    public BookModelMapperProfile()
     {
         CreateMap<BookWriteModel, BookModel>();
     }

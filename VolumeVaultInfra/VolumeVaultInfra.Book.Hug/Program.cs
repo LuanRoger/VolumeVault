@@ -9,6 +9,7 @@ using VolumeVaultInfra.Book.Hug.Exceptions;
 using VolumeVaultInfra.Book.Hug.Mapper.Profiles;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Repositories;
+using VolumeVaultInfra.Book.Hug.Repositories.Search;
 using VolumeVaultInfra.Book.Hug.Utils;
 using VolumeVaultInfra.Book.Hug.Validators;
 using ILogger = Serilog.ILogger;
@@ -27,21 +28,40 @@ builder.Host.UseSerilog(logger);
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
     string? mySqlConnectionString = EnvironmentVariables.GetMySQLConnectionString();
+    if(builder.Environment.IsDevelopment())
+    {
+        mySqlConnectionString = builder.Configuration
+            .GetConnectionString("MYSQL_CONNECTION_STRING");
+    }
+    
     if(string.IsNullOrEmpty(mySqlConnectionString))
         throw new EnvironmentVariableNotProvidedException(EnvVariablesConsts.MY_SQL_CONNECTION_STRING);
     
     options.UseMySQL(mySqlConnectionString);
 });
-builder.Services.AddSingleton<MeilisearchClient>(_ =>
+builder.Services.AddSingleton<MeilisearchClient>(provider =>
 {
+    ILogger searchInitializerLogger = provider.GetRequiredService<ILogger>();
+    
     string? meilisearchMasterKey = EnvironmentVariables.GetMeiliseachMasterKey();
     string? meilisearchHost = EnvironmentVariables.GetMeiliSearchHost();
-    if(string.IsNullOrEmpty(meilisearchMasterKey))
-        throw new EnvironmentVariableNotProvidedException(EnvVariablesConsts.MEILISEARCH_MASTER_KEY);
-    if(meilisearchHost is null)
-        throw new EnvironmentVariableNotProvidedException(EnvVariablesConsts.MEILISEARCH_HOST);
+    if (!string.IsNullOrEmpty(meilisearchHost) && !string.IsNullOrEmpty(meilisearchMasterKey))
+        return new(meilisearchHost, meilisearchMasterKey);
     
-    return new(meilisearchHost, meilisearchMasterKey);
+    searchInitializerLogger.Warning("Meilisearch host or master key not provided. " +
+                   "The search will not be available");
+    return null;
+
+});
+builder.Services.AddScoped<IBookSearchRepository, BookSearchRepository>(provider =>
+{
+    MeilisearchClient? searchClient = provider.GetService<MeilisearchClient>();
+    if (searchClient is not null) return new(searchClient);
+    
+    logger.Warning("The Meilisearch service is not available." +
+                   "The serach repository is null");
+    return null;
+
 });
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
@@ -49,7 +69,8 @@ builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IUserIdentifierRepository, UserIdentifierRepository>();
 builder.Services.AddScoped<IValidator<BookWriteModel>, BookWriteModelValidator>();
-builder.Services.AddAutoMapper(typeof(BookModelProfile));
+builder.Services.AddScoped<IValidator<BookUpdateModel>, BookUpdateModelValidator>();
+builder.Services.AddAutoMapper(typeof(BookModelMapperProfile));
 
 builder.Services.AddScoped<IBookController, BookController>();
 
@@ -59,7 +80,11 @@ using (IServiceScope serviceScope = app.Services.CreateScope())
 {
     DatabaseContext dbContext = serviceScope.ServiceProvider
         .GetRequiredService<DatabaseContext>();
-    dbContext.Database.EnsureCreated();
+    dbContext.Database.Migrate();
+    IBookSearchRepository? searchRepository = serviceScope.ServiceProvider
+        .GetService<IBookSearchRepository>();
+    if(searchRepository is not null)
+        await searchRepository.EnsureCreatedAndReady();
 }
 
 RouteGroupBuilder bookGroup = app.MapGroup("book");

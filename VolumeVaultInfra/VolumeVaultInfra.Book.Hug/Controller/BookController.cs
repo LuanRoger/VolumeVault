@@ -5,6 +5,7 @@ using VolumeVaultInfra.Book.Hug.Exceptions;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Models.Base;
 using VolumeVaultInfra.Book.Hug.Repositories;
+using VolumeVaultInfra.Book.Hug.Repositories.Search;
 using ILogger = Serilog.ILogger;
 
 namespace VolumeVaultInfra.Book.Hug.Controller;
@@ -16,13 +17,14 @@ public class BookController : IBookController
     private IGenreRepository genreRepository { get; }
     private ITagRepository tagRepository { get; }
     private IUserIdentifierRepository userIdentifierRepository { get; }
+    private IBookSearchRepository? searchRepository { get; }
     private IMapper mapper { get; }
     private IValidator<BookWriteModel> bookWriteValidation { get; }
     private IValidator<BookUpdateModel> bookUpdateValidation { get; }
 
     public BookController(ILogger logger, IBookRepository bookRepository,
         IGenreRepository genreRepository, IUserIdentifierRepository userIdentifierRepository, 
-        ITagRepository tagRepository, IMapper mapper, IValidator<BookWriteModel> bookWriteValidation,
+        ITagRepository tagRepository, IBookSearchRepository? searchRepository, IMapper mapper, IValidator<BookWriteModel> bookWriteValidation,
         IValidator<BookUpdateModel> bookUpdateValidation)
     {
         this.logger = logger;
@@ -33,6 +35,7 @@ public class BookController : IBookController
         this.tagRepository = tagRepository;
         this.userIdentifierRepository = userIdentifierRepository;
         this.genreRepository = genreRepository;
+        this.searchRepository = searchRepository;
     }
 
     public async Task<int> CreateBook(BookWriteModel writeModel, string userId)
@@ -62,13 +65,16 @@ public class BookController : IBookController
             await FlushBookTags(writeModel.tags, newBook);
         
         await bookRepository.Flush();
+        
+        // ReSharper disable once InvertIf
+        if(searchRepository is not null)
+        {
+            BookSearchModel searchModel = mapper.Map<BookSearchModel>(writeModel);
+            searchModel.id = newBook.id;
+            await searchRepository.MadeBookSearchable(searchModel);
+        }
 
         return newBook.id;
-    }
-
-    public Task<int> RemoveBook(int bookId, string userId)
-    {
-        
     }
 
     public async Task<int> UpdateBook(BookUpdateModel updateModel, int bookId, string userId)
@@ -200,12 +206,59 @@ public class BookController : IBookController
         }
         if(hasBeenModified)
             bookToUpdate.lastModification = updateModel.lastModification;
+        else
+        {
+            NotModifiedBookException exception = new(bookToUpdate.id);
+            logger.Error(exception, "Book has not been modified");
+            throw exception;
+        }
 
         await bookRepository.Flush();
-        await _searchRepository.UpdateSearchBook(bookId, BookSearchModel.FromBookModel(bookToUpdate));
-        logger.Information("Book ID[{0}] updated.", bookToUpdate.id);
+        if(searchRepository is not null)
+        {
+            BookSearchModel bookSearchModel = mapper.Map<BookSearchModel>(updateModel);
+            bookSearchModel.id = bookToUpdate.id;
+            await searchRepository.UpdateSearchBook(bookId, bookSearchModel);
+        }
+        logger.Information("Book ID[{BookId}] updated", bookToUpdate.id);
         
         return bookToUpdate.id;
+    }
+    
+    public async Task<int> RemoveBook(int bookId, string userId)
+    {
+        UserIdentifier userIdentifier = await userIdentifierRepository
+            .EnsureInMirror(new() { userIdentifier = userId});
+        BookModel? bookToRemove = await bookRepository.GetBookById(bookId);
+        if(bookToRemove is null)
+        {
+            BookNotFoundException exception = new(bookId);
+            logger.Error(exception, "Book does not exists");
+            
+            throw exception;
+        }
+        if(bookToRemove.owner != userIdentifier)
+        {
+            NotOwnerBookException exception = new(bookToRemove.title, userIdentifier.userIdentifier);
+            logger.Error(exception, "Book does not belongs to user");
+            
+            throw exception;
+        }
+        
+        BookModel deletedBook = bookRepository.DeleteBook(bookToRemove);
+        await bookRepository.Flush();
+
+        // ReSharper disable once InvertIf
+        if(searchRepository is not null)
+        {
+            bool searchDeleteResult = await searchRepository.DeleteBookFromSearch(deletedBook.id);
+            if(searchDeleteResult)
+                logger.Information("Book ID[{BookId}] deleted from search", deletedBook.id);
+            else
+                logger.Warning("Book ID[{BookId}] not deleted from search", deletedBook.id);
+        }
+        
+        return deletedBook.id;
     }
 
     private async Task FlushBookGenres(IEnumerable<string> genres, BookModel book, UserIdentifier user)
