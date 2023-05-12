@@ -28,7 +28,7 @@ public static class BookEndpoints
                     return Results.NotFound(e.Message);
                 }
                 
-                return Results.Ok(newBookId);
+                return Results.Created("database/search", newBookId);
             });
         builder.MapPut("/{bookId:int}", 
             async ([FromQuery] string userId,
@@ -51,6 +51,28 @@ public static class BookEndpoints
                 }
                 
                 return Results.Ok(updatedBookId);
+            });
+        builder.MapDelete("/{bookId:int}", 
+            async (HttpContext _,
+                [FromRoute] int bookId,
+                [FromQuery] string userId,
+                [FromServices] IBookController controller) =>
+            {
+                int deletedBookId;
+                try
+                {
+                    deletedBookId = await controller.RemoveBook(bookId, userId);
+                }
+                catch(BookNotFoundException e)
+                {
+                    return Results.NotFound(e.Message);
+                }
+                catch(NotOwnerBookException e)
+                {
+                    return Results.BadRequest(e.Message);
+                }
+                
+                return Results.Ok(deletedBookId);
             });
         
         return builder;
