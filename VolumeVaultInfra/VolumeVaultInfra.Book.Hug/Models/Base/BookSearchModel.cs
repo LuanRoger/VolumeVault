@@ -36,5 +36,5 @@ public class BookSearchModel
     
     public required DateTime lastModification { get; init; }
     
-    public string ownerId { get; init; }
+    public string ownerId { get; set; }
 }

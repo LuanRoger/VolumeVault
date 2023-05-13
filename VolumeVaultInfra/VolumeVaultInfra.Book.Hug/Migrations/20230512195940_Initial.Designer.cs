@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VolumeVaultInfra.Book.Hug.Contexts;
 
 #nullable disable
@@ -11,7 +12,7 @@ using VolumeVaultInfra.Book.Hug.Contexts;
 namespace VolumeVaultInfra.Book.Hug.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230512185157_Initial")]
+    [Migration("20230512195940_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -20,23 +21,27 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.5")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("VolumeVaultInfra.Book.Hug.Models.Base.BookGenreModel", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
                     b.Property<int>("Book")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("Genre")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("UserIdentifier")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("id");
 
@@ -53,87 +58,89 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
                     b.Property<string>("author")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasColumnType("text")
                         .HasColumnName("Author");
 
                     b.Property<string>("buyLink")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)")
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("BuyLink");
 
                     b.Property<string>("coverLink")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)")
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("CoverLink");
 
                     b.Property<DateTime>("createdAt")
-                        .HasColumnType("datetime(6)")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("CreatedAt");
 
                     b.Property<int?>("edition")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("Edition");
 
                     b.Property<int?>("format")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("Format");
 
                     b.Property<string>("isbn")
                         .IsRequired()
                         .HasMaxLength(17)
-                        .HasColumnType("varchar(17)")
+                        .HasColumnType("character varying(17)")
                         .HasColumnName("ISBN");
 
                     b.Property<DateTime>("lastModification")
-                        .HasColumnType("datetime(6)")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("LastModification");
 
                     b.Property<string>("observation")
-                        .HasColumnType("longtext")
+                        .HasColumnType("text")
                         .HasColumnName("Obsevation");
 
                     b.Property<int>("ownerid")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("pagesNumber")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PagesNumber");
 
                     b.Property<int?>("publicationYear")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PublicationYear");
 
                     b.Property<string>("publisher")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("Publisher");
 
                     b.Property<DateTime?>("readEndDay")
-                        .HasColumnType("datetime(6)")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("ReadEndDay");
 
                     b.Property<DateTime?>("readStartDay")
-                        .HasColumnType("datetime(6)")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("ReadStartDay");
 
                     b.Property<int?>("readStatus")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("Readed");
 
                     b.Property<string>("synopsis")
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)")
+                        .HasColumnType("character varying(300)")
                         .HasColumnName("Synopsis");
 
                     b.Property<string>("title")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("Title");
 
                     b.HasKey("id");
@@ -147,14 +154,16 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
                     b.Property<int>("BookId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("TagId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("id");
 
@@ -169,13 +178,15 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
                     b.Property<string>("genre")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("Genre");
 
                     b.HasKey("id");
@@ -190,12 +201,14 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
                     b.Property<string>("tag")
                         .IsRequired()
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("text")
                         .HasColumnName("Tag");
 
                     b.HasKey("id");
@@ -210,12 +223,14 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
                     b.Property<string>("userIdentifier")
                         .IsRequired()
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("text")
                         .HasColumnName("UserIdentifier");
 
                     b.HasKey("id");

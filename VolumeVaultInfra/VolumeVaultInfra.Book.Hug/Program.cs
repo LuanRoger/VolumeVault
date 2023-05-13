@@ -27,17 +27,17 @@ builder.Host.UseSerilog(logger);
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
-    string? mySqlConnectionString = EnvironmentVariables.GetMySQLConnectionString();
+    string? mySqlConnectionString = EnvironmentVariables.PostgresConnectionString();
     if(builder.Environment.IsDevelopment())
     {
         mySqlConnectionString = builder.Configuration
-            .GetConnectionString("MYSQL_CONNECTION_STRING");
+            .GetConnectionString("POSTGRES_CONNECTION_STRING");
     }
     
     if(string.IsNullOrEmpty(mySqlConnectionString))
-        throw new EnvironmentVariableNotProvidedException(EnvVariablesConsts.MY_SQL_CONNECTION_STRING);
+        throw new EnvironmentVariableNotProvidedException(EnvVariablesConsts.POSTGRES_CONNECTION_STRING);
     
-    options.UseMySQL(mySqlConnectionString);
+    options.UseNpgsql(mySqlConnectionString);
 });
 builder.Services.AddSingleton<MeilisearchClient>(provider =>
 {

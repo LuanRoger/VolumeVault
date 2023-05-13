@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using MySql.EntityFrameworkCore.Metadata;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -12,75 +12,69 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterDatabase()
-                .Annotation("MySQL:Charset", "utf8mb4");
-
             migrationBuilder.CreateTable(
                 name: "Genres",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Genre = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Genre = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Genres", x => x.ID);
-                })
-                .Annotation("MySQL:Charset", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "Tags",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Tag = table.Column<string>(type: "varchar(255)", nullable: false)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Tag = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tags", x => x.ID);
-                })
-                .Annotation("MySQL:Charset", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "UserIdentifier",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    UserIdentifier = table.Column<string>(type: "varchar(255)", nullable: false)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserIdentifier = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserIdentifier", x => x.ID);
-                })
-                .Annotation("MySQL:Charset", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "Books",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Title = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
-                    Author = table.Column<string>(type: "longtext", nullable: false),
-                    ISBN = table.Column<string>(type: "varchar(17)", maxLength: 17, nullable: false),
-                    PublicationYear = table.Column<int>(type: "int", nullable: true),
-                    Publisher = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
-                    Edition = table.Column<int>(type: "int", nullable: true),
-                    PagesNumber = table.Column<int>(type: "int", nullable: true),
-                    Format = table.Column<int>(type: "int", nullable: true),
-                    Obsevation = table.Column<string>(type: "longtext", nullable: true),
-                    Synopsis = table.Column<string>(type: "varchar(300)", maxLength: 300, nullable: true),
-                    CoverLink = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true),
-                    BuyLink = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true),
-                    Readed = table.Column<int>(type: "int", nullable: true),
-                    ReadStartDay = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    ReadEndDay = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    LastModification = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    ownerid = table.Column<int>(type: "int", nullable: false)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Title = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Author = table.Column<string>(type: "text", nullable: false),
+                    ISBN = table.Column<string>(type: "character varying(17)", maxLength: 17, nullable: false),
+                    PublicationYear = table.Column<int>(type: "integer", nullable: true),
+                    Publisher = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Edition = table.Column<int>(type: "integer", nullable: true),
+                    PagesNumber = table.Column<int>(type: "integer", nullable: true),
+                    Format = table.Column<int>(type: "integer", nullable: true),
+                    Obsevation = table.Column<string>(type: "text", nullable: true),
+                    Synopsis = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    CoverLink = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    BuyLink = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    Readed = table.Column<int>(type: "integer", nullable: true),
+                    ReadStartDay = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ReadEndDay = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastModification = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ownerid = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -91,18 +85,17 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                         principalTable: "UserIdentifier",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySQL:Charset", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "BookGenre",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Book = table.Column<int>(type: "int", nullable: false),
-                    Genre = table.Column<int>(type: "int", nullable: false),
-                    UserIdentifier = table.Column<int>(type: "int", nullable: false)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Book = table.Column<int>(type: "integer", nullable: false),
+                    Genre = table.Column<int>(type: "integer", nullable: false),
+                    UserIdentifier = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -125,17 +118,16 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                         principalTable: "UserIdentifier",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySQL:Charset", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "BookTag",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    BookId = table.Column<int>(type: "int", nullable: false),
-                    TagId = table.Column<int>(type: "int", nullable: false)
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    BookId = table.Column<int>(type: "integer", nullable: false),
+                    TagId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -152,8 +144,7 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                         principalTable: "Tags",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySQL:Charset", "utf8mb4");
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_BookGenre_Book",
