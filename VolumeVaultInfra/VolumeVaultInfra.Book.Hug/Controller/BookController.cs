@@ -71,6 +71,7 @@ public class BookController : IBookController
         {
             BookSearchModel searchModel = mapper.Map<BookSearchModel>(writeModel);
             searchModel.id = newBook.id;
+            searchModel.ownerId = user.userIdentifier;
             await searchRepository.MadeBookSearchable(searchModel);
         }
 
@@ -88,7 +89,7 @@ public class BookController : IBookController
             
             throw exception;
         }
-        UserIdentifier userIdentifier = await userIdentifierRepository
+        UserIdentifier user = await userIdentifierRepository
             .EnsureInMirror(new() { userIdentifier = userId});
         BookModel? bookToUpdate = await bookRepository.GetBookById(bookId);
         if(bookToUpdate is null)
@@ -98,9 +99,9 @@ public class BookController : IBookController
             
             throw exception;
         }
-        if(bookToUpdate.owner.id != userIdentifier.id)
+        if(bookToUpdate.owner.id != user.id)
         {
-            NotOwnerBookException exception = new(bookToUpdate.title, userIdentifier.userIdentifier);
+            NotOwnerBookException exception = new(bookToUpdate.title, user.userIdentifier);
             logger.Error(exception, "Book does not belongs to user");
             
             throw exception;
@@ -151,7 +152,7 @@ public class BookController : IBookController
             {
                 genre = genre
             });
-            await genreRepository.RelateBookGenreRange(genreToAdd, bookToUpdate, userIdentifier);
+            await genreRepository.RelateBookGenreRange(genreToAdd, bookToUpdate, user);
             hasBeenModified = true;
         }
         if(updateModel.format is not null)
@@ -218,6 +219,7 @@ public class BookController : IBookController
         {
             BookSearchModel bookSearchModel = mapper.Map<BookSearchModel>(updateModel);
             bookSearchModel.id = bookToUpdate.id;
+            bookSearchModel.ownerId = user.userIdentifier;
             await searchRepository.UpdateSearchBook(bookId, bookSearchModel);
         }
         logger.Information("Book ID[{BookId}] updated", bookToUpdate.id);
