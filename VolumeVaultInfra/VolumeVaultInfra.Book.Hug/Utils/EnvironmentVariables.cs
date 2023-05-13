@@ -8,4 +8,6 @@ public static class EnvironmentVariables
         Environment.GetEnvironmentVariable(EnvVariablesConsts.MEILISEARCH_MASTER_KEY);
     public static string? GetMeiliSearchHost() =>
         Environment.GetEnvironmentVariable(EnvVariablesConsts.MEILISEARCH_HOST);
+    public static string? GetApiKey() =>
+        Environment.GetEnvironmentVariable(EnvVariablesConsts.API_KEY);
 }

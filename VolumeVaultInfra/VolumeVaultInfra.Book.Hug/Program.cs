@@ -6,6 +6,7 @@ using VolumeVaultInfra.Book.Hug.Contexts;
 using VolumeVaultInfra.Book.Hug.Controller;
 using VolumeVaultInfra.Book.Hug.Endpoints;
 using VolumeVaultInfra.Book.Hug.Exceptions;
+using VolumeVaultInfra.Book.Hug.Filters;
 using VolumeVaultInfra.Book.Hug.Mapper.Profiles;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Repositories;
@@ -50,7 +51,7 @@ builder.Services.AddSingleton<MeilisearchClient>(provider =>
     
     searchInitializerLogger.Warning("Meilisearch host or master key not provided. " +
                    "The search will not be available");
-    return null;
+    return null!;
 
 });
 builder.Services.AddScoped<IBookSearchRepository, BookSearchRepository>(provider =>
@@ -60,7 +61,7 @@ builder.Services.AddScoped<IBookSearchRepository, BookSearchRepository>(provider
     
     logger.Warning("The Meilisearch service is not available." +
                    "The serach repository is null");
-    return null;
+    return null!;
 
 });
 
@@ -88,6 +89,7 @@ using (IServiceScope serviceScope = app.Services.CreateScope())
 }
 
 RouteGroupBuilder bookGroup = app.MapGroup("book");
-bookGroup.MapBookEndpoints();
+bookGroup.MapBookEndpoints()
+    .AddEndpointFilter<ApiKeyFilter>();
 
 app.Run();
