@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using VolumeVaultInfra.Book.Models.Enums;
+using VolumeVaultInfra.Book.Hug.Models.Enums;
 
-namespace VolumeVaultInfra.Book.Models.Book;
+namespace VolumeVaultInfra.Book.Hug.Models.Base;
 
 [Table("Books")]
 public class BookModel
@@ -36,11 +36,7 @@ public class BookModel
     
     [Column("PagesNumber")]
     public int? pagesNumber { get; set; }
-    
-    [Column("Genres")]
-    [MaxLength(50)]
-    public string? genre { get; set; }
-    
+
     [Column("Format")]
     public BookFormat? format { get; set; }
     
@@ -67,10 +63,7 @@ public class BookModel
     
     [Column("ReadEndDay")]
     public DateTime? readEndDay { get; set; }
-    
-    [Column("Tags")]
-    public List<string>? tags { get; set; }
-    
+
     [Column("CreatedAt")]
     public required DateTime createdAt { get; set; }
     
@@ -78,5 +71,5 @@ public class BookModel
     public required DateTime lastModification { get; set; } 
     
     [Column("Owner")]
-    public required string owner { get; set; }
+    public required UserIdentifier owner { get; set; }
 }

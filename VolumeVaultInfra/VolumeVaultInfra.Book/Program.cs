@@ -3,7 +3,6 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using VolumeVaultInfra.Book.Context;
 using VolumeVaultInfra.Book.Controllers;
 using VolumeVaultInfra.Book.Exceptions;
 using VolumeVaultInfra.Book.Models.Book;
