@@ -69,11 +69,13 @@ builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IUserIdentifierRepository, UserIdentifierRepository>();
+builder.Services.AddScoped<IStatsRepository, StatsRepository>();
 builder.Services.AddScoped<IValidator<BookWriteModel>, BookWriteModelValidator>();
 builder.Services.AddScoped<IValidator<BookUpdateModel>, BookUpdateModelValidator>();
 builder.Services.AddAutoMapper(typeof(BookModelMapperProfile));
 
 builder.Services.AddScoped<IBookController, BookController>();
+builder.Services.AddScoped<IStatsController, StatsController>();
 
 WebApplication app = builder.Build();
 
@@ -90,6 +92,9 @@ using (IServiceScope serviceScope = app.Services.CreateScope())
 
 RouteGroupBuilder bookGroup = app.MapGroup("book");
 bookGroup.MapBookEndpoints()
+    .AddEndpointFilter<ApiKeyFilter>();
+RouteGroupBuilder statsGroup = app.MapGroup("stats");
+statsGroup.MapStatsEndpoints()
     .AddEndpointFilter<ApiKeyFilter>();
 
 app.Run();

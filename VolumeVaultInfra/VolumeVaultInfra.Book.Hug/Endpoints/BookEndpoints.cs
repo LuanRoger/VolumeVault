@@ -30,7 +30,7 @@ public static class BookEndpoints
 
                 return Results.Ok(userBooks);
             });
-            builder.MapGet("/{bookId:int}", 
+            builder.MapGet("{bookId:int}", 
                 async (HttpContext _,
                     int bookId,
                     [FromQuery] string userId,
@@ -73,7 +73,7 @@ public static class BookEndpoints
                 
                 return Results.Created("database/search", newBookId);
             });
-        builder.MapPut("/{bookId:int}", 
+        builder.MapPut("{bookId:int}", 
             async ([FromQuery] string userId,
                 [FromRoute] int bookId,
                 [FromBody] BookUpdateModel bookUpdateModel,
@@ -95,7 +95,7 @@ public static class BookEndpoints
                 
                 return Results.Ok(updatedBookId);
             });
-        builder.MapDelete("/{bookId:int}", 
+        builder.MapDelete("{bookId:int}", 
             async (HttpContext _,
                 [FromRoute] int bookId,
                 [FromQuery] string userId,
