@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using VolumeVaultInfra.Book.Context;
-
 namespace VolumeVaultInfra.Book.Repositories;
 
 public class StatsRepository : IStatsRepository
