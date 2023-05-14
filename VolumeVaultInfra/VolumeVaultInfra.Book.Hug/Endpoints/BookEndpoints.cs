@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using VolumeVaultInfra.Book.Hug.Controller;
 using VolumeVaultInfra.Book.Hug.Exceptions;
 using VolumeVaultInfra.Book.Hug.Models;
+using VolumeVaultInfra.Book.Hug.Models.Enums;
+using VolumeVaultInfra.Book.Hug.Models.Utils;
 
 namespace VolumeVaultInfra.Book.Hug.Endpoints;
 
@@ -9,6 +11,47 @@ public static class BookEndpoints
 {
     public static RouteGroupBuilder MapBookEndpoints(this RouteGroupBuilder builder)
     {
+        builder.MapGet("/",
+            async (HttpContext _,
+                [FromQuery] string userId,
+                [FromQuery] int page,
+                [FromQuery] int? limitPerPage,
+                [FromQuery] BookSort? sort,
+                [FromQuery] bool? ascending,
+                [FromServices] IBookController bookController) =>
+            {
+                BookSortOptions sortOptions = new()
+                {
+                    sortOptions = sort,
+                    ascending = ascending ?? true
+                };
+                BookUserRelatedReadModel  userBooks = await bookController.GetUserOwnedBook(userId, page, limitPerPage ?? 10, sortOptions);
+                
+
+                return Results.Ok(userBooks);
+            });
+            builder.MapGet("/{bookId:int}", 
+                async (HttpContext _,
+                    int bookId,
+                    [FromQuery] string userId,
+                    [FromServices] IBookController controller) =>
+                {
+                    BookReadModel book;
+                    try
+                    { 
+                        book = await controller.GetBook(bookId, userId);
+                    }
+                    catch(BookNotFoundException e)
+                    {
+                        return Results.BadRequest(e.Message);
+                    }
+                    catch (NotOwnerBookException)
+                    {
+                        return Results.Unauthorized();
+                    }
+                    
+                    return Results.Ok(book);
+                });
         builder.MapPost("/", 
             async ([FromQuery] string userId,
                 [FromBody] BookWriteModel bookWriteModel,
