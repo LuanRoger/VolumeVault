@@ -4,6 +4,7 @@ using FluentValidation.Results;
 using VolumeVaultInfra.Book.Hug.Exceptions;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Models.Base;
+using VolumeVaultInfra.Book.Hug.Models.Utils;
 using VolumeVaultInfra.Book.Hug.Repositories;
 using VolumeVaultInfra.Book.Hug.Repositories.Search;
 using ILogger = Serilog.ILogger;
@@ -36,6 +37,50 @@ public class BookController : IBookController
         this.userIdentifierRepository = userIdentifierRepository;
         this.genreRepository = genreRepository;
         this.searchRepository = searchRepository;
+    }
+
+    public async Task<BookReadModel> GetBook(int bookId, string userId)
+    {
+        UserIdentifier user = await userIdentifierRepository.EnsureInMirror(new() 
+            {userIdentifier = userId});
+        BookModel? bookResult = await bookRepository.GetBookById(bookId);
+        if(bookResult is null)
+        {
+            BookNotFoundException exception = new(bookId);
+            logger.Error(exception, "Book not found");
+            
+            throw exception;
+        }
+        if(bookResult.owner != user)
+        {
+            NotOwnerBookException exception = new(bookResult.title, user.userIdentifier);
+            logger.Error(exception, "User is not the owner of the book");
+            
+            throw exception;
+        }
+        
+        BookReadModel readModel = mapper.Map<BookReadModel>(bookResult);
+        return readModel;
+    }
+
+    public async Task<BookUserRelatedReadModel> GetUserOwnedBook(string userId, int page, int limitPerPage, 
+        BookSortOptions? sort)
+    {
+        UserIdentifier user = await userIdentifierRepository.EnsureInMirror(new()
+        { userIdentifier = userId });
+        var booksResult = await bookRepository
+            .GetUserOwnedBooksSplited(user, page, limitPerPage, sort);
+        var readModels = booksResult
+            .Select(result => mapper.Map<BookReadModel>(result))
+            .ToList();
+        
+        return new()
+        {
+            page = page,
+            limitPerPage = limitPerPage,
+            countInPage = readModels.Count,
+            books = readModels
+        };
     }
 
     public async Task<int> CreateBook(BookWriteModel writeModel, string userId)
