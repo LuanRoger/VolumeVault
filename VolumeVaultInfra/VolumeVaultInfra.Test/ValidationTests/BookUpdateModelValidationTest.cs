@@ -1,8 +1,8 @@
 using FluentValidation;
 using FluentValidation.Results;
-using VolumeVaultInfra.Models.Book;
-using VolumeVaultInfra.Models.Enums;
-using VolumeVaultInfra.Validators;
+using VolumeVaultInfra.Book.Models.Book;
+using VolumeVaultInfra.Book.Models.Enums;
+using VolumeVaultInfra.Book.Validators;
 
 namespace VolumeVaultInfra.Test.ValidationTests;
 

@@ -1,4 +1,4 @@
-using VolumeVaultInfra.Services.Hash;
+using VolumeVaultInfra.Book.Services.Hash;
 
 namespace VolumeVaultInfra.Test.ServicesTests;
 

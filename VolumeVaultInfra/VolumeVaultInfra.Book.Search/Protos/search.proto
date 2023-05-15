@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+option csharp_namespace = "VolumeVaultInfra.Book.Search";
+
+import "google/protobuf/empty.proto";
+
+package search;
+
+service Search {
+    rpc MadeBookSearchable(GrpcBookSearchModel) returns (google.protobuf.Empty);
+    rpc DeleteBookFromSearch(DeleteBookRequest) returns (google.protobuf.Empty);
+    rpc UpdateSearchBook(UpdateBookRequest) returns (google.protobuf.Empty);
+    rpc SearchBook(stream SearchRequest) returns (stream GrpcBookSearchModel);
+}
+
+message SearchRequest {
+    string userId = 1;
+    string query = 2;
+    int32 limitPerSection = 3;
+}
+
+message GrpcBookSearchModel {
+    int32 id = 1;
+    string title = 2;
+    string author = 3;
+    string isbn = 4;
+    optional int32 publicationYear = 5;
+    optional string publisher = 6;
+    optional int32 edition = 7;
+    optional int32 pagesNumber = 8;
+    optional string genre = 9;
+    optional BookFormat format = 10;
+    optional ReadStatus readStatus = 11;
+    optional Date readStartDay = 12;
+    optional Date readEndDay = 13;
+    repeated string tags = 14;
+    Date createdAt = 15;
+    Date lastModification = 16;
+    string ownerId = 17;
+}
+
+message GrpcBookSearchUpdateModel {
+    optional string title = 2;
+    optional string author = 3;
+    optional string isbn = 4;
+    optional int32 publicationYear = 5;
+    optional string publisher = 6;
+    optional int32 edition = 7;
+    optional int32 pagesNumber = 8;
+    optional string genre = 9;
+    optional BookFormat format = 10;
+    optional ReadStatus readStatus = 11;
+    optional Date readStartDay = 12;
+    optional Date readEndDay = 13;
+    repeated string tags = 14;
+    optional Date createdAt = 15;
+    optional Date lastModification = 16;
+}
+
+message DeleteBookRequest {
+    int32 bookId = 1;
+    string userId = 2;
+}
+message DeleteBookResponse {
+    bool result = 1;
+}
+
+message UpdateBookRequest {
+    int32 bookId = 1;
+    string userId = 2;
+    GrpcBookSearchUpdateModel book = 3;
+}
+
+enum BookFormat { 
+    HARDCOVER = 0;
+    HARDBACK = 1;
+    PAPERBACK = 2;
+    EBOOK = 3;
+}
+enum ReadStatus
+{
+    NOT_READ = 0;
+    READING = 1;
+    HAS_READED = 2;
+}
+
+message Date {
+    int32 year = 1;
+    int32 month = 2;
+    int32 day = 3;
+}
