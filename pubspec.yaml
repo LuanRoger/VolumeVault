@@ -33,6 +33,7 @@ dependencies:
     sdk: flutter
   chips_choice: ^3.0.0
   firebase_core: ^2.12.0
+  firebase_auth: ^4.6.0
 
 dev_dependencies:
   flutter_test:
