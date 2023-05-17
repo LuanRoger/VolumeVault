@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:volume_vault/models/enums/auth_result_status.dart';
+import 'package:volume_vault/models/enums/login_auth_result.dart';
+import 'package:volume_vault/models/enums/signin_auth_result.dart';
 
 abstract class SnackbarUtils {
-  static void showUserAuthErrorSnackbar(BuildContext context,
-      {required AuthResultStatus authResultStatus}) {
+  static void showUserLoginAuthErrorSnackbar(BuildContext context,
+      {required LoginAuthResult authResultStatus}) {
     switch (authResultStatus) {
-      case AuthResultStatus.wrongInformations:
+      case LoginAuthResult.invalidEmail:
+      case LoginAuthResult.wrongPassword:
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text("Suas credenciais estão incorretas."),
           ),
         );
         break;
-      case AuthResultStatus.userNotFound:
+      case LoginAuthResult.userNotFound:
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text("Este usuário não existe. Crie uma conta."),
@@ -21,8 +23,35 @@ abstract class SnackbarUtils {
         break;
       default:
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Occoreu um error. (${authResultStatus.code})"),
+          const SnackBar(
+            content: Text("Occoreu um error."),
+          ),
+        );
+        break;
+    }
+  }
+
+  static void showUserSignupAuthErrorSnackbar(BuildContext context,
+      {required SigninAuthResult authResultStatus}) {
+    switch (authResultStatus) {
+      case SigninAuthResult.emailAlreadyInUse:
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("O email já está em uso"),
+          ),
+        );
+        break;
+      case SigninAuthResult.invalidEmail:
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("O email não é valido"),
+          ),
+        );
+        break;
+      default:
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Occoreu um error."),
           ),
         );
         break;

@@ -18,7 +18,7 @@ class App extends ConsumerWidget {
         ref.watch(themePreferencesStateProvider).themeBrightnes;
     final localizationPreferences =
         ref.watch(localizationPreferencesStateProvider);
-    final userSession = ref.watch(userSessionNotifierProvider);
+    final userSession = ref.watch(userSessionAuthProvider);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -26,11 +26,9 @@ class App extends ConsumerWidget {
       theme: lightTheme(context),
       darkTheme: darkTheme(context),
       onGenerateRoute: RouteDriver.driver,
-      initialRoute: userSession.maybeWhen(
-          data: (userSession) => userSession.token.isEmpty
-              ? AppRoutes.loginPageRoute
-              : AppRoutes.homePageRoute,
-          orElse: () => AppRoutes.loginPageRoute),
+      initialRoute: userSession == null
+          ? AppRoutes.loginPageRoute
+          : AppRoutes.homePageRoute,
       builder: (context, child) => ResponsiveWrapper.builder(
         child,
         minWidth: 480,

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:responsive_framework/responsive_framework.dart';
-import 'package:volume_vault/models/enums/auth_result_status.dart';
+import 'package:volume_vault/models/enums/login_auth_result.dart';
 import 'package:volume_vault/pages/login_user_page/commands/login_user_mobile_commands.dart';
 import 'package:volume_vault/services/models/user_login_request.dart';
 import 'package:volume_vault/shared/assets/app_images.dart';
@@ -19,7 +18,7 @@ class LoginUserPageDesktop extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final usernameController = useTextEditingController();
+    final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
     final isLoadingState = useState(false);
     final obscurePassword = useState(true);
@@ -66,11 +65,11 @@ class LoginUserPageDesktop extends HookConsumerWidget {
                           child: Column(
                             children: [
                               TextFormField(
-                                controller: usernameController,
-                                validator: minumumLenght3,
+                                controller: emailController,
+                                validator: matchEmailRegex,
                                 decoration: InputDecoration(
                                   label: Text(AppLocalizations.of(context)!
-                                      .userTextFieldHint),
+                                      .emailTextFieldHint),
                                   filled: true,
                                   border: const UnderlineInputBorder(
                                       borderSide: BorderSide.none),
@@ -108,16 +107,17 @@ class LoginUserPageDesktop extends HookConsumerWidget {
                                     final loginResult = await _command.login(
                                         ref,
                                         UserLoginRequest(
-                                            username: usernameController.text,
+                                            email: emailController.text,
                                             password: passwordController.text));
 
                                     // ignore: use_build_context_synchronously
                                     if (!context.mounted) return;
                                     if (loginResult !=
-                                        AuthResultStatus.success) {
-                                      SnackbarUtils.showUserAuthErrorSnackbar(
-                                          context,
-                                          authResultStatus: loginResult);
+                                        LoginAuthResult.success) {
+                                      SnackbarUtils
+                                          .showUserLoginAuthErrorSnackbar(
+                                              context,
+                                              authResultStatus: loginResult);
                                       isLoadingState.value = false;
                                       return;
                                     }

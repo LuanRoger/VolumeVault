@@ -2,7 +2,7 @@
     "appName": "Volume Vault",
 
     "wellcomeBackLoginPage": "Wellcome back",
-    "userTextFieldHint": "Username",
+    "userTextFieldHint": "User",
     "passwordTextFieldHint": "Password",
     "loginButtonLoginPage": "Login",
     "doesNotHaveAccountLoginPage": "Does't have an account?",
