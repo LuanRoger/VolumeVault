@@ -1,33 +1,25 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:volume_vault/controllers/auth_controller.dart';
 import 'package:volume_vault/controllers/book_controller.dart';
 import 'package:volume_vault/controllers/stats_controller.dart';
-import 'package:volume_vault/controllers/utils_controller.dart';
 import 'package:volume_vault/models/api_config_params.dart';
-import 'package:volume_vault/models/http_code.dart';
-import 'package:volume_vault/models/http_response.dart';
-import 'package:volume_vault/models/user_info_model.dart';
+import 'package:volume_vault/models/user_session.dart';
 import 'package:volume_vault/providers/interfaces/graphics_preferences_state.dart';
 import 'package:volume_vault/providers/interfaces/localization_preferences_state.dart';
 import 'package:volume_vault/providers/interfaces/server_config_notifier.dart';
 import 'package:volume_vault/providers/interfaces/theme_preferences_state.dart';
-import 'package:volume_vault/providers/interfaces/user_session_notifier.dart';
-import 'package:volume_vault/services/auth_service.dart';
+import 'package:volume_vault/providers/interfaces/user_session_state.dart';
 import 'package:volume_vault/services/book_service.dart';
 import 'package:volume_vault/services/stats_service.dart';
-import 'package:volume_vault/services/utils_service.dart';
 import 'package:volume_vault/shared/preferences/models/graphics_preferences.dart';
 import 'package:volume_vault/shared/preferences/models/localization_preferences.dart';
 import 'package:volume_vault/shared/preferences/models/theme_preferences.dart';
 import 'package:volume_vault/shared/storage/models/server_config.dart';
-import 'package:volume_vault/shared/storage/models/user_session.dart';
 
 part '../controllers/controller_providers.dart';
 
-final userSessionNotifierProvider =
-    AsyncNotifierProvider<UserSessionNotifier, UserSession>(
-        UserSessionNotifier.new);
+final userSessionAuthProvider =
+    NotifierProvider<UserSessionState, UserSession?>(UserSessionState.new);
 final serverConfigNotifierProvider =
     AsyncNotifierProvider<ServerConfigNotifier, ServerConfig>(
         ServerConfigNotifier.new);
@@ -55,53 +47,24 @@ final localizationPreferencesStateProvider = StateNotifierProvider<
     LocalizationPreferencesState,
     LocalizationPreferences>((_) => throw UnimplementedError());
 
-final userInfoProvider = FutureProvider<UserInfoModel?>((ref) async {
-  final userSession = await ref.watch(userSessionNotifierProvider.future);
-  final authService = await ref.watch(_authServiceProvider.future);
-
-  if (userSession.token.isEmpty) return null;
-
-  final HttpResponse response =
-      await authService.getUserInfo(userSession.token);
-  if (response.statusCode != HttpCode.OK) return null;
-
-  UserInfoModel userInfo = UserInfoModel.fromJson(response.body);
-
-  return userInfo;
-});
-final _authServiceProvider = FutureProvider<AuthService>((ref) async {
-  final apiConfig = await ref.watch(apiParamProvider.future);
-
-  return AuthService(apiConfig: apiConfig);
-});
 final _bookServiceProvider = FutureProvider<BookService?>((ref) async {
   final apiConfig = await ref.watch(apiParamProvider.future);
-  final userSession = await ref.watch(userSessionNotifierProvider.future);
+  final userSession = ref.watch(userSessionAuthProvider);
 
-  if (userSession.token.isEmpty) return null;
+  if (userSession == null) return null;
 
   return BookService(
     apiConfig: apiConfig,
-    userAuthToken: userSession.token,
+    userIdentifier: userSession.uid,
   );
 });
-final _statsServiceProvider = FutureProvider<StatsService>((ref) async {
+final _statsServiceProvider = FutureProvider<StatsService?>((ref) async {
   final apiConfig = await ref.watch(apiParamProvider.future);
-  final userSession = await ref.watch(userSessionNotifierProvider.future);
+  final userSession = ref.watch(userSessionAuthProvider);
+  if (userSession == null) return null;
 
   return StatsService(
     apiConfig: apiConfig,
-    userAuthToken: userSession.token,
-  );
-});
-final _utilsServiceProvider = FutureProvider<UtilsService>((ref) async {
-  final serverConfig = await ref.watch(serverConfigNotifierProvider.future);
-
-  return UtilsService(
-    apiConfigParams: ApiConfigParams(
-        host: serverConfig.serverHost,
-        port: serverConfig.serverPort,
-        apiKey: serverConfig.serverApiKey,
-        protocol: serverConfig.serverProtocol),
+    userIdentifier: userSession.uid,
   );
 });

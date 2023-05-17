@@ -8,7 +8,7 @@ class RegisterBookRequest {
   String? publisher;
   int? edition;
   int? pagesNumber;
-  String? genre;
+  Set<String>? genre;
   int? format;
   String? observation;
   String? synopsis;
@@ -51,15 +51,17 @@ class RegisterBookRequest {
         if (publisher != null) "publisher": publisher,
         if (edition != null) "edition": edition,
         if (pagesNumber != null) "pagesNumber": pagesNumber,
-        if (genre != null) "genre": genre,
+        if (genre != null) "genre": genre!.toList(),
         if (format != null) "format": format,
         if (observation != null) "observation": observation,
         if (synopsis != null) "synopsis": synopsis,
         if (coverLink != null) "coverLink": coverLink,
         if (buyLink != null) "buyLink": buyLink,
         if (readStatus != null) "readStatus": readStatus!.index,
-        if (readStartDay != null) "readStartDay": readStartDay!.toUtc().toIso8601String(),
-        if (readEndDay != null) "readEndDay": readEndDay!.toUtc().toIso8601String(),
+        if (readStartDay != null)
+          "readStartDay": readStartDay!.toUtc().toIso8601String(),
+        if (readEndDay != null)
+          "readEndDay": readEndDay!.toUtc().toIso8601String(),
         if (tags != null) "tags": tags!.toList(),
         "createdAt": createdAt.toUtc().toIso8601String(),
         "lastModification": lastModification.toUtc().toIso8601String(),

@@ -8,7 +8,7 @@ class EditBookRequest {
   String? publisher;
   int? edition;
   int? pagesNumber;
-  String? genre;
+  Set<String>? genre;
   int? format;
   String? observation;
   String? synopsis;
@@ -49,7 +49,7 @@ class EditBookRequest {
         "publisher": publisher,
         "edition": edition,
         "pagesNumber": pagesNumber,
-        "genre": genre,
+        "genre": genre?.toList(),
         "format": format,
         "observation": observation,
         "synopsis": synopsis,
