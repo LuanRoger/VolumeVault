@@ -60,16 +60,16 @@ class BookService {
     return userBooks;
   }
 
-  Future<BookModel?> registerBook(RegisterBookRequest book) async {
+  Future<int?> registerBook(RegisterBookRequest book) async {
     String bookJson = json.encode(book);
 
     Map<String, String> requestQuery = {_userIdQueryHeader: userIdentifier};
     HttpResponse response =
         await _httpModule.post(_baseUrl, body: bookJson, query: requestQuery);
     if (response.statusCode != HttpCode.CREATED) return null;
-    BookModel registeredBook = BookModel.fromJson(response.body);
+    int? newBookId = int.tryParse(response.body);
 
-    return registeredBook;
+    return newBookId;
   }
 
   Future<bool> updateBook(int bookId, EditBookRequest newInfosBook) async {

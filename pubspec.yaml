@@ -32,8 +32,10 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   chips_choice: ^3.0.0
+  textfield_tags: ^2.0.2
   firebase_core: ^2.12.0
   firebase_auth: ^4.6.0
+  font_awesome_flutter: ^10.4.0
 
 dev_dependencies:
   flutter_test:

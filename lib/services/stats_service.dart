@@ -19,7 +19,7 @@ class StatsService {
 
   String get _baseUrl =>
       "${_apiConfig.protocol}://${_apiConfig.host}:${_apiConfig.port}/stats";
-  String get _bookStatsUrl => "$_baseUrl/books";
+  String get _bookStatsUrl => "$_baseUrl/";
 
   final String _userIdQueryHeader = "userId";
 
@@ -27,7 +27,7 @@ class StatsService {
     Map<String, String> requestQuery = {_userIdQueryHeader: userIdentifier};
     HttpResponse response =
         await _httpModule.get(_bookStatsUrl, query: requestQuery);
-    if (response is! Map) return null;
+    if (response.body is! Map) return null;
 
     return BookStats.fromJson(response.body);
   }
