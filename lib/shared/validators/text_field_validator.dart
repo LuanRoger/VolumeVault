@@ -105,3 +105,17 @@ String? matchEmailRegex(String? value) {
 
   return null;
 }
+
+String? notEmptyAndNotMustNotRepeat(String? value, List<String> list) {
+  String tratedValue = value ?? "";
+
+  if (!StringValidators.notEmpty(tratedValue)) {
+    return "Este campo é obrigatório";
+  }
+
+  if (list.contains(tratedValue)) {
+    return "Este valor já foi colocado";
+  }
+
+  return null;
+}

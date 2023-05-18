@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:textfield_tags/textfield_tags.dart';
 import 'package:volume_vault/l10n/l10n.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/enums/book_format.dart';
@@ -10,6 +11,7 @@ import 'package:volume_vault/models/enums/read_status.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/edit_book_request.dart';
 import 'package:volume_vault/services/models/register_book_request.dart';
+import 'package:volume_vault/shared/hooks/text_field_tags_controller_hook.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/validators/text_field_validator.dart';
 import 'package:volume_vault/shared/widgets/bottom_sheet/stateful_bottom_sheet.dart';
@@ -204,12 +206,15 @@ class RegisterEditBookPage extends HookConsumerWidget {
   void _showAditionalInfoModal(BuildContext context,
       {ValueNotifier<BookFormat>? bookFormat,
       TextEditingController? pageNumbController,
-      TextEditingController? genreController,
+      required TextfieldTagsController genreController,
+      required List<String> genreTags,
       TextEditingController? buyLinkController}) {
     String pageNumbMemento = pageNumbController?.text ?? "";
-    String genreMemento = genreController?.text ?? "";
+    List<String> genreMemento = List.from(genreTags);
     String buyLinkMemento = buyLinkController?.text ?? "";
     BookFormat? bookFormatMemento = bookFormat?.value ?? BookFormat.hardcover;
+
+    const List<String> genreSeparator = [",", ";"];
 
     BottomSheet(
       action: (context) => FilledButton(
@@ -218,7 +223,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
       ),
       onClose: () {
         pageNumbController?.text = pageNumbMemento;
-        genreController?.text = genreMemento;
+        for (var genre in List.from(genreMemento)) {
+          genreController.addTag = genre;
+        }
         buyLinkController?.text = buyLinkMemento;
         bookFormat?.value = bookFormatMemento;
       },
@@ -267,17 +274,37 @@ class RegisterEditBookPage extends HookConsumerWidget {
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
               const SizedBox(height: 15),
-              TextFormField(
-                controller: genreController,
-                validator: maximumLenght50,
-                maxLength: 50,
-                maxLines: 1,
-                decoration: InputDecoration(
-                    labelText:
-                        AppLocalizations.of(context)!.genreTextFieldHint),
-                enableSuggestions: true,
-                autocorrect: true,
-                enableIMEPersonalizedLearning: true,
+              TextFieldTags(
+                textfieldTagsController: genreController,
+                validator: (String genre) => notEmptyAndNotMustNotRepeat(
+                    genre, genreController.getTags ?? List.empty()),
+                initialTags: genreTags,
+                textSeparators: genreSeparator,
+                inputfieldBuilder:
+                    (context, tec, fn, error, onChanged, onSubmitted) {
+                  return ((context, sc, tags, onTagDelete) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextFormField(
+                            controller: tec,
+                            focusNode: fn,
+                            maxLength: 50,
+                            maxLines: 1,
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.of(context)!
+                                  .genresTextFieldHint,
+                              errorText: error,
+                            ),
+                            enableSuggestions: true,
+                            autocorrect: true,
+                            enableIMEPersonalizedLearning: true,
+                            onChanged: onChanged,
+                            onFieldSubmitted: onSubmitted,
+                          ),
+                          ChipList(tags.toSet(), onRemove: onTagDelete)
+                        ],
+                      ));
+                },
               ),
               const SizedBox(height: 15),
               TextFormField(
@@ -402,8 +429,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
         useState<BookFormat>(editBookModel?.format ?? BookFormat.hardcover);
     final buyLinkController =
         useTextEditingController(text: editBookModel?.buyLink);
-    final genreController =
-        useTextEditingController(text: editBookModel?.genre);
+    final genreController = useTextfieldTagsController();
+    final List<String> genreTags =
+        List.from(editBookModel?.genre?.toList() ?? List.empty());
     final pageNumbController =
         useTextEditingController(text: editBookModel?.pagesNumber?.toString());
 
@@ -500,6 +528,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
                               bookFormat: bookFormatState,
                               buyLinkController: buyLinkController,
                               genreController: genreController,
+                              genreTags: genreTags,
                               pageNumbController: pageNumbController,
                             ),
                           ),
@@ -602,8 +631,8 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                   edition: int.tryParse(editionController.text),
                                   pagesNumber:
                                       int.tryParse(pageNumbController.text),
-                                  genre: genreController.text.isNotEmpty
-                                      ? genreController.text
+                                  genre: genreController.hasTags
+                                      ? genreController.getTags!.toSet()
                                       : null,
                                   format: bookFormatState.value.index,
                                   observation:
@@ -668,8 +697,8 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                     int.tryParse(publishYearController.text),
                                 edition: int.tryParse(editionController.text),
                                 format: bookFormatState.value.index,
-                                genre: genreController.text.isNotEmpty
-                                    ? genreController.text
+                                genre: genreController.hasTags
+                                    ? genreController.getTags!.toSet()
                                     : null,
                                 pagesNumber:
                                     int.tryParse(pageNumbController.text),
@@ -703,9 +732,9 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                 lastModification: DateTime.now(),
                               );
 
-                              final bool success = (await bookController
-                                      .registerBook(newBook)) !=
-                                  null;
+                              int? newBookId =
+                                  await bookController.registerBook(newBook);
+                              final bool success = newBookId != null;
 
                               // ignore: use_build_context_synchronously
                               if (!context.mounted) return;

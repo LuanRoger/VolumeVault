@@ -134,8 +134,9 @@ class HomeSectionMobile extends HookConsumerWidget {
                               : 0),
                       style: Theme.of(context).textTheme.bodyLarge),
                   Badge(
-                    alignment: AlignmentDirectional.bottomEnd,
+                    alignment: AlignmentDirectional.topEnd,
                     isLabelVisible: sortOptionState.value.sort != null,
+                    smallSize: 10,
                     child: IconButton(
                         onPressed: () async {
                           BookSortOption? newSortOptions =
