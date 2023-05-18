@@ -1,35 +1,38 @@
+using AutoMapper;
 using FluentValidation;
 using Moq;
 using Serilog;
-using VolumeVaultInfra.Book.Controllers;
-using VolumeVaultInfra.Book.Exceptions;
-using VolumeVaultInfra.Book.Models.Book;
-using VolumeVaultInfra.Book.Models.Enums;
-using VolumeVaultInfra.Book.Models.User;
-using VolumeVaultInfra.Book.Models.Utils;
-using VolumeVaultInfra.Book.Repositories;
-using VolumeVaultInfra.Book.Services.Metrics;
-using VolumeVaultInfra.Book.Validators;
+using VolumeVaultInfra.Book.Hug.Controller;
+using VolumeVaultInfra.Book.Hug.Exceptions;
+using VolumeVaultInfra.Book.Hug.Models;
+using VolumeVaultInfra.Book.Hug.Models.Base;
+using VolumeVaultInfra.Book.Hug.Models.Enums;
+using VolumeVaultInfra.Book.Hug.Repositories;
+using VolumeVaultInfra.Book.Hug.Repositories.Search;
+using VolumeVaultInfra.Book.Hug.Validators;
 
-namespace VolumeVaultInfra.Test.ControllersTests;
+namespace VolumeVaultInfra.Hug.Test.ControllersTests;
 
 public class BookControllerExceptionsTest
 {
-    private Mock<IBookRepository> _bookRepositoryMock { get; } = new();
-    private Mock<IBookSearchRepository> _bookSearchRepository { get; } = new();
-    private Mock<IUserRepository> _userRepositoryMock { get; } = new();
-    private Mock<IBookControllerMetrics> _bookControllerMetricsMock { get; } = new();
-    private Mock<ILogger> _logger { get; } = new();
-    private BookController _bookController { get; }
+    private Mock<IBookRepository> bookRepository { get; } = new();
+    private Mock<IBookSearchRepository> bookSearchRepository { get; } = new();
+    private Mock<IUserIdentifierRepository> userRepository { get; } = new();
+    private Mock<IGenreRepository> genreRepository { get; } = new();
+    private Mock<ITagRepository> tagRepository { get; } = new();
+    //private Mock<IBookControllerMetrics> _bookControllerMetricsMock { get; } = new();
+    private Mock<ILogger> logger { get; } = new();
+    private Mock<IMapper> mapper { get; } = new();
+    private BookController bookController { get; }
 
     public BookControllerExceptionsTest()
     {
         IValidator<BookWriteModel> bookValidator = new BookWriteModelValidator();
         IValidator<BookUpdateModel> bookUpdateValidator = new BookUpdateModelValidator();
 
-        _bookController = new(_bookRepositoryMock.Object, _bookSearchRepository.Object,
-            _userRepositoryMock.Object, _bookControllerMetricsMock.Object, bookValidator,
-            bookUpdateValidator, _logger.Object);
+        bookController = new(logger.Object, bookRepository.Object, genreRepository.Object,
+            userRepository.Object, tagRepository.Object, bookSearchRepository.Object, mapper.Object,
+            bookValidator, bookUpdateValidator);
     }
     
     private static BookModel bookModelTestDumy => new()
@@ -42,7 +45,6 @@ public class BookControllerExceptionsTest
         publisher = "test",
         edition = 1,
         pagesNumber = 1,
-        genre = "test",
         format = 0,
         observation = "test",
         synopsis = "test",
@@ -51,15 +53,12 @@ public class BookControllerExceptionsTest
         readStatus = ReadStatus.HasReaded,
         readStartDay = new DateTime(2023, 1, 1),
         readEndDay = new DateTime(2023, 1, 7),
-        tags = new() { "test" },
         createdAt = DateTime.Today,
         lastModification = DateTime.Today,
         owner = new()
         {
             id = 1,
-            username = "test",
-            email = "test@test.com",
-            password = "test1234"
+            userIdentifier = "1"
         }
     };
     private static BookWriteModel bookWriteModelTestDumy => new()
@@ -71,7 +70,7 @@ public class BookControllerExceptionsTest
         publisher = "test",
         edition = 1,
         pagesNumber = 1,
-        genre = "test",
+        genre = new() { "test" },
         format = 0,
         observation = "test",
         synopsis = "test",
@@ -93,7 +92,7 @@ public class BookControllerExceptionsTest
         publisher = "test",
         edition = 1,
         pagesNumber = 1,
-        genre = "test",
+        genre = new() { "test" },
         format = 0,
         observation = "test",
         synopsis = "test",
@@ -115,7 +114,7 @@ public class BookControllerExceptionsTest
         publisher = "changed",
         edition = 2,
         pagesNumber = 2,
-        genre = "changed",
+        genre = new() { "changed" },
         format = BookFormat.HARDBACK,
         observation = "changed",
         synopsis = "test",
@@ -133,7 +132,7 @@ public class BookControllerExceptionsTest
         publisher = "changed",
         edition = 2,
         pagesNumber = 2,
-        genre = "changed",
+        genre = new() { "changed" },
         format = BookFormat.HARDBACK,
         observation = "changed",
         synopsis = "changed",
@@ -142,139 +141,108 @@ public class BookControllerExceptionsTest
         readStatus = ReadStatus.NotRead,
         tags = new() { "changed", "changed" }
     };
-    private static UserModel userModelTestDumy => new()
-    {
-        id = 1,
-        username = "test",
-        email = "test@test.com",
-        password = "test1234"
-    };
+    private const string USER_IDENTIFIER = "1";
     
     [Fact]
     public void RegisterInvalidBookTest()
     {
-        UserModel user = userModelTestDumy;
         BookWriteModel invalidBook = invalidBookWriteModelTestDumy;
         
         Assert.ThrowsAsync<NotValidBookInformationException>(() => 
-            _bookController.RegisterNewBook(user.id, invalidBook));
+            bookController.CreateBook(invalidBook, USER_IDENTIFIER));
     }
     [Fact]
     public async void UpdateInvalidBookTest()
     {
         BookUpdateModel invalidBookUpdate = invalidBookUpdateModelTestDumy;
         await Assert.ThrowsAsync<NotValidBookInformationException>(() => 
-            _bookController.UpdateBook(It.IsAny<int>(), It.IsAny<int>(), invalidBookUpdate));
-    }
-    
-    [Fact]
-    public async void NotRegisteredUserRegisterBookTest()
-    {
-        BookWriteModel bookWrite = bookWriteModelTestDumy;
-        
-        _userRepositoryMock.Setup(ex => ex.GetUserById(It.IsAny<int>()))
-            .ReturnsAsync(() => null);
-        
-        await Assert.ThrowsAsync<UserNotFoundException>(() => _bookController.RegisterNewBook(It.IsAny<int>(), bookWrite));
-    }
-    [Fact]
-    public async void GetBooksFromNotRegistredUserTest()
-    {
-        _userRepositoryMock.Setup(ex => ex.GetUserById(It.IsAny<int>()))
-            .ReturnsAsync(() => null);
-        
-        await Assert.ThrowsAsync<UserNotFoundException>(() => 
-            _bookController.GetAllUserReleatedBooks(It.IsAny<int>(), 1, 10, 
-                It.IsAny<BookSortOptions>()));
-    }
-    [Fact]
-    public async void NotRegistredUserDeleteBookTest()
-    {
-        _userRepositoryMock.Setup(ex => ex.GetUserById(It.IsAny<int>()))
-            .ReturnsAsync(() => null);
-        
-        await Assert.ThrowsAsync<UserNotFoundException>(() => _bookController.DeleteBook(1, 1));
+            bookController.UpdateBook(invalidBookUpdate, It.IsAny<int>(), USER_IDENTIFIER));
     }
 
     [Fact]
-    public async void NotRegistredUserUpdateBookTest()
-    {
-        const int userId = 5;
-        _userRepositoryMock.Setup(ex => ex.GetUserById(userId))
-            .ReturnsAsync(() => null);
-        
-        await Assert.ThrowsAsync<UserNotFoundException>(() => 
-            _bookController.UpdateBook(userId, 1, bookUpdateModelTestDumy));
-    }
-    
-    [Fact]
     public async void NotFoundBookToUpdateTest()
     {
-        _userRepositoryMock.Setup(ex => ex.GetUserById(It.IsAny<int>()))
-            .ReturnsAsync(userModelTestDumy);
-        _bookRepositoryMock.Setup(ex => ex.GetBookById(It.IsAny<int>()))
+        UserIdentifier user = new()
+        {
+            id = 1,
+            userIdentifier = USER_IDENTIFIER
+        };
+        
+        userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
+            .ReturnsAsync(user);
+        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<int>()))
             .ReturnsAsync(() => null);
         
-        await Assert.ThrowsAsync<BookNotFoundException>(() => 
-            _bookController.UpdateBook(It.IsAny<int>(), 1, bookUpdateModelTestDumy));
+        await Assert.ThrowsAsync<BookNotFoundException>(() =>
+            bookController.UpdateBook(bookUpdateModelTestDumy, It.IsAny<int>(), USER_IDENTIFIER));
     }
     
     [Fact]
     public async void BookDontOwnerByUserTest()
     {
-        BookModel book = bookModelTestDumy;
-        UserModel user = userModelTestDumy;
-        book.owner = new() //User is diferent
+        UserIdentifier user = new()
+        {
+            id = 1,
+            userIdentifier = USER_IDENTIFIER
+        };
+        UserIdentifier diferentUser = new()
         {
             id = 2,
-            username = "testDiferent",
-            email = "test.diferent@test.com",
-            password = "test1234"
+            userIdentifier = "2"
         };
+        BookModel book = bookModelTestDumy;
+        book.owner = diferentUser;
         BookUpdateModel bookUpdate = bookUpdateModelTestDumy;
         
-        _userRepositoryMock.Setup(ex => ex.GetUserById(It.IsAny<int>()))
+        userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
             .ReturnsAsync(user);
-        _bookRepositoryMock.Setup(ex => ex.GetBookById(It.IsAny<int>()))
+        bookRepository.Setup(ex => ex.GetBookById(book.id))
             .ReturnsAsync(book);
         
         await Assert.ThrowsAsync<NotOwnerBookException>(() => 
-            _bookController.UpdateBook(It.IsAny<int>(), It.IsAny<int>(), bookUpdate));
+            bookController.UpdateBook(bookUpdate, book.id, USER_IDENTIFIER));
     }
 
     [Fact]
     public async void NotRegistredBookBeingDeletedTest()
     {
-        UserModel user = userModelTestDumy;
+        UserIdentifier user = new()
+        {
+            id = 1,
+            userIdentifier = USER_IDENTIFIER
+        };
 
-        _userRepositoryMock.Setup(ex => ex.GetUserById(It.IsAny<int>()))
+        userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
             .ReturnsAsync(user);
-        _bookRepositoryMock.Setup(ex => ex.GetBookById(It.IsAny<int>()))
+        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<int>()))
             .ReturnsAsync(() => null);
         
         await Assert.ThrowsAsync<BookNotFoundException>(() => 
-            _bookController.DeleteBook(It.IsAny<int>(), 1));
+            bookController.RemoveBook(It.IsAny<int>(), USER_IDENTIFIER));
     }
     
     [Fact]
     public async void DeleteNotOwnedUserBookTest()
     {
-        BookModel book = bookModelTestDumy;
-        UserModel user = userModelTestDumy;
-        book.owner = new() //User is diferent
+        UserIdentifier user = new()
+        {
+            id = 1,
+            userIdentifier = USER_IDENTIFIER
+        };
+        UserIdentifier diferentUser = new()
         {
             id = 2,
-            username = "testDiferent",
-            email = "test.diferent@test.com",
-            password = "test1234"
+            userIdentifier = "2"
         };
+        BookModel book = bookModelTestDumy;
+        book.owner = diferentUser;
         
-        _userRepositoryMock.Setup(ex => ex.GetUserById(It.IsAny<int>()))
+        userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
             .ReturnsAsync(user);
-        _bookRepositoryMock.Setup(ex => ex.GetBookById(It.IsAny<int>()))
+        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<int>()))
             .ReturnsAsync(book);
         
         await Assert.ThrowsAsync<NotOwnerBookException>(() => 
-            _bookController.DeleteBook(It.IsAny<int>(), It.IsAny<int>()));
+            bookController.RemoveBook(It.IsAny<int>(), USER_IDENTIFIER));
     }
 }

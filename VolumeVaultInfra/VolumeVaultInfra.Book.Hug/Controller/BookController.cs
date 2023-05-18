@@ -1,6 +1,7 @@
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using VolumeVaultInfra.Book.Hug.Exceptions;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Models.Base;
@@ -89,6 +90,20 @@ public class BookController : IBookController
             limitPerPage = limitPerPage,
             countInPage = readModels.Count,
             books = readModels
+        };
+    }
+    public async Task<GenresReadModel> GetUserBooksGenres(string userId)
+    {
+        UserIdentifier userIdentifier = await userIdentifierRepository.EnsureInMirror(new() 
+            { userIdentifier = userId});
+        var booksGenres = await genreRepository.GetUserGenres(userIdentifier);
+        
+        IReadOnlyList<string> genres = booksGenres
+            .Select(genreModel => genreModel.genre)
+            .ToList();
+        return new(genres)
+        {
+            count = genres.Count
         };
     }
 
