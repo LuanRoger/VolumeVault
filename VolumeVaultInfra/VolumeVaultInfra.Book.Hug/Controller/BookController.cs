@@ -58,8 +58,17 @@ public class BookController : IBookController
             
             throw exception;
         }
-        
+        IReadOnlyList<string> genreModels = (await genreRepository.GetBookGenres(bookResult))
+            .Select(genreModel => genreModel.genre)
+            .ToList();
+        IReadOnlyList<string> tagsModels = (await tagRepository.GetBookTags(bookResult))
+            .Select(tagModel => tagModel.tag)
+            .ToList();
+
         BookReadModel readModel = mapper.Map<BookReadModel>(bookResult);
+        readModel.genre = genreModels.ToList();
+        readModel.tags = tagsModels.ToList();
+        
         return readModel;
     }
 
