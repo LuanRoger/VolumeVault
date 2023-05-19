@@ -36,13 +36,13 @@ class HomeSectionMobileCommand extends HomeSectionLayoutStrategy {
         isScrollControlled: false,
         isDismissible: true,
         dragable: true,
+        padding: 5.0,
         action: (context) => FilledButton(
               onPressed: () {
                 update = true;
                 Navigator.pop(context);
               },
-              child:
-                  Text(AppLocalizations.of(context)!.sortOptionApplySort),
+              child: Text(AppLocalizations.of(context)!.sortOptionApplySort),
             ),
         items: [
           Row(
@@ -50,7 +50,7 @@ class HomeSectionMobileCommand extends HomeSectionLayoutStrategy {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               TextSwitch(
-                text: "Cresente",
+                text: AppLocalizations.of(context)!.sortOptionAscending,
                 value: ascending,
                 onChanged: (newValue) => ascending = newValue,
               ),
