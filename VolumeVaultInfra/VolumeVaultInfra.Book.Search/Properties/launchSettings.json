@@ -7,7 +7,7 @@
       "applicationUrl": "http://localhost:7041",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "API_KEY": "875b9380866e9d56e7110b0ee310962c16d9d4ae103f829d62bdffd2cbe7c61d",
+        "SEARCH_API_KEY": "ccae6d912a41bfefd569a77b5cd86603cde92e53cdd45813cba9e5bf080b3734",
         "MEILISEARCH_HOST": "http://localhost:7700",
         "MEILISEARCH_MASTER_KEY": "4I4wGJsy7B4G64PQQQW2xXfTbM05IgK7a0ZD9gT3jEs"
       }
@@ -28,7 +28,7 @@
       "applicationUrl": "https://localhost:7041",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "API_KEY": "875b9380866e9d56e7110b0ee310962c16d9d4ae103f829d62bdffd2cbe7c61d",
+        "SEARCH_API_KEY": "875b9380866e9d56e7110b0ee310962c16d9d4ae103f829d62bdffd2cbe7c61d",
         "MEILISEARCH_HOST": "http://localhost:7700",
         "MEILISEARCH_MASTER_KEY": "4I4wGJsy7B4G64PQQQW2xXfTbM05IgK7a0ZD9gT3jEs"
       }

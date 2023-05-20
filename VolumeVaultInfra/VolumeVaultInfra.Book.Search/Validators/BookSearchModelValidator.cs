@@ -26,7 +26,7 @@ public class BookSearchModelValidator : AbstractValidator<BookSearchModel>
         RuleFor(book => book.pagesNumber)
             .GreaterThanOrEqualTo(1)
             .When(book => book.pagesNumber is not null);
-        RuleFor(book => book.genre)
+        RuleForEach(book => book.genre)
             .NotEmpty()
             .MaximumLength(50)
             .When(book => book.genre is not null);
