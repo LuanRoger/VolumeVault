@@ -1,8 +1,8 @@
 version: '3.9'
 
 networks:
-  prom:
   api:
+  search:
 
 volumes:
   primary-db:
@@ -25,9 +25,26 @@ services:
       - 5029:80
     networks:
       - api
-      - prom
+      - search
     depends_on:
       - postgres
+    restart: unless-stopped
+
+  vvinfra-search:
+    build:
+      context: ./
+      dockerfile: Dockerfile.Search
+    environment:
+      - ASPNETCORE_ENVIRONMENT
+      - SEARCH_API_KEY
+      - MEILISEARCH_HOST
+      - MEILISEARCH_MASTER_KEY
+    ports:
+      - 7041:80
+    networks:
+      - search
+    depends_on:
+      - meilisearch
     restart: unless-stopped
 
   postgres:
@@ -49,6 +66,6 @@ services:
     ports:
       - 7700:7700
     networks:
-      - api
+      - search
     volumes:
       - meili-vol:/meili_data
