@@ -20,7 +20,6 @@ public class RegisterBookTest
     private Mock<IUserIdentifierRepository> userRepository { get; } = new();
     private Mock<IGenreRepository> genreRepository { get; } = new();
     private Mock<ITagRepository> tagRepository { get; } = new();
-    //private Mock<IBookControllerMetrics> _bookControllerMetricsMock { get; } = new();
     private Mock<ILogger> logger { get; } = new();
     private BookController bookController { get; }
     

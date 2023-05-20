@@ -3,6 +3,7 @@ using FluentValidation;
 using Moq;
 using Serilog;
 using VolumeVaultInfra.Book.Hug.Controller;
+using VolumeVaultInfra.Book.Hug.Mapper.Profiles;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Models.Base;
 using VolumeVaultInfra.Book.Hug.Repositories;
@@ -19,18 +20,20 @@ public class DeleteBookTests
     private Mock<IUserIdentifierRepository> userRepository { get; } = new();
     private Mock<IGenreRepository> genreRepository { get; } = new();
     private Mock<ITagRepository> tagRepository { get; } = new();
-    //private Mock<IBookControllerMetrics> _bookControllerMetricsMock { get; } = new();
     private Mock<ILogger> logger { get; } = new();
-    private Mock<IMapper> mapper { get; } = new();
     private BookController bookController { get; }
 
     public DeleteBookTests()
     {
         IValidator<BookWriteModel> bookValidator = new BookWriteModelValidator();
         IValidator<BookUpdateModel> bookUpdateValidator = new BookUpdateModelValidator();
+        IMapper mapper = new Mapper(new MapperConfiguration(configure =>
+        {
+            configure.AddProfile<BookModelMapperProfile>();
+        }));
 
         bookController = new(logger.Object, bookRepository.Object, genreRepository.Object,
-            userRepository.Object, tagRepository.Object, bookSearchRepository.Object, mapper.Object,
+            userRepository.Object, tagRepository.Object, bookSearchRepository.Object, mapper,
             bookValidator, bookUpdateValidator);
     }
     

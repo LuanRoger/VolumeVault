@@ -1,9 +1,9 @@
-using System.Collections.Immutable;
 using AutoMapper;
 using FluentValidation;
 using Moq;
 using Serilog;
 using VolumeVaultInfra.Book.Hug.Controller;
+using VolumeVaultInfra.Book.Hug.Mapper.Profiles;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Models.Base;
 using VolumeVaultInfra.Book.Hug.Models.Utils;
@@ -21,18 +21,20 @@ public class GetBookTests
     private Mock<IUserIdentifierRepository> userRepository { get; } = new();
     private Mock<IGenreRepository> genreRepository { get; } = new();
     private Mock<ITagRepository> tagRepository { get; } = new();
-    //private Mock<IBookControllerMetrics> _bookControllerMetricsMock { get; } = new();
     private Mock<ILogger> logger { get; } = new();
-    private Mock<IMapper> mapper { get; } = new();
     private BookController bookController { get; }
 
     public GetBookTests()
     {
         IValidator<BookWriteModel> bookValidator = new BookWriteModelValidator();
         IValidator<BookUpdateModel> bookUpdateValidator = new BookUpdateModelValidator();
+        IMapper mapper = new Mapper(new MapperConfiguration(configure =>
+        {
+            configure.AddProfile<BookModelMapperProfile>();
+        }));
 
         bookController = new(logger.Object, bookRepository.Object, genreRepository.Object,
-            userRepository.Object, tagRepository.Object, bookSearchRepository.Object, mapper.Object,
+            userRepository.Object, tagRepository.Object, bookSearchRepository.Object, mapper,
             bookValidator, bookUpdateValidator);
     }
 
@@ -55,6 +57,10 @@ public class GetBookTests
         
         userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
             .ReturnsAsync(user);
+        genreRepository.Setup(ex => ex.GetBookGenres(It.IsAny<BookModel>()))
+            .ReturnsAsync(BookUtilsFakeModels.bookGenres);
+        tagRepository.Setup(ex => ex.GetBookTags(It.IsAny<BookModel>()))
+            .ReturnsAsync(BookUtilsFakeModels.bookTags);
         bookRepository.Setup(ex => 
             ex.GetUserOwnedBooksSplited(user, page, limitPerPage, It.IsAny<BookSortOptions>()))
             .ReturnsAsync(dumyBooks);
