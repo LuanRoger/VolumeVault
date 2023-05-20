@@ -1,4 +1,4 @@
-namespace VolumeVaultInfra.Test;
+namespace VolumeVaultInfra.Hug.Test;
 
 internal static class TestConts
 {

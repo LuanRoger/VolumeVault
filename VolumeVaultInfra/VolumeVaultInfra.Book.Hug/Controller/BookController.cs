@@ -58,8 +58,17 @@ public class BookController : IBookController
             
             throw exception;
         }
-        
+        IReadOnlyList<string> genreModels = (await genreRepository.GetBookGenres(bookResult))
+            .Select(genreModel => genreModel.genre)
+            .ToList();
+        IReadOnlyList<string> tagsModels = (await tagRepository.GetBookTags(bookResult))
+            .Select(tagModel => tagModel.tag)
+            .ToList();
+
         BookReadModel readModel = mapper.Map<BookReadModel>(bookResult);
+        readModel.genre = genreModels.ToList();
+        readModel.tags = tagsModels.ToList();
+        
         return readModel;
     }
 
@@ -70,16 +79,43 @@ public class BookController : IBookController
         { userIdentifier = userId });
         var booksResult = await bookRepository
             .GetUserOwnedBooksSplited(user, page, limitPerPage, sort);
-        var readModels = booksResult
-            .Select(result => mapper.Map<BookReadModel>(result))
-            .ToList();
+        
+        List<BookReadModel> readBooks = new();
+        foreach (BookModel userBook in booksResult)
+        {
+            BookReadModel readModel = mapper.Map<BookReadModel>(userBook);
+            IReadOnlyList<string> genreModels = (await genreRepository.GetBookGenres(userBook))
+                .Select(genreModel => genreModel.genre)
+                .ToList();
+            IReadOnlyList<string> tagsModels = (await tagRepository.GetBookTags(userBook))
+                .Select(tagModel => tagModel.tag)
+                .ToList();
+            readModel.genre = genreModels.ToList();
+            readModel.tags = tagsModels.ToList();
+            
+            readBooks.Add(readModel);
+        }
         
         return new()
         {
             page = page,
             limitPerPage = limitPerPage,
-            countInPage = readModels.Count,
-            books = readModels
+            countInPage = booksResult.Count,
+            books = readBooks
+        };
+    }
+    public async Task<GenresReadModel> GetUserBooksGenres(string userId)
+    {
+        UserIdentifier userIdentifier = await userIdentifierRepository.EnsureInMirror(new() 
+            { userIdentifier = userId});
+        var booksGenres = await genreRepository.GetUserGenres(userIdentifier);
+        
+        IReadOnlyList<string> genres = booksGenres
+            .Select(genreModel => genreModel.genre)
+            .ToList();
+        return new(genres)
+        {
+            count = genres.Count
         };
     }
 

@@ -1,7 +1,7 @@
-using VolumeVaultInfra.Book.Models.Book;
-using VolumeVaultInfra.Book.Models.Enums;
+using VolumeVaultInfra.Book.Hug.Models.Base;
+using VolumeVaultInfra.Book.Hug.Models.Enums;
 
-namespace VolumeVaultInfra.Test.ControllersTests.BookControllerTests;
+namespace VolumeVaultInfra.Hug.Test.ControllersTests.BookControllerTests;
 
 internal static class BookFakeGenerators
 {
@@ -18,21 +18,17 @@ internal static class BookFakeGenerators
                 publisher = "test",
                 edition = 1,
                 pagesNumber = 1,
-                genre = "test",
                 format = 0,
                 observation = "test",
                 readStatus = ReadStatus.HasReaded,
                 readStartDay = new DateTime(2023, 1, 1),
                 readEndDay = new DateTime(2023, 1, 7),
-                tags = new() { "test" },
                 createdAt = DateTime.Today,
                 lastModification = DateTime.Today,
                 owner = new()
                 {
                     id = 1,
-                    username = "test",
-                    email = "test@test.com",
-                    password = "test1234"
+                    userIdentifier = "1"
                 }
             };
     }
@@ -49,7 +45,6 @@ internal static class BookFakeGenerators
                 publisher = "test",
                 edition = 1,
                 pagesNumber = 1,
-                genre = "test",
                 format = 0,
                 readStatus = ReadStatus.HasReaded,
                 readStartDay = new DateTime(2023, 1, 1),
@@ -57,7 +52,7 @@ internal static class BookFakeGenerators
                 tags = new() { "test" },
                 createdAt = DateTime.Today,
                 lastModification = DateTime.Today,
-                ownerId = 1
+                ownerId = "1"
             };
     }
     public static IEnumerable<BookSearchModel> GenerateMessDumySearchResult(int count = 10)
@@ -76,13 +71,13 @@ internal static class BookFakeGenerators
                 publisher = "test",
                 edition = 1,
                 pagesNumber = 1,
-                genre = "test",
+                genre = new() { "test" },
                 format = 0,
                 readStatus = ReadStatus.NotRead,
                 tags = new() { "test" },
                 createdAt = DateTime.Today,
                 lastModification = DateTime.Today,
-                ownerId = randomUserId
+                ownerId = randomUserId.ToString()
             };
         }
     }

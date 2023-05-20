@@ -1,7 +1,8 @@
-using VolumeVaultInfra.Book.Models.Book;
-using VolumeVaultInfra.Book.Models.Enums;
+using VolumeVaultInfra.Book.Hug.Models;
+using VolumeVaultInfra.Book.Hug.Models.Base;
+using VolumeVaultInfra.Book.Hug.Models.Enums;
 
-namespace VolumeVaultInfra.Test.ControllersTests.BookControllerTests;
+namespace VolumeVaultInfra.Hug.Test.ControllersTests.BookControllerTests.FakeData;
 
 internal static class BookFakeModels
 {
@@ -15,21 +16,17 @@ internal static class BookFakeModels
         publisher = "test",
         edition = 1,
         pagesNumber = 1,
-        genre = "test",
         format = 0,
         observation = "test",
         readStatus = ReadStatus.HasReaded,
         readStartDay = new DateTime(2023, 1, 1),
         readEndDay = new DateTime(2023, 1, 7),
-        tags = new() { "test" },
         createdAt = DateTime.Today,
         lastModification = DateTime.Today,
         owner = new()
         {
             id = 1,
-            username = "test",
-            email = "test@test.com",
-            password = "test1234"
+            userIdentifier = "1"
         }
     };
     public static BookWriteModel bookWriteModelTestDumy => new()
@@ -41,16 +38,13 @@ internal static class BookFakeModels
         publisher = "test",
         edition = 1,
         pagesNumber = 1,
-        genre = "test",
+        genre = new() { "test" },
         format = 0,
         observation = "test",
         readStatus = ReadStatus.HasReaded,
         readStartDay = new DateTime(2023, 1, 1),
         readEndDay = new DateTime(2023, 1, 7),
-        tags = new()
-        {
-            "test"
-        },
+        tags = new() { "test" },
         createdAt = DateTime.Today,
         lastModification = DateTime.Today
     };
@@ -63,7 +57,7 @@ internal static class BookFakeModels
         publisher = "changed",
         edition = 2,
         pagesNumber = 2,
-        genre = "changed",
+        genre = new() { "changed", "changed" },
         format = BookFormat.HARDBACK,
         observation = "changed",
         synopsis = "changed",

@@ -41,8 +41,7 @@ builder.Services.AddSingleton<MeilisearchClient>(_ =>
     return new(meilisearchHost, meilisearchMasterKey);
 });
 builder.Services.AddAutoMapper(typeof(DateDateTimeMapperProfile), 
-    typeof(GrpcBookSearchModelMapperProfile), 
-    typeof(GrpcBookSearchUpdateModelMapperProfile));
+    typeof(GrpcBookSearchModelMapperProfile));
 
 builder.Services.AddScoped<IBookSearchRepository, BookSearchRepository>();
 builder.Services.AddScoped<IValidator<BookSearchModel>, BookSearchModelValidator>();

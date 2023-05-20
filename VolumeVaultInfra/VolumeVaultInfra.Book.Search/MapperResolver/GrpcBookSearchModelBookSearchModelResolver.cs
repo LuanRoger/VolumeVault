@@ -16,7 +16,7 @@ public class GrpcBookSearchModelBookSearchModelResolver : ITypeConverter<GrpcBoo
         publisher = source.HasPublisher ? source.Publisher : null,
         edition = source.HasEdition ? source.Edition : null,
         pagesNumber = source.HasPagesNumber ? source.PagesNumber : null,
-        genre = source.HasGenre ? source.Genre : null,
+        genre = source.Genre is null || source.Genre.Count == 0 ? null : source.Genre.ToList(),
         format = source.HasFormat ? source.Format : null,
         readStatus = source.HasReadStatus ? source.ReadStatus : null,
         readStartDay = source.ReadStartDay is null ? null : 
