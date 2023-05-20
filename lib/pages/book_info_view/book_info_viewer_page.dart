@@ -172,7 +172,7 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
           ),
           const SizedBox(height: 5),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Chip(
                 avatar: const Icon(Icons.numbers_rounded),
@@ -181,10 +181,6 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
               Chip(
                 avatar: const Icon(Icons.insert_drive_file_rounded),
                 label: Text("${book.pagesNumber ?? "-"}"),
-              ),
-              Chip(
-                avatar: const Icon(Icons.label_rounded),
-                label: Text(book.genre ?? "-"),
               )
             ],
           ),
@@ -259,7 +255,7 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
               expand: true,
             ),
           const SizedBox(height: 5),
-          if (book.tags != null)
+          if (book.tags != null && book.tags!.isNotEmpty)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -267,7 +263,19 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
                     icon: Icons.tag_rounded,
                     text: AppLocalizations.of(context)!.tagsBookViewerPage),
                 const SizedBox(height: 5),
-                ChipList(book.tags!.toSet()),
+                ChipList(book.tags!.toSet())
+              ],
+            ),
+          const SizedBox(height: 5),
+          if (book.genre != null && book.genre!.isNotEmpty)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                IconText(
+                    icon: Icons.read_more_rounded,
+                    text: AppLocalizations.of(context)!.genresBookViewerPage),
+                const SizedBox(height: 5),
+                ChipList(book.genre!.toSet()),
               ],
             )
         ]),

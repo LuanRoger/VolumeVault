@@ -2,7 +2,7 @@
 
 public class BookSearchModel
 {
-    public required int id { get; init; }
+    public required int id { get; set; }
     
     public required string title { get; init; }
     
@@ -18,7 +18,7 @@ public class BookSearchModel
     
     public int? pagesNumber { get; init; }
     
-    public string? genre { get; init; }
+    public List<string>? genre { get; set; }
     
     public BookFormat? format { get; init; }
     
@@ -28,11 +28,11 @@ public class BookSearchModel
     
     public DateTime? readEndDay { get; init; }
 
-    public List<string>? tags { get; init; }
+    public List<string>? tags { get; set; }
     
     public required DateTime createdAt { get; init; }
     
     public required DateTime lastModification { get; init; }
     
-    public string ownerId { get; init; }
+    public string ownerId { get; set; }
 }

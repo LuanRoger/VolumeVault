@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:volume_vault/models/enums/auth_result_status.dart';
+import 'package:volume_vault/models/enums/signin_auth_result.dart';
 import 'package:volume_vault/pages/signin_user_page/commands/signin_user_page_desktop_commands.dart';
 import 'package:volume_vault/services/models/user_signin_request.dart';
 import 'package:volume_vault/shared/assets/app_images.dart';
@@ -132,10 +132,11 @@ class SigninUserPageDesktop extends HookConsumerWidget {
                                       if (!context.mounted) return;
 
                                       if (signinResult !=
-                                          AuthResultStatus.created) {
-                                        SnackbarUtils.showUserAuthErrorSnackbar(
-                                            context,
-                                            authResultStatus: signinResult);
+                                          SigninAuthResult.success) {
+                                        SnackbarUtils
+                                            .showUserSignupAuthErrorSnackbar(
+                                                context,
+                                                authResultStatus: signinResult);
                                         isLoadingState.value = false;
                                         return;
                                       }

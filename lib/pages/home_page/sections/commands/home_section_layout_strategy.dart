@@ -58,10 +58,10 @@ abstract class HomeSectionLayoutStrategy {
     return userBookResult;
   }
 
-  Future<BookStats> getUserBookStats(WidgetRef ref) async {
+  Future<BookStats?> getUserBookStats(WidgetRef ref) async {
     final statsController = await ref.read(statsControllerProvider.future);
 
-    BookStats bookStats = await statsController.getUserBooksCount();
+    BookStats? bookStats = await statsController.getUserBooksCount();
     return bookStats;
   }
 
@@ -112,7 +112,7 @@ abstract class HomeSectionLayoutStrategy {
     );
 
     if (exit) {
-      await ref.read(userSessionNotifierProvider.notifier).clear();
+      await ref.read(userSessionAuthProvider.notifier).logout();
       Navigator.pushNamedAndRemoveUntil(
           context, AppRoutes.loginPageRoute, (_) => false);
     }

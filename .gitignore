@@ -531,3 +531,16 @@ app.*.symbols
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 !/dev/ci/**/Gemfile.lock
+
+# Firebase config files
+android/app/google-services.json
+
+ios/firebase_app_id_file.json
+
+ios/Runner/GoogleService-Info.plist
+
+lib/firebase_options.dart
+
+macos/firebase_app_id_file.json
+
+macos/Runner/GoogleService-Info.plist

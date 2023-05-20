@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VolumeVaultInfra.Test", "VolumeVaultInfra.Test\VolumeVaultInfra.Test.csproj", "{9E6ABF01-F7EE-446C-AB5C-A246C5C50D08}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VolumeVaultInfra.Hug.Test", "VolumeVaultInfra.Hug.Test\VolumeVaultInfra.Hug.Test.csproj", "{9E6ABF01-F7EE-446C-AB5C-A246C5C50D08}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VolumeVaultInfra.Book.Search", "VolumeVaultInfra.Book.Search\VolumeVaultInfra.Book.Search.csproj", "{D865D81D-A46F-4731-866D-517D218A1902}"
 EndProject

@@ -35,7 +35,7 @@ class HomeSectionDesktop extends HookConsumerWidget {
 
     final searchTextController = useTextEditingController();
     useListenable(searchTextController);
-    final userInfo = ref.watch(userInfoProvider);
+    final userInfo = ref.watch(userSessionAuthProvider);
     final visualizationTypeState = useState(VisualizationType.LIST);
     final sortOptionState = useState(BookSortOption());
 
@@ -97,16 +97,10 @@ class HomeSectionDesktop extends HookConsumerWidget {
       appBar: AppBar(
         title: WidgetSwitcher(
           first: Text(AppLocalizations.of(context)!.titleAppBarHomePage),
-          second: userInfo.maybeWhen(
-              data: (data) {
-                if (data == null) return const SizedBox();
-
-                return Text(AppLocalizations.of(context)!
-                    .helloUserAppBarHomePage(data.username));
-              },
-              loading: () => Text(
-                  AppLocalizations.of(context)!.wellcomeBackAppBarHomePage),
-              orElse: () => const SizedBox()),
+          second: userInfo != null
+              ? Text(AppLocalizations.of(context)!
+                  .helloUserAppBarHomePage(userInfo.name))
+              : const SizedBox(),
         ),
         actions: [
           if (!ResponsiveWrapper.of(context).isTablet)

@@ -12,7 +12,7 @@ class BookController {
 
   BookController({required BookService? service}) : _service = service;
 
-  Future<BookModel?> registerBook(RegisterBookRequest request) async {
+  Future<int?> registerBook(RegisterBookRequest request) async {
     if (_service == null) return null;
 
     return await _service!.registerBook(request);

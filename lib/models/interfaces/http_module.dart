@@ -46,6 +46,7 @@ class HttpModule {
       response = await _dio.post(
         url,
         data: body,
+        queryParameters: query,
         options: Options(
           headers: Map.from({...?fixHeaders, ...?headers}),
         ),
@@ -69,6 +70,7 @@ class HttpModule {
       response = await _dio.put(
         url,
         data: body,
+        queryParameters: query,
         options: Options(
           headers: Map.from({...?fixHeaders, ...?headers}),
         ),
@@ -91,7 +93,7 @@ class HttpModule {
     try {
       response = await _dio.delete(
         url,
-        queryParameters: query ?? const {},
+        queryParameters: query,
         options: Options(
           headers: Map.from({...?fixHeaders, ...?headers}),
         ),

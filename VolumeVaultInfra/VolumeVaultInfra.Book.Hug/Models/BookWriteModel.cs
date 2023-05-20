@@ -36,5 +36,9 @@ public class BookWriteModel
     
     public DateTime? readEndDay { get; init; }
     
+    public required DateTime createdAt { get; set; }
+    
+    public required DateTime lastModification { get; set; } 
+    
     public List<string>? tags { get; init; }
 }

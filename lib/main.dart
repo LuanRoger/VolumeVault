@@ -1,7 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:volume_vault/app.dart';
+import 'package:volume_vault/firebase_options.dart';
 import 'package:volume_vault/l10n/l10n.dart';
 import 'package:volume_vault/models/enums/theme_brightness.dart';
 import 'package:volume_vault/providers/interfaces/graphics_preferences_state.dart';
@@ -19,6 +21,10 @@ void main() async {
 
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   final appPreferences = loadPreferences(sharedPreferences);
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   runApp(
     ProviderScope(overrides: [

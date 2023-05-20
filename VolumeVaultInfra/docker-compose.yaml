@@ -1,8 +1,8 @@
 version: '3.9'
 
 networks:
-  prom:
   api:
+  search:
 
 volumes:
   primary-db:
@@ -10,35 +10,41 @@ volumes:
   grafana-vol:
 
 services:
-  vvinfra:
-    container_name: volume_vault_infra
+  vvinfra-hug:
+    container_name: volume_vault_infra_hug
     build:
-      context: ./VolumeVaultInfra/
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: Dockerfile.Hug
     environment:
       - ASPNETCORE_ENVIRONMENT
-      - JWT_SYMMETRIC_KEY
       - API_KEY
-      - VV_POSTGRES_HOST
-      - VV_POSTGRES_PORT
-      - VV_DEFAULT_POSTGRES_DB_NAME
-      - VV_POSTGRES_USER
-      - VV_POSTGRES_PASSWORD
-      - VV_MONGO_HOST
-      - VV_MONGO_PORT
-      - VV_MONGO_USER
-      - VV_MONGO_PASSWORD
-      - VV_MONGO_DB_NAME
-      - VV_MEILISEARCH_HOST
-      - VV_MEILISEARCH_PORT
+      - POSTGRES_CONNECTION_STRING
+      - MEILISEARCH_HOST
       - MEILISEARCH_MASTER_KEY
     ports:
-      - 5081:80
+      - 5029:80
     networks:
       - api
-      - prom
+      - search
     depends_on:
       - postgres
+    restart: unless-stopped
+
+  vvinfra-search:
+    build:
+      context: ./
+      dockerfile: Dockerfile.Search
+    environment:
+      - ASPNETCORE_ENVIRONMENT
+      - SEARCH_API_KEY
+      - MEILISEARCH_HOST
+      - MEILISEARCH_MASTER_KEY
+    ports:
+      - 7041:80
+    networks:
+      - search
+    depends_on:
+      - meilisearch
     restart: unless-stopped
 
   postgres:
@@ -60,26 +66,6 @@ services:
     ports:
       - 7700:7700
     networks:
-      - api
+      - search
     volumes:
       - meili-vol:/meili_data
-
-  prometheus:
-    container_name: prometheus
-    image: prom/prometheus
-    ports:
-      - 9090:9090
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    networks:
-      - prom
-  
-  grafana:
-    container_name: grafana
-    image: grafana/grafana-oss
-    ports:
-      - 3000:3000
-    networks:
-      - prom
-    volumes:
-      - grafana-vol:/var/lib/grafana grafana/grafana-enterprise

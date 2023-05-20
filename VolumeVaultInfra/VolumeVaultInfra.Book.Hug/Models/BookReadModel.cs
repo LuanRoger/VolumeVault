@@ -23,7 +23,7 @@ public class BookReadModel
     
     public int? pagesNumber { get; init; }
     
-    public List<string>? genre { get; init; }
+    public List<string>? genre { get; set; }
     
     public BookFormat? format { get; init; }
     
@@ -41,7 +41,7 @@ public class BookReadModel
     
     public DateTime? readEndDay { get; init; }
     
-    public List<string>? tags { get; init; }
+    public List<string>? tags { get; set; }
 
     public required DateTime createdAt { get; init; }
     

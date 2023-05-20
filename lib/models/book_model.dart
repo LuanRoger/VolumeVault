@@ -11,7 +11,7 @@ class BookModel {
   String? publisher;
   int? edition;
   int? pagesNumber;
-  String? genre;
+  Set<String>? genre;
   BookFormat? format;
   String? observation;
   String? synopsis;
@@ -53,7 +53,7 @@ class BookModel {
         "publisher": publisher,
         "edition": edition,
         "pagesNumber": pagesNumber,
-        "genre": genre,
+        "genre": genre?.toList(),
         "format": format?.index,
         "observation": observation,
         "synopsis": synopsis,
@@ -76,7 +76,9 @@ class BookModel {
         publisher: json["publisher"],
         edition: json["edition"],
         pagesNumber: json["pagesNumber"],
-        genre: json["genre"],
+        genre: json["genre"] != null
+            ? (json["genre"] as List).map((e) => e as String).toSet()
+            : null,
         format:
             json["format"] != null ? BookFormat.values[json["format"]] : null,
         observation: json["observation"],
@@ -86,8 +88,12 @@ class BookModel {
         readStatus: json["readStatus"] != null
             ? ReadStatus.values[json["readStatus"]]
             : null,
-        readStartDay: json["readStartDay"] != null ? DateTime.parse(json["readStartDay"]) : null,
-        readEndDay: json["readEndDay"] != null ? DateTime.parse(json["readEndDay"]) : null,
+        readStartDay: json["readStartDay"] != null
+            ? DateTime.parse(json["readStartDay"])
+            : null,
+        readEndDay: json["readEndDay"] != null
+            ? DateTime.parse(json["readEndDay"])
+            : null,
         tags: json["tags"] != null
             ? (json["tags"] as List).map((e) => e as String).toSet()
             : null,

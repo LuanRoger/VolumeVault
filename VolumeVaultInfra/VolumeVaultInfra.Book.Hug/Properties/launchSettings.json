@@ -10,7 +10,7 @@
         "POSTGRES_CONNECTION_STRING": "User ID=admin;Password=admin;Host=localhost;Port=5432;Database=main;",
         "MEILISEARCH_HOST": "http://localhost:7700",
         "MEILISEARCH_MASTER_KEY": "gEX8xAjbxfWWGnUm1oD0l3CRV7QAHdW8-GZo7QGZN7Q",
-        "API_KEY": "gEX8xAjbxfWWGnUm1oD0l3CRV7QAHdW8-GZo7QGZN7Q"
+        "API_KEY": "ccae6d912a41bfefd569a77b5cd86603cde92e53cdd45813cba9e5bf080b3734"
       }
     },
     "http(prod)": {

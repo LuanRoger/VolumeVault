@@ -26,7 +26,7 @@ class HomeSectionMobile extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userInfo = ref.watch(userInfoProvider);
+    final userInfo = ref.watch(userSessionAuthProvider);
 
     final pagingController =
         usePagingController<int, BookModel>(firstPageKey: 1);
@@ -85,16 +85,10 @@ class HomeSectionMobile extends HookConsumerWidget {
       appBar: AppBar(
         title: WidgetSwitcher(
             first: Text(AppLocalizations.of(context)!.titleAppBarHomePage),
-            second: userInfo.maybeWhen(
-                data: (data) {
-                  if (data == null) return const SizedBox();
-
-                  return Text(AppLocalizations.of(context)!
-                      .helloUserAppBarHomePage(data.username));
-                },
-                loading: () => Text(
-                    AppLocalizations.of(context)!.wellcomeBackAppBarHomePage),
-                orElse: () => const SizedBox())),
+            second: userInfo != null
+                ? Text(AppLocalizations.of(context)!
+                    .helloUserAppBarHomePage(userInfo.name))
+                : const SizedBox()),
         actions: [
           IconButton(
               onPressed: () async {
@@ -140,8 +134,9 @@ class HomeSectionMobile extends HookConsumerWidget {
                               : 0),
                       style: Theme.of(context).textTheme.bodyLarge),
                   Badge(
-                    alignment: AlignmentDirectional.bottomEnd,
+                    alignment: AlignmentDirectional.topEnd,
                     isLabelVisible: sortOptionState.value.sort != null,
+                    smallSize: 10,
                     child: IconButton(
                         onPressed: () async {
                           BookSortOption? newSortOptions =

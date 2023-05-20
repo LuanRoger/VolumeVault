@@ -50,6 +50,7 @@
     "lastUpdateBookViewerPage": "Última modificação",
     "observationsBookViewerPage": "Observações",
     "tagsBookViewerPage": "Tags",
+    "genresBookViewerPage": "Gêneros",
     "deletePopupButtonBookViewerPage": "Deletar",
 
     "newBookAppBarTitle": "Novo livro",
@@ -118,7 +119,7 @@
     "editionTextFieldHint": "Edição",
     "formatTextFieldHint": "Formato",
     "pageNumbersTextFieldHint": "N° de páginas",
-    "genreTextFieldHint": "Gênero",
+    "genresTextFieldHint": "Gêneros",
     "buyLinkTextFieldHint": "Link de compra",
     "observationsTextFieldHint": "Observações",
     "synopsisTextFieldHint": "Sinopse",

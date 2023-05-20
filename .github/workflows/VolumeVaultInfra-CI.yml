@@ -22,5 +22,7 @@ jobs:
       run: dotnet restore VolumeVaultInfra/
     - name: build
       run: dotnet build VolumeVaultInfra/ --no-restore
-    - name: Execute and export unit tests
+    - name: Execute unit tests
       run: dotnet test VolumeVaultInfra/ --no-build --no-restore
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
