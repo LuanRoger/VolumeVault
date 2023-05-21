@@ -64,7 +64,7 @@ public class BookSearchRepository : IBookSearchRepository
         return endResources.Error is null;
     }
 
-    public async Task<IReadOnlyList<BookSearchModel>> SearchBook(string owenerId, string query, int limitPerSection)
+    public async Task<SearchRepositoryResult> SearchBook(string owenerId, string query, int limitPerSection)
     {
         SearchQuery searchQuery = new()
             { 
@@ -74,6 +74,11 @@ public class BookSearchRepository : IBookSearchRepository
         var result = 
             await bookSearchIndex.SearchAsync<BookSearchModel>(query, searchQuery);
         
-        return result.Hits.ToList();
+        return new()
+        {
+            hints = result.Hits.ToList(),
+            searchElapsedTime = TimeSpan.FromMilliseconds(result.ProcessingTimeMs),
+            query = query
+        };
     }
 }
