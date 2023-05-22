@@ -11,5 +11,10 @@ class _ServerConfig {
   late String serverApiKey;
   late String serverProtocol;
 
+  late String searchServerPort;
+  late String searchServerHost;
+  late String searchServerApiKey;
+  late String searchServerProtocol;
+
   late bool useEnvVars;
 }

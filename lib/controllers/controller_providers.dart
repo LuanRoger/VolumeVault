@@ -5,6 +5,12 @@ final bookControllerProvider = FutureProvider<BookController>((ref) async {
 
   return BookController(service: service);
 });
+final bookSearchControllerProvider =
+    FutureProvider<BookSearchController>((ref) async {
+  final service = await ref.watch(_bookSearchServiceProvider.future);
+
+  return BookSearchController(service: service);
+});
 final statsControllerProvider = FutureProvider<StatsController>((ref) async {
   final service = await ref.watch(_statsServiceProvider.future);
 
