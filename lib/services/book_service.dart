@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:volume_vault/models/api_config_params.dart';
 import 'package:volume_vault/models/book_model.dart';
-import 'package:volume_vault/models/book_search_result.dart';
 import 'package:volume_vault/models/book_sort_option.dart';
 import 'package:volume_vault/models/http_code.dart';
 import 'package:volume_vault/models/http_response.dart';
@@ -91,20 +90,5 @@ class BookService {
         .delete(_bookAndIdUrl + bookId.toString(), query: requestQuery);
 
     return response.statusCode == HttpCode.OK;
-  }
-
-  Future<List<BookSearchResult>> searchBook(String query) async {
-    Map<String, String> requestQuery = {
-      _userIdQueryHeader: userIdentifier,
-      "query": query
-    };
-    final response = await _httpModule.get(_searchBookUrl, query: requestQuery);
-    if (response.statusCode != HttpCode.OK) return List.empty();
-
-    List<BookSearchResult> searchResult = (response.body as List)
-        .map((bookJson) => BookSearchResult.fromJson(bookJson))
-        .toList();
-
-    return searchResult;
   }
 }

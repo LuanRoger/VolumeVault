@@ -1,16 +1,15 @@
 using FluentValidation;
 using Meilisearch;
 using Serilog;
+using VolumeVaultInfra.Book.Search.Controllers;
+using VolumeVaultInfra.Book.Search.Endpoints;
 using VolumeVaultInfra.Book.Search.Exceptions;
-using VolumeVaultInfra.Book.Search.Interceptors;
-using VolumeVaultInfra.Book.Search.MapperProfiles;
+using VolumeVaultInfra.Book.Search.Filters;
 using VolumeVaultInfra.Book.Search.Models;
 using VolumeVaultInfra.Book.Search.Repositories;
-using VolumeVaultInfra.Book.Search.Services;
 using VolumeVaultInfra.Book.Search.Utils.EnviromentVars;
 using VolumeVaultInfra.Book.Search.Validators;
 using ILogger = Serilog.ILogger;
-
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -23,12 +22,6 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 builder.Host.UseSerilog(logger);
 
-builder.Services.AddGrpc(options =>
-{
-    options.Interceptors.Add<ApiKeyInterceptor>();
-});
-builder.Services.AddGrpcReflection();
-
 builder.Services.AddSingleton<MeilisearchClient>(_ =>
 {
     string? meilisearchMasterKey = EnvironmentVariables.GetMeiliseachMasterKey();
@@ -40,12 +33,12 @@ builder.Services.AddSingleton<MeilisearchClient>(_ =>
     
     return new(meilisearchHost, meilisearchMasterKey);
 });
-builder.Services.AddAutoMapper(typeof(DateDateTimeMapperProfile), 
-    typeof(GrpcBookSearchModelMapperProfile));
 
 builder.Services.AddScoped<IBookSearchRepository, BookSearchRepository>();
 builder.Services.AddScoped<IValidator<BookSearchModel>, BookSearchModelValidator>();
-builder.Services.AddScoped<IValidator<BookSearchUpdateModel>, BookSearchUpdateModelValidator>();
+builder.Services.AddScoped<IValidator<BookSearchRequest>, BookSearchRequestValidator>();
+
+builder.Services.AddScoped<IBookSearchController, BookSearchController>();
 
 WebApplication app = builder.Build();
 
@@ -56,7 +49,8 @@ using (IServiceScope scope = app.Services.CreateScope())
     await repository.EnsureCreatedAndReady();
 }
 
-app.MapGrpcService<BookSearchService>();
-app.MapGrpcReflectionService();
+RouteGroupBuilder searchGroup = app.MapGroup("search");
+searchGroup.MapBookSearchEndpoints()
+    .AddEndpointFilter<ApiKeyFilter>();
 
 app.Run();

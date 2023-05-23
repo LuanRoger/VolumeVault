@@ -255,6 +255,18 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
               expand: true,
             ),
           const SizedBox(height: 5),
+          if (book.genre != null && book.genre!.isNotEmpty)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                IconText(
+                    icon: Icons.read_more_rounded,
+                    text: AppLocalizations.of(context)!.genresBookViewerPage),
+                const SizedBox(height: 5),
+                ChipList(book.genre!.toSet()),
+              ],
+            ),
+          const SizedBox(height: 5),
           if (book.tags != null && book.tags!.isNotEmpty)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,18 +278,6 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
                 ChipList(book.tags!.toSet())
               ],
             ),
-          const SizedBox(height: 5),
-          if (book.genre != null && book.genre!.isNotEmpty)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                IconText(
-                    icon: Icons.read_more_rounded,
-                    text: AppLocalizations.of(context)!.genresBookViewerPage),
-                const SizedBox(height: 5),
-                ChipList(book.genre!.toSet()),
-              ],
-            )
         ]),
       ),
     );

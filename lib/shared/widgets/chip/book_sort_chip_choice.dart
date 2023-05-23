@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:volume_vault/models/enums/book_sort.dart';
 import 'package:volume_vault/shared/widgets/chip/chip_choice.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BookSortChipChoice extends HookWidget implements ChipChoice<BookSort> {
   @override
@@ -22,19 +23,36 @@ class BookSortChipChoice extends HookWidget implements ChipChoice<BookSort> {
     return ChipsChoice<BookSort>.single(
       value: selectedItem.value,
       wrapped: wrapped,
+      padding: const EdgeInsets.all(3.0),
       onChanged: (newValue) {
         selectedItem.value = newValue;
         onChanged?.call(newValue);
       },
       choiceItems: [
-        C2Choice(value: BookSort.title, label: "Titulo"),
-        C2Choice(value: BookSort.author, label: "Author"),
-        C2Choice(value: BookSort.releaseDate, label: "Data de lançamento"),
-        C2Choice(value: BookSort.publisher, label: "Editora"),
-        C2Choice(value: BookSort.genre, label: "Genero"),
-        C2Choice(value: BookSort.readStartDay, label: "Inicio de leitura"),
-        C2Choice(value: BookSort.readEndDay, label: "Fim de leitura"),
-        C2Choice(value: BookSort.creationDate, label: "Data do cadastro")
+        C2Choice(
+            value: BookSort.title,
+            label: AppLocalizations.of(context)!.sortByTitleChip),
+        C2Choice(
+            value: BookSort.author,
+            label: AppLocalizations.of(context)!.sortByAuthorChip),
+        C2Choice(
+            value: BookSort.releaseDate,
+            label: AppLocalizations.of(context)!.sortByReleaseDataChip),
+        C2Choice(
+            value: BookSort.publisher,
+            label: AppLocalizations.of(context)!.sortByPublisherChip),
+        C2Choice(
+            value: BookSort.genre,
+            label: AppLocalizations.of(context)!.sortByGenreChip),
+        C2Choice(
+            value: BookSort.readStartDay,
+            label: AppLocalizations.of(context)!.sortByReadStartDayChip),
+        C2Choice(
+            value: BookSort.readEndDay,
+            label: AppLocalizations.of(context)!.sortByReadEndDayChip),
+        C2Choice(
+            value: BookSort.creationDate,
+            label: AppLocalizations.of(context)!.sortByRegisterDateChip),
       ],
     );
   }

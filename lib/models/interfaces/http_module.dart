@@ -17,7 +17,7 @@ class HttpModule {
   HttpModule({this.fixHeaders});
 
   Future<HttpResponse> get(String url,
-      {Map<String, String>? query, Map<String, String>? headers}) async {
+      {Map<String, dynamic>? query, Map<String, String>? headers}) async {
     final Response response;
     try {
       response = await _dio.get(
@@ -39,7 +39,7 @@ class HttpModule {
 
   Future<HttpResponse> post(String url,
       {required String? body,
-      Map<String, String>? query,
+      Map<String, dynamic>? query,
       Map<String, String>? headers}) async {
     final Response response;
     try {
@@ -63,7 +63,7 @@ class HttpModule {
 
   Future<HttpResponse> put(String url,
       {required dynamic body,
-      Map<String, String>? query,
+      Map<String, dynamic>? query,
       Map<String, String>? headers}) async {
     final Response response;
     try {
@@ -86,7 +86,7 @@ class HttpModule {
   }
 
   Future<HttpResponse> delete(String url,
-      {Map<String, String>? query,
+      {Map<String, dynamic>? query,
       bool includeFixedHeaders = true,
       Map<String, String>? headers}) async {
     final Response response;

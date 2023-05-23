@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:volume_vault/shared/widgets/bottom_sheet/drag_indicator.dart';
 
 abstract class BottomSheetBase {
   final double padding;
@@ -8,6 +7,8 @@ abstract class BottomSheetBase {
   final bool isScrollControlled;
   final Widget Function(BuildContext)? action;
   final void Function()? onClose;
+  final MainAxisAlignment mainAxisAlignment;
+  final CrossAxisAlignment crossAxisAlignment;
 
   BottomSheetBase(
       {this.action,
@@ -15,7 +16,9 @@ abstract class BottomSheetBase {
       this.dragable = false,
       this.onClose,
       this.isDismissible = false,
-      this.isScrollControlled = true});
+      this.isScrollControlled = true,
+      this.mainAxisAlignment = MainAxisAlignment.start,
+      this.crossAxisAlignment = CrossAxisAlignment.center});
 
   Future<void> showBottomSheet(BuildContext context,
       {required Widget Function(BuildContext) builder}) {
@@ -23,6 +26,7 @@ abstract class BottomSheetBase {
         context: context,
         isDismissible: isDismissible,
         enableDrag: dragable,
+        showDragHandle: dragable,
         isScrollControlled: isScrollControlled,
         useSafeArea: true,
         builder: (context) => Container(
@@ -30,23 +34,28 @@ abstract class BottomSheetBase {
                   BoxDecoration(borderRadius: BorderRadius.circular(30)),
               child: Padding(
                 padding: EdgeInsets.all(padding),
-                child: Column(children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
+                    mainAxisAlignment: mainAxisAlignment,
+                    crossAxisAlignment: crossAxisAlignment,
                     children: [
-                      IconButton(
-                          onPressed: () {
-                            onClose?.call();
-                            Navigator.pop(context);
-                          },
-                          icon: const Icon(Icons.close_rounded)),
-                      if (dragable) const DragIndicator(),
-                      action?.call(context) ?? const SizedBox(),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  builder(context)
-                ]),
+                      Row(
+                        mainAxisAlignment: dragable
+                            ? MainAxisAlignment.end
+                            : MainAxisAlignment.spaceBetween,
+                        children: [
+                          if (!dragable)
+                            IconButton(
+                                onPressed: () {
+                                  onClose?.call();
+                                  Navigator.pop(context);
+                                },
+                                icon: const Icon(Icons.close_rounded)),
+                          action?.call(context) ?? const SizedBox(),
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      builder(context)
+                    ]),
               ),
             ));
   }

@@ -1,5 +1,6 @@
 using FluentValidation;
 using VolumeVaultInfra.Book.Search.Models;
+using VolumeVaultInfra.Book.Search.Models.Enums;
 
 namespace VolumeVaultInfra.Book.Search.Validators;
 

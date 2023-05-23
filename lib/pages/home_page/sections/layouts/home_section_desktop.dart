@@ -15,7 +15,6 @@ import 'package:volume_vault/services/models/get_user_book_request.dart';
 import 'package:volume_vault/services/models/user_book_result.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/widgets/lists/pagination_list_grid.dart';
-import 'package:volume_vault/shared/widgets/lists/search_result_list.dart';
 import 'package:volume_vault/shared/widgets/text_fields/search_text_field.dart';
 import 'package:volume_vault/shared/widgets/widget_switcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -34,7 +33,12 @@ class HomeSectionDesktop extends HookConsumerWidget {
     final bookTaskLoadingState = useState(false);
 
     final searchTextController = useTextEditingController();
-    useListenable(searchTextController);
+    final refreshSearchResultKey = useState(UniqueKey());
+    final searchMemoize = useMemoized(
+        () => _commands.search(searchTextController.text, ref),
+        [refreshSearchResultKey.value]);
+    final searchFuture = useFuture(searchMemoize);
+
     final userInfo = ref.watch(userSessionAuthProvider);
     final visualizationTypeState = useState(VisualizationType.LIST);
     final sortOptionState = useState(BookSortOption());
@@ -60,9 +64,17 @@ class HomeSectionDesktop extends HookConsumerWidget {
         pagingController.appendPage(result.books, pageKey + 1);
       }
 
-      pagingController.addPageRequestListener(bookFetcher);
+      onSearchTextChange() {
+        refreshSearchResultKey.value = UniqueKey();
+      }
 
-      return () => pagingController.removePageRequestListener(bookFetcher);
+      pagingController.addPageRequestListener(bookFetcher);
+      searchTextController.addListener(onSearchTextChange);
+
+      return () {
+        pagingController.removePageRequestListener(bookFetcher);
+        searchTextController.removeListener(onSearchTextChange);
+      };
     }, [refreshKeyState.value]);
     useEffect(() {
       _commands.bookOnViwerState = bookOnViwer;
@@ -179,35 +191,44 @@ class HomeSectionDesktop extends HookConsumerWidget {
                   ),
                 ),
                 Expanded(
-                    flex: 1,
-                    child: PageTransitionSwitcher(
-                      transitionBuilder:
-                          (child, animation, secondaryAnimation) =>
-                              SharedAxisTransition(
-                                  animation: animation,
-                                  secondaryAnimation: secondaryAnimation,
-                                  transitionType:
-                                      SharedAxisTransitionType.horizontal,
-                                  child: child),
-                      child: searchTextController.text.isEmpty
-                          ? PaginationListGrid<int, BookModel>(
-                              pagingController: pagingController,
-                              visualizationType: visualizationTypeState.value,
-                              itemBuilder: (_, data, index) {
-                                return _commands.buildBookView(context,
-                                    book: data,
-                                    viewType: visualizationTypeState.value,
-                                    onUpdate: pagingController.refresh,
-                                    onSelect: (book) =>
-                                        _commands.onBookSelect(context, book));
-                              },
-                            )
-                          : SearchResultList(
-                              key: ValueKey(searchTextController.text),
-                              textController: searchTextController,
-                              search: (query, context) async => await _commands
-                                  .buildSearhResultTiles(query, context, ref)),
-                    )),
+                  flex: 1,
+                  child: PageTransitionSwitcher(
+                    transitionBuilder: (child, animation, secondaryAnimation) =>
+                        SharedAxisTransition(
+                            animation: animation,
+                            secondaryAnimation: secondaryAnimation,
+                            transitionType: SharedAxisTransitionType.horizontal,
+                            child: child),
+                    child: Builder(
+                      builder: (context) {
+                        if (searchTextController.text.isEmpty) {
+                          return PaginationListGrid<int, BookModel>(
+                            pagingController: pagingController,
+                            visualizationType: visualizationTypeState.value,
+                            itemBuilder: (_, data, index) {
+                              return _commands.buildBookView(context,
+                                  book: data,
+                                  viewType: visualizationTypeState.value,
+                                  onUpdate: pagingController.refresh,
+                                  onSelect: (book) =>
+                                      _commands.onBookSelect(context, book));
+                            },
+                          );
+                        }
+                        if (searchFuture.connectionState ==
+                            ConnectionState.waiting || !searchFuture.hasData) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                        return ListView(
+                          key: ValueKey(searchTextController.text),
+                          children: _commands.buildSearhResultTiles(
+                              searchFuture.data!, context, ref),
+                        );
+                      },
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

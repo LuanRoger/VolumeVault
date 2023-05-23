@@ -12,6 +12,8 @@ class BottomSheet extends BottomSheetBase {
     super.isScrollControlled,
     super.action,
     super.onClose,
+    super.mainAxisAlignment,
+    super.crossAxisAlignment,
   });
 
   Future<void> show(BuildContext context) async {

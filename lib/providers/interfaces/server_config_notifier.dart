@@ -9,12 +9,18 @@ class ServerConfigNotifier extends AsyncNotifier<ServerConfig> {
   @override
   FutureOr<ServerConfig> build() async {
     ServerConfig? savedServerConfig = realm.find<ServerConfig>(0);
-    ServerConfig serverConfig = ServerConfig(0, "", "", "", "", true);
+    ServerConfig serverConfig = ServerConfig(0, "", "", "", "", "", "", "", "", true);
     if (savedServerConfig == null) {
       serverConfig.serverHost = EnvVars.apiHost;
       serverConfig.serverPort = EnvVars.apiPort;
       serverConfig.serverApiKey = EnvVars.apiKey;
       serverConfig.serverProtocol = EnvVars.apiProtocol;
+
+      serverConfig.searchServerHost = EnvVars.searchApiHost;
+      serverConfig.searchServerPort = EnvVars.searchApiPort;
+      serverConfig.searchServerApiKey = EnvVars.searchApiKey;
+      serverConfig.searchServerProtocol = EnvVars.searchApiProtocol;
+
       await realm.writeAsync(() {
         serverConfig = realm.add(serverConfig);
       });
@@ -26,6 +32,11 @@ class ServerConfigNotifier extends AsyncNotifier<ServerConfig> {
           serverConfig.serverPort = EnvVars.apiPort;
           serverConfig.serverApiKey = EnvVars.apiKey;
           serverConfig.serverProtocol = EnvVars.apiProtocol;
+
+          serverConfig.searchServerHost = EnvVars.searchApiHost;
+          serverConfig.searchServerPort = EnvVars.searchApiPort;
+          serverConfig.searchServerApiKey = EnvVars.searchApiKey;
+          serverConfig.searchServerProtocol = EnvVars.searchApiProtocol;
         });
       }
     }

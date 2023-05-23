@@ -5,6 +5,7 @@ import 'package:volume_vault/models/book_search_result.dart';
 import 'package:volume_vault/models/book_sort_option.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
 import 'package:volume_vault/providers/providers.dart';
+import 'package:volume_vault/services/models/book_search_request.dart';
 import 'package:volume_vault/services/models/book_stats.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
 import 'package:volume_vault/services/models/user_book_result.dart';
@@ -21,32 +22,35 @@ abstract class HomeSectionLayoutStrategy {
   void onBookSelect(BuildContext context, BookModel bookModel,
       {void Function()? onUpdate});
 
-  Future<List<BookSearchResult>> search(String query, WidgetRef ref) async {
-    final bookController = await ref.read(bookControllerProvider.future);
+  Future<BookSearchResult?> search(String query, WidgetRef ref) async {
+    final bookSearchController =
+        await ref.read(bookSearchControllerProvider.future);
+    BookSearchRequest searchRequest =
+        BookSearchRequest(query: query, limitPerPage: 10);
 
-    List<BookSearchResult> searchResult =
-        await bookController.searchUserBooks(query);
+    BookSearchResult? searchResult =
+        await bookSearchController.searchForBook(searchRequest);
+
     return searchResult;
   }
 
-  Future<List<BookSearchResultTile>> buildSearhResultTiles(
-      String query, BuildContext dialogContext, WidgetRef ref) async {
-    return await search(query, ref).then((searchResult) => [
-          for (final bookResult in searchResult)
-            BookSearchResultTile(
-              bookResult,
-              onTap: () async {
-                final bookController =
-                    await ref.read(bookControllerProvider.future);
-                final BookModel? book =
-                    await bookController.getBookInfoById(bookResult.id);
+  List<BookSearchResultTile> buildSearhResultTiles(
+      BookSearchResult searchResult,
+      BuildContext dialogContext,
+      WidgetRef ref) {
+    return [for (final bookResult in searchResult.results) BookSearchResultTile(
+        bookResult,
+        onTap: () async {
+          final bookController = await ref.read(bookControllerProvider.future);
+          final BookModel? book =
+              await bookController.getBookInfoById(bookResult.id);
 
-                if (book == null) return;
-                onBookSelect(dialogContext, book);
-              },
-            )
-        ]);
-  }
+          if (book == null) return;
+          onBookSelect(dialogContext, book);
+        },
+      )];
+      
+    }
 
   Future<UserBookResult> fetchUserBooks(
       WidgetRef ref, GetUserBookRequest getUserBookRequest,

@@ -9,5 +9,5 @@ public interface IBookSearchRepository
     public Task MadeBookSearchable(BookSearchModel bookSearchModel);
     public Task<bool> DeleteBookFromSearch(int bookId);
     public Task UpdateSearchBook(int bookId, BookSearchModel updateModel);
-    public Task<IReadOnlyList<BookSearchModel>> SearchBook(string owenerId, string query, int limitPerSection);
+    public Task<SearchRepositoryResult> SearchBook(string owenerId, string query, int limitPerSection);
 }

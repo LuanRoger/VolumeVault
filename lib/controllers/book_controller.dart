@@ -1,5 +1,4 @@
 import 'package:volume_vault/models/book_model.dart';
-import 'package:volume_vault/models/book_search_result.dart';
 import 'package:volume_vault/models/book_sort_option.dart';
 import 'package:volume_vault/services/book_service.dart';
 import 'package:volume_vault/services/models/edit_book_request.dart';
@@ -52,11 +51,5 @@ class BookController {
     if (_service == null) return false;
 
     return _service!.updateBook(bookId, newInfos);
-  }
-
-  Future<List<BookSearchResult>> searchUserBooks(String query) async {
-    if (_service == null) return List.empty();
-
-    return await _service!.searchBook(query);
   }
 }
