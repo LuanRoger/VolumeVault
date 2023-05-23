@@ -195,10 +195,10 @@ abstract class RegisterEditBookPageStrategy {
       {ValueNotifier<BookFormat>? bookFormat,
       TextEditingController? pageNumbController,
       required TextfieldTagsController genreController,
-      required List<String> genreTags,
       TextEditingController? buyLinkController}) {
     String pageNumbMemento = pageNumbController?.text ?? "";
-    List<String> genreMemento = List.from(genreTags);
+    List<String> genreMemento =
+        List.from(genreController.getTags ?? List.empty());
     String buyLinkMemento = buyLinkController?.text ?? "";
     BookFormat? bookFormatMemento = bookFormat?.value ?? BookFormat.hardcover;
 
@@ -264,7 +264,7 @@ abstract class RegisterEditBookPageStrategy {
                 textfieldTagsController: genreController,
                 validator: (String genre) => notEmptyAndNotMustNotRepeat(
                     genre, genreController.getTags ?? List.empty()),
-                initialTags: genreTags,
+                initialTags: genreController.getTags ?? List.empty(),
                 textSeparators: genreSeparator,
                 inputfieldBuilder:
                     (context, tec, fn, error, onChanged, onSubmitted) {

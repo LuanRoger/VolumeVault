@@ -68,13 +68,19 @@ class BookSearchResultModel {
           publisher: json["publisher"],
           edition: json["edition"],
           pagesNumber: json["pagesNumber"],
-          genre: json["genre"],
-          format: json["format"],
-          readStatus: json["readStatus"],
-          readStartDay: json["readStartDay"],
-          readEndDay: json["readEndDay"],
-          tags: json["tags"],
-          createdAt: json["createdAt"],
-          lastModification: json["lastModification"],
+          genre: json["genre"] != null ? (json["genre"] as List).map((e) => e as String).toList() : null,
+          format: json["format"] != null ? BookFormat.values[json["format"]] : null,
+          readStatus: json["readStatus"] != null
+            ? ReadStatus.values[json["readStatus"]]
+            : null,
+        readStartDay: json["readStartDay"] != null
+            ? DateTime.parse(json["readStartDay"])  
+            : null,
+        readEndDay: json["readEndDay"] != null
+            ? DateTime.parse(json["readEndDay"])
+            : null,
+          tags: json["tags"] != null ? (json["tags"] as List).map((e) => e as String).toList() : null,
+          createdAt: DateTime.parse(json["createdAt"]),
+        lastModification: DateTime.parse(json["lastModification"]),
           ownerId: json["ownerId"]);
 }

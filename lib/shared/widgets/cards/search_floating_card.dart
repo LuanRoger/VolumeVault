@@ -1,15 +1,20 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:volume_vault/shared/widgets/lists/search_result_list.dart';
+import 'package:volume_vault/models/book_search_result.dart';
 
 class SearchFloatingCard {
   final TextEditingController controller;
-  final Future<List<Widget>> Function(String, BuildContext) search;
+  final Future<BookSearchResult?> Function(String query) search;
+  final List<Widget> Function(BookSearchResult, BuildContext)
+      searchResultBuilder;
   final Size? size;
 
   SearchFloatingCard(
-      {required this.controller, required this.search, this.size});
+      {required this.controller,
+      required this.search,
+      required this.searchResultBuilder,
+      this.size});
 
   Future<void> show(BuildContext context) {
     final Size dialogSize = size ?? MediaQuery.of(context).size;
@@ -25,7 +30,10 @@ class SearchFloatingCard {
             child: SizedBox(
               width: dialogSize.width * 0.8,
               height: dialogSize.height * 0.9,
-              child: _SeachCard(controller: controller, search: search),
+              child: _SeachCard(
+                  controller: controller,
+                  search: search,
+                  searchResultBuilder: searchResultBuilder),
             ),
           );
         });
@@ -34,15 +42,33 @@ class SearchFloatingCard {
 
 class _SeachCard extends HookWidget {
   final TextEditingController controller;
-  final Future<List<Widget>> Function(String, BuildContext) search;
+  final List<Widget> Function(BookSearchResult, BuildContext)
+      searchResultBuilder;
+  final Future<BookSearchResult?> Function(String query) search;
 
-  const _SeachCard({required this.controller, required this.search});
+  const _SeachCard(
+      {required this.controller,
+      required this.search,
+      required this.searchResultBuilder});
 
   @override
   Widget build(BuildContext context) {
-    useListenable(controller);
+    final refreshSearchResultKey = useState(UniqueKey());
+    final searchMemoize = useMemoized(
+        () => search(controller.text), [refreshSearchResultKey.value]);
+    final searchFuture = useFuture(searchMemoize);
+    useEffect(() {
+      onChange() {
+        refreshSearchResultKey.value = UniqueKey();
+      }
+
+      controller.addListener(onChange);
+
+      return () => controller.removeListener(onChange);
+    });
 
     return Card(
+        surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
         clipBehavior: Clip.hardEdge,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,6 +84,8 @@ class _SeachCard extends HookWidget {
                       onPressed: () => controller.clear(),
                       icon: const Icon(Icons.clear),
                     ),
+                    suffixText:
+                        "${searchFuture.data?.searchElapsedTime.inMilliseconds.toString() ?? "0"}ms",
                     border: const OutlineInputBorder(
                         borderRadius:
                             BorderRadius.vertical(top: Radius.circular(10)),
@@ -75,8 +103,14 @@ class _SeachCard extends HookWidget {
                       secondaryAnimation: secondaryAnimation,
                       transitionType: SharedAxisTransitionType.horizontal,
                       child: child),
-              child: SearchResultList(
-                  key: UniqueKey(), search: search, textController: controller),
+              child: searchFuture.connectionState == ConnectionState.waiting
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView(
+                      padding: EdgeInsets.zero,
+                      children: searchFuture.data != null
+                          ? searchResultBuilder(searchFuture.data!, context)
+                          : List.empty(),
+                    ),
             )),
           ],
         ));

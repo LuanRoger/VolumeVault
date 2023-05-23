@@ -62,8 +62,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
     final buyLinkController =
         useTextEditingController(text: editBookModel?.buyLink);
     final genreController = useTextfieldTagsController();
-    final List<String> genreTags =
-        List.from(editBookModel?.genre?.toList() ?? List.empty());
+    genreController.initS(editBookModel?.genre?.toList(), null, null, null);
     final pageNumbController =
         useTextEditingController(text: editBookModel?.pagesNumber?.toString());
 
@@ -163,7 +162,6 @@ class RegisterEditBookPage extends HookConsumerWidget {
                               bookFormat: bookFormatState,
                               buyLinkController: buyLinkController,
                               genreController: genreController,
-                              genreTags: genreTags,
                               pageNumbController: pageNumbController,
                             ),
                           ),
@@ -298,8 +296,8 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                       : null,
                                   lastModification: DateTime.now().toUtc(),
                                 );
-                                final bool saveInfos =
-                                    await _command.showConfirmEditDialog(context);
+                                final bool saveInfos = await _command
+                                    .showConfirmEditDialog(context);
                                 if (!saveInfos) return;
 
                                 final updateResult =

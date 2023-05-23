@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:volume_vault/models/book_search_result.dart';
+import 'package:volume_vault/models/book_search_result_model.dart';
 
 class BookSearchResultTile extends StatelessWidget {
-  final BookSearchResult bookSearchResult;
+  final BookSearchResultModel bookSearchResult;
   final void Function()? onTap;
 
   const BookSearchResultTile(this.bookSearchResult, {super.key, this.onTap});

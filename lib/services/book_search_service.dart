@@ -19,7 +19,7 @@ class BookSearchService {
     });
   }
 
-  String get _baseUrl => "search/";
+  String get _baseUrl => "${_apiConfig.protocol}://${_apiConfig.host}:${_apiConfig.port}/search";
   String get _searchBookUrl => _baseUrl;
 
   Future<BookSearchResult?> searchBook(BookSearchRequest requestParams) async {

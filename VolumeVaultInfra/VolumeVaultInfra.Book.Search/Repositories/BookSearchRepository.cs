@@ -77,7 +77,7 @@ public class BookSearchRepository : IBookSearchRepository
         return new()
         {
             hints = result.Hits.ToList(),
-            searchElapsedTime = TimeSpan.FromMilliseconds(result.ProcessingTimeMs),
+            searchElapsedTime = result.ProcessingTimeMs,
             query = query
         };
     }
