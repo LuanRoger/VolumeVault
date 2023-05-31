@@ -142,7 +142,7 @@ class LoginUserPageDesktop extends HookConsumerWidget {
                             TextButton(
                               onPressed: () => Navigator.of(context)
                                   .pushNamedAndRemoveUntil(
-                                      AppRoutes.signinPageRoute, (_) => false),
+                                      AppRoutes.loginSigninPage, (_) => false),
                               child: Text(AppLocalizations.of(context)!
                                   .signinButtonLoginPage),
                             ),
