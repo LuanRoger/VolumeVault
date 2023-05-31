@@ -118,7 +118,7 @@ abstract class HomeSectionLayoutStrategy {
     if (exit) {
       await ref.read(userSessionAuthProvider.notifier).logout();
       Navigator.pushNamedAndRemoveUntil(
-          context, AppRoutes.loginPageRoute, (_) => false);
+          context, AppRoutes.loginSigninPage, (_) => false);
     }
   }
 

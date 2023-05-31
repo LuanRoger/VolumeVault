@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:volume_vault/pages/login_signin_page/sections/login_section.dart';
 import 'package:volume_vault/pages/login_signin_page/sections/signin_section.dart';
 import 'package:volume_vault/shared/assets/app_images.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -34,23 +35,47 @@ class LoginSigninPage extends HookWidget {
           child: Row(
             children: [
               AnimatedContainer(
-                  duration: containerWidthDuration,
+                duration: containerWidthDuration,
+                curve: containersCurves,
+                height: double.infinity,
+                width: loginSctionMaximizedState.value
+                    ? maximizedContainer
+                    : minimizedContainer,
+                clipBehavior: Clip.antiAlias,
+                decoration: imageConainerDecorator.copyWith(
+                  image: const DecorationImage(
+                      image: AppImages.loginImage, fit: BoxFit.cover),
+                ),
+                padding: containersPadding,
+                child: AnimatedOpacity(
+                  duration: containerElementsOpacityDuration,
                   curve: containersCurves,
-                  height: double.infinity,
-                  width: loginSctionMaximizedState.value
-                      ? maximizedContainer
-                      : minimizedContainer,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: imageConainerDecorator.copyWith(
-                    image: const DecorationImage(
-                        image: AppImages.loginImage, fit: BoxFit.cover),
+                  opacity: loginSctionMaximizedState.value ? 1 : 0,
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            "Entrar",
+                            style: Theme.of(context)
+                                .textTheme
+                                .displaySmall!
+                                .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                          ),
+                          LoginSection(
+                            onSigninButtonPressed: () {
+                              loginSctionMaximizedState.value = false;
+                              signinSctionMaximizedState.value = true;
+                            },
+                          )
+                        ]),
                   ),
-                  padding: containersPadding,
-                  child: AnimatedOpacity(
-                      duration: containerElementsOpacityDuration,
-                      curve: containersCurves,
-                      opacity: loginSctionMaximizedState.value ? 1 : 0,
-                      child: const Text("Test"))),
+                ),
+              ),
               const SizedBox(width: 5),
               AnimatedContainer(
                 duration: const Duration(milliseconds: 700),
