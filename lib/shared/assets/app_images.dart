@@ -7,4 +7,6 @@ class AppImages {
       AssetImage("assets/images/signin_page_image.jpg");
   static const AssetImage homePageDesktop =
       AssetImage("assets/images/home_page_desktop.jpg");
+  static const AssetImage loginSigninPageDivider =
+      AssetImage("assets/images/login_signin_page_divider.jpg");
 }

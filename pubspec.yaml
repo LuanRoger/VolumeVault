@@ -64,6 +64,7 @@ flutter:
     - assets/images/login_page_image.jpg
     - assets/images/signin_page_image.jpg
     - assets/images/home_page_desktop.jpg
+    - assets/images/login_signin_page_divider.jpg
 
   # fonts:
   #   - family: Schyler
