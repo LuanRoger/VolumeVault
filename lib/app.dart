@@ -26,7 +26,7 @@ class App extends ConsumerWidget {
       theme: lightTheme(context),
       darkTheme: darkTheme(context),
       onGenerateRoute: RouteDriver.driver,
-      initialRoute: AppRoutes.loginSigninPage,
+      initialRoute: userSession == null ? AppRoutes.loginSigninPage : AppRoutes.homePageRoute,
       builder: (context, child) => ResponsiveWrapper.builder(
         child,
         minWidth: 480,

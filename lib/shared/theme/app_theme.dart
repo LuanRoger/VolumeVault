@@ -39,18 +39,20 @@ ListTileThemeData get _listTileTheme => const ListTileThemeData(
     );
 
 ThemeData lightTheme(BuildContext context) => ThemeData(
-    useMaterial3: true,
-    colorScheme: _lightColorScheme,
-    textTheme: _textTheme,
-    inputDecorationTheme: _inputDecorationTheme(context, isDarkTheme: false),
-    dialogTheme: _dialogTheme(context, isDarkTheme: false),
-    appBarTheme: _appBarTheme(false),
-    listTileTheme: _listTileTheme);
+      useMaterial3: true,
+      colorScheme: _lightColorScheme,
+      textTheme: _textTheme,
+      inputDecorationTheme: _inputDecorationTheme(context, isDarkTheme: false),
+      dialogTheme: _dialogTheme(context, isDarkTheme: false),
+      appBarTheme: _appBarTheme(false),
+      listTileTheme: _listTileTheme,
+    );
 ThemeData darkTheme(BuildContext context) => ThemeData(
-    useMaterial3: true,
-    colorScheme: _darkColorScheme,
-    textTheme: _textTheme,
-    inputDecorationTheme: _inputDecorationTheme(context, isDarkTheme: true),
-    dialogTheme: _dialogTheme(context, isDarkTheme: true),
-    appBarTheme: _appBarTheme(true),
-    listTileTheme: _listTileTheme);
+      useMaterial3: true,
+      colorScheme: _darkColorScheme,
+      textTheme: _textTheme,
+      inputDecorationTheme: _inputDecorationTheme(context, isDarkTheme: true),
+      dialogTheme: _dialogTheme(context, isDarkTheme: true),
+      appBarTheme: _appBarTheme(true),
+      listTileTheme: _listTileTheme,
+    );
