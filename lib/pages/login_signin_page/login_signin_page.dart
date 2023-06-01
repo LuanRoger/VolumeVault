@@ -25,7 +25,7 @@ class LoginSigninPage extends HookWidget {
     const containersPadding = EdgeInsets.all(20.0);
 
     const containersCurves = Curves.easeInOutExpo;
-    const containerElementsOpacityDuration = Duration(milliseconds: 400);
+    const containerElementsOpacityDuration = Duration(milliseconds: 600);
     const containerWidthDuration = Duration(milliseconds: 700);
 
     return Scaffold(
@@ -64,7 +64,7 @@ class LoginSigninPage extends HookWidget {
                                 .displaySmall!
                                 .copyWith(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.black),
+                                    color: Colors.white),
                           ),
                           LoginSection(
                             onSigninButtonPressed: () {
