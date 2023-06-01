@@ -2,6 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:volume_vault/models/book_search_result.dart';
+import 'package:volume_vault/shared/widgets/chip/search_filter_chip_choice.dart';
 
 class SearchFloatingCard {
   final TextEditingController controller;
@@ -70,49 +71,52 @@ class _SeachCard extends HookWidget {
     return Card(
         surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
         clipBehavior: Clip.hardEdge,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Flexible(
-              flex: 0,
-              child: TextField(
-                controller: controller,
-                maxLines: 1,
-                decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.search_rounded),
-                    suffixIcon: IconButton(
-                      onPressed: () => controller.clear(),
-                      icon: const Icon(Icons.clear),
-                    ),
-                    suffixText:
-                        "${searchFuture.data?.searchElapsedTime.inMilliseconds.toString() ?? "0"}ms",
-                    border: const OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(10)),
-                        borderSide: BorderSide.none),
-                    filled: true,
-                    isDense: true,
-                    contentPadding: const EdgeInsets.all(8.0)),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Flexible(
+                flex: 0,
+                child: TextField(
+                  controller: controller,
+                  maxLines: 1,
+                  decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.search_rounded),
+                      suffixIcon: IconButton(
+                        onPressed: () => controller.clear(),
+                        icon: const Icon(Icons.backspace_rounded),
+                      ),
+                      suffixText:
+                          "${searchFuture.data?.searchElapsedTime.inMilliseconds.toString() ?? "0"}ms",
+                      border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          borderSide: BorderSide.none),
+                      filled: true,
+                      isDense: true,
+                      contentPadding: const EdgeInsets.all(8.0)),
+                ),
               ),
-            ),
-            Expanded(
-                child: PageTransitionSwitcher(
-              transitionBuilder: (child, animation, secondaryAnimation) =>
-                  SharedAxisTransition(
-                      animation: animation,
-                      secondaryAnimation: secondaryAnimation,
-                      transitionType: SharedAxisTransitionType.horizontal,
-                      child: child),
-              child: searchFuture.connectionState == ConnectionState.waiting
-                  ? const Center(child: CircularProgressIndicator())
-                  : ListView(
-                      padding: EdgeInsets.zero,
-                      children: searchFuture.data != null
-                          ? searchResultBuilder(searchFuture.data!, context)
-                          : List.empty(),
-                    ),
-            )),
-          ],
+              const Flexible(flex: 0, child: SearchFilterChipChoice()),
+              Expanded(
+                  child: PageTransitionSwitcher(
+                transitionBuilder: (child, animation, secondaryAnimation) =>
+                    SharedAxisTransition(
+                        animation: animation,
+                        secondaryAnimation: secondaryAnimation,
+                        transitionType: SharedAxisTransitionType.horizontal,
+                        child: child),
+                child: searchFuture.connectionState == ConnectionState.waiting
+                    ? const Center(child: CircularProgressIndicator())
+                    : ListView(
+                        padding: EdgeInsets.zero,
+                        children: searchFuture.data != null
+                            ? searchResultBuilder(searchFuture.data!, context)
+                            : List.empty(),
+                      ),
+              )),
+            ],
+          ),
         ));
   }
 }
