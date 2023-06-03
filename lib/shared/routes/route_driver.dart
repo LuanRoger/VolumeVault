@@ -5,7 +5,7 @@ import 'package:volume_vault/pages/configuration_page.dart';
 import 'package:volume_vault/pages/home_page/home_page.dart';
 import 'package:volume_vault/pages/login_signin_page/login_signin_page.dart';
 import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
-import 'package:volume_vault/pages/register_edit_book_page/sub_pages/large_info_input.dart';
+import 'package:volume_vault/pages/register_edit_book_page/pages/large_info_input.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 
 class RouteDriver {
