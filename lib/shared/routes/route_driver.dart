@@ -4,6 +4,7 @@ import 'package:volume_vault/pages/book_info_view/book_info_viewer_page.dart';
 import 'package:volume_vault/pages/configuration_page.dart';
 import 'package:volume_vault/pages/home_page/home_page.dart';
 import 'package:volume_vault/pages/login_signin_page/login_signin_page.dart';
+import 'package:volume_vault/pages/register_edit_book_page/pages/select_book_genre.dart';
 import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
 import 'package:volume_vault/pages/register_edit_book_page/pages/large_info_input.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
@@ -18,7 +19,7 @@ class RouteDriver {
     switch (settings.name) {
       case AppRoutes.homePageRoute:
         return gotoHomePage();
-        case AppRoutes.loginSigninPage:
+      case AppRoutes.loginSigninPage:
         return gotoLoginSigninPage();
       case AppRoutes.bookInfoViewerPageRoute:
         return gotoBookInfoViewerPage(pageArgs![0] as BookModel);
@@ -27,6 +28,9 @@ class RouteDriver {
       case AppRoutes.largeInfoInputPageRoute:
         return gotoLargeInfoInputPage(
             pageArgs![0] as String, pageArgs[1] as String);
+      case AppRoutes.selectBookGenrePageRoute:
+        return gotoSelectBookGenrePage(
+            alreadySelectedGenres: pageArgs?[0] as Set<String>?);
       case AppRoutes.configurationsPageRoute:
         return gotoConfigurationPage();
       default:
@@ -50,6 +54,11 @@ class RouteDriver {
           initialSynopsisText: synopsisText,
         ),
       );
+  static gotoSelectBookGenrePage({Set<String>? alreadySelectedGenres}) =>
+      MaterialPageRoute<Set<String>>(
+          builder: (_) => SelectBookGenre(
+                alreadyAddedGenres: alreadySelectedGenres,
+              ));
   static gotoConfigurationPage() =>
       MaterialPageRoute(builder: (_) => const ConfigurationPage());
 }

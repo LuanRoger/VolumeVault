@@ -6,6 +6,7 @@ import 'package:volume_vault/l10n/l10n.dart';
 import 'package:volume_vault/l10n/supported_locales.dart';
 import 'package:volume_vault/models/enums/book_format.dart';
 import 'package:volume_vault/models/enums/read_status.dart';
+import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/validators/text_field_validator.dart';
 import 'package:volume_vault/shared/widgets/bottom_sheet/bottom_sheet.dart';
 import 'package:volume_vault/shared/widgets/bottom_sheet/stateful_bottom_sheet.dart';
@@ -227,10 +228,28 @@ class BookInfoGetterCommand {
                             maxLength: 50,
                             maxLines: 1,
                             decoration: InputDecoration(
-                              labelText: AppLocalizations.of(context)!
-                                  .genresTextFieldHint,
-                              errorText: error,
-                            ),
+                                labelText: AppLocalizations.of(context)!
+                                    .genresTextFieldHint,
+                                errorText: error,
+                                suffixIcon: IconButton(
+                                  icon: Icon(Icons.list_rounded),
+                                  onPressed: () async {
+                                    final Set<String>? selectedGenres =
+                                        await Navigator.of(context)
+                                            .pushNamed<Set<String>>(
+                                      AppRoutes.selectBookGenrePageRoute,
+                                      arguments: [
+                                        tags.toSet()
+                                      ],
+                                    );
+                                    if (selectedGenres == null ||
+                                        selectedGenres.isEmpty) return;
+
+                                    for (var genre in selectedGenres) {
+                                      genreController.addTag = genre;
+                                    }
+                                  },
+                                )),
                             enableSuggestions: true,
                             autocorrect: true,
                             enableIMEPersonalizedLearning: true,
