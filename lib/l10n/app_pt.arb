@@ -1,14 +1,15 @@
 {
     "appName": "Volume Vault",
 
-    "wellcomeBackLoginPage": "Bem-vindo(a) de volta.",
+    "initialPageTitle": "Mantenha seus livros salvos",
+    "titleLoginPage": "Entrar",
     "userTextFieldHint": "Usuário",
     "passwordTextFieldHint": "Senha",
     "loginButtonLoginPage": "Entrar",
     "doesNotHaveAccountLoginPage": "Não tem uma conta?",
     "signinButtonLoginPage": "Crie uma conta",
 
-    "keepYourBooksSafeSigninPage": "Mantenha seus livros salvos.",
+    "titleSigninPage": "Cadastrar",
     "emailTextFieldHint": "E-mail",
     "signinButtonSigninPage": "Registrar-se",
     "alreadyHaveAccountSigninPage": "Já tem uma conta?",
@@ -47,6 +48,7 @@
     "sortByReadStartDayChip": "Início da leitura",
     "sortByReadEndDayChip": "Fim da leitura",
     "sortByRegisterDateChip": "Data de registro",
+    "searchFilterBook": "Livros",
 
     "synopsisBookViewerPage": "Sinopse",
     "informationsBookViewerPage": "Informações",

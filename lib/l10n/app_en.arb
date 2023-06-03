@@ -1,14 +1,15 @@
 {
     "appName": "Volume Vault",
 
-    "wellcomeBackLoginPage": "Wellcome back",
+    "initialPageTitle": "Keep your books safe and sound",
+    "titleLoginPage": "Login",
     "userTextFieldHint": "User",
     "passwordTextFieldHint": "Password",
     "loginButtonLoginPage": "Login",
     "doesNotHaveAccountLoginPage": "Does't have an account?",
     "signinButtonLoginPage": "Create one",
 
-    "keepYourBooksSafeSigninPage": "Keep your books safe",
+    "titleSigninPage": "Signin",
     "emailTextFieldHint": "E-mail",
     "signinButtonSigninPage": "Signin",
     "alreadyHaveAccountSigninPage": "Already have an account?",
@@ -47,6 +48,7 @@
     "sortByReadStartDayChip": "Read start date",
     "sortByReadEndDayChip": "Read end date",
     "sortByRegisterDateChip": "Register date",
+    "searchFilterBook": "Books",
 
     "synopsisBookViewerPage": "Synopsis",
     "informationsBookViewerPage": "Informations",

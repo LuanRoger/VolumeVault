@@ -58,7 +58,7 @@ class LoginSigninPage extends HookWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
-                            "Entrar",
+                            AppLocalizations.of(context)!.titleLoginPage,
                             style: Theme.of(context)
                                 .textTheme
                                 .displaySmall!
@@ -100,7 +100,7 @@ class LoginSigninPage extends HookWidget {
                     children: [
                       Text(
                         AppLocalizations.of(context)!
-                            .keepYourBooksSafeSigninPage,
+                            .initialPageTitle,
                         style: Theme.of(context)
                             .textTheme
                             .displaySmall!
@@ -116,14 +116,14 @@ class LoginSigninPage extends HookWidget {
                               loginSctionMaximizedState.value = true;
                               initialSctionMaximizedState.value = false;
                             },
-                            child: const Text("Entrar"),
+                            child: Text(AppLocalizations.of(context)!.loginButtonLoginPage),
                           ),
                           ElevatedButton(
                             onPressed: () {
                               signinSctionMaximizedState.value = true;
                               initialSctionMaximizedState.value = false;
                             },
-                            child: const Text("Cadastrar-se"),
+                            child: Text(AppLocalizations.of(context)!.signinButtonSigninPage),
                           )
                         ],
                       )
@@ -158,7 +158,7 @@ class LoginSigninPage extends HookWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                          "Cadastre-se",
+                          AppLocalizations.of(context)!.titleSigninPage,
                           style: Theme.of(context)
                               .textTheme
                               .displaySmall!
