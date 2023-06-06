@@ -8,7 +8,7 @@ import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/book_sort_option.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
 import 'package:volume_vault/pages/book_info_view/commands/book_info_viewer_command.dart';
-import 'package:volume_vault/pages/home_page/sections/commands/home_section_desktop_command.dart';
+import 'package:volume_vault/pages/home_page/sections/home_section/commands/home_section_desktop_command.dart';
 import 'package:volume_vault/pages/home_page/sections/widgets/card_book_view_content.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
@@ -83,29 +83,6 @@ class HomeSectionDesktop extends HookConsumerWidget {
     });
 
     return Scaffold(
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.appName,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  )
-                ],
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout_rounded),
-              title: Text(AppLocalizations.of(context)!.signoutButtonHomePage),
-              onTap: () async => await _commands.showLogoutDialog(context, ref),
-            )
-          ],
-        ),
-      ),
       appBar: AppBar(
         title: WidgetSwitcher(
           first: Text(AppLocalizations.of(context)!.titleAppBarHomePage),
@@ -216,7 +193,8 @@ class HomeSectionDesktop extends HookConsumerWidget {
                           );
                         }
                         if (searchFuture.connectionState ==
-                            ConnectionState.waiting || !searchFuture.hasData) {
+                                ConnectionState.waiting ||
+                            !searchFuture.hasData) {
                           return const Center(
                               child: CircularProgressIndicator());
                         }

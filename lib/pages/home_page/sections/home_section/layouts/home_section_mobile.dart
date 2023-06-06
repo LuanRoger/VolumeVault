@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/book_sort_option.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
-import 'package:volume_vault/pages/home_page/sections/commands/home_section_mobile_command.dart';
+import 'package:volume_vault/pages/home_page/sections/home_section/commands/home_section_mobile_command.dart';
 import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
@@ -17,22 +17,32 @@ import 'package:volume_vault/shared/widgets/widget_switcher.dart';
 import 'package:volume_vault/shared/hooks/paging_controller_hook.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class HomeSectionMobile extends HookConsumerWidget {
-  final HomeSectionMobileCommand _commands = const HomeSectionMobileCommand();
-
+class HomeSectionMobile extends StatefulHookConsumerWidget {
   final VisualizationType? viewType;
 
   const HomeSectionMobile({super.key, this.viewType});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _HomeSectionMobileState();
+}
+
+class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
+    with AutomaticKeepAliveClientMixin {
+  final HomeSectionMobileCommand _commands = const HomeSectionMobileCommand();
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
     final userInfo = ref.watch(userSessionAuthProvider);
 
     final pagingController =
         usePagingController<int, BookModel>(firstPageKey: 1);
 
     final visualizationTypeState =
-        useState<VisualizationType>(viewType ?? VisualizationType.LIST);
+        useState<VisualizationType>(widget.viewType ?? VisualizationType.LIST);
     final sortOptionState = useState(BookSortOption());
     final searchTextController = useTextEditingController();
 
@@ -59,29 +69,6 @@ class HomeSectionMobile extends HookConsumerWidget {
     });
 
     return Scaffold(
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.appName,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  )
-                ],
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout_rounded),
-              title: Text(AppLocalizations.of(context)!.signoutButtonHomePage),
-              onTap: () async => await _commands.showLogoutDialog(context, ref),
-            )
-          ],
-        ),
-      ),
       appBar: AppBar(
         title: WidgetSwitcher(
             first: Text(AppLocalizations.of(context)!.titleAppBarHomePage),

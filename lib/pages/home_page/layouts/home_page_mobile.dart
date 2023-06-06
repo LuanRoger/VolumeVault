@@ -1,20 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
 import 'package:volume_vault/pages/home_page/commands/home_page_mobile_command.dart';
-import 'package:volume_vault/pages/home_page/sections/layouts/home_section_mobile.dart';
+import 'package:volume_vault/pages/home_page/sections/home_section/layouts/home_section_mobile.dart';
+import 'package:volume_vault/pages/home_page/sections/profile_section/profile_section.dart';
 
-class HomePageMobile extends HookConsumerWidget {
+class HomePageMobile extends HookWidget {
   // ignore: unused_field
   final HomePageMobileCommands _commands = const HomePageMobileCommands();
 
   const HomePageMobile({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final pageController = usePageController(initialPage: 0);
+    final pageIndexState = useState(0);
 
-    return const HomeSectionMobile(
+    return Scaffold(
+      body: PageView(
+        controller: pageController,
+        physics: const NeverScrollableScrollPhysics(),
+        children: [
+          const HomeSectionMobile(
             viewType: VisualizationType.LIST,
-          );
+          ),
+          ProfileSection()
+        ],
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: pageIndexState.value,
+        onDestinationSelected: (newDestination) {
+          pageIndexState.value = newDestination;
+          pageController.jumpToPage(newDestination);
+        },
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home), label: "Inciio"),
+          NavigationDestination(
+              icon: Icon(Icons.person_rounded), label: "Perfil"),
+        ],
+      ),
+    );
   }
 }
