@@ -92,36 +92,6 @@ abstract class HomeSectionLayoutStrategy {
     }
   }
 
-  Future<void> showLogoutDialog(BuildContext context, WidgetRef ref) async {
-    bool exit = false;
-
-    await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-          title: Text(AppLocalizations.of(context)!.signoutDialogTitle),
-          content: Text(AppLocalizations.of(context)!.signoutDialogMessage),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(AppLocalizations.of(context)!.cancelDialogButton),
-            ),
-            TextButton(
-              onPressed: () {
-                exit = true;
-                Navigator.pop(context);
-              },
-              child: Text(AppLocalizations.of(context)!.exitDialogButton),
-            ),
-          ]),
-    );
-
-    if (exit) {
-      await ref.read(userSessionAuthProvider.notifier).logout();
-      Navigator.pushNamedAndRemoveUntil(
-          context, AppRoutes.loginSigninPage, (_) => false);
-    }
-  }
-
   Future<BookSortOption?> showSortFilterDialog(BuildContext context,
       {bool wrapped = true, BookSortOption? currentOptions});
 }

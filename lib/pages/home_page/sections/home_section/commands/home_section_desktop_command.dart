@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/book_sort_option.dart';
 import 'package:volume_vault/models/enums/book_sort.dart';
-import 'package:volume_vault/pages/home_page/sections/commands/home_section_layout_strategy.dart';
+import 'package:volume_vault/pages/home_page/sections/home_section/commands/home_section_layout_strategy.dart';
 import 'package:volume_vault/shared/widgets/chip/book_sort_chip_choice.dart';
 import 'package:volume_vault/shared/widgets/icon/icon_text.dart';
 import 'package:volume_vault/shared/widgets/switcher/text_switch.dart';

@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/pages/configuration_page.dart';
 import 'package:volume_vault/pages/home_page/commands/home_page_desktop_commands.dart';
-import 'package:volume_vault/pages/home_page/sections/layouts/home_section_desktop.dart';
+import 'package:volume_vault/pages/home_page/sections/home_section/layouts/home_section_desktop.dart';
 import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
 import 'package:volume_vault/shared/hooks/paging_controller_hook.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
