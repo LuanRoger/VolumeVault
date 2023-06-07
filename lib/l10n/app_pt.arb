@@ -37,6 +37,8 @@
         }
     },
     "signoutButtonHomePage": "Sair da conta",
+    "homeSectionNavBar": "Inicio",
+    "profileSectionNavBar": "Perfil",
     "sortOptionApplySort": "Aplicar",
     "sortOptionAscending": "Crescente",
     "sortOptionClearSort": "Limpar",
@@ -49,6 +51,9 @@
     "sortByReadEndDayChip": "Fim da leitura",
     "sortByRegisterDateChip": "Data de registro",
     "searchFilterBook": "Livros",
+
+    "profleSectionTitle": "Perfil",
+    "profileSectionErrorMessage": "Isso não poderia ser possível",
 
     "synopsisBookViewerPage": "Sinopse",
     "informationsBookViewerPage": "Informações",

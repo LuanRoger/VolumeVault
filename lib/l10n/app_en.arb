@@ -37,6 +37,8 @@
         }
     },
     "signoutButtonHomePage": "Signout",
+    "homeSectionNavBar": "Home",
+    "profileSectionNavBar": "Profile",
     "sortOptionApplySort": "Apply",
     "sortOptionAscending": "Ascending",
     "sortOptionClearSort": "Clear",
@@ -49,6 +51,9 @@
     "sortByReadEndDayChip": "Read end date",
     "sortByRegisterDateChip": "Register date",
     "searchFilterBook": "Books",
+
+    "profleSectionTitle": "Profile",
+    "profileSectionErrorMessage": "This could not be possible",
 
     "synopsisBookViewerPage": "Synopsis",
     "informationsBookViewerPage": "Informations",

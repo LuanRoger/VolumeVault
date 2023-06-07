@@ -4,6 +4,7 @@ import 'package:volume_vault/models/enums/visualization_type.dart';
 import 'package:volume_vault/pages/home_page/commands/home_page_mobile_command.dart';
 import 'package:volume_vault/pages/home_page/sections/home_section/layouts/home_section_mobile.dart';
 import 'package:volume_vault/pages/home_page/sections/profile_section/profile_section.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePageMobile extends HookWidget {
   // ignore: unused_field
@@ -33,10 +34,13 @@ class HomePageMobile extends HookWidget {
           pageIndexState.value = newDestination;
           pageController.jumpToPage(newDestination);
         },
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home), label: "Inciio"),
+        destinations: [
           NavigationDestination(
-              icon: Icon(Icons.person_rounded), label: "Perfil"),
+              icon: const Icon(Icons.home),
+              label: AppLocalizations.of(context)!.homeSectionNavBar),
+          NavigationDestination(
+              icon: const Icon(Icons.person_rounded),
+              label: AppLocalizations.of(context)!.profileSectionNavBar),
         ],
       ),
     );
