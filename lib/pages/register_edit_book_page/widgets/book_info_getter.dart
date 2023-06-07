@@ -4,7 +4,6 @@ import 'package:textfield_tags/textfield_tags.dart';
 import 'package:volume_vault/models/enums/book_format.dart';
 import 'package:volume_vault/models/enums/read_status.dart';
 import 'package:volume_vault/pages/register_edit_book_page/commands/book_info_getter_command.dart';
-import 'package:volume_vault/pages/register_edit_book_page/commands/register_edit_book_page_command.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 
 class BookInfoGetter extends StatelessWidget {
@@ -59,7 +58,7 @@ class BookInfoGetter extends StatelessWidget {
     required GlobalKey<FormState> publisherInfoFormKey,
     required GlobalKey<FormState> aditionalInfoFormKey,
     required this.bookFormat,
-  })  : _command = command,
+  }) : _command = command,
         _bookInfoFormKey = bookInfoFormKey,
         _publisherInfoFormKey = publisherInfoFormKey,
         _aditionalInfoFormKey = aditionalInfoFormKey;

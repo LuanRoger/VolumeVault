@@ -146,7 +146,7 @@ class BookInfoGetterCommand {
       {BookFormat? bookFormat,
       TextEditingController? pageNumbController,
       required TextfieldTagsController genreController,
-      TextEditingController? buyLinkController}) {
+      TextEditingController? buyLinkController}) async {
     String pageNumbMemento = pageNumbController?.text ?? "";
     List<String> genreMemento =
         List.from(genreController.getTags ?? List.empty());
@@ -155,7 +155,7 @@ class BookInfoGetterCommand {
 
     const List<String> genreSeparator = [",", ";"];
 
-    BottomSheet(
+    await BottomSheet(
       action: (context) =>
           bottomSheetActions(context, () => validateAndPop(context, formKey)),
       onClose: () {
@@ -232,15 +232,13 @@ class BookInfoGetterCommand {
                                     .genresTextFieldHint,
                                 errorText: error,
                                 suffixIcon: IconButton(
-                                  icon: Icon(Icons.list_rounded),
+                                  icon: const Icon(Icons.list_rounded),
                                   onPressed: () async {
                                     final Set<String>? selectedGenres =
                                         await Navigator.of(context)
                                             .pushNamed<Set<String>>(
                                       AppRoutes.selectBookGenrePageRoute,
-                                      arguments: [
-                                        tags.toSet()
-                                      ],
+                                      arguments: [tags.toSet()],
                                     );
                                     if (selectedGenres == null ||
                                         selectedGenres.isEmpty) return;
@@ -250,9 +248,6 @@ class BookInfoGetterCommand {
                                     }
                                   },
                                 )),
-                            enableSuggestions: true,
-                            autocorrect: true,
-                            enableIMEPersonalizedLearning: true,
                             onChanged: onChanged,
                             onFieldSubmitted: onSubmitted,
                           ),

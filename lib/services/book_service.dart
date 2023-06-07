@@ -66,9 +66,8 @@ class BookService {
     HttpResponse response =
         await _httpModule.post(_baseUrl, body: bookJson, query: requestQuery);
     if (response.statusCode != HttpCode.CREATED) return null;
-    int? newBookId = int.tryParse(response.body);
 
-    return newBookId;
+    return response.body;
   }
 
   Future<bool> updateBook(int bookId, EditBookRequest newInfosBook) async {
@@ -79,9 +78,8 @@ class BookService {
         _bookAndIdUrl + bookId.toString(),
         body: bookJson,
         query: requestQuery);
-    if (response.statusCode != HttpCode.OK) return false;
 
-    return true;
+    return response.statusCode == HttpCode.OK;
   }
 
   Future<bool> deleteBook(int bookId) async {

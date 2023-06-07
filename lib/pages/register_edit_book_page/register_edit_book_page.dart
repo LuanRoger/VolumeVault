@@ -61,8 +61,8 @@ class RegisterEditBookPage extends HookConsumerWidget {
         useState<BookFormat>(editBookModel?.format ?? BookFormat.hardcover);
     final buyLinkController =
         useTextEditingController(text: editBookModel?.buyLink);
-    final genreController = useTextfieldTagsController();
-    genreController.initS(editBookModel?.genre?.toList(), null, null, null);
+    final genreController =
+        useTextfieldTagsController(genres: editBookModel?.genre?.toList());
     final pageNumbController =
         useTextEditingController(text: editBookModel?.pagesNumber?.toString());
 
@@ -206,7 +206,10 @@ class RegisterEditBookPage extends HookConsumerWidget {
                           if (editMode) {
                             final bool saveInfos =
                                 await _command.showConfirmEditDialog(context);
-                            if (!saveInfos) return;
+                            if (!saveInfos) {
+                              loadingState.value = false;
+                              return;
+                            }
 
                             success = await _command.editBook(
                               editBookModel: editBookModel!,
@@ -239,7 +242,7 @@ class RegisterEditBookPage extends HookConsumerWidget {
                               );
                             }
                           } else {
-                            bool success = await _command.registerBook(
+                            success = await _command.registerBook(
                               titleController: titleController,
                               authorController: authorController,
                               isbnController: isbnController,
@@ -270,11 +273,12 @@ class RegisterEditBookPage extends HookConsumerWidget {
                                       .registerBookErrorSnackbarMessage),
                                 ),
                               );
+                              loadingState.value = false;
                               return;
                             }
                           }
 
-                          if (success) Navigator.pop(context);
+                          if (success) Navigator.pop(context, true);
                           loadingState.value = false;
                         },
                         child: Text(AppLocalizations.of(context)!
