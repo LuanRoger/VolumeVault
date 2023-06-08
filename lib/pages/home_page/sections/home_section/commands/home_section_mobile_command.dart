@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart' hide BottomSheet;
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/book_sort_option.dart';
 import 'package:volume_vault/models/enums/book_sort.dart';
 import 'package:volume_vault/pages/home_page/sections/home_section/commands/home_section_layout_strategy.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/widgets/bottom_sheet/bottom_sheet.dart';
+import 'package:volume_vault/shared/widgets/cards/search_floating_card.dart';
 import 'package:volume_vault/shared/widgets/chip/book_sort_chip_choice.dart';
 import 'package:volume_vault/shared/widgets/switcher/text_switch.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -13,11 +15,18 @@ class HomeSectionMobileCommand extends HomeSectionLayoutStrategy {
   const HomeSectionMobileCommand();
 
   @override
-  Future<bool> onBookSelect(BuildContext context, BookModel bookModel,
+  Future<bool> onBookSelect(
+      BuildContext context, WidgetRef ref, BookModel bookModel,
       {void Function()? onUpdate}) async {
+    onChipSelected(String searchText, BuildContext context) async =>
+        await showSearchDialog(searchText: searchText, context: context, ref: ref);
+
     return await Navigator.pushNamed<bool>(
-            context, AppRoutes.bookInfoViewerPageRoute, arguments: [bookModel])
-        .then((hasChange) {
+        context, AppRoutes.bookInfoViewerPageRoute,
+        arguments: [
+          bookModel,
+          onChipSelected,
+        ]).then((hasChange) {
       if (hasChange == null) return false;
 
       onUpdate?.call();
@@ -74,5 +83,19 @@ class HomeSectionMobileCommand extends HomeSectionLayoutStrategy {
     await filterSheet.show(context);
 
     return update ? BookSortOption(sort: sortType, ascending: ascending) : null;
+  }
+
+  Future<void> showSearchDialog({
+    String searchText = "",
+    required WidgetRef ref,
+    required BuildContext context,
+  }) async {
+    SearchFloatingCard searchFloatingCard = SearchFloatingCard(
+      initialSearch: searchText,
+      search: (query) => search(query, ref),
+      searchResultBuilder: (query, dialogContext) =>
+          buildSearhResultTiles(query, dialogContext, ref),
+    );
+    await searchFloatingCard.show(context);
   }
 }

@@ -22,7 +22,10 @@ class RouteDriver {
       case AppRoutes.loginSigninPage:
         return gotoLoginSigninPage();
       case AppRoutes.bookInfoViewerPageRoute:
-        return gotoBookInfoViewerPage(pageArgs![0] as BookModel);
+        return gotoBookInfoViewerPage(
+          pageArgs![0] as BookModel,
+          onCardPressed: pageArgs[1] as Future<void> Function(String, BuildContext)?,
+        );
       case AppRoutes.registerEditBookPageRoute:
         return gotoRegisterEditBookPage(bookToEdit: pageArgs?[0] as BookModel);
       case AppRoutes.largeInfoInputPageRoute:
@@ -42,8 +45,13 @@ class RouteDriver {
   static gotoLoginSigninPage() =>
       MaterialPageRoute(builder: (_) => const LoginSigninPage());
 
-  static gotoBookInfoViewerPage(BookModel bookModel) =>
-      MaterialPageRoute<bool>(builder: (_) => BookInfoViewerPage(bookModel));
+  static gotoBookInfoViewerPage(BookModel bookModel,
+          {Future<void> Function(String, BuildContext)? onCardPressed}) =>
+      MaterialPageRoute<bool>(
+          builder: (_) => BookInfoViewerPage(
+                bookModel,
+                onCardPressed: onCardPressed,
+              ));
   static gotoRegisterEditBookPage({BookModel? bookToEdit}) =>
       MaterialPageRoute<bool>(
           builder: (_) => RegisterEditBookPage(editBookModel: bookToEdit));

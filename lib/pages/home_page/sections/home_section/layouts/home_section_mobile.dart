@@ -12,7 +12,6 @@ import 'package:volume_vault/services/models/get_user_book_request.dart';
 import 'package:volume_vault/services/models/user_book_result.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/widgets/lists/pagination_list_grid.dart';
-import 'package:volume_vault/shared/widgets/cards/search_floating_card.dart';
 import 'package:volume_vault/shared/widgets/widget_switcher.dart';
 import 'package:volume_vault/shared/hooks/paging_controller_hook.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -44,7 +43,6 @@ class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
     final visualizationTypeState =
         useState<VisualizationType>(widget.viewType ?? VisualizationType.LIST);
     final sortOptionState = useState(BookSortOption());
-    final searchTextController = useTextEditingController();
 
     final refreshKeyState = useState(UniqueKey());
     final bookStatsMemoize = useMemoized(
@@ -78,15 +76,9 @@ class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
                 : const SizedBox()),
         actions: [
           IconButton(
-              onPressed: () async {
-                SearchFloatingCard searchFloatingCard = SearchFloatingCard(
-                  controller: searchTextController,
-                  search: (query) => _commands.search(query, ref),
-                  searchResultBuilder: (query, dialogContext) => _commands
-                      .buildSearhResultTiles(query, dialogContext, ref),
-                );
-                await searchFloatingCard.show(context);
-              },
+              onPressed: () async => _commands.showSearchDialog(
+                  ref: ref,
+                  context: context),
               icon: const Icon(Icons.search_rounded)),
           IconButton(
             onPressed: () {
@@ -159,13 +151,13 @@ class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
                   pagingController: pagingController,
                   visualizationType: visualizationTypeState.value,
                   itemBuilder: (_, data, index) {
-                    return _commands.buildBookView(context,
+                    return _commands.buildBookView(context, ref,
                         book: data,
                         viewType: visualizationTypeState.value,
                         onUpdate: pagingController.refresh,
                         onSelect: (book) async {
                       bool refresh =
-                          await _commands.onBookSelect(context, book);
+                          await _commands.onBookSelect(context, ref, book);
                       if (refresh) pagingController.refresh();
                     });
                   },

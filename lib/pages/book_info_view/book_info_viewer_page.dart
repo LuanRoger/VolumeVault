@@ -19,10 +19,11 @@ import 'package:volume_vault/shared/widgets/viewers/book_showcase.dart';
 
 class BookInfoViewerPage extends HookConsumerWidget {
   final BookModel _book;
+  final Future<void> Function(String, BuildContext)? onCardPressed;
 
   final BookInfoViewerCommand _command = const BookInfoViewerCommand();
 
-  const BookInfoViewerPage(this._book, {super.key});
+  const BookInfoViewerPage(this._book, {super.key, this.onCardPressed});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -90,6 +91,7 @@ class BookInfoViewerPage extends HookConsumerWidget {
               )
             : BookInfoViwerBodyPage(
                 book,
+                onCardPressed: onCardPressed,
                 onRefresh: () async {
                   final BookModel? newInfoBook =
                       await _command.refreshBookInfo(context, ref, book.id);
@@ -104,8 +106,10 @@ class BookInfoViewerPage extends HookConsumerWidget {
 class BookInfoViwerBodyPage extends HookConsumerWidget {
   final BookModel book;
   final Future<void> Function() onRefresh;
+  final Future<void> Function(String, BuildContext)? onCardPressed;
 
-  const BookInfoViwerBodyPage(this.book, {super.key, required this.onRefresh});
+  const BookInfoViwerBodyPage(this.book,
+      {super.key, required this.onRefresh, this.onCardPressed});
 
   Future<Widget> _buildCoverShowcase(String coverLink,
       {required Size showcaseSize,
@@ -263,7 +267,10 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
                     icon: Icons.read_more_rounded,
                     text: AppLocalizations.of(context)!.genresBookViewerPage),
                 const SizedBox(height: 5),
-                ChipList(book.genre!.toSet()),
+                ChipList(
+                  book.genre!.toSet(),
+                  onPressed: (name) => onCardPressed?.call(name, context)
+                ),
               ],
             ),
           const SizedBox(height: 5),
@@ -275,7 +282,9 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
                     icon: Icons.tag_rounded,
                     text: AppLocalizations.of(context)!.tagsBookViewerPage),
                 const SizedBox(height: 5),
-                ChipList(book.tags!.toSet())
+                ChipList(
+                  book.tags!.toSet(),
+                )
               ],
             ),
         ]),

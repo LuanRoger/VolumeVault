@@ -5,14 +5,14 @@ import 'package:volume_vault/models/book_search_result.dart';
 import 'package:volume_vault/shared/widgets/chip/search_filter_chip_choice.dart';
 
 class SearchFloatingCard {
-  final TextEditingController controller;
+  final String initialSearch;
   final Future<BookSearchResult?> Function(String query) search;
   final List<Widget> Function(BookSearchResult, BuildContext)
       searchResultBuilder;
   final Size? size;
 
   SearchFloatingCard(
-      {required this.controller,
+      {this.initialSearch = "",
       required this.search,
       required this.searchResultBuilder,
       this.size});
@@ -32,7 +32,7 @@ class SearchFloatingCard {
               width: dialogSize.width * 0.8,
               height: dialogSize.height * 0.9,
               child: _SeachCard(
-                  controller: controller,
+                  initialSearch: initialSearch,
                   search: search,
                   searchResultBuilder: searchResultBuilder),
             ),
@@ -42,30 +42,31 @@ class SearchFloatingCard {
 }
 
 class _SeachCard extends HookWidget {
-  final TextEditingController controller;
+  final String initialSearch;
   final List<Widget> Function(BookSearchResult, BuildContext)
       searchResultBuilder;
   final Future<BookSearchResult?> Function(String query) search;
 
   const _SeachCard(
-      {required this.controller,
+      {required this.initialSearch,
       required this.search,
       required this.searchResultBuilder});
 
   @override
   Widget build(BuildContext context) {
+    final searchController = useTextEditingController(text: initialSearch);
     final refreshSearchResultKey = useState(UniqueKey());
     final searchMemoize = useMemoized(
-        () => search(controller.text), [refreshSearchResultKey.value]);
+        () => search(searchController.text), [refreshSearchResultKey.value]);
     final searchFuture = useFuture(searchMemoize);
     useEffect(() {
       onChange() {
         refreshSearchResultKey.value = UniqueKey();
       }
 
-      controller.addListener(onChange);
+      searchController.addListener(onChange);
 
-      return () => controller.removeListener(onChange);
+      return () => searchController.removeListener(onChange);
     });
 
     return Card(
@@ -79,12 +80,12 @@ class _SeachCard extends HookWidget {
               Flexible(
                 flex: 0,
                 child: TextField(
-                  controller: controller,
+                  controller: searchController,
                   maxLines: 1,
                   decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.search_rounded),
                       suffixIcon: IconButton(
-                        onPressed: () => controller.clear(),
+                        onPressed: () => searchController.clear(),
                         icon: const Icon(Icons.backspace_rounded),
                       ),
                       suffixText:

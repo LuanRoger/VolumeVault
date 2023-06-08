@@ -9,17 +9,15 @@ import 'package:volume_vault/services/models/book_search_request.dart';
 import 'package:volume_vault/services/models/book_stats.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
 import 'package:volume_vault/services/models/user_book_result.dart';
-import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/widgets/cards/book_info_card.dart';
 import 'package:volume_vault/shared/widgets/cards/book_info_grid_card.dart';
 import 'package:volume_vault/shared/widgets/cards/book_info_list_card.dart';
 import 'package:volume_vault/shared/widgets/list_tiles/book_search_result_tile.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 abstract class HomeSectionLayoutStrategy {
   const HomeSectionLayoutStrategy();
 
-  void onBookSelect(BuildContext context, BookModel bookModel,
+  void onBookSelect(BuildContext context, WidgetRef ref, BookModel bookModel,
       {void Function()? onUpdate});
 
   Future<BookSearchResult?> search(String query, WidgetRef ref) async {
@@ -46,7 +44,7 @@ abstract class HomeSectionLayoutStrategy {
               await bookController.getBookInfoById(bookResult.id);
 
           if (book == null) return;
-          onBookSelect(dialogContext, book);
+          onBookSelect(dialogContext, ref, book);
         },
       )];
       
@@ -69,7 +67,7 @@ abstract class HomeSectionLayoutStrategy {
     return bookStats;
   }
 
-  BookInfoCard buildBookView(BuildContext context,
+  BookInfoCard buildBookView(BuildContext context, WidgetRef ref,
       {required BookModel book,
       void Function()? onUpdate,
       void Function(BookModel)? onSelect,
@@ -80,14 +78,14 @@ abstract class HomeSectionLayoutStrategy {
           book,
           onPressed: onSelect != null
               ? () => onSelect(book)
-              : () => onBookSelect(context, book, onUpdate: onUpdate),
+              : () => onBookSelect(context, ref, book, onUpdate: onUpdate),
         );
       case VisualizationType.GRID:
         return BookInfoGridCard(
           book,
           onPressed: onSelect != null
               ? () => onSelect(book)
-              : () => onBookSelect(context, book, onUpdate: onUpdate),
+              : () => onBookSelect(context, ref, book, onUpdate: onUpdate),
         );
     }
   }
