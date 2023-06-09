@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:volume_vault/l10n/l10n.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/pages/book_info_view/commands/book_info_viewer_command.dart';
 import 'package:volume_vault/providers/providers.dart';
@@ -220,7 +221,8 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
                 ListTile(
                     title: Text(
                         AppLocalizations.of(context)!.formatBookViewerPage),
-                    trailing: Text(book.format!.name)),
+                    trailing:
+                        Text(L10n.bookFormat(context, format: book.format!))),
               ListTile(
                 title:
                     Text(AppLocalizations.of(context)!.createdAtBookViewerPage),
@@ -267,10 +269,8 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
                     icon: Icons.read_more_rounded,
                     text: AppLocalizations.of(context)!.genresBookViewerPage),
                 const SizedBox(height: 5),
-                ChipList(
-                  book.genre!.toSet(),
-                  onPressed: (name) => onCardPressed?.call(name, context)
-                ),
+                ChipList(book.genre!.toSet(),
+                    onPressed: (name) => onCardPressed?.call(name, context)),
               ],
             ),
           const SizedBox(height: 5),
@@ -282,10 +282,8 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
                     icon: Icons.tag_rounded,
                     text: AppLocalizations.of(context)!.tagsBookViewerPage),
                 const SizedBox(height: 5),
-                ChipList(
-                  book.tags!.toSet(),
-                  onPressed: (name) => onCardPressed?.call(name, context)
-                )
+                ChipList(book.tags!.toSet(),
+                    onPressed: (name) => onCardPressed?.call(name, context))
               ],
             ),
         ]),

@@ -178,23 +178,23 @@ class BookInfoGetterCommand {
                 items: [
                   DropdownMenuItem(
                     value: BookFormat.hardcover,
-                    child: Text(AppLocalizations.of(context)!
-                        .hardcoverRegisterBookFormatOption),
+                    child: Text(
+                        L10n.bookFormat(context, format: BookFormat.hardcover)),
                   ),
                   DropdownMenuItem(
                     value: BookFormat.hardback,
-                    child: Text(AppLocalizations.of(context)!
-                        .hardbackRegisterBookFormatOption),
+                    child: Text(
+                        L10n.bookFormat(context, format: BookFormat.hardback)),
                   ),
                   DropdownMenuItem(
                     value: BookFormat.paperback,
-                    child: Text(AppLocalizations.of(context)!
-                        .paperbackRegisterBookFormatOption),
+                    child: Text(
+                        L10n.bookFormat(context, format: BookFormat.paperback)),
                   ),
                   DropdownMenuItem(
                     value: BookFormat.ebook,
-                    child: Text(AppLocalizations.of(context)!
-                        .ebookRegisterBookFormatOption),
+                    child: Text(
+                        L10n.bookFormat(context, format: BookFormat.ebook)),
                   )
                 ],
                 onChanged: (newValue) =>

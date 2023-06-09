@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:volume_vault/l10n/supported_locales.dart';
+import 'package:volume_vault/models/enums/book_format.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class L10n {
   static List<Locale> get locales => List.from(
@@ -23,5 +25,18 @@ class L10n {
       default:
         return DateFormat('MM/dd/yyyy').format(date);
     }
+  }
+
+  static String bookFormat(BuildContext context, {required BookFormat format}) {
+    return switch(format) {
+      BookFormat.hardcover => AppLocalizations.of(context)!
+                        .hardcoverRegisterBookFormatOption,
+      BookFormat.hardback => AppLocalizations.of(context)!
+                        .hardbackRegisterBookFormatOption,
+      BookFormat.paperback => AppLocalizations.of(context)!
+                        .paperbackRegisterBookFormatOption,
+      BookFormat.ebook => AppLocalizations.of(context)!
+                        .ebookRegisterBookFormatOption,
+    };
   }
 }
