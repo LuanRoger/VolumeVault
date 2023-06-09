@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/pages/book_info_view/book_info_viewer_page.dart';
-import 'package:volume_vault/pages/configuration_page.dart';
+import 'package:volume_vault/pages/configuration_page/configuration_page.dart';
 import 'package:volume_vault/pages/home_page/home_page.dart';
 import 'package:volume_vault/pages/login_signin_page/login_signin_page.dart';
 import 'package:volume_vault/pages/register_edit_book_page/pages/select_book_genre.dart';

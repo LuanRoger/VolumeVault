@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:volume_vault/l10n/l10n.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:volume_vault/l10n/supported_locales.dart';
 import 'package:volume_vault/models/enums/theme_brightness.dart';
 import 'package:volume_vault/providers/providers.dart';
-import 'package:volume_vault/shared/widgets/texts/text_body_title.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class ConfigurationPage extends HookConsumerWidget {
-  const ConfigurationPage({super.key});
-
-  void _resetConfiguration(BuildContext context, WidgetRef ref) async {
+abstract class ConfigurationPageStrategy {
+  void resetConfiguration(BuildContext context, WidgetRef ref) async {
     bool resetConfig = false;
 
     await showDialog(
@@ -52,7 +47,7 @@ class ConfigurationPage extends HookConsumerWidget {
     }
   }
 
-  Future _showThemeChangeDialog(BuildContext context, WidgetRef ref) async {
+  Future showThemeChangeDialog(BuildContext context, WidgetRef ref) async {
     final themeBrightness = ref.read(themePreferencesStateProvider);
 
     await showDialog(
@@ -118,90 +113,15 @@ class ConfigurationPage extends HookConsumerWidget {
     );
   }
 
-  void _toggleLightEffect(WidgetRef ref, bool newValue) {
+  void toggleLightEffect(WidgetRef ref, bool newValue) {
     final graphicsPrefernces =
         ref.read(graphicsPreferencesStateProvider.notifier);
     graphicsPrefernces.lightEffect = newValue;
   }
 
-  void _changeLanguage(WidgetRef ref, SupportedLocales newLocale) {
+  void changeLanguage(WidgetRef ref, SupportedLocales newLocale) {
     final localizationPreferences =
         ref.read(localizationPreferencesStateProvider.notifier);
     localizationPreferences.changeLocalization(newLocale);
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final themePreferences = ref.watch(themePreferencesStateProvider);
-    final graphicsPreferences = ref.watch(graphicsPreferencesStateProvider);
-    final localizationPreferences =
-        ref.watch(localizationPreferencesStateProvider);
-
-    final resetConfigLoadingState = useState(false);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.configurationsAppBarTitle),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListView(
-          children: [
-            TextBodyTitle(AppLocalizations.of(context)!
-                .aperenceSectionTitleConfigurationsPage),
-            ListTile(
-              title: Text(
-                  AppLocalizations.of(context)!.themeOptionConfigurationsPage),
-              onTap: () async => await _showThemeChangeDialog(context, ref),
-              trailing: Text(themePreferences.themeBrightnes.name),
-            ),
-            TextBodyTitle(AppLocalizations.of(context)!
-                .ghaphicsSectionTitleConfigurationsPage),
-            ListTile(
-              title: Text(AppLocalizations.of(context)!
-                  .lightEffectOptionConfigurationsPage),
-              onTap: () =>
-                  _toggleLightEffect(ref, !graphicsPreferences.lightEffect),
-              trailing: Switch(
-                value: graphicsPreferences.lightEffect,
-                onChanged: (newValue) => _toggleLightEffect(ref, newValue),
-              ),
-            ),
-            TextBodyTitle("Idioma"),
-            DropdownButtonFormField<SupportedLocales>(
-              value: localizationPreferences.localization,
-              style: Theme.of(context).textTheme.bodyMedium,
-              items: const [
-                DropdownMenuItem(
-                  value: SupportedLocales.ptBR,
-                  child: Text("Português"),
-                ),
-                DropdownMenuItem(
-                  value: SupportedLocales.enUS,
-                  child: Text("English"),
-                ),
-              ],
-              onChanged: (newValue) {
-                if (newValue == null) return;
-                _changeLanguage(ref, newValue);
-              },
-            ),
-            TextBodyTitle(AppLocalizations.of(context)!
-                .otherSectionTitleConfigurationsPage),
-            ElevatedButton(
-              onPressed: !resetConfigLoadingState.value
-                  ? () async {
-                      resetConfigLoadingState.value = true;
-                      _resetConfiguration(context, ref);
-                      resetConfigLoadingState.value = false;
-                    }
-                  : null,
-              child: Text(AppLocalizations.of(context)!
-                  .restoreDefaultConfigurationsPage),
-            )
-          ],
-        ),
-      ),
-    );
   }
 }
