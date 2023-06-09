@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/book_sort_option.dart';
 import 'package:volume_vault/models/enums/book_sort.dart';
@@ -14,7 +15,7 @@ class HomeSectionDesktopCommand extends HomeSectionLayoutStrategy {
   HomeSectionDesktopCommand();
 
   @override
-  void onBookSelect(BuildContext context, BookModel bookModel,
+  void onBookSelect(BuildContext context, WidgetRef ref, BookModel bookModel,
       {void Function()? onUpdate}) {
     bookOnViwerState.value = bookModel;
   }

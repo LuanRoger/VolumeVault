@@ -183,12 +183,12 @@ class HomeSectionDesktop extends HookConsumerWidget {
                             pagingController: pagingController,
                             visualizationType: visualizationTypeState.value,
                             itemBuilder: (_, data, index) {
-                              return _commands.buildBookView(context,
+                              return _commands.buildBookView(context, ref,
                                   book: data,
                                   viewType: visualizationTypeState.value,
                                   onUpdate: pagingController.refresh,
-                                  onSelect: (book) =>
-                                      _commands.onBookSelect(context, book));
+                                  onSelect: (book) => _commands.onBookSelect(
+                                      context, ref, book));
                             },
                           );
                         }
@@ -278,15 +278,19 @@ class HomeSectionDesktop extends HookConsumerWidget {
                     elevation: 0,
                     color: Theme.of(context).colorScheme.surfaceVariant,
                     child: CardBookViewContent(
-                        book: bookOnViwer.value,
-                        onRefresh: () async {
-                          final BookModel? newInfoBook =
-                              await _bookCommnads.refreshBookInfo(
-                                  context, ref, bookOnViwer.value!.id);
-                          if (newInfoBook == null) return;
+                      book: bookOnViwer.value,
+                      onRefresh: () async {
+                        final BookModel? newInfoBook =
+                            await _bookCommnads.refreshBookInfo(
+                                context, ref, bookOnViwer.value!.id);
+                        if (newInfoBook == null) return;
 
-                          bookOnViwer.value = newInfoBook;
-                        }),
+                        bookOnViwer.value = newInfoBook;
+                      },
+                      onCardPressed: (cardLabel, context) async {
+                        searchTextController.text = cardLabel;
+                      },
+                    ),
                   ),
                 ),
               ],

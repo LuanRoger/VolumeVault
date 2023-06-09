@@ -284,6 +284,7 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
                 const SizedBox(height: 5),
                 ChipList(
                   book.tags!.toSet(),
+                  onPressed: (name) => onCardPressed?.call(name, context)
                 )
               ],
             ),
