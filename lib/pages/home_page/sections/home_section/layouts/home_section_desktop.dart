@@ -104,6 +104,12 @@ class HomeSectionDesktop extends HookConsumerWidget {
                   ? Icons.grid_view_rounded
                   : Icons.view_list_rounded),
             ),
+          IconButton(
+            icon: const Icon(Icons.settings_rounded),
+            onPressed: () {
+              _commands.showConfigurationsDialog(context);
+            },
+          )
         ],
       ),
       body: Row(
@@ -157,7 +163,8 @@ class HomeSectionDesktop extends HookConsumerWidget {
                             BookSortOption? newSortOptions =
                                 await _commands.showSortFilterDialog(context,
                                     currentOptions: sortOptionState.value,
-                                    wrapped: true);
+                                    wrapped: true,
+                                    full: ResponsiveWrapper.of(context).isTablet);
                             if (newSortOptions == null) return;
                             sortOptionState.value = newSortOptions;
 
