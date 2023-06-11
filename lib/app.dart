@@ -20,13 +20,12 @@ class App extends ConsumerWidget {
         ref.watch(localizationPreferencesStateProvider);
     final userSession = ref.watch(userSessionAuthProvider);
 
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       themeMode: themeBrightness.themeMode,
       theme: lightTheme(context),
       darkTheme: darkTheme(context),
-      onGenerateRoute: RouteDriver.driver,
-      initialRoute: userSession == null ? AppRoutes.loginSigninPage : AppRoutes.homePageRoute,
+      routerConfig: buildDriver(userSession: userSession),
       builder: (context, child) => ResponsiveWrapper.builder(
         child,
         minWidth: 480,

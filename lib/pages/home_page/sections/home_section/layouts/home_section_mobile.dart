@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/book_sort_option.dart';
@@ -76,9 +77,8 @@ class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
                 : const SizedBox()),
         actions: [
           IconButton(
-              onPressed: () async => _commands.showSearchDialog(
-                  ref: ref,
-                  context: context),
+              onPressed: () async =>
+                  _commands.showSearchDialog(ref: ref, context: context),
               icon: const Icon(Icons.search_rounded)),
           IconButton(
             onPressed: () {
@@ -92,8 +92,7 @@ class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
                 : Icons.view_list_rounded),
           ),
           IconButton(
-            onPressed: () =>
-                Navigator.pushNamed(context, AppRoutes.configurationsPageRoute),
+            onPressed: () => context.push(AppRoutes.configurationsPageRoute),
             icon: const Icon(Icons.settings_rounded),
           ),
         ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/enums/signin_auth_result.dart';
 import 'package:volume_vault/pages/login_signin_page/commands/signin_user_page_mobile_commands.dart';
@@ -107,10 +108,8 @@ class SigninSection extends HookConsumerWidget {
                           return;
                         }
 
-                        Navigator.pushNamedAndRemoveUntil(
-                          context,
+                        context.goNamed(
                           AppRoutes.homePageRoute,
-                          (_) => false,
                         );
                       },
                       child: Text(

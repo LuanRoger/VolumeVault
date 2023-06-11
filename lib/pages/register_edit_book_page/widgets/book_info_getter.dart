@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 import 'package:volume_vault/models/enums/book_format.dart';
 import 'package:volume_vault/models/enums/read_status.dart';
@@ -58,7 +59,7 @@ class BookInfoGetter extends StatelessWidget {
     required GlobalKey<FormState> publisherInfoFormKey,
     required GlobalKey<FormState> aditionalInfoFormKey,
     required this.bookFormat,
-  }) : _command = command,
+  })  : _command = command,
         _bookInfoFormKey = bookInfoFormKey,
         _publisherInfoFormKey = publisherInfoFormKey,
         _aditionalInfoFormKey = aditionalInfoFormKey;
@@ -113,9 +114,8 @@ class BookInfoGetter extends StatelessWidget {
                 .synopsisAndObservationsRegisterBookPage),
             trailing: const Icon(Icons.navigate_next_rounded),
             onTap: () async {
-              final List<String>? observationSynopsisValue =
-                  await Navigator.pushNamed(
-                      context, AppRoutes.largeInfoInputPageRoute, arguments: [
+              final List<String>? observationSynopsisValue = await context
+                  .pushNamed(AppRoutes.largeInfoInputPageRoute, extra: [
                 observationController.text,
                 synopsisController.text
               ]);
