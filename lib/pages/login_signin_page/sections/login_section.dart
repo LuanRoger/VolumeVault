@@ -91,7 +91,7 @@ class LoginSection extends HookConsumerWidget {
                             return;
                           }
                           //TODO: Check latter
-                          context.goNamed(
+                          context.go(
                             AppRoutes.homePageRoute,
                           );
                         },
