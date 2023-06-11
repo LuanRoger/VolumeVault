@@ -1,4 +1,4 @@
-class PreferencesKey {
+class PreferencesKeys {
   static const String themeModePrefKey = "darkMode";
   static const String lightEffectPrefKey = "lightEffect";
   static const String serverHostPrefKey = "serverHost";

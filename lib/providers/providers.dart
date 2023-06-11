@@ -8,7 +8,6 @@ import 'package:volume_vault/models/search_api_config_params.dart';
 import 'package:volume_vault/models/user_session.dart';
 import 'package:volume_vault/providers/interfaces/graphics_preferences_state.dart';
 import 'package:volume_vault/providers/interfaces/localization_preferences_state.dart';
-import 'package:volume_vault/providers/interfaces/server_config_notifier.dart';
 import 'package:volume_vault/providers/interfaces/theme_preferences_state.dart';
 import 'package:volume_vault/providers/interfaces/user_session_state.dart';
 import 'package:volume_vault/services/book_search_service.dart';
@@ -17,17 +16,27 @@ import 'package:volume_vault/services/stats_service.dart';
 import 'package:volume_vault/shared/preferences/models/graphics_preferences.dart';
 import 'package:volume_vault/shared/preferences/models/localization_preferences.dart';
 import 'package:volume_vault/shared/preferences/models/theme_preferences.dart';
-import 'package:volume_vault/shared/storage/models/server_config.dart';
+import 'package:volume_vault/shared/preferences/models/server_config.dart';
+import 'package:volume_vault/shared/utils/env_vars.dart';
 
 part '../controllers/controller_providers.dart';
 
 final userSessionAuthProvider =
     NotifierProvider<UserSessionState, UserSession?>(UserSessionState.new);
-final serverConfigNotifierProvider =
-    AsyncNotifierProvider<ServerConfigNotifier, ServerConfig>(
-        ServerConfigNotifier.new);
+final serverConfigNotifierProvider = Provider<ServerConfig>(
+  (_) => ServerConfig(
+    serverHost: EnvVars.apiHost,
+    serverPort: EnvVars.apiPort,
+    serverApiKey: EnvVars.apiKey,
+    serverProtocol: EnvVars.apiProtocol,
+    searchServerHost: EnvVars.searchApiHost,
+    searchServerPort: EnvVars.searchApiPort,
+    searchServerApiKey: EnvVars.searchApiKey,
+    searchServerProtocol: EnvVars.searchApiProtocol,
+  ),
+);
 final apiParamsProvider = FutureProvider<ApiConfigParams>((ref) async {
-  final serverConfig = await ref.watch(serverConfigNotifierProvider.future);
+  final serverConfig = ref.watch(serverConfigNotifierProvider);
 
   return ApiConfigParams(
       host: serverConfig.serverHost,
@@ -37,7 +46,7 @@ final apiParamsProvider = FutureProvider<ApiConfigParams>((ref) async {
 });
 final searchApiParamsProvider =
     FutureProvider<SearchApiConfigParams>((ref) async {
-  final serverConfig = await ref.watch(serverConfigNotifierProvider.future);
+  final serverConfig = ref.watch(serverConfigNotifierProvider);
 
   int intPort = int.parse(serverConfig.searchServerPort);
   return SearchApiConfigParams(
