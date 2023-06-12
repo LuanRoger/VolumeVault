@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
@@ -164,7 +165,8 @@ class HomeSectionDesktop extends HookConsumerWidget {
                                 await _commands.showSortFilterDialog(context,
                                     currentOptions: sortOptionState.value,
                                     wrapped: true,
-                                    full: ResponsiveWrapper.of(context).isTablet);
+                                    full:
+                                        ResponsiveWrapper.of(context).isTablet);
                             if (newSortOptions == null) return;
                             sortOptionState.value = newSortOptions;
 
@@ -232,10 +234,10 @@ class HomeSectionDesktop extends HookConsumerWidget {
                         children: [
                           IconButton(
                               onPressed: () async {
-                                final bool? refresh =
-                                    await Navigator.pushNamed<bool>(context,
+                                final bool? refresh = await context
+                                    .pushNamed<bool>(
                                         AppRoutes.registerEditBookPageRoute,
-                                        arguments: [bookOnViwer.value!]);
+                                        extra: [bookOnViwer.value!]);
                                 if (refresh == null || !refresh) return;
 
                                 pagingController.refresh();

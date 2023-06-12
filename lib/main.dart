@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:volume_vault/app.dart';
@@ -14,7 +15,7 @@ import 'package:volume_vault/shared/preferences/app_preferences.dart';
 import 'package:volume_vault/shared/preferences/models/graphics_preferences.dart';
 import 'package:volume_vault/shared/preferences/models/localization_preferences.dart';
 import 'package:volume_vault/shared/preferences/models/theme_preferences.dart';
-import 'package:volume_vault/shared/preferences/preferences_key.dart';
+import 'package:volume_vault/shared/preferences/preferences_keys.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,13 +54,13 @@ void main() async {
 AppPreferences loadPreferences(SharedPreferences preferences) {
   final themePreferences = ThemePreferences(
       themeBrightnes: ThemeBrightness
-          .values[preferences.getInt(PreferencesKey.themeModePrefKey) ?? 0]);
+          .values[preferences.getInt(PreferencesKeys.themeModePrefKey) ?? 0]);
   final graphicsPreferences = GraphicsPreferences(
       lightEffect:
-          preferences.getBool(PreferencesKey.lightEffectPrefKey) ?? true);
+          preferences.getBool(PreferencesKeys.lightEffectPrefKey) ?? true);
   final localizationPreferences = LocalizationPreferences(
       localization: L10n.getLocaleFromCode(
-          preferences.getInt(PreferencesKey.localizationPrefKey) ?? 0));
+          preferences.getInt(PreferencesKeys.localizationPrefKey) ?? 0));
 
   return AppPreferences(
       themePreferences: themePreferences,

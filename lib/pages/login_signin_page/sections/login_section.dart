@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/enums/login_auth_result.dart';
 import 'package:volume_vault/pages/login_signin_page/commands/login_user_mobile_commands.dart';
@@ -89,11 +90,9 @@ class LoginSection extends HookConsumerWidget {
                             isLoadingState.value = false;
                             return;
                           }
-
-                          Navigator.pushNamedAndRemoveUntil(
-                            context,
+                          //TODO: Check latter
+                          context.go(
                             AppRoutes.homePageRoute,
-                            (_) => false,
                           );
                         },
                         child: Text(AppLocalizations.of(context)!

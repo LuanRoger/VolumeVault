@@ -12,8 +12,9 @@ class RegisterEditBookPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveWrapper.of(context).isMobile
-        ? RegisterEditBookPageMobile(editBookModel: editBookModel)
-        : RegisterEditBookPageDesktop(editBookModel: editBookModel);
+    return ResponsiveWrapper.of(context).isDesktop ||
+            ResponsiveWrapper.of(context).isTablet
+        ? RegisterEditBookPageDesktop(editBookModel: editBookModel)
+        : RegisterEditBookPageMobile(editBookModel: editBookModel);
   }
 }

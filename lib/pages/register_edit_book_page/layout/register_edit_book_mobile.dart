@@ -279,8 +279,13 @@ class RegisterEditBookPageMobile extends HookConsumerWidget {
                             }
                           }
 
-                          if (success) Navigator.pop(context, true);
-                          loadingState.value = false;
+                          if (!success) {
+                            loadingState.value = false;
+                            return;
+                          }
+
+                          if(editMode) Navigator.pop(context, true);
+                          else Navigator.pop(context);
                         },
                         child: Text(AppLocalizations.of(context)!
                             .confirmButtonRegisterBookPage),

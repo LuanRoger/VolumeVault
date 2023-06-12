@@ -3,9 +3,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class SelectBookGenre extends HookConsumerWidget {
-  final Set<String>? alreadyAddedGenres;
+  final Set<String>? allreadyAddedGenres;
 
-  const SelectBookGenre({super.key, this.alreadyAddedGenres});
+  const SelectBookGenre({super.key, this.allreadyAddedGenres});
 
   Future<Set<String>> _fetchBookGenres(WidgetRef ref) async {
     return const {
@@ -54,8 +54,8 @@ class SelectBookGenre extends HookConsumerWidget {
               return CheckboxListTile(
                   title: Text(genre),
                   value: selectedGenres.value.contains(genre) ||
-                      (alreadyAddedGenres?.contains(genre) ?? false),
-                  enabled: !(alreadyAddedGenres?.contains(genre) ?? true),
+                      (allreadyAddedGenres?.contains(genre) ?? false),
+                  enabled: !(allreadyAddedGenres?.contains(genre) ?? true),
                   onChanged: (newValue) {
                     if (newValue == true) {
                       selectedGenres.value = {...selectedGenres.value, genre};

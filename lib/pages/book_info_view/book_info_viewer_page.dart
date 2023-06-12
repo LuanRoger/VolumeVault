@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/l10n/l10n.dart';
 import 'package:volume_vault/models/book_model.dart';
@@ -43,9 +44,9 @@ class BookInfoViewerPage extends HookConsumerWidget {
           actions: [
             IconButton(
                 onPressed: () async {
-                  final bool? success = await Navigator.pushNamed<bool>(
-                      context, AppRoutes.registerEditBookPageRoute,
-                      arguments: [book]);
+                  final bool? success = await context.push<bool>(
+                      AppRoutes.registerEditBookPageRoute,
+                      extra: [book]);
                   if (success == null || !success || !isMounted()) return;
 
                   final BookModel? newInfoBook =

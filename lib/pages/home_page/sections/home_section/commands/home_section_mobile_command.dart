@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide BottomSheet;
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/book_sort_option.dart';
@@ -21,9 +22,9 @@ class HomeSectionMobileCommand extends HomeSectionLayoutStrategy {
     onChipSelected(String searchText, BuildContext context) async =>
         await showSearchDialog(searchText: searchText, context: context, ref: ref);
 
-    return await Navigator.pushNamed<bool>(
-        context, AppRoutes.bookInfoViewerPageRoute,
-        arguments: [
+    return await context.push<bool>(
+        AppRoutes.bookInfoViewerPageRoute,
+        extra: [
           bookModel,
           onChipSelected,
         ]).then((hasChange) {

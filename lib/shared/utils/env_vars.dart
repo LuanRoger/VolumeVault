@@ -5,24 +5,24 @@ part 'env_vars.g.dart';
 @Envied(path: ".env", obfuscate: true)
 abstract class EnvVars {
   @EnviedField(varName: "VV_API_KEY", defaultValue: "", obfuscate: true)
-  static final apiKey = _EnvVars.apiKey;
+  static final String apiKey = _EnvVars.apiKey;
   @EnviedField(varName: "VV_SEARCH_API_KEY", defaultValue: "", obfuscate: true)
-  static final searchApiKey = _EnvVars.searchApiKey;
+  static final String searchApiKey = _EnvVars.searchApiKey;
   @EnviedField(
       varName: "VV_API_PROTOCOL", defaultValue: "http", obfuscate: false)
-  static const apiProtocol = _EnvVars.apiProtocol;
+  static const String apiProtocol = _EnvVars.apiProtocol;
   @EnviedField(varName: "VV_API_HOST", defaultValue: "", obfuscate: false)
-  static const apiHost = _EnvVars.apiHost;
+  static const String apiHost = _EnvVars.apiHost;
   @EnviedField(varName: "VV_API_PORT", defaultValue: "", obfuscate: false)
-  static const apiPort = _EnvVars.apiPort;
+  static const String apiPort = _EnvVars.apiPort;
 
   @EnviedField(
       varName: "VV_SEARCH_API_PROTOCOL", defaultValue: "", obfuscate: false)
-  static const searchApiProtocol = _EnvVars.searchApiProtocol;
+  static const String searchApiProtocol = _EnvVars.searchApiProtocol;
   @EnviedField(
       varName: "VV_SEARCH_API_HOST", defaultValue: "", obfuscate: false)
-  static const searchApiHost = _EnvVars.searchApiHost;
+  static const String searchApiHost = _EnvVars.searchApiHost;
   @EnviedField(
       varName: "VV_SEARCH_API_PORT", defaultValue: "", obfuscate: false)
-  static const searchApiPort = _EnvVars.searchApiPort;
+  static const String searchApiPort = _EnvVars.searchApiPort;
 }
