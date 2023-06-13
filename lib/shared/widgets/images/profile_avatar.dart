@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
-class LetterAvatar extends StatelessWidget {
+class ProfileAvatar extends StatelessWidget {
+  final ImageProvider? image;
   final String letter;
   final EdgeInsetsGeometry? padding;
   final double? height;
   final double? width;
 
-  const LetterAvatar(this.letter,
-      {super.key, this.padding, this.height, this.width})
+  const ProfileAvatar(this.letter,
+      {super.key, this.image, this.padding, this.height, this.width})
       : assert(letter.length == 1);
 
   @override
