@@ -14,15 +14,24 @@ class ProfileAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      clipBehavior: Clip.antiAlias,
       padding: padding,
       height: height,
       width: width,
       decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Theme.of(context).colorScheme.surfaceVariant),
-      child: Center(
-        child: Text(letter, style: Theme.of(context).textTheme.headlineLarge),
-      ),
+      child: image != null
+          ? Image(
+              key: UniqueKey(),
+              image: image!,
+              fit: BoxFit.cover,
+              alignment: Alignment.center,
+            )
+          : Center(
+              child: Text(letter,
+                  style: Theme.of(context).textTheme.headlineLarge),
+            ),
     );
   }
 }
