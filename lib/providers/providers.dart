@@ -6,8 +6,10 @@ import 'package:volume_vault/controllers/stats_controller.dart';
 import 'package:volume_vault/models/api_config_params.dart';
 import 'package:volume_vault/models/search_api_config_params.dart';
 import 'package:volume_vault/models/user_session.dart';
+import 'package:volume_vault/models/user_storage_bucket.dart';
 import 'package:volume_vault/providers/interfaces/graphics_preferences_state.dart';
 import 'package:volume_vault/providers/interfaces/localization_preferences_state.dart';
+import 'package:volume_vault/providers/interfaces/storage_bucket_notifier.dart';
 import 'package:volume_vault/providers/interfaces/theme_preferences_state.dart';
 import 'package:volume_vault/providers/interfaces/user_session_state.dart';
 import 'package:volume_vault/services/book_search_service.dart';
@@ -59,6 +61,19 @@ final searchApiParamsProvider =
 final sharedPreferencesProvider =
     FutureProvider<SharedPreferences>((ref) async {
   return await SharedPreferences.getInstance();
+});
+final profileStorageBucketProvider =
+    ChangeNotifierProvider((ref) {
+  final userSession = ref.watch(userSessionAuthProvider);
+  if (userSession == null) return StorageBucketNotifier();
+
+  return StorageBucketNotifier(
+    storageBucket: UserStorageBucket(
+      uid: userSession.uid,
+      username: userSession.name,
+      email: userSession.email,
+    ),
+  );
 });
 final themePreferencesStateProvider =
     StateNotifierProvider<ThemePreferencesState, ThemePreferences>(
