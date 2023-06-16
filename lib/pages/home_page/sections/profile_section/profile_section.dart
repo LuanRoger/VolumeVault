@@ -7,7 +7,7 @@ import 'package:volume_vault/shared/widgets/badges/premium_badge.dart';
 import 'package:volume_vault/shared/widgets/images/profile_avatar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:volume_vault/shared/widgets/images/profile_background_image.dart';
-import 'package:volume_vault/shared/widgets/images/transparent_circular_border.dart';
+import 'package:volume_vault/shared/widgets/images/circular_border_padding.dart';
 
 class ProfileSection extends HookConsumerWidget {
   final ProfileSectionCommand _commands = ProfileSectionCommand();
@@ -91,7 +91,7 @@ class ProfileSection extends HookConsumerWidget {
                                 await _commands.changeProfileImage(ref);
                                 profileImageLoadState.value = false;
                               },
-                              child: TransparentCircularBorder(
+                              child: CircularBorderPadding(
                                 padding: 5,
                                 child: ProfileAvatar(
                                   userInfo.name[0],
