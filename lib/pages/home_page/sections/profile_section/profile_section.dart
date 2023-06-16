@@ -20,6 +20,9 @@ class ProfileSection extends HookConsumerWidget {
     final profileStorageProvider =
         ref.watch(profileStorageBucketProvider.notifier);
 
+    final profileImageLoadState = useState(false);
+    final profileBackgroundImageLoadState = useState(false);
+
     final profileImageMemoize =
         useMemoized(() => profileStorageProvider.getProfileImageFromBucket());
     final profileBackgroundImageMemoize = useMemoized(
@@ -28,6 +31,12 @@ class ProfileSection extends HookConsumerWidget {
     final profileImageFuture = useFuture(profileImageMemoize);
     final profileBackgroundImageFuture =
         useFuture(profileBackgroundImageMemoize);
+
+    useEffect(() {
+      imageCache.clearLiveImages();
+
+      return null;
+    }, [profileImageLoadState.value, profileBackgroundImageLoadState.value]);
 
     return Scaffold(
       body: Padding(
@@ -44,6 +53,7 @@ class ProfileSection extends HookConsumerWidget {
                       clipBehavior: Clip.none,
                       children: [
                         ProfileBackgroundImage(
+                          isLoading: profileBackgroundImageLoadState.value,
                           image: profileBackgroundImageFuture.hasData
                               ? FileImage(profileBackgroundImageFuture.data!)
                               : null,
@@ -57,8 +67,9 @@ class ProfileSection extends HookConsumerWidget {
                             children: [
                               IconButton(
                                 onPressed: () {
+                                  profileBackgroundImageLoadState.value = true;
                                   _commands.changeProfileBackground(ref);
-                                  imageCache.clearLiveImages();
+                                  profileBackgroundImageLoadState.value = false;
                                 },
                                 icon: const Icon(Icons.edit_rounded),
                               ),
@@ -76,8 +87,9 @@ class ProfileSection extends HookConsumerWidget {
                             padding: const EdgeInsets.all(10),
                             child: GestureDetector(
                               onTap: () async {
+                                profileImageLoadState.value = true;
                                 await _commands.changeProfileImage(ref);
-                                imageCache.clearLiveImages();
+                                profileImageLoadState.value = false;
                               },
                               child: TransparentCircularBorder(
                                 padding: 5,
@@ -85,6 +97,7 @@ class ProfileSection extends HookConsumerWidget {
                                   userInfo.name[0],
                                   height: 130,
                                   width: 130,
+                                  isLoading: profileImageLoadState.value,
                                   image: profileImageFuture.hasData
                                       ? FileImage(profileImageFuture.data!)
                                       : null,
@@ -121,8 +134,7 @@ class ProfileSection extends HookConsumerWidget {
                     child: Text(userInfo.email,
                         style: Theme.of(context).textTheme.bodyMedium),
                   ),
-                  const Divider(),
-                  Transform.flip(flipX: true, child: Text("Hello"))
+                  const Divider()
                 ],
               ),
       ),
