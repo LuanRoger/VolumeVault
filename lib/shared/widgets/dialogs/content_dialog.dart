@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class ContentDialog {
   final EdgeInsetsGeometry padding;
+  final Alignment alignment;
   final Widget Function(BuildContext context)? builder;
   final Widget? title;
   final Widget? content;
@@ -9,13 +10,16 @@ class ContentDialog {
   final bool closeButton;
   final double heightFactor;
   final double widthFactor;
+  final double borderRadius;
 
   const ContentDialog({
     this.content,
     this.builder,
     this.title,
     this.padding = EdgeInsets.zero,
+    this.alignment = Alignment.center,
     this.actions,
+    this.borderRadius = 8.0,
     this.closeButton = false,
     this.heightFactor = 0.5,
     this.widthFactor = 0.5,
@@ -24,7 +28,10 @@ class ContentDialog {
 
   Dialog _buildDialog(BuildContext context, {Size? size}) {
     return Dialog(
-      alignment: Alignment.center,
+      alignment: alignment,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(borderRadius),
+      ),
       child: Container(
         padding: padding,
         height: size?.height,

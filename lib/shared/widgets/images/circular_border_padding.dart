@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class TransparentCircularBorder extends StatelessWidget {
+class CircularBorderPadding extends StatelessWidget {
   final Widget child;
   final double padding;
 
-  const TransparentCircularBorder(
+  const CircularBorderPadding(
       {super.key, required this.child, this.padding = 10});
 
   @override

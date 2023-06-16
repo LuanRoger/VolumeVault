@@ -5,16 +5,20 @@ class ProfileAvatar extends StatelessWidget {
   final ImageProvider? image;
   final String letter;
   final EdgeInsetsGeometry? padding;
+  final TextStyle? textStyle;
   final double? height;
   final double? width;
   final bool isLoading;
+  final Color? letterBackgroundColor;
 
   const ProfileAvatar(this.letter,
       {super.key,
       this.image,
+      this.textStyle,
       this.padding,
       this.height,
       this.width,
+      this.letterBackgroundColor,
       this.isLoading = false})
       : assert(letter.length == 1);
 
@@ -28,7 +32,8 @@ class ProfileAvatar extends StatelessWidget {
             width: width,
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Theme.of(context).colorScheme.surfaceVariant),
+                color: letterBackgroundColor ??
+                    Theme.of(context).colorScheme.surfaceVariant),
             child: image != null
                 ? Image(
                     key: UniqueKey(),
@@ -38,7 +43,7 @@ class ProfileAvatar extends StatelessWidget {
                   )
                 : Center(
                     child: Text(letter,
-                        style: Theme.of(context).textTheme.headlineLarge),
+                        style: textStyle ?? Theme.of(context).textTheme.headlineLarge),
                   ),
           )
         : Shimmer.fromColors(
