@@ -322,9 +322,11 @@ class BookInfoGetterCommand {
               enabled: readStatus == ReadStatus.reading ||
                   readStatus == ReadStatus.hasRead,
               onDateSelected: (newDate) {
-                readStartDay = newDate;
-                readStartDayController?.text =
-                    L10n.formatDateByLocale(localizationOption, newDate);
+                setState(() {
+                  readStartDay = newDate;
+                  readStartDayController?.text =
+                      L10n.formatDateByLocale(localizationOption, newDate);
+                });
               },
               initialDate: DateTime.now(),
               firstDate: DateTime(1900),
@@ -336,9 +338,11 @@ class BookInfoGetterCommand {
               controller: readEndDayController,
               enabled: readStatus == ReadStatus.hasRead,
               onDateSelected: (newDate) {
-                readEndDay = newDate;
-                readEndDayController?.text =
-                    L10n.formatDateByLocale(localizationOption, newDate);
+                setState(() {
+                  readEndDay = newDate;
+                  readEndDayController?.text =
+                      L10n.formatDateByLocale(localizationOption, newDate);
+                });
               },
               initialDate: DateTime.now(),
               firstDate: readStartDay ?? DateTime.now(),

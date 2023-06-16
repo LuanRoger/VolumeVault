@@ -114,11 +114,9 @@ class BookInfoGetter extends StatelessWidget {
                 .synopsisAndObservationsRegisterBookPage),
             trailing: const Icon(Icons.navigate_next_rounded),
             onTap: () async {
-              final List<String>? observationSynopsisValue = await context
-                  .pushNamed(AppRoutes.largeInfoInputPageRoute, extra: [
-                observationController.text,
-                synopsisController.text
-              ]);
+              final List<String>? observationSynopsisValue = await context.push(
+                  AppRoutes.largeInfoInputPageRoute,
+                  extra: [observationController.text, synopsisController.text]);
               if (observationSynopsisValue == null ||
                   observationSynopsisValue.length != 2) {
                 return;
