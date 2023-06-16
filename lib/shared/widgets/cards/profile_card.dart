@@ -13,10 +13,15 @@ import 'package:volume_vault/shared/widgets/images/circular_border_padding.dart'
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileCard {
+  final double? heightFactor;
+  final double? widthFactor;
+
+  const ProfileCard({this.heightFactor, this.widthFactor});
+
   Future<void> show(BuildContext context) async {
     ContentDialog profileCardDialog = ContentDialog(
-      heightFactor: 0.4,
-      widthFactor: 1.3,
+      heightFactor: heightFactor ?? 0.4,
+      widthFactor: widthFactor ?? 1.3,
       padding: const EdgeInsets.all(8.0),
       alignment: Alignment.topCenter,
       borderRadius: 10,

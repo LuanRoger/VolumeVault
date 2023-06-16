@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class SearchTextField extends HookWidget {
+  final List<Widget>? trailing;
   final double? width;
   final double? height;
   final String? label;
@@ -12,6 +13,7 @@ class SearchTextField extends HookWidget {
   const SearchTextField(
       {super.key,
       required this.controller,
+      this.trailing,
       this.width,
       this.height,
       this.label,
@@ -31,6 +33,7 @@ class SearchTextField extends HookWidget {
           return 0.5;
         }),
         trailing: [
+          ...?trailing,
           if (showClearButton)
             IconButton(
               icon: const Icon(Icons.backspace_rounded),
