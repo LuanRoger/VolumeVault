@@ -148,5 +148,12 @@
     "readEndProgressWidget": "End",
 
     "wasNotPossibleToUpdateTheBookSnackbarMessage": "Was not possible to update the book informations.",
-    "registerBookErrorSnackbarMessage": "An error occurs."
+    "registerBookErrorSnackbarMessage": "An error occurs.",
+
+    "badgeCreator": "Creator of VolumeVault",
+    "badgeSponsor": "Sponsor",
+    "badgeContributor": "Contributor",
+    "badgeTester": "Tester",
+    "badgeBugHunter": "Bug Hunter",
+    "badgeEarlyAccessUser": "Early Access User"
 }

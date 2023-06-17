@@ -141,6 +141,7 @@ class _ProfileCard extends HookConsumerWidget {
                       children: [
                         BadgesShowcaseContainer(badgesCodes: [
                           BadgeCode.creator,
+                          BadgeCode.sponsor,
                           BadgeCode.openSourceContributor,
                           BadgeCode.bugHunter,
                           BadgeCode.tester,
