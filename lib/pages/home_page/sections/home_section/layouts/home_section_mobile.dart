@@ -12,6 +12,7 @@ import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
 import 'package:volume_vault/services/models/user_book_result.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
+import 'package:volume_vault/shared/widgets/images/user_profile_image.dart';
 import 'package:volume_vault/shared/widgets/lists/pagination_list_grid.dart';
 import 'package:volume_vault/shared/widgets/widget_switcher.dart';
 import 'package:volume_vault/shared/hooks/paging_controller_hook.dart';
@@ -81,20 +82,20 @@ class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
                   _commands.showSearchDialog(ref: ref, context: context),
               icon: const Icon(Icons.search_rounded)),
           IconButton(
-            onPressed: () {
-              visualizationTypeState.value =
-                  visualizationTypeState.value == VisualizationType.LIST
-                      ? VisualizationType.GRID
-                      : VisualizationType.LIST;
-            },
-            icon: Icon(visualizationTypeState.value == VisualizationType.LIST
-                ? Icons.grid_view_rounded
-                : Icons.view_list_rounded),
-          ),
-          IconButton(
             onPressed: () => context.push(AppRoutes.configurationsPageRoute),
             icon: const Icon(Icons.settings_rounded),
           ),
+          IconButton(
+            onPressed: () async => _commands.showProfileCard(context),
+            icon: UserProfileImage(
+              letterStyle: Theme.of(context)
+                  .textTheme
+                  .headlineSmall!
+                  .copyWith(fontSize: 12),
+              height: 40,
+              width: 40,
+            ),
+          )
         ],
       ),
       body: Column(
@@ -112,23 +113,41 @@ class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
                               ? bookStatsFuture.data!.count
                               : 0),
                       style: Theme.of(context).textTheme.bodyLarge),
-                  Badge(
-                    alignment: AlignmentDirectional.topEnd,
-                    isLabelVisible: sortOptionState.value.sort != null,
-                    smallSize: 10,
-                    child: IconButton(
-                        onPressed: () async {
-                          BookSortOption? newSortOptions =
-                              await _commands.showSortFilterDialog(context,
-                                  currentOptions: sortOptionState.value,
-                                  wrapped: true);
-                          if (newSortOptions == null) return;
-                          sortOptionState.value = newSortOptions;
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Badge(
+                        alignment: AlignmentDirectional.topEnd,
+                        isLabelVisible: sortOptionState.value.sort != null,
+                        smallSize: 10,
+                        child: IconButton(
+                            onPressed: () async {
+                              BookSortOption? newSortOptions =
+                                  await _commands.showSortFilterDialog(context,
+                                      currentOptions: sortOptionState.value,
+                                      wrapped: true);
+                              if (newSortOptions == null) return;
+                              sortOptionState.value = newSortOptions;
 
-                          pagingController.refresh();
+                              pagingController.refresh();
+                            },
+                            icon: const Icon(Icons.sort_rounded)),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          visualizationTypeState.value =
+                              visualizationTypeState.value ==
+                                      VisualizationType.LIST
+                                  ? VisualizationType.GRID
+                                  : VisualizationType.LIST;
                         },
-                        icon: const Icon(Icons.sort_rounded)),
-                  )
+                        icon: Icon(visualizationTypeState.value ==
+                                VisualizationType.LIST
+                            ? Icons.grid_view_rounded
+                            : Icons.view_list_rounded),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

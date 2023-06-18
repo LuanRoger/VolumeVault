@@ -126,6 +126,7 @@
     "systemThemeSelectionDialogOption": "Sistema",
 
     "saveBottomSheetButton": "Salvar",
+    "selectBottomSheetButton": "Selecionar",
 
     "bookTitleTextFieldHint": "Titulo *",
     "authorTextFieldHint": "Autor *",
@@ -147,6 +148,16 @@
     "readStartReadProgressWidget": "Início",
     "readEndProgressWidget": "Término",
 
+    "imageSourceCamera": "Camera",
+    "imageSourceGallery": "Galeria",
+
     "wasNotPossibleToUpdateTheBookSnackbarMessage": "Não foi possível atualizar o livro.",
-    "registerBookErrorSnackbarMessage": "Não foi possível cadastrar o livro."
+    "registerBookErrorSnackbarMessage": "Não foi possível cadastrar o livro.",
+
+    "badgeCreator": "Criador do VolumeVault",
+    "badgeSponsor": "Apoiador",
+    "badgeContributor": "Contribuidor",
+    "badgeTester": "Testador",
+    "badgeBugHunter": "Caçador de bugs",
+    "badgeEarlyAccessUser": "Usuário do Acesso Antecipado"
 }

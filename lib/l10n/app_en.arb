@@ -126,6 +126,7 @@
     "systemThemeSelectionDialogOption": "System",
 
     "saveBottomSheetButton": "Save",
+    "selectBottomSheetButton": "Select",
 
     "bookTitleTextFieldHint": "Title *",
     "authorTextFieldHint": "Author *",
@@ -147,6 +148,16 @@
     "readStartReadProgressWidget": "Start",
     "readEndProgressWidget": "End",
 
+    "imageSourceCamera": "Camera",
+    "imageSourceGallery": "Gallery",
+
     "wasNotPossibleToUpdateTheBookSnackbarMessage": "Was not possible to update the book informations.",
-    "registerBookErrorSnackbarMessage": "An error occurs."
+    "registerBookErrorSnackbarMessage": "An error occurs.",
+
+    "badgeCreator": "Creator of VolumeVault",
+    "badgeSponsor": "Sponsor",
+    "badgeContributor": "Contributor",
+    "badgeTester": "Tester",
+    "badgeBugHunter": "Bug Hunter",
+    "badgeEarlyAccessUser": "Early Access User"
 }

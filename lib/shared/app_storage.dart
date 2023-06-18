@@ -16,6 +16,19 @@ class AppStorage {
     return directoryPath.path;
   }
 
+  static Future<Directory> ensureCreatedAppDirectory(
+      String directoryPath) async {
+    final String appExternalStoragePath = await getAppExternalStoragePath();
+    final directory = Directory(path.join(appExternalStoragePath, directoryPath));
+    
+    final exists = await directory.exists();
+    if (!exists) {
+      directory.create();
+    }
+
+    return directory;
+  }
+
   static Future<String> getAppExternalImageStoragePath() async {
     final String appExternalStoragePath = await getAppExternalStoragePath();
     final appImagePath = path.join(appExternalStoragePath, "images");

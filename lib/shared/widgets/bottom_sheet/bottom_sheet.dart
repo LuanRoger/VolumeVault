@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:volume_vault/shared/widgets/bottom_sheet/bottom_sheet_base.dart';
 
 class BottomSheet extends BottomSheetBase {
-  List<Widget> items;
+  final List<Widget>? items;
+  final Widget? content;
 
   BottomSheet({
-    required this.items,
+    this.items,
+    this.content,
     super.padding,
     super.dragable,
     super.isDismissible,
@@ -14,10 +16,11 @@ class BottomSheet extends BottomSheetBase {
     super.onClose,
     super.mainAxisAlignment,
     super.crossAxisAlignment,
-  });
+  }) : assert(items == null && content != null ||
+            items != null && content == null);
 
   Future<void> show(BuildContext context) async {
     return await super.showBottomSheet(context,
-        builder: (context) => Column(children: items));
+        builder: (context) => content ?? Column(children: items!));
   }
 }

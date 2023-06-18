@@ -12,6 +12,7 @@ import 'package:volume_vault/services/models/user_book_result.dart';
 import 'package:volume_vault/shared/widgets/cards/book_info_card.dart';
 import 'package:volume_vault/shared/widgets/cards/book_info_grid_card.dart';
 import 'package:volume_vault/shared/widgets/cards/book_info_list_card.dart';
+import 'package:volume_vault/shared/widgets/cards/profile_card.dart';
 import 'package:volume_vault/shared/widgets/list_tiles/book_search_result_tile.dart';
 
 abstract class HomeSectionLayoutStrategy {
@@ -32,23 +33,34 @@ abstract class HomeSectionLayoutStrategy {
     return searchResult;
   }
 
+  Future<void> showProfileCard(BuildContext context, {double? heightFactor, double? widthFactor}) async {
+    final profileCard = ProfileCard(
+      heightFactor: heightFactor,
+      widthFactor: widthFactor,
+    );
+    await profileCard.show(context);
+  }
+
   List<BookSearchResultTile> buildSearhResultTiles(
       BookSearchResult searchResult,
       BuildContext dialogContext,
       WidgetRef ref) {
-    return [for (final bookResult in searchResult.results) BookSearchResultTile(
-        bookResult,
-        onTap: () async {
-          final bookController = await ref.read(bookControllerProvider.future);
-          final BookModel? book =
-              await bookController.getBookInfoById(bookResult.id);
+    return [
+      for (final bookResult in searchResult.results)
+        BookSearchResultTile(
+          bookResult,
+          onTap: () async {
+            final bookController =
+                await ref.read(bookControllerProvider.future);
+            final BookModel? book =
+                await bookController.getBookInfoById(bookResult.id);
 
-          if (book == null) return;
-          onBookSelect(dialogContext, ref, book);
-        },
-      )];
-      
-    }
+            if (book == null) return;
+            onBookSelect(dialogContext, ref, book);
+          },
+        )
+    ];
+  }
 
   Future<UserBookResult> fetchUserBooks(
       WidgetRef ref, GetUserBookRequest getUserBookRequest,

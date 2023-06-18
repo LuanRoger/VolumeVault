@@ -7,8 +7,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
+import 'package:volume_vault/shared/widgets/bottom_sheet/image_source_selector.dart';
 
-class ProfileSectionStrategy {
+abstract class ProfileSectionStrategy {
   Future<void> showLogoutDialog(BuildContext context, WidgetRef ref) async {
     bool exit = false;
 
@@ -39,27 +40,36 @@ class ProfileSectionStrategy {
     }
   }
 
-  Future<void> changeProfileBackground(WidgetRef ref) async {
+  Future<void> changeProfileImage(BuildContext context, WidgetRef ref) async {
+    ImageSourceSelector selector = ImageSourceSelector();
+    final selectedSource = await selector.show(context);
+    if (selectedSource == null) return;
+
+    final profileStorageProvider =
+        ref.read(profileStorageBucketProvider.notifier);
+    final ImagePicker imagePicker = ImagePicker();
+    final XFile? profileImage =
+        await imagePicker.pickImage(source: selectedSource);
+    if (profileImage == null) return;
+
+    final File imageFile = File(profileImage.path);
+    await profileStorageProvider.uploadProfileImage(imageFile);
+  }
+
+  Future<void> changeProfileBackground(
+      BuildContext context, WidgetRef ref) async {
+    ImageSourceSelector selector = ImageSourceSelector();
+    final selectedSource = await selector.show(context);
+    if (selectedSource == null) return;
+
     final profileStorageProvider =
         ref.read(profileStorageBucketProvider.notifier);
     final ImagePicker backgroundPicker = ImagePicker();
     final XFile? backgroundImage =
-        await backgroundPicker.pickImage(source: ImageSource.gallery);
+        await backgroundPicker.pickImage(source: selectedSource);
     if (backgroundImage == null) return;
 
     final File imageFile = File(backgroundImage.path);
     await profileStorageProvider.uploadBackgroundImage(imageFile);
-  }
-
-  Future<void> changeProfileImage(WidgetRef ref) async {
-    final profileStorageProvider =
-        ref.read(profileStorageBucketProvider.notifier);
-    final ImagePicker imagePicker = ImagePicker();
-    final XFile? backgroundImage =
-        await imagePicker.pickImage(source: ImageSource.camera);
-    if (backgroundImage == null) return;
-
-    final File imageFile = File(backgroundImage.path);
-    await profileStorageProvider.uploadProfileImage(imageFile);
   }
 }

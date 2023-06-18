@@ -15,6 +15,7 @@ import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
 import 'package:volume_vault/services/models/user_book_result.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
+import 'package:volume_vault/shared/widgets/images/user_profile_image.dart';
 import 'package:volume_vault/shared/widgets/lists/pagination_list_grid.dart';
 import 'package:volume_vault/shared/widgets/text_fields/search_text_field.dart';
 import 'package:volume_vault/shared/widgets/widget_switcher.dart';
@@ -93,18 +94,6 @@ class HomeSectionDesktop extends HookConsumerWidget {
               : const SizedBox(),
         ),
         actions: [
-          if (!ResponsiveWrapper.of(context).isTablet)
-            IconButton(
-              onPressed: () {
-                visualizationTypeState.value =
-                    visualizationTypeState.value == VisualizationType.LIST
-                        ? VisualizationType.GRID
-                        : VisualizationType.LIST;
-              },
-              icon: Icon(visualizationTypeState.value == VisualizationType.LIST
-                  ? Icons.grid_view_rounded
-                  : Icons.view_list_rounded),
-            ),
           IconButton(
             icon: const Icon(Icons.settings_rounded),
             onPressed: () {
@@ -127,12 +116,28 @@ class HomeSectionDesktop extends HookConsumerWidget {
                     children: [
                       Flexible(
                         child: SearchTextField(
-                            controller: searchTextController,
-                            label: AppLocalizations.of(context)!
-                                .searchBookTextFieldHint,
-                            showClearButton:
-                                searchTextController.text.isNotEmpty,
-                            height: 40),
+                          controller: searchTextController,
+                          label: AppLocalizations.of(context)!
+                              .searchBookTextFieldHint,
+                          showClearButton: searchTextController.text.isNotEmpty,
+                          height: 40,
+                          trailing: [
+                            IconButton(
+                              onPressed: () async => _commands.showProfileCard(
+                                  context,
+                                  heightFactor: 0.8,
+                                  widthFactor: 0.8),
+                              icon: UserProfileImage(
+                                letterStyle: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(fontSize: 12),
+                                height: 40,
+                                width: 40,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                       const SizedBox(width: 8.0),
                       Flexible(
@@ -159,20 +164,39 @@ class HomeSectionDesktop extends HookConsumerWidget {
                                   ? bookStatsFuture.data!.count
                                   : 0),
                           style: Theme.of(context).textTheme.bodyLarge),
-                      IconButton(
-                          onPressed: () async {
-                            BookSortOption? newSortOptions =
-                                await _commands.showSortFilterDialog(context,
-                                    currentOptions: sortOptionState.value,
-                                    wrapped: true,
-                                    full:
-                                        ResponsiveWrapper.of(context).isTablet);
-                            if (newSortOptions == null) return;
-                            sortOptionState.value = newSortOptions;
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          if (!ResponsiveWrapper.of(context).isTablet)
+                            IconButton(
+                              onPressed: () {
+                                visualizationTypeState.value =
+                                    visualizationTypeState.value ==
+                                            VisualizationType.LIST
+                                        ? VisualizationType.GRID
+                                        : VisualizationType.LIST;
+                              },
+                              icon: Icon(visualizationTypeState.value ==
+                                      VisualizationType.LIST
+                                  ? Icons.grid_view_rounded
+                                  : Icons.view_list_rounded),
+                            ),
+                          IconButton(
+                              onPressed: () async {
+                                BookSortOption? newSortOptions = await _commands
+                                    .showSortFilterDialog(context,
+                                        currentOptions: sortOptionState.value,
+                                        wrapped: true,
+                                        full: ResponsiveWrapper.of(context)
+                                            .isTablet);
+                                if (newSortOptions == null) return;
+                                sortOptionState.value = newSortOptions;
 
-                            pagingController.refresh();
-                          },
-                          icon: const Icon(Icons.sort_rounded))
+                                pagingController.refresh();
+                              },
+                              icon: const Icon(Icons.sort_rounded)),
+                        ],
+                      )
                     ],
                   ),
                 ),
