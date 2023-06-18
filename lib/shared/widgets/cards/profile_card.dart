@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/enums/badge_code.dart';
-import 'package:volume_vault/pages/home_page/sections/profile_section/commands/profile_section_command.dart';
+import 'package:volume_vault/shared/widgets/commands/profile_card_command/profile_section_command.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/widgets/badges/badges_showcase_container.dart';
 import 'package:volume_vault/shared/widgets/badges/premium_badge.dart';
@@ -86,9 +86,10 @@ class _ProfileCard extends HookConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           IconButton(
-                            onPressed: () {
+                            onPressed: () async {
                               profileBackgroundImageLoadState.value = true;
-                              _commands.changeProfileBackground(ref);
+                              await _commands.changeProfileBackground(
+                                  context, ref);
                               profileBackgroundImageLoadState.value = false;
                             },
                             icon: const Icon(Icons.edit_rounded),
@@ -108,7 +109,7 @@ class _ProfileCard extends HookConsumerWidget {
                         child: GestureDetector(
                           onTap: () async {
                             profileImageLoadState.value = true;
-                            await _commands.changeProfileImage(ref);
+                            await _commands.changeProfileImage(context, ref);
                             profileImageLoadState.value = false;
                           },
                           child: CircularBorderPadding(
