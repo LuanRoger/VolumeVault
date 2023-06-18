@@ -126,6 +126,7 @@
     "systemThemeSelectionDialogOption": "Sistema",
 
     "saveBottomSheetButton": "Salvar",
+    "selectBottomSheetButton": "Selecionar",
 
     "bookTitleTextFieldHint": "Titulo *",
     "authorTextFieldHint": "Autor *",
@@ -146,6 +147,9 @@
     "notReadedReadProgressWidget": "Não lido",
     "readStartReadProgressWidget": "Início",
     "readEndProgressWidget": "Término",
+
+    "imageSourceCamera": "Camera",
+    "imageSourceGallery": "Galeria",
 
     "wasNotPossibleToUpdateTheBookSnackbarMessage": "Não foi possível atualizar o livro.",
     "registerBookErrorSnackbarMessage": "Não foi possível cadastrar o livro.",

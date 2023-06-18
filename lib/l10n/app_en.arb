@@ -126,6 +126,7 @@
     "systemThemeSelectionDialogOption": "System",
 
     "saveBottomSheetButton": "Save",
+    "selectBottomSheetButton": "Select",
 
     "bookTitleTextFieldHint": "Title *",
     "authorTextFieldHint": "Author *",
@@ -146,6 +147,9 @@
     "notReadedReadProgressWidget": "Not read",
     "readStartReadProgressWidget": "Start",
     "readEndProgressWidget": "End",
+
+    "imageSourceCamera": "Camera",
+    "imageSourceGallery": "Gallery",
 
     "wasNotPossibleToUpdateTheBookSnackbarMessage": "Was not possible to update the book informations.",
     "registerBookErrorSnackbarMessage": "An error occurs.",
