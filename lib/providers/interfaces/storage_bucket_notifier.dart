@@ -16,21 +16,26 @@ class StorageBucketNotifier extends ChangeNotifier {
   Future<File?> getProfileImageFromBucket() async {
     if (!_isLogged) return null;
 
-    final inAppImagePath = path.join(
-        await AppStorage.getAppExternalImageStoragePath(),
-        UserStorageBucket.profileImageName);
-    final inAppProfileImageFile = File(inAppImagePath);
+    final profileUserFolder = await AppStorage.ensureCreatedAppDirectory(
+        storageBucket!.internalUserFolder);
+    final inAppProfileImage =
+        path.join(profileUserFolder.path, UserStorageBucket.profileImageName);
+    final inAppProfileImageFile = File(inAppProfileImage);
     if (await inAppProfileImageFile.exists()) {
       return inAppProfileImageFile;
     }
 
     final storageBucketRef =
-        FirebaseStorage.instance.ref(storageBucket!.profileImageRef);
+        FirebaseStorage.instance.ref(storageBucket!.userBaseBucketPath);
     final profileImageRef =
         storageBucketRef.child(UserStorageBucket.profileImageName);
 
     final writeTask = profileImageRef.writeToFile(inAppProfileImageFile);
-    await writeTask;
+    try {
+      await writeTask;
+    } catch (_) {
+      return null;
+    }
 
     if (writeTask.snapshot.state != TaskState.success) {
       return null;
@@ -42,21 +47,27 @@ class StorageBucketNotifier extends ChangeNotifier {
   Future<File?> getProfileBackgroundImageFromBucket() async {
     if (!_isLogged) return null;
 
-    final inAppImagePath = await AppStorage.getAppExternalImageStoragePath();
-    final inAppProfileBackgroundImageFile = File(
-        path.join(inAppImagePath, UserStorageBucket.profileBackgroundName));
+    final profileUserFolder = await AppStorage.ensureCreatedAppDirectory(
+        storageBucket!.internalUserFolder);
+    final inAppProfileBackgroundImage = path.join(
+        profileUserFolder.path, UserStorageBucket.profileBackgroundName);
+    final inAppProfileBackgroundImageFile = File(inAppProfileBackgroundImage);
     if (await inAppProfileBackgroundImageFile.exists()) {
       return inAppProfileBackgroundImageFile;
     }
 
     final storageBucketRef =
-        FirebaseStorage.instance.ref(storageBucket!.profileImageRef);
+        FirebaseStorage.instance.ref(storageBucket!.userBaseBucketPath);
     final profileBackgroundImageRef =
         storageBucketRef.child(UserStorageBucket.profileBackgroundName);
 
     final writeTask =
         profileBackgroundImageRef.writeToFile(inAppProfileBackgroundImageFile);
-    await writeTask;
+    try {
+      await writeTask;
+    } catch (_) {
+      return null;
+    }
 
     if (writeTask.snapshot.state != TaskState.success) {
       return null;
@@ -72,14 +83,15 @@ class StorageBucketNotifier extends ChangeNotifier {
     if (!imageExists) return ImageUploadResult.failedByFileNotFound;
 
     final storageBucketRef =
-        FirebaseStorage.instance.ref(storageBucket!.profileImageRef);
+        FirebaseStorage.instance.ref(storageBucket!.profileImagePath);
     UploadTask uploadTask = storageBucketRef.putFile(imageFile);
     await uploadTask;
 
-    final inAppImagePath = await AppStorage.getAppExternalImageStoragePath();
+    final appProfileFolder = await AppStorage.ensureCreatedAppDirectory(
+        storageBucket!.internalUserFolder);
     final inAppProfileImagePath =
-        path.join(inAppImagePath, UserStorageBucket.profileImageName);
-    imageFile.copy(inAppProfileImagePath);
+        path.join(appProfileFolder.path, UserStorageBucket.profileImageName);
+    await imageFile.copy(inAppProfileImagePath);
 
     notifyListeners();
     return switch (uploadTask.snapshot.state) {
@@ -97,14 +109,14 @@ class StorageBucketNotifier extends ChangeNotifier {
     if (!imageExists) return ImageUploadResult.failedByFileNotFound;
 
     final storageBucketRef =
-        FirebaseStorage.instance.ref(storageBucket!.profileImageRef);
+        FirebaseStorage.instance.ref(storageBucket!.profileBackgroundImagePath);
     UploadTask uploadTask = storageBucketRef.putFile(imageFile);
     await uploadTask;
 
-    final inAppBackgroundImagePath =
-        await AppStorage.getAppExternalImageStoragePath();
+    final inAppBackgroundImagePath = await AppStorage.ensureCreatedAppDirectory(
+        storageBucket!.internalUserFolder);
     final inAppProfileBackgroundImagePath = path.join(
-        inAppBackgroundImagePath, UserStorageBucket.profileBackgroundName);
+        inAppBackgroundImagePath.path, UserStorageBucket.profileBackgroundName);
     await imageFile.copy(inAppProfileBackgroundImagePath);
 
     notifyListeners();

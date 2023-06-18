@@ -20,16 +20,16 @@ class ProfileBackgroundImage extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
           )
-        : Container(
+        : Shimmer.fromColors(
+            baseColor: Colors.white,
+            highlightColor: Colors.grey[300]!,
+            child: Container(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surfaceVariant,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Shimmer.fromColors(
-              baseColor: Colors.white,
-              highlightColor: Colors.grey[300]!,
-              child: const SizedBox.expand(),
-            ),
+            child: const SizedBox.expand()
+          ),
           );
   }
 }

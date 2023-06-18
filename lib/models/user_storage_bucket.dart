@@ -5,17 +5,16 @@ class UserStorageBucket {
   final String _username;
   final String _email;
 
-  static const String imageExtension = ".jpg";
-  static const String profileImageName = "profile_image$imageExtension";
-  static const String profileBackgroundName =
-      "profile_background$imageExtension";
+  String get internalUserFolder => "$_username.$_email.$_uid";
+  static const String profileImageName = "profile_image";
+  static const String profileBackgroundName = "profile_background";
 
-  String get userBaseBucketPath =>
-      path.join("users", "$_username.$_email.$_uid");
-  String get profileImageRef =>
-      path.join(userBaseBucketPath, profileImageName);
-  String get profileBackgroundRef =>
-      path.join(userBaseBucketPath, profileBackgroundName);
+  String get userBaseBucketPath => path.join("users", internalUserFolder);
+
+  String get profileImagePath =>
+      path.join("users", internalUserFolder, profileImageName);
+  String get profileBackgroundImagePath =>
+      path.join("users", internalUserFolder, profileBackgroundName);
 
   UserStorageBucket(
       {required String uid, required String username, required String email})
