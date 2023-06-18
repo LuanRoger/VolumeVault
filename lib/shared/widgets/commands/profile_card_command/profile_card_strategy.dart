@@ -9,7 +9,7 @@ import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/widgets/bottom_sheet/image_source_selector.dart';
 
-abstract class ProfileSectionStrategy {
+abstract class ProfileCardStrategy {
   Future<void> showLogoutDialog(BuildContext context, WidgetRef ref) async {
     bool exit = false;
 

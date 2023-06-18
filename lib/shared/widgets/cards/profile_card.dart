@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/enums/badge_code.dart';
-import 'package:volume_vault/shared/widgets/commands/profile_card_command/profile_section_command.dart';
+import 'package:volume_vault/shared/widgets/commands/profile_card_command/profile_card_command.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/widgets/badges/badges_showcase_container.dart';
 import 'package:volume_vault/shared/widgets/badges/premium_badge.dart';
@@ -33,7 +33,7 @@ class ProfileCard {
 }
 
 class _ProfileCard extends HookConsumerWidget {
-  final ProfileSectionCommand _commands = ProfileSectionCommand();
+  final ProfileCardCommand _commands = ProfileCardCommand();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
