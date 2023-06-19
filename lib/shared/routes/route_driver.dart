@@ -6,6 +6,7 @@ import 'package:volume_vault/pages/book_info_view/book_info_viewer_page.dart';
 import 'package:volume_vault/pages/configuration_page/configuration_page.dart';
 import 'package:volume_vault/pages/home_page/home_page.dart';
 import 'package:volume_vault/pages/login_signin_page/login_signin_page.dart';
+import 'package:volume_vault/pages/qr_scanner_page/qr_scanner_page.dart';
 import 'package:volume_vault/pages/register_edit_book_page/pages/select_book_genre.dart';
 import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
 import 'package:volume_vault/pages/register_edit_book_page/pages/large_info_input.dart';
@@ -54,6 +55,10 @@ GoRouter buildDriver({UserSession? userSession}) => GoRouter(
               );
             },
           ),
+          GoRoute(path: AppRoutes.qrCodeScannerPageRoute,
+          builder: (_, __) {
+            return const QrScannerPage();
+          },),
           GoRoute(
             path: AppRoutes.largeInfoInputPageRoute,
             builder: (context, state) {
