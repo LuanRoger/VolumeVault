@@ -14,6 +14,7 @@ import 'package:volume_vault/shared/utils/image_utils.dart';
 import 'package:volume_vault/shared/widgets/cards/title_card.dart';
 import 'package:volume_vault/shared/widgets/cards/title_text_card.dart';
 import 'package:volume_vault/shared/widgets/chip/chip_list.dart';
+import 'package:volume_vault/shared/widgets/dialogs/qr_book_share_dialog.dart';
 import 'package:volume_vault/shared/widgets/icon/icon_text.dart';
 import 'package:volume_vault/shared/widgets/progress_indicators/read_progress.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -59,31 +60,29 @@ class BookInfoViewerPage extends HookConsumerWidget {
                 icon: const Icon(Icons.edit_rounded)),
             if (book.buyLink != null)
               IconButton(
-                  onPressed: () => _command.launchBuyPage(book.buyLink!),
-                  icon: const Icon(Icons.shopping_cart_rounded)),
-            PopupMenuButton(
-              itemBuilder: (_) => [
-                PopupMenuItem(
-                    value: 0,
-                    child: Text(AppLocalizations.of(context)!
-                        .deletePopupButtonBookViewerPage))
-              ],
-              onSelected: (value) async {
-                switch (value) {
-                  case 0:
-                    bool delete = await _command.showDeleteBookDialog(context);
-                    if (!delete || !isMounted()) break;
-                    isLoadingState.value = true;
+                onPressed: () => _command.launchBuyPage(book.buyLink!),
+                icon: const Icon(Icons.shopping_cart_rounded),
+              ),
+            IconButton(
+              onPressed: () async {
+                await QrBookShareDialog(book: book).show(context);
+              },
+              icon: const Icon(Icons.share_rounded),
+            ),
+            IconButton(
+              onPressed: () async {
+                bool delete = await _command.showDeleteBookDialog(context);
+                if (!delete || !isMounted()) return;
+                isLoadingState.value = true;
 
-                    final bool success =
-                        await _command.deleteBook(context, ref, book.id);
-                    if (!success) break;
+                final bool success =
+                    await _command.deleteBook(context, ref, book.id);
+                if (!success) return;
 
-                    Navigator.pop(context, true);
-                }
+                Navigator.pop(context, true);
                 isLoadingState.value = false;
               },
-              icon: const Icon(Icons.more_vert_rounded),
+              icon: const Icon(Icons.delete_rounded),
             )
           ],
         ),

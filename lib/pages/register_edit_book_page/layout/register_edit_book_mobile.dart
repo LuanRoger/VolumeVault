@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide BottomSheet;
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/l10n/l10n.dart';
 import 'package:volume_vault/models/book_model.dart';
@@ -10,6 +11,7 @@ import 'package:volume_vault/pages/register_edit_book_page/commands/register_edi
 import 'package:volume_vault/pages/register_edit_book_page/widgets/book_info_getter.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/hooks/text_field_tags_controller_hook.dart';
+import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/widgets/chip/chip_list.dart';
 import 'package:volume_vault/shared/widgets/viewers/book_image_viewer.dart';
 import 'package:volume_vault/shared/widgets/icon/icon_text.dart';
@@ -98,6 +100,14 @@ class RegisterEditBookPageMobile extends HookConsumerWidget {
               ? AppLocalizations.of(context)!.newBookAppBarTitle
               : AppLocalizations.of(context)!.editBookAppBarTitle,
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.push<String>(AppRoutes.qrCodeScannerPageRoute);
+            },
+            icon: const Icon(Icons.qr_code_scanner_rounded),
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -284,8 +294,10 @@ class RegisterEditBookPageMobile extends HookConsumerWidget {
                             return;
                           }
 
-                          if(editMode) Navigator.pop(context, true);
-                          else Navigator.pop(context);
+                          if (editMode)
+                            Navigator.pop(context, true);
+                          else
+                            Navigator.pop(context);
                         },
                         child: Text(AppLocalizations.of(context)!
                             .confirmButtonRegisterBookPage),
