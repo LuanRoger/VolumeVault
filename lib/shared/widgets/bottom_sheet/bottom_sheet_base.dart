@@ -57,6 +57,6 @@ abstract class BottomSheetBase {
                       builder(context)
                     ]),
               ),
-            ));
+            ),);
   }
 }
