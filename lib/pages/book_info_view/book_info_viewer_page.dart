@@ -14,7 +14,6 @@ import 'package:volume_vault/shared/utils/image_utils.dart';
 import 'package:volume_vault/shared/widgets/cards/title_card.dart';
 import 'package:volume_vault/shared/widgets/cards/title_text_card.dart';
 import 'package:volume_vault/shared/widgets/chip/chip_list.dart';
-import 'package:volume_vault/shared/widgets/dialogs/qr_book_share_dialog.dart';
 import 'package:volume_vault/shared/widgets/icon/icon_text.dart';
 import 'package:volume_vault/shared/widgets/progress_indicators/read_progress.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -44,20 +43,21 @@ class BookInfoViewerPage extends HookConsumerWidget {
               onPressed: () => Navigator.pop(context, hasChanges.value)),
           actions: [
             IconButton(
-                onPressed: () async {
-                  final bool? success = await context.push<bool>(
-                      AppRoutes.registerEditBookPageRoute,
-                      extra: [book]);
-                  if (success == null || !success || !isMounted()) return;
+              onPressed: () async {
+                final bool? success = await context.push<bool>(
+                    AppRoutes.registerEditBookPageRoute,
+                    extra: [book, true]);
+                if (success == null || !success || !isMounted()) return;
 
-                  final BookModel? newInfoBook =
-                      await _command.refreshBookInfo(context, ref, book.id);
-                  if (newInfoBook == null) return;
+                final BookModel? newInfoBook =
+                    await _command.refreshBookInfo(context, ref, book.id);
+                if (newInfoBook == null) return;
 
-                  currentBookInfoState.value = newInfoBook;
-                  hasChanges.value = true;
-                },
-                icon: const Icon(Icons.edit_rounded)),
+                currentBookInfoState.value = newInfoBook;
+                hasChanges.value = true;
+              },
+              icon: const Icon(Icons.edit_rounded),
+            ),
             if (book.buyLink != null)
               IconButton(
                 onPressed: () => _command.launchBuyPage(book.buyLink!),
@@ -65,7 +65,7 @@ class BookInfoViewerPage extends HookConsumerWidget {
               ),
             IconButton(
               onPressed: () async {
-                await QrBookShareDialog(book: book).show(context);
+                await _command.showBookShareQrCode(context, bookModel: book);
               },
               icon: const Icon(Icons.share_rounded),
             ),

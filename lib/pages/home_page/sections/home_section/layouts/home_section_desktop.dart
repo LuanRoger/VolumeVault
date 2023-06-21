@@ -261,7 +261,7 @@ class HomeSectionDesktop extends HookConsumerWidget {
                                 final bool? refresh = await context
                                     .pushNamed<bool>(
                                         AppRoutes.registerEditBookPageRoute,
-                                        extra: [bookOnViwer.value!]);
+                                        extra: [bookOnViwer.value!, true]);
                                 if (refresh == null || !refresh) return;
 
                                 pagingController.refresh();

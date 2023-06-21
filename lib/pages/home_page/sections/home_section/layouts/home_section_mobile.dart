@@ -185,16 +185,36 @@ class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
           ),
         ],
       ),
-      floatingActionButton: OpenContainer(
-        clipBehavior: Clip.none,
-        openColor: Theme.of(context).colorScheme.background,
-        closedColor: Theme.of(context).colorScheme.background,
-        onClosed: (_) => pagingController.refresh(),
-        closedShape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        closedBuilder: (_, open) => FloatingActionButton(
-            onPressed: open, child: const Icon(Icons.add_rounded)),
-        openBuilder: (_, __) => RegisterEditBookPage(),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          FloatingActionButton.small(
+            child: const Icon(Icons.qr_code_scanner_rounded),
+            onPressed: () async {
+              final BookModel? result = await context
+                  .push<BookModel?>(AppRoutes.qrCodeScannerPageRoute);
+              if (!context.mounted || result == null) return;
+
+              context.push(AppRoutes.registerEditBookPageRoute,
+                  extra: [result, false]);
+            },
+          ),
+          OpenContainer(
+            clipBehavior: Clip.none,
+            openColor: Theme.of(context).colorScheme.background,
+            closedColor: Theme.of(context).colorScheme.background,
+            onClosed: (_) => pagingController.refresh(),
+            closedShape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+            closedBuilder: (_, open) => FloatingActionButton.extended(
+              label: Text(AppLocalizations.of(context)!.addBookFabLabel),
+              icon: const Icon(Icons.add_rounded),
+              onPressed: open,
+            ),
+            openBuilder: (_, __) => const RegisterEditBookPage(),
+          ),
+        ],
       ),
     );
   }
