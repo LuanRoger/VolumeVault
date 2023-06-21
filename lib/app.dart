@@ -17,14 +17,14 @@ class App extends ConsumerWidget {
         ref.watch(themePreferencesStateProvider).themeBrightnes;
     final localizationPreferences =
         ref.watch(localizationPreferencesStateProvider);
-    final userSession = ref.watch(userSessionAuthProvider);
+    final routeConfig = ref.read(routeProvider);
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       themeMode: themeBrightness.themeMode,
       theme: lightTheme(context),
       darkTheme: darkTheme(context),
-      routerConfig: buildDriver(userSession: userSession),
+      routerConfig: routeConfig,
       builder: (context, child) => ResponsiveWrapper.builder(
         child,
         minWidth: 480,
