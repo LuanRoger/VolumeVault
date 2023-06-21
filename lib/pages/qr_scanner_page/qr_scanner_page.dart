@@ -8,6 +8,7 @@ import "package:mobile_scanner/mobile_scanner.dart";
 import "package:volume_vault/models/book_model.dart";
 import "package:volume_vault/pages/qr_scanner_page/widgets/detected_book_preview.dart";
 import "package:volume_vault/shared/hooks/qr_scanner_controller_hook.dart";
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class QrScannerPage extends HookConsumerWidget {
   const QrScannerPage({super.key});
@@ -94,13 +95,15 @@ class QrScannerPage extends HookConsumerWidget {
                           onPressed: () {
                             Navigator.of(context).pop(detectedBookState.value!);
                           },
-                          child: const Text("Adicionar")),
-                          const SizedBox(width: 10),
+                          child: Text(
+                              AppLocalizations.of(context)!.addQrDetectedInfo)),
+                      const SizedBox(width: 10),
                       ElevatedButton(
                           onPressed: () {
                             detectedBookState.value = null;
                           },
-                          child: const Text("Recusar"))
+                          child: Text(
+                              AppLocalizations.of(context)!.addQrDetectedInfo))
                     ],
                   )
                 ]

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide BottomSheet;
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/l10n/l10n.dart';
 import 'package:volume_vault/models/book_model.dart';
@@ -11,7 +10,6 @@ import 'package:volume_vault/pages/register_edit_book_page/commands/register_edi
 import 'package:volume_vault/pages/register_edit_book_page/widgets/book_info_getter.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/hooks/text_field_tags_controller_hook.dart';
-import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/widgets/chip/chip_list.dart';
 import 'package:volume_vault/shared/widgets/viewers/book_image_viewer.dart';
 import 'package:volume_vault/shared/widgets/icon/icon_text.dart';
@@ -22,15 +20,15 @@ class RegisterEditBookPageMobile extends HookConsumerWidget {
       RegisterEditBookPageMobileCommand();
   final BookInfoGetterCommand _bookInfoGetterCommand = BookInfoGetterCommand();
 
-  ///If this model is not null, the page enter in edit mode.
-  ///So when you hit the save button, the book will be updated instead of created.
-  final BookModel? editBookModel;
+  final BookModel? externalBookModel;
+  final bool editMode;
 
   static final _bookInfoFormKey = GlobalKey<FormState>();
   static final _publisherInfoFormKey = GlobalKey<FormState>();
   static final _aditionalInfoFormKey = GlobalKey<FormState>();
 
-  RegisterEditBookPageMobile({super.key, this.editBookModel});
+  RegisterEditBookPageMobile(
+      {super.key, this.externalBookModel, this.editMode = false});
 
   void validateAndPop(BuildContext context, GlobalKey<FormState> formKey) {
     bool allGood = formKey.currentState!.validate();
@@ -43,53 +41,54 @@ class RegisterEditBookPageMobile extends HookConsumerWidget {
         ref.read(localizationPreferencesStateProvider);
 
     final coverUrlController =
-        useTextEditingController(text: editBookModel?.coverLink);
+        useTextEditingController(text: externalBookModel?.coverLink);
     // ignore: unused_local_variable
     final coverReloader = useListenable(coverUrlController);
 
     final titleController =
-        useTextEditingController(text: editBookModel?.title);
+        useTextEditingController(text: externalBookModel?.title);
     final authorController =
-        useTextEditingController(text: editBookModel?.author);
-    final isbnController = useTextEditingController(text: editBookModel?.isbn);
+        useTextEditingController(text: externalBookModel?.author);
+    final isbnController =
+        useTextEditingController(text: externalBookModel?.isbn);
 
     final editionController =
-        useTextEditingController(text: editBookModel?.edition?.toString());
+        useTextEditingController(text: externalBookModel?.edition?.toString());
     final publishYearController = useTextEditingController(
-        text: editBookModel?.publicationYear?.toString());
+        text: externalBookModel?.publicationYear?.toString());
     final publisherController =
-        useTextEditingController(text: editBookModel?.publisher);
+        useTextEditingController(text: externalBookModel?.publisher);
 
     final bookFormatState =
-        useState<BookFormat>(editBookModel?.format ?? BookFormat.hardcover);
+        useState<BookFormat>(externalBookModel?.format ?? BookFormat.hardcover);
     final buyLinkController =
-        useTextEditingController(text: editBookModel?.buyLink);
+        useTextEditingController(text: externalBookModel?.buyLink);
     final genreController =
-        useTextfieldTagsController(genres: editBookModel?.genre?.toList());
-    final pageNumbController =
-        useTextEditingController(text: editBookModel?.pagesNumber?.toString());
+        useTextfieldTagsController(genres: externalBookModel?.genre?.toList());
+    final pageNumbController = useTextEditingController(
+        text: externalBookModel?.pagesNumber?.toString());
 
     final observationController =
-        useTextEditingController(text: editBookModel?.observation);
+        useTextEditingController(text: externalBookModel?.observation);
     final synopsisController =
-        useTextEditingController(text: editBookModel?.synopsis);
+        useTextEditingController(text: externalBookModel?.synopsis);
 
-    final readState =
-        useState<ReadStatus>(editBookModel?.readStatus ?? ReadStatus.notRead);
-    final readStartDay = useState<DateTime?>(editBookModel?.readStartDay);
+    final readState = useState<ReadStatus>(
+        externalBookModel?.readStatus ?? ReadStatus.notRead);
+    final readStartDay = useState<DateTime?>(externalBookModel?.readStartDay);
     final readStartDayController = useTextEditingController(
-        text: editBookModel?.readStartDay != null
+        text: externalBookModel?.readStartDay != null
             ? L10n.formatDateByLocale(localizationPreferences.localization,
-                editBookModel!.readStartDay!)
+                externalBookModel!.readStartDay!)
             : null);
-    final readEndDay = useState<DateTime?>(editBookModel?.readEndDay);
+    final readEndDay = useState<DateTime?>(externalBookModel?.readEndDay);
     final readEndDayController = useTextEditingController(
-        text: editBookModel?.readEndDay != null
+        text: externalBookModel?.readEndDay != null
             ? L10n.formatDateByLocale(localizationPreferences.localization,
-                editBookModel!.readEndDay!)
+                externalBookModel!.readEndDay!)
             : null);
-    final tagLabelsState = useState<Set<String>>(editBookModel?.tags ?? {});
-    final editMode = editBookModel != null;
+    final tagLabelsState = useState<Set<String>>(externalBookModel?.tags ?? {});
+    final editMode = externalBookModel != null && this.editMode;
 
     final loadingState = useState(false);
 
@@ -100,14 +99,6 @@ class RegisterEditBookPageMobile extends HookConsumerWidget {
               ? AppLocalizations.of(context)!.newBookAppBarTitle
               : AppLocalizations.of(context)!.editBookAppBarTitle,
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              context.push<String>(AppRoutes.qrCodeScannerPageRoute);
-            },
-            icon: const Icon(Icons.qr_code_scanner_rounded),
-          )
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -223,7 +214,7 @@ class RegisterEditBookPageMobile extends HookConsumerWidget {
                             }
 
                             success = await _command.editBook(
-                              editBookModel: editBookModel!,
+                              editBookModel: externalBookModel!,
                               titleController: titleController,
                               authorController: authorController,
                               isbnController: isbnController,

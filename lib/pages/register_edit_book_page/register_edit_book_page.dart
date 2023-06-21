@@ -6,15 +6,18 @@ import 'package:volume_vault/pages/register_edit_book_page/layout/register_edit_
 import 'package:volume_vault/pages/register_edit_book_page/layout/register_edit_book_mobile.dart';
 
 class RegisterEditBookPage extends HookWidget {
-  final BookModel? editBookModel;
+  final BookModel? externalBookModel;
+  final bool editMode;
 
-  const RegisterEditBookPage({super.key, this.editBookModel});
+  const RegisterEditBookPage(
+      {super.key, this.externalBookModel, this.editMode = false});
 
   @override
   Widget build(BuildContext context) {
     return ResponsiveWrapper.of(context).isDesktop ||
             ResponsiveWrapper.of(context).isTablet
-        ? RegisterEditBookPageDesktop(editBookModel: editBookModel)
-        : RegisterEditBookPageMobile(editBookModel: editBookModel);
+        ? RegisterEditBookPageDesktop(editBookModel: externalBookModel)
+        : RegisterEditBookPageMobile(
+            externalBookModel: externalBookModel, editMode: editMode);
   }
 }
