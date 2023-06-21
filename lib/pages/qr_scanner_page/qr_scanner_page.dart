@@ -85,8 +85,25 @@ class QrScannerPage extends HookConsumerWidget {
                     ),
                   ],
                 ),
-                if (detectedBookState.value != null)
-                  DetectedBookPreview(book: detectedBookState.value!)
+                if (detectedBookState.value != null) ...[
+                  DetectedBookPreview(book: detectedBookState.value!),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(detectedBookState.value!);
+                          },
+                          child: const Text("Adicionar")),
+                          const SizedBox(width: 10),
+                      ElevatedButton(
+                          onPressed: () {
+                            detectedBookState.value = null;
+                          },
+                          child: const Text("Recusar"))
+                    ],
+                  )
+                ]
               ],
             ),
           ),

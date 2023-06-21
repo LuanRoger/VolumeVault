@@ -22,32 +22,30 @@ class QrBookShareDialog {
 
     ContentDialog dialog = ContentDialog(
       heightFactor: 0.6,
-      widthFactor: 0.4,
-      padding: const EdgeInsets.all(8.0),
+      widthFactor: 0.5,
+      padding: EdgeInsets.zero,
+      alignment: Alignment.topCenter,
       content: Column(
         children: [
           Text(
             book.title,
             style: Theme.of(context).textTheme.headlineMedium,
             textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
           Text(
             book.author,
             style: Theme.of(context).textTheme.titleMedium,
             textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-            child: QrImageView(
-              data: base64Book,
-              size: 280,
-            ),
+          QrImageView(
+            data: base64Book,
+            size: 250,
+            backgroundColor: Colors.white,
           ),
-          
         ],
       ),
     );

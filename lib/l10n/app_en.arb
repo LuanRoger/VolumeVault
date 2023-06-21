@@ -38,7 +38,7 @@
     },
     "signoutButtonHomePage": "Signout",
     "homeSectionNavBar": "Home",
-    "profileSectionNavBar": "Profile",
+    "addBookFabLabel": "Add book",
     "sortOptionApplySort": "Apply",
     "sortOptionAscending": "Ascending",
     "sortOptionClearSort": "Clear",
@@ -52,7 +52,6 @@
     "sortByRegisterDateChip": "Register date",
     "searchFilterBook": "Books",
 
-    "profleSectionTitle": "Profile",
     "profileSectionErrorMessage": "This could not be possible",
 
     "synopsisBookViewerPage": "Synopsis",
@@ -90,6 +89,9 @@
     "hardbackRegisterBookFormatOption": "Hardback",
     "paperbackRegisterBookFormatOption": "Paperback",
     "ebookRegisterBookFormatOption": "Ebook",
+
+    "addQrDetectedInfo": "Add",
+    "recuseQrDetectedInfo": "Refuse",
 
     "configurationsAppBarTitle": "Settings",
     "aperenceSectionTitleConfigurationsPage": "Apearance",
