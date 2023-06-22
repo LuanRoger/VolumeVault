@@ -15,7 +15,8 @@ dependencies:
   flutter_hooks: ^0.18.5+1
   hooks_riverpod: ^2.2.0
   shared_preferences: ^2.0.17
-  responsive_framework: ^0.2.0
+  flutter_secure_storage: ^8.0.0
+  responsive_framework: 0.2.0
   google_fonts: ^4.0.3
   palette_generator: ^0.3.3+2
   url_launcher: ^6.1.9
@@ -27,16 +28,24 @@ dependencies:
   freezed_annotation: ^2.2.0
   dio: ^5.0.1
   envied: ^0.3.0
-  realm: ^1.0.2
   infinite_scroll_pagination: ^3.2.0
   flutter_localizations:
     sdk: flutter
   chips_choice: ^3.0.0
   textfield_tags: ^2.0.2
-  firebase_core: ^2.12.0
-  firebase_auth: ^4.6.0
+  firebase_core: ^2.13.1
+  firebase_auth: ^4.6.2
+  firebase_storage: ^11.2.2
   font_awesome_flutter: ^10.4.0
-
+  go_router: ^8.0.1
+  path_provider: ^2.0.15
+  path: ^1.8.3
+  image_picker: ^0.8.8
+  shimmer: ^3.0.0
+  lucide_icons: ^0.244.0
+  qr_flutter: ^4.1.0
+  mobile_scanner: ^3.2.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -46,6 +55,7 @@ dev_dependencies:
   freezed: ^2.3.2
   envied_generator: ^0.3.0
   flutter_launcher_icons: ^0.13.1
+  json_serializable: ^6.7.0
 
 flutter_icons:
   android: "launcher_icon"
@@ -64,6 +74,7 @@ flutter:
     - assets/images/login_page_image.jpg
     - assets/images/signin_page_image.jpg
     - assets/images/home_page_desktop.jpg
+    - assets/images/login_signin_page_divider.jpg
 
   # fonts:
   #   - family: Schyler

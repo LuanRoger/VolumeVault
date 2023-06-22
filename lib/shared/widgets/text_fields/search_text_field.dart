@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class SearchTextField extends HookWidget {
+  final List<Widget>? trailing;
   final double? width;
   final double? height;
   final String? label;
@@ -9,9 +10,10 @@ class SearchTextField extends HookWidget {
 
   final TextEditingController controller;
 
-  SearchTextField(
+  const SearchTextField(
       {super.key,
       required this.controller,
+      this.trailing,
       this.width,
       this.height,
       this.label,
@@ -21,24 +23,22 @@ class SearchTextField extends HookWidget {
   Widget build(BuildContext context) {
     useListenable(controller);
 
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        prefixIcon: const Icon(Icons.search_rounded),
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(50),
-            borderSide: BorderSide.none),
+    return SearchBar(
+        controller: controller,
         hintText: label,
-        filled: true,
-        isDense: true,
-        contentPadding: const EdgeInsets.all(8.0),
-        suffixIcon: showClearButton
-            ? IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: controller.clear,
-              )
-            : null,
-      ),
-    );
+        elevation: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.focused) ||
+              states.contains(MaterialState.hovered)) return 3.0;
+
+          return 0.5;
+        }),
+        trailing: [
+          ...?trailing,
+          if (showClearButton)
+            IconButton(
+              icon: const Icon(Icons.backspace_rounded),
+              onPressed: controller.clear,
+            )
+        ]);
   }
 }

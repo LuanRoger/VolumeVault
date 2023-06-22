@@ -1,59 +1,105 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/pages/book_info_view/book_info_viewer_page.dart';
-import 'package:volume_vault/pages/configuration_page.dart';
+import 'package:volume_vault/pages/configuration_page/configuration_page.dart';
 import 'package:volume_vault/pages/home_page/home_page.dart';
-import 'package:volume_vault/pages/login_user_page/login_user_page.dart';
+import 'package:volume_vault/pages/login_signin_page/login_signin_page.dart';
+import 'package:volume_vault/pages/qr_scanner_page/qr_scanner_page.dart';
+import 'package:volume_vault/pages/register_edit_book_page/pages/select_book_genre.dart';
 import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
-import 'package:volume_vault/pages/register_edit_book_page/sub_pages/large_info_input.dart';
-import 'package:volume_vault/pages/signin_user_page/signin_user_page.dart';
+import 'package:volume_vault/pages/register_edit_book_page/pages/large_info_input.dart';
+import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 
-class RouteDriver {
-  static Route<dynamic> driver(RouteSettings settings) {
-    if (settings.arguments != null) assert(settings.arguments is List);
+final List<RouteBase> routes = [
+  GoRoute(
+    path: AppRoutes.homePageRoute,
+    builder: (context, state) => const HomePage(),
+  ),
+  GoRoute(
+    path: AppRoutes.loginSigninPage,
+    builder: (context, state) => const LoginSigninPage(),
+  ),
+  GoRoute(
+    path: AppRoutes.bookInfoViewerPageRoute,
+    builder: (context, state) {
+      final List<Object> args = state.extra! as List<Object>;
 
-    List<Object>? pageArgs =
-        settings.arguments != null ? settings.arguments as List<Object> : null;
+      final bookModel = args[0] as BookModel;
+      final onCardPressed =
+          args[1] as Future<void> Function(String, BuildContext)?;
 
-    switch (settings.name) {
-      case AppRoutes.homePageRoute:
-        return gotoHomePage();
-      case AppRoutes.loginPageRoute:
-        return gotoLoginPage();
-      case AppRoutes.signinPageRoute:
-        return gotoSigninPage();
-      case AppRoutes.bookInfoViewerPageRoute:
-        return gotoBookInfoViewerPage(pageArgs![0] as BookModel);
-      case AppRoutes.registerEditBookPageRoute:
-        return gotoRegisterEditBookPage(bookToEdit: pageArgs?[0] as BookModel);
-      case AppRoutes.largeInfoInputPageRoute:
-        return gotoLargeInfoInputPage(
-            pageArgs![0] as String, pageArgs[1] as String);
-      case AppRoutes.configurationsPageRoute:
-        return gotoConfigurationPage();
-      default:
-        return gotoHomePage();
-    }
-  }
-
-  static gotoHomePage() => MaterialPageRoute(builder: (_) => const HomePage());
-  static gotoLoginPage() =>
-      MaterialPageRoute(builder: (_) => const LoginUserPage());
-  static gotoSigninPage() =>
-      MaterialPageRoute(builder: (_) => const SigninUserPage());
-  static gotoBookInfoViewerPage(BookModel bookModel) =>
-      MaterialPageRoute<bool>(builder: (_) => BookInfoViewerPage(bookModel));
-  static gotoRegisterEditBookPage({BookModel? bookToEdit}) =>
-      MaterialPageRoute<bool>(
-          builder: (_) => RegisterEditBookPage(editBookModel: bookToEdit));
-  static gotoLargeInfoInputPage(String observationText, String synopsisText) =>
-      MaterialPageRoute<List<String>>(
-        builder: (_) => LargeInfoInput(
-          initialObservationText: observationText,
-          initialSynopsisText: synopsisText,
-        ),
+      return BookInfoViewerPage(
+        bookModel,
+        onCardPressed: onCardPressed,
       );
-  static gotoConfigurationPage() =>
-      MaterialPageRoute(builder: (_) => const ConfigurationPage());
-}
+    },
+  ),
+  GoRoute(
+    path: AppRoutes.registerEditBookPageRoute,
+    builder: (context, state) {
+      final List<Object> args = state.extra! as List<Object>;
+      final BookModel? bookToEdit = args[0] as BookModel?;
+      final bool? editMode = args[1] as bool?;
+
+      return RegisterEditBookPage(
+        externalBookModel: bookToEdit,
+        editMode: editMode ?? false,
+      );
+    },
+  ),
+  GoRoute(
+    path: AppRoutes.qrCodeScannerPageRoute,
+    builder: (_, __) {
+      return const QrScannerPage();
+    },
+  ),
+  GoRoute(
+    path: AppRoutes.largeInfoInputPageRoute,
+    builder: (context, state) {
+      final List<Object> args = state.extra! as List<Object>;
+
+      final initialObservationText = args[0] as String;
+      final initialSynopsisText = args[1] as String;
+
+      return LargeInfoInput(
+        initialObservationText: initialObservationText,
+        initialSynopsisText: initialSynopsisText,
+      );
+    },
+  ),
+  GoRoute(
+    path: AppRoutes.selectBookGenrePageRoute,
+    builder: (context, state) {
+      final List<Object> args = state.extra! as List<Object>;
+
+      final Set<String>? allreadySelectedGenres = args[0] as Set<String>?;
+
+      return SelectBookGenre(
+        allreadyAddedGenres: allreadySelectedGenres,
+      );
+    },
+  ),
+  GoRoute(
+    path: AppRoutes.configurationsPageRoute,
+    builder: (context, state) {
+      return const ConfigurationPage();
+    },
+  ),
+];
+
+final routeProvider = Provider<GoRouter>((ref) {
+  final userSession = ref.watch(userSessionAuthProvider);
+
+  return GoRouter(
+      initialLocation: AppRoutes.homePageRoute,
+      redirect: (context, state) {
+        if (userSession == null) {
+          return AppRoutes.loginSigninPage;
+        }
+        return null;
+      },
+      routes: routes);
+});

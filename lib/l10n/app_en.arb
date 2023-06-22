@@ -1,14 +1,15 @@
 {
     "appName": "Volume Vault",
 
-    "wellcomeBackLoginPage": "Wellcome back",
+    "initialPageTitle": "Keep your books safe and sound",
+    "titleLoginPage": "Login",
     "userTextFieldHint": "User",
     "passwordTextFieldHint": "Password",
     "loginButtonLoginPage": "Login",
     "doesNotHaveAccountLoginPage": "Does't have an account?",
     "signinButtonLoginPage": "Create one",
 
-    "keepYourBooksSafeSigninPage": "Keep your books safe",
+    "titleSigninPage": "Signin",
     "emailTextFieldHint": "E-mail",
     "signinButtonSigninPage": "Signin",
     "alreadyHaveAccountSigninPage": "Already have an account?",
@@ -36,6 +37,8 @@
         }
     },
     "signoutButtonHomePage": "Signout",
+    "homeSectionNavBar": "Home",
+    "addBookFabLabel": "Add book",
     "sortOptionApplySort": "Apply",
     "sortOptionAscending": "Ascending",
     "sortOptionClearSort": "Clear",
@@ -47,6 +50,9 @@
     "sortByReadStartDayChip": "Read start date",
     "sortByReadEndDayChip": "Read end date",
     "sortByRegisterDateChip": "Register date",
+    "searchFilterBook": "Books",
+
+    "profileSectionErrorMessage": "This could not be possible",
 
     "synopsisBookViewerPage": "Synopsis",
     "informationsBookViewerPage": "Informations",
@@ -84,6 +90,9 @@
     "paperbackRegisterBookFormatOption": "Paperback",
     "ebookRegisterBookFormatOption": "Ebook",
 
+    "addQrDetectedInfo": "Add",
+    "recuseQrDetectedInfo": "Refuse",
+
     "configurationsAppBarTitle": "Settings",
     "aperenceSectionTitleConfigurationsPage": "Apearance",
     "themeOptionConfigurationsPage": "Theme",
@@ -119,6 +128,7 @@
     "systemThemeSelectionDialogOption": "System",
 
     "saveBottomSheetButton": "Save",
+    "selectBottomSheetButton": "Select",
 
     "bookTitleTextFieldHint": "Title *",
     "authorTextFieldHint": "Author *",
@@ -140,6 +150,16 @@
     "readStartReadProgressWidget": "Start",
     "readEndProgressWidget": "End",
 
+    "imageSourceCamera": "Camera",
+    "imageSourceGallery": "Gallery",
+
     "wasNotPossibleToUpdateTheBookSnackbarMessage": "Was not possible to update the book informations.",
-    "registerBookErrorSnackbarMessage": "An error occurs."
+    "registerBookErrorSnackbarMessage": "An error occurs.",
+
+    "badgeCreator": "Creator of VolumeVault",
+    "badgeSponsor": "Sponsor",
+    "badgeContributor": "Contributor",
+    "badgeTester": "Tester",
+    "badgeBugHunter": "Bug Hunter",
+    "badgeEarlyAccessUser": "Early Access User"
 }

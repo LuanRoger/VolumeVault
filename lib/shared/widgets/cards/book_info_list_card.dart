@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:volume_vault/shared/widgets/cards/book_info_card.dart';
+import 'package:volume_vault/shared/widgets/fx/fade.dart';
 
 class BookInfoListCard extends BookInfoCard {
   double? height;
@@ -19,14 +20,7 @@ class BookInfoListCard extends BookInfoCard {
             alignment: Alignment.topRight,
             children: [
               bookModel.coverLink != null
-                  ? ShaderMask(
-                      shaderCallback: (rect) => const LinearGradient(
-                        begin: Alignment.centerRight,
-                        end: Alignment.centerLeft,
-                        colors: [Colors.black, Colors.transparent],
-                      ).createShader(
-                          Rect.fromLTRB(0, 0, rect.width * 1.5, rect.height)),
-                      blendMode: BlendMode.dstIn,
+                  ? Fade(
                       child: Image.network(
                         bookModel.coverLink!,
                         fit: BoxFit.cover,

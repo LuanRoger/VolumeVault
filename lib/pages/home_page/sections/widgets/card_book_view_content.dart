@@ -7,9 +7,10 @@ import 'package:volume_vault/shared/widgets/placeholders/no_book_selected_placeh
 class CardBookViewContent extends ConsumerWidget {
   final BookModel? book;
   final Future<void> Function() onRefresh;
+  final Future<void> Function(String, BuildContext)? onCardPressed;
 
   const CardBookViewContent(
-      {super.key, required this.book, required this.onRefresh});
+      {super.key, required this.book, required this.onRefresh, this.onCardPressed});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,6 +26,7 @@ class CardBookViewContent extends ConsumerWidget {
                 ? BookInfoViwerBodyPage(
                     book!,
                     onRefresh: onRefresh,
+                    onCardPressed: onCardPressed,
                   )
                 : const NoBookSelectedPlaceholder(),
           )),

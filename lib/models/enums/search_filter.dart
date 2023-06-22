@@ -1,0 +1,3 @@
+enum SearchFilter {
+  books
+}

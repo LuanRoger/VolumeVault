@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:volume_vault/l10n/l10n.dart';
 import 'package:volume_vault/providers/providers.dart';
-import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/routes/route_driver.dart';
 import 'package:volume_vault/shared/theme/app_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -18,17 +17,14 @@ class App extends ConsumerWidget {
         ref.watch(themePreferencesStateProvider).themeBrightnes;
     final localizationPreferences =
         ref.watch(localizationPreferencesStateProvider);
-    final userSession = ref.watch(userSessionAuthProvider);
+    final routeConfig = ref.read(routeProvider);
 
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       themeMode: themeBrightness.themeMode,
       theme: lightTheme(context),
       darkTheme: darkTheme(context),
-      onGenerateRoute: RouteDriver.driver,
-      initialRoute: userSession == null
-          ? AppRoutes.loginPageRoute
-          : AppRoutes.homePageRoute,
+      routerConfig: routeConfig,
       builder: (context, child) => ResponsiveWrapper.builder(
         child,
         minWidth: 480,

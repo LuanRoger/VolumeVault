@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:volume_vault/l10n/l10n.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/pages/book_info_view/commands/book_info_viewer_command.dart';
 import 'package:volume_vault/providers/providers.dart';
@@ -19,10 +21,11 @@ import 'package:volume_vault/shared/widgets/viewers/book_showcase.dart';
 
 class BookInfoViewerPage extends HookConsumerWidget {
   final BookModel _book;
+  final Future<void> Function(String, BuildContext)? onCardPressed;
 
   final BookInfoViewerCommand _command = const BookInfoViewerCommand();
 
-  const BookInfoViewerPage(this._book, {super.key});
+  const BookInfoViewerPage(this._book, {super.key, this.onCardPressed});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -40,47 +43,46 @@ class BookInfoViewerPage extends HookConsumerWidget {
               onPressed: () => Navigator.pop(context, hasChanges.value)),
           actions: [
             IconButton(
-                onPressed: () async {
-                  final bool? success = await Navigator.pushNamed<bool>(
-                      context, AppRoutes.registerEditBookPageRoute,
-                      arguments: [book]);
-                  if (success == null || !success || !isMounted()) return;
+              onPressed: () async {
+                final bool? success = await context.push<bool>(
+                    AppRoutes.registerEditBookPageRoute,
+                    extra: [book, true]);
+                if (success == null || !success || !isMounted()) return;
 
-                  final BookModel? newInfoBook =
-                      await _command.refreshBookInfo(context, ref, book.id);
-                  if (newInfoBook == null) return;
+                final BookModel? newInfoBook =
+                    await _command.refreshBookInfo(context, ref, book.id);
+                if (newInfoBook == null) return;
 
-                  currentBookInfoState.value = newInfoBook;
-                  hasChanges.value = true;
-                },
-                icon: const Icon(Icons.edit_rounded)),
+                currentBookInfoState.value = newInfoBook;
+                hasChanges.value = true;
+              },
+              icon: const Icon(Icons.edit_rounded),
+            ),
             if (book.buyLink != null)
               IconButton(
-                  onPressed: () => _command.launchBuyPage(book.buyLink!),
-                  icon: const Icon(Icons.shopping_cart_rounded)),
-            PopupMenuButton(
-              itemBuilder: (_) => [
-                PopupMenuItem(
-                    value: 0,
-                    child: Text(AppLocalizations.of(context)!
-                        .deletePopupButtonBookViewerPage))
-              ],
-              onSelected: (value) async {
-                switch (value) {
-                  case 0:
-                    bool delete = await _command.showDeleteBookDialog(context);
-                    if (!delete || !isMounted()) break;
-                    isLoadingState.value = true;
+                onPressed: () => _command.launchBuyPage(book.buyLink!),
+                icon: const Icon(Icons.shopping_cart_rounded),
+              ),
+            IconButton(
+              onPressed: () async {
+                await _command.showBookShareQrCode(context, bookModel: book);
+              },
+              icon: const Icon(Icons.share_rounded),
+            ),
+            IconButton(
+              onPressed: () async {
+                bool delete = await _command.showDeleteBookDialog(context);
+                if (!delete || !isMounted()) return;
+                isLoadingState.value = true;
 
-                    final bool success =
-                        await _command.deleteBook(context, ref, book.id);
-                    if (!success) break;
+                final bool success =
+                    await _command.deleteBook(context, ref, book.id);
+                if (!success) return;
 
-                    Navigator.pop(context, true);
-                }
+                Navigator.pop(context, true);
                 isLoadingState.value = false;
               },
-              icon: const Icon(Icons.more_vert_rounded),
+              icon: const Icon(Icons.delete_rounded),
             )
           ],
         ),
@@ -90,6 +92,7 @@ class BookInfoViewerPage extends HookConsumerWidget {
               )
             : BookInfoViwerBodyPage(
                 book,
+                onCardPressed: onCardPressed,
                 onRefresh: () async {
                   final BookModel? newInfoBook =
                       await _command.refreshBookInfo(context, ref, book.id);
@@ -104,8 +107,10 @@ class BookInfoViewerPage extends HookConsumerWidget {
 class BookInfoViwerBodyPage extends HookConsumerWidget {
   final BookModel book;
   final Future<void> Function() onRefresh;
+  final Future<void> Function(String, BuildContext)? onCardPressed;
 
-  const BookInfoViwerBodyPage(this.book, {super.key, required this.onRefresh});
+  const BookInfoViwerBodyPage(this.book,
+      {super.key, required this.onRefresh, this.onCardPressed});
 
   Future<Widget> _buildCoverShowcase(String coverLink,
       {required Size showcaseSize,
@@ -216,7 +221,8 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
                 ListTile(
                     title: Text(
                         AppLocalizations.of(context)!.formatBookViewerPage),
-                    trailing: Text(book.format!.name)),
+                    trailing:
+                        Text(L10n.bookFormat(context, format: book.format!))),
               ListTile(
                 title:
                     Text(AppLocalizations.of(context)!.createdAtBookViewerPage),
@@ -263,7 +269,8 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
                     icon: Icons.read_more_rounded,
                     text: AppLocalizations.of(context)!.genresBookViewerPage),
                 const SizedBox(height: 5),
-                ChipList(book.genre!.toSet()),
+                ChipList(book.genre!.toSet(),
+                    onPressed: (name) => onCardPressed?.call(name, context)),
               ],
             ),
           const SizedBox(height: 5),
@@ -275,7 +282,8 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
                     icon: Icons.tag_rounded,
                     text: AppLocalizations.of(context)!.tagsBookViewerPage),
                 const SizedBox(height: 5),
-                ChipList(book.tags!.toSet())
+                ChipList(book.tags!.toSet(),
+                    onPressed: (name) => onCardPressed?.call(name, context))
               ],
             ),
         ]),

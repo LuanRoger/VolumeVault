@@ -1,14 +1,15 @@
 {
     "appName": "Volume Vault",
 
-    "wellcomeBackLoginPage": "Bem-vindo(a) de volta.",
+    "initialPageTitle": "Mantenha seus livros salvos",
+    "titleLoginPage": "Entrar",
     "userTextFieldHint": "Usuário",
     "passwordTextFieldHint": "Senha",
     "loginButtonLoginPage": "Entrar",
     "doesNotHaveAccountLoginPage": "Não tem uma conta?",
     "signinButtonLoginPage": "Crie uma conta",
 
-    "keepYourBooksSafeSigninPage": "Mantenha seus livros salvos.",
+    "titleSigninPage": "Cadastrar",
     "emailTextFieldHint": "E-mail",
     "signinButtonSigninPage": "Registrar-se",
     "alreadyHaveAccountSigninPage": "Já tem uma conta?",
@@ -36,6 +37,8 @@
         }
     },
     "signoutButtonHomePage": "Sair da conta",
+    "homeSectionNavBar": "Inicio",
+    "addBookFabLabel": "Adicionar",
     "sortOptionApplySort": "Aplicar",
     "sortOptionAscending": "Crescente",
     "sortOptionClearSort": "Limpar",
@@ -47,6 +50,9 @@
     "sortByReadStartDayChip": "Início da leitura",
     "sortByReadEndDayChip": "Fim da leitura",
     "sortByRegisterDateChip": "Data de registro",
+    "searchFilterBook": "Livros",
+    
+    "profileSectionErrorMessage": "This could not be possible",
 
     "synopsisBookViewerPage": "Sinopse",
     "informationsBookViewerPage": "Informações",
@@ -84,6 +90,9 @@
     "paperbackRegisterBookFormatOption": "Bolso",
     "ebookRegisterBookFormatOption": "Digital",
 
+    "addQrDetectedInfo": "Adicionar",
+    "recuseQrDetectedInfo": "Recusar",
+
     "configurationsAppBarTitle": "Configurações",
     "aperenceSectionTitleConfigurationsPage": "Aparência",
     "themeOptionConfigurationsPage": "Tema",
@@ -119,6 +128,7 @@
     "systemThemeSelectionDialogOption": "Sistema",
 
     "saveBottomSheetButton": "Salvar",
+    "selectBottomSheetButton": "Selecionar",
 
     "bookTitleTextFieldHint": "Titulo *",
     "authorTextFieldHint": "Autor *",
@@ -140,6 +150,16 @@
     "readStartReadProgressWidget": "Início",
     "readEndProgressWidget": "Término",
 
+    "imageSourceCamera": "Camera",
+    "imageSourceGallery": "Galeria",
+
     "wasNotPossibleToUpdateTheBookSnackbarMessage": "Não foi possível atualizar o livro.",
-    "registerBookErrorSnackbarMessage": "Não foi possível cadastrar o livro."
+    "registerBookErrorSnackbarMessage": "Não foi possível cadastrar o livro.",
+
+    "badgeCreator": "Criador do VolumeVault",
+    "badgeSponsor": "Apoiador",
+    "badgeContributor": "Contribuidor",
+    "badgeTester": "Testador",
+    "badgeBugHunter": "Caçador de bugs",
+    "badgeEarlyAccessUser": "Usuário do Acesso Antecipado"
 }
