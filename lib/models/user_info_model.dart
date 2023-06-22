@@ -6,7 +6,7 @@ class UserInfoModel {
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "userIdentifies": username,
+        "userIdentifier": username,
       };
   factory UserInfoModel.fromJson(Map<String, dynamic> json) => UserInfoModel(
         json["id"] as int,

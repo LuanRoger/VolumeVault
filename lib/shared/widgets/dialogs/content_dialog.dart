@@ -12,18 +12,18 @@ class ContentDialog {
   final double widthFactor;
   final double borderRadius;
 
-  const ContentDialog({
-    this.content,
-    this.builder,
-    this.title,
-    this.padding = EdgeInsets.zero,
-    this.alignment = Alignment.center,
-    this.actions,
-    this.borderRadius = 8.0,
-    this.closeButton = false,
-    this.heightFactor = 0.5,
-    this.widthFactor = 0.5,
-  }) : assert(builder != null && content == null ||
+  const ContentDialog(
+      {this.content,
+      this.builder,
+      this.title,
+      this.padding = EdgeInsets.zero,
+      this.alignment = Alignment.center,
+      this.actions,
+      this.borderRadius = 8.0,
+      this.closeButton = false,
+      this.heightFactor = 0.5,
+      this.widthFactor = 0.5})
+      : assert(builder != null && content == null ||
             builder == null && content != null);
 
   Dialog _buildDialog(BuildContext context, {Size? size}) {

@@ -38,7 +38,7 @@
     },
     "signoutButtonHomePage": "Sair da conta",
     "homeSectionNavBar": "Inicio",
-    "profileSectionNavBar": "Perfil",
+    "addBookFabLabel": "Adicionar",
     "sortOptionApplySort": "Aplicar",
     "sortOptionAscending": "Crescente",
     "sortOptionClearSort": "Limpar",
@@ -51,9 +51,8 @@
     "sortByReadEndDayChip": "Fim da leitura",
     "sortByRegisterDateChip": "Data de registro",
     "searchFilterBook": "Livros",
-
-    "profleSectionTitle": "Perfil",
-    "profileSectionErrorMessage": "Isso não poderia ser possível",
+    
+    "profileSectionErrorMessage": "This could not be possible",
 
     "synopsisBookViewerPage": "Sinopse",
     "informationsBookViewerPage": "Informações",
@@ -90,6 +89,9 @@
     "hardbackRegisterBookFormatOption": "Capa dura",
     "paperbackRegisterBookFormatOption": "Bolso",
     "ebookRegisterBookFormatOption": "Digital",
+
+    "addQrDetectedInfo": "Adicionar",
+    "recuseQrDetectedInfo": "Recusar",
 
     "configurationsAppBarTitle": "Configurações",
     "aperenceSectionTitleConfigurationsPage": "Aparência",

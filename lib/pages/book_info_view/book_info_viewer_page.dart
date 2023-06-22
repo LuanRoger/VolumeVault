@@ -43,47 +43,46 @@ class BookInfoViewerPage extends HookConsumerWidget {
               onPressed: () => Navigator.pop(context, hasChanges.value)),
           actions: [
             IconButton(
-                onPressed: () async {
-                  final bool? success = await context.push<bool>(
-                      AppRoutes.registerEditBookPageRoute,
-                      extra: [book]);
-                  if (success == null || !success || !isMounted()) return;
+              onPressed: () async {
+                final bool? success = await context.push<bool>(
+                    AppRoutes.registerEditBookPageRoute,
+                    extra: [book, true]);
+                if (success == null || !success || !isMounted()) return;
 
-                  final BookModel? newInfoBook =
-                      await _command.refreshBookInfo(context, ref, book.id);
-                  if (newInfoBook == null) return;
+                final BookModel? newInfoBook =
+                    await _command.refreshBookInfo(context, ref, book.id);
+                if (newInfoBook == null) return;
 
-                  currentBookInfoState.value = newInfoBook;
-                  hasChanges.value = true;
-                },
-                icon: const Icon(Icons.edit_rounded)),
+                currentBookInfoState.value = newInfoBook;
+                hasChanges.value = true;
+              },
+              icon: const Icon(Icons.edit_rounded),
+            ),
             if (book.buyLink != null)
               IconButton(
-                  onPressed: () => _command.launchBuyPage(book.buyLink!),
-                  icon: const Icon(Icons.shopping_cart_rounded)),
-            PopupMenuButton(
-              itemBuilder: (_) => [
-                PopupMenuItem(
-                    value: 0,
-                    child: Text(AppLocalizations.of(context)!
-                        .deletePopupButtonBookViewerPage))
-              ],
-              onSelected: (value) async {
-                switch (value) {
-                  case 0:
-                    bool delete = await _command.showDeleteBookDialog(context);
-                    if (!delete || !isMounted()) break;
-                    isLoadingState.value = true;
+                onPressed: () => _command.launchBuyPage(book.buyLink!),
+                icon: const Icon(Icons.shopping_cart_rounded),
+              ),
+            IconButton(
+              onPressed: () async {
+                await _command.showBookShareQrCode(context, bookModel: book);
+              },
+              icon: const Icon(Icons.share_rounded),
+            ),
+            IconButton(
+              onPressed: () async {
+                bool delete = await _command.showDeleteBookDialog(context);
+                if (!delete || !isMounted()) return;
+                isLoadingState.value = true;
 
-                    final bool success =
-                        await _command.deleteBook(context, ref, book.id);
-                    if (!success) break;
+                final bool success =
+                    await _command.deleteBook(context, ref, book.id);
+                if (!success) return;
 
-                    Navigator.pop(context, true);
-                }
+                Navigator.pop(context, true);
                 isLoadingState.value = false;
               },
-              icon: const Icon(Icons.more_vert_rounded),
+              icon: const Icon(Icons.delete_rounded),
             )
           ],
         ),
