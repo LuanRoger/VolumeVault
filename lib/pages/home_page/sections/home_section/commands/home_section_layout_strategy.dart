@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/book_search_result.dart';
 import 'package:volume_vault/models/book_sort_option.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
+import 'package:volume_vault/pages/book_info_view/commands/book_info_viewer_strategy.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/services/models/book_search_request.dart';
 import 'package:volume_vault/services/models/book_stats.dart';
 import 'package:volume_vault/services/models/get_user_book_request.dart';
 import 'package:volume_vault/services/models/user_book_result.dart';
-import 'package:volume_vault/shared/widgets/cards/book_info_card.dart';
+import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/widgets/cards/book_info_grid_card.dart';
 import 'package:volume_vault/shared/widgets/cards/book_info_list_card.dart';
 import 'package:volume_vault/shared/widgets/cards/profile_card.dart';
@@ -33,7 +36,8 @@ abstract class HomeSectionLayoutStrategy {
     return searchResult;
   }
 
-  Future<void> showProfileCard(BuildContext context, {double? heightFactor, double? widthFactor}) async {
+  Future<void> showProfileCard(BuildContext context,
+      {double? heightFactor, double? widthFactor}) async {
     final profileCard = ProfileCard(
       heightFactor: heightFactor,
       widthFactor: widthFactor,
@@ -41,10 +45,8 @@ abstract class HomeSectionLayoutStrategy {
     await profileCard.show(context);
   }
 
-  List<BookSearchResultTile> buildSearhResultTiles(
-      BookSearchResult searchResult,
-      BuildContext dialogContext,
-      WidgetRef ref) {
+  List<Widget> buildSearhResultTiles(BookSearchResult searchResult,
+      BuildContext dialogContext, WidgetRef ref) {
     return [
       for (final bookResult in searchResult.results)
         BookSearchResultTile(
@@ -79,27 +81,44 @@ abstract class HomeSectionLayoutStrategy {
     return bookStats;
   }
 
-  BookInfoCard buildBookView(BuildContext context, WidgetRef ref,
+  Widget buildBookView(BuildContext context, WidgetRef ref,
       {required BookModel book,
+      required BookInfoViewerStrategy bookInfoViewerStrategy,
       void Function()? onUpdate,
       void Function(BookModel)? onSelect,
       VisualizationType viewType = VisualizationType.LIST}) {
-    switch (viewType) {
-      case VisualizationType.LIST:
-        return BookInfoListCard(
+    return switch (viewType) {
+      VisualizationType.LIST => Slidable(
+          closeOnScroll: true,
+          endActionPane: ActionPane(
+              motion: const BehindMotion(),
+              extentRatio: 0.3,
+              children: [
+                SlidableAction(
+                    onPressed: (context) {
+                      context.push(AppRoutes.registerEditBookPageRoute,
+                          extra: [book, true]);
+                    },
+                    icon: Icons.edit_rounded),
+                SlidableAction(
+                    onPressed: (context) => bookInfoViewerStrategy
+                        .showBookShareQrCode(context, bookModel: book),
+                    icon: Icons.share_rounded),
+              ]),
+          child: BookInfoListCard(
+            book,
+            onPressed: onSelect != null
+                ? () => onSelect(book)
+                : () => onBookSelect(context, ref, book, onUpdate: onUpdate),
+          ),
+        ),
+      VisualizationType.GRID => BookInfoGridCard(
           book,
           onPressed: onSelect != null
               ? () => onSelect(book)
               : () => onBookSelect(context, ref, book, onUpdate: onUpdate),
-        );
-      case VisualizationType.GRID:
-        return BookInfoGridCard(
-          book,
-          onPressed: onSelect != null
-              ? () => onSelect(book)
-              : () => onBookSelect(context, ref, book, onUpdate: onUpdate),
-        );
-    }
+        )
+    };
   }
 
   Future<BookSortOption?> showSortFilterDialog(BuildContext context,

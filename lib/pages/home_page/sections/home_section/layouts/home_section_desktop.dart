@@ -23,7 +23,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeSectionDesktop extends HookConsumerWidget {
   final HomeSectionDesktopCommand _commands = HomeSectionDesktopCommand();
-  final _bookCommnads = const BookInfoViewerCommand();
+  final _bookInfoViewerCommand = const BookInfoViewerCommand();
 
   final PagingController<int, BookModel> pagingController;
 
@@ -220,6 +220,7 @@ class HomeSectionDesktop extends HookConsumerWidget {
                                   book: data,
                                   viewType: visualizationTypeState.value,
                                   onUpdate: pagingController.refresh,
+                                  bookInfoViewerStrategy: _bookInfoViewerCommand,
                                   onSelect: (book) => _commands.onBookSelect(
                                       context, ref, book));
                             },
@@ -268,18 +269,18 @@ class HomeSectionDesktop extends HookConsumerWidget {
 
                                 if (bookOnViwer.value == null) return;
                                 bookOnViwer.value =
-                                    await _bookCommnads.refreshBookInfo(
+                                    await _bookInfoViewerCommand.refreshBookInfo(
                                         context, ref, bookOnViwer.value!.id);
                               },
                               icon: const Icon(Icons.edit_rounded)),
                           if (bookOnViwer.value!.buyLink != null)
                             IconButton(
-                                onPressed: () => _bookCommnads
+                                onPressed: () => _bookInfoViewerCommand
                                     .launchBuyPage(bookOnViwer.value!.buyLink!),
                                 icon: const Icon(Icons.shopping_cart_rounded)),
                           IconButton(
                             onPressed: () async {
-                              bool delete = await _bookCommnads
+                              bool delete = await _bookInfoViewerCommand
                                   .showDeleteBookDialog(context);
                               if (!delete) return;
                               bookTaskLoadingState.value = true;
@@ -314,7 +315,7 @@ class HomeSectionDesktop extends HookConsumerWidget {
                       book: bookOnViwer.value,
                       onRefresh: () async {
                         final BookModel? newInfoBook =
-                            await _bookCommnads.refreshBookInfo(
+                            await _bookInfoViewerCommand.refreshBookInfo(
                                 context, ref, bookOnViwer.value!.id);
                         if (newInfoBook == null) return;
 

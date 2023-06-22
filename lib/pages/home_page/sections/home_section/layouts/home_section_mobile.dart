@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/book_sort_option.dart';
 import 'package:volume_vault/models/enums/visualization_type.dart';
+import 'package:volume_vault/pages/book_info_view/commands/book_info_viewer_command.dart';
 import 'package:volume_vault/pages/home_page/sections/home_section/commands/home_section_mobile_command.dart';
 import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
 import 'package:volume_vault/providers/providers.dart';
@@ -31,6 +32,8 @@ class HomeSectionMobile extends StatefulHookConsumerWidget {
 class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
     with AutomaticKeepAliveClientMixin {
   final HomeSectionMobileCommand _commands = const HomeSectionMobileCommand();
+  final BookInfoViewerCommand _bookInfoViewerCommand =
+      const BookInfoViewerCommand();
   @override
   bool get wantKeepAlive => true;
 
@@ -173,6 +176,7 @@ class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
                         book: data,
                         viewType: visualizationTypeState.value,
                         onUpdate: pagingController.refresh,
+                        bookInfoViewerStrategy: _bookInfoViewerCommand,
                         onSelect: (book) async {
                       bool refresh =
                           await _commands.onBookSelect(context, ref, book);
