@@ -70,12 +70,14 @@ builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IUserIdentifierRepository, UserIdentifierRepository>();
 builder.Services.AddScoped<IStatsRepository, StatsRepository>();
+builder.Services.AddScoped<IBadgeRepository, BadgeRepository>();
 builder.Services.AddScoped<IValidator<BookWriteModel>, BookWriteModelValidator>();
 builder.Services.AddScoped<IValidator<BookUpdateModel>, BookUpdateModelValidator>();
 builder.Services.AddAutoMapper(typeof(BookModelMapperProfile));
 
 builder.Services.AddScoped<IBookController, BookController>();
 builder.Services.AddScoped<IStatsController, StatsController>();
+builder.Services.AddScoped<IBadgeController, BadgeController>();
 
 WebApplication app = builder.Build();
 
@@ -95,6 +97,9 @@ bookGroup.MapBookEndpoints()
     .AddEndpointFilter<ApiKeyFilter>();
 RouteGroupBuilder statsGroup = app.MapGroup("stats");
 statsGroup.MapStatsEndpoints()
+    .AddEndpointFilter<ApiKeyFilter>();
+RouteGroupBuilder badgeGroup = app.MapGroup("badge");
+badgeGroup.MapBadgeEndpoints()
     .AddEndpointFilter<ApiKeyFilter>();
 
 app.Run();
