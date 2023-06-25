@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VolumeVaultInfra.Book.Hug.Contexts;
@@ -11,9 +12,11 @@ using VolumeVaultInfra.Book.Hug.Contexts;
 namespace VolumeVaultInfra.Book.Hug.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230625130100_Badges")]
+    partial class Badges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,38 +41,6 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                     b.HasKey("id");
 
                     b.ToTable("Badge");
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1,
-                            code = 0
-                        },
-                        new
-                        {
-                            id = 2,
-                            code = 1
-                        },
-                        new
-                        {
-                            id = 3,
-                            code = 2
-                        },
-                        new
-                        {
-                            id = 4,
-                            code = 3
-                        },
-                        new
-                        {
-                            id = 5,
-                            code = 4
-                        },
-                        new
-                        {
-                            id = 6,
-                            code = 5
-                        });
                 });
 
             modelBuilder.Entity("VolumeVaultInfra.Book.Hug.Models.Base.BadgeUserModel", b =>
