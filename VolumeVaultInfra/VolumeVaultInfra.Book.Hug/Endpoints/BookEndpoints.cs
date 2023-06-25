@@ -52,6 +52,23 @@ public static class BookEndpoints
                     
                     return Results.Ok(book);
                 });
+            builder.MapGet("genres", 
+                async (
+                    [FromQuery] string userId,
+                    [FromServices] IBookController controller) =>
+            {
+                GenresReadModel genresRead;
+                try
+                {
+                    genresRead = await controller.GetUserBooksGenres(userId);
+                }
+                catch(Exception e)
+                {
+                    return Results.BadRequest(e.Message);
+                }
+                
+                return Results.Ok(genresRead);
+            });
         builder.MapPost("/", 
             async ([FromQuery] string userId,
                 [FromBody] BookWriteModel bookWriteModel,
@@ -95,7 +112,7 @@ public static class BookEndpoints
                 
                 return Results.Ok(updatedBookId);
             });
-        builder.MapDelete("{bookId:int}", 
+        builder.MapDelete("{bookId:int}",
             async (HttpContext _,
                 [FromRoute] int bookId,
                 [FromQuery] string userId,
