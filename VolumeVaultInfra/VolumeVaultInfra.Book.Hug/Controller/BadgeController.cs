@@ -1,3 +1,4 @@
+using AutoMapper;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Models.Base;
 using VolumeVaultInfra.Book.Hug.Models.Enums;
@@ -9,14 +10,18 @@ namespace VolumeVaultInfra.Book.Hug.Controller;
 public class BadgeController : IBadgeController
 {
     private ILogger logger { get; }
+    private IMapper mapper { get; }
     private IBadgeRepository badgeRepository { get; }
     private IUserIdentifierRepository userIdentifierRepository { get; }
+    private IEmailUserIdentifierRepository emailUserIdentifierRepository { get; }
 
-    public BadgeController(ILogger logger, IBadgeRepository badgeRepository, IUserIdentifierRepository userIdentifierRepository)
+    public BadgeController(ILogger logger, IMapper mapper, IBadgeRepository badgeRepository, IUserIdentifierRepository userIdentifierRepository, IEmailUserIdentifierRepository emailUserIdentifierRepository)
     {
         this.logger = logger;
+        this.mapper = mapper;
         this.badgeRepository = badgeRepository;
         this.userIdentifierRepository = userIdentifierRepository;
+        this.emailUserIdentifierRepository = emailUserIdentifierRepository;
     }
 
     public async Task<BadgeReadModel> GetUserBadges(string userId)

@@ -13,6 +13,7 @@ public class DatabaseContext : DbContext
     public DbSet<BookTagModel> bookTag { get; set; } = null!;
     public DbSet<BadgeModel> badges { get; set; } = null!;
     public DbSet<BadgeUserModel> badgeUser { get; set; } = null!;
+    public DbSet<BadgeEmailUserModel> badgeEmailClaimQueue { get; set; }
     public DbSet<UserIdentifier> userIdentifiers { get; set; } = null!;
     public DbSet<EmailUserIdentifier> emailUserIdentifiers { get; set; }
 
