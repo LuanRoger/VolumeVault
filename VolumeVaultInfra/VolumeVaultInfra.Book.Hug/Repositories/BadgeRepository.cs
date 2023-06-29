@@ -8,7 +8,7 @@ namespace VolumeVaultInfra.Book.Hug.Repositories;
 public class BadgeRepository : IBadgeRepository
 {
     private DatabaseContext badgeDb { get; }
-    
+
     public BadgeRepository(DatabaseContext badgeDb)
     {
         this.badgeDb = badgeDb;
