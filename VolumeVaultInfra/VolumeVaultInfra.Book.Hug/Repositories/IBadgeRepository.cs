@@ -5,9 +5,9 @@ namespace VolumeVaultInfra.Book.Hug.Repositories;
 
 public interface IBadgeRepository
 {
-    public Task<BadgeModel?> GetBadgeByCode(BadgeCodes code);
+    public Task<BadgeModel?> GetBadgeByCode(BadgeCode code);
     public Task<IReadOnlyList<BadgeModel>> GetUserBadges(UserIdentifier user);
-    public Task GiveBadgeToUser(UserIdentifier user, BadgeCodes badgeCode);
-    public Task RemoveBadgeFromUser(UserIdentifier user, BadgeCodes badgeCode);
+    public Task<BadgeModel> GiveBadgeToUser(UserIdentifier user, BadgeCode badgeCode);
+    public Task<BadgeModel> RemoveBadgeFromUser(UserIdentifier user, BadgeCode badgeCode);
     public Task Flush();
 }

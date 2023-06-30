@@ -14,7 +14,7 @@ public class BadgeArchiveRepository : IBadgeArchiveRepository
         this.context = context;
     }
 
-    public async Task<BadgeModel> AttachBadgeToEmail(EmailUserIdentifier emailUserIdentifier, BadgeCodes code)
+    public async Task<BadgeModel> AttachBadgeToEmail(EmailUserIdentifier emailUserIdentifier, BadgeCode code)
     {
         BadgeEmailUserModel? attatchedBadge = context.badgeEmailClaimQueue.FirstOrDefault(claim => claim.emailUserIdentifier == emailUserIdentifier && claim.badge.code == code);
         if(attatchedBadge is not null)
@@ -35,7 +35,7 @@ public class BadgeArchiveRepository : IBadgeArchiveRepository
         return badgeModel;
     }
     
-    public async Task<BadgeModel?> DetachBadgeToEmail(EmailUserIdentifier emailUserIdentifier, BadgeCodes code)
+    public async Task<BadgeModel?> DetachBadgeToEmail(EmailUserIdentifier emailUserIdentifier, BadgeCode code)
     {
         BadgeEmailUserModel? badgeToRemove = await context.badgeEmailClaimQueue.FirstOrDefaultAsync(claim => 
             claim.emailUserIdentifier == emailUserIdentifier && claim.badge.code == code);

@@ -14,7 +14,7 @@ public class BadgeRepository : IBadgeRepository
         this.badgeDb = badgeDb;
     }
 
-    public Task<BadgeModel?> GetBadgeByCode(BadgeCodes code) =>
+    public Task<BadgeModel?> GetBadgeByCode(BadgeCode code) =>
     badgeDb.badges.FirstOrDefaultAsync(badge => badge.code == code);
     
     public async Task<IReadOnlyList<BadgeModel>> GetUserBadges(UserIdentifier user) =>
@@ -23,7 +23,7 @@ public class BadgeRepository : IBadgeRepository
             .Select(badgeUser => badgeUser.badge)
             .ToListAsync();
 
-    public async Task GiveBadgeToUser(UserIdentifier user, BadgeCodes badgeCode)
+    public async Task<BadgeModel> GiveBadgeToUser(UserIdentifier user, BadgeCode badgeCode)
     {
         BadgeModel badgeModel = await badgeDb.badges.FirstAsync(badge => badge.code == badgeCode);
         await badgeDb.badgeUser.AddAsync(new()
@@ -31,9 +31,11 @@ public class BadgeRepository : IBadgeRepository
             badge = badgeModel,
             userIdentifier = user
         });
+        
+        return badgeModel;
     }
 
-    public async Task RemoveBadgeFromUser(UserIdentifier user, BadgeCodes badgeCode)
+    public async Task<BadgeModel> RemoveBadgeFromUser(UserIdentifier user, BadgeCode badgeCode)
     {
         BadgeModel badgeModel = await badgeDb.badges.FirstAsync(badge => badge.code == badgeCode);
         
@@ -42,6 +44,8 @@ public class BadgeRepository : IBadgeRepository
             badge = badgeModel,
             userIdentifier = user
         });
+        
+        return badgeModel;
     }
 
     public async Task Flush() => await badgeDb.SaveChangesAsync();
