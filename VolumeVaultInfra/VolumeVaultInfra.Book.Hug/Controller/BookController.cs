@@ -127,7 +127,7 @@ public class BookController : IBookController
         ValidationResult validationResult = await bookWriteValidation.ValidateAsync(writeModel);
         if(!validationResult.IsValid)
         {
-            NotValidBookInformationException exception = new(validationResult
+            InvalidBookInformationException exception = new(validationResult
                 .Errors
                 .Select(e => e.ErrorMessage));
             logger.Error(exception, "Invalid book info");
@@ -164,7 +164,7 @@ public class BookController : IBookController
         ValidationResult result = await bookUpdateValidation.ValidateAsync(updateModel);
         if(!result.IsValid)
         {
-            NotValidBookInformationException exception = new(result.Errors
+            InvalidBookInformationException exception = new(result.Errors
                 .Select(e => e.ErrorMessage));
             logger.Error(exception, "Invalid book info");
             

@@ -29,7 +29,7 @@ public class BadgeArchiveController : IBadgeArchiveController
         this.authRepository = authRepository;
     }
     
-    public async Task<BadgeReadModel> AttachBadgeToEmail(string email, BadgeCodes code)
+    public async Task<BadgeReadModel> AttachBadgeToEmail(string email, BadgeCode code)
     {
         EmailUserIdentifier emailUserIdentifier = await emailUserIdentifierRepository.EnsureEmailExists(new() { email = email });
         logger.Information("Attaching badge BadgeCode[{BadgeCode}] to email Email[{Email}]", code, emailUserIdentifier.email);
@@ -40,7 +40,7 @@ public class BadgeArchiveController : IBadgeArchiveController
         
         return badgeReadModel;
     }
-    public async Task<BadgeReadModel?> DetachBadgeToEmail(string email, BadgeCodes code)
+    public async Task<BadgeReadModel?> DetachBadgeToEmail(string email, BadgeCode code)
     {
         EmailUserIdentifier emailUserIdentifier = await emailUserIdentifierRepository.EnsureEmailExists(new() { email = email});
         logger.Information("Detaching badge BadgeCode[{BadgeCode}] to email Email[{Email}]", code, emailUserIdentifier.email);

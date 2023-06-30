@@ -6,6 +6,6 @@ namespace VolumeVaultInfra.Book.Hug.Controller;
 public interface IBadgeController
 {
     public Task<BadgeReadModel> GetUserBadges(string userId);
-    public Task GiveBadgeToUser(string userId, BadgeCodes badgeCode);
-    public Task RemoveBadgeFromUser(string userId, BadgeCodes badgeCode);
+    public Task<BadgeReadModel> GiveBadgeToUser(UserBadgeWriteModel userBadgeWriteModel);
+    public Task<BadgeReadModel> RemoveBadgeFromUser(string userId, BadgeCode badgeCode);
 }

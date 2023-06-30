@@ -1,4 +1,7 @@
 using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
+using VolumeVaultInfra.Book.Hug.Exceptions;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Models.Base;
 using VolumeVaultInfra.Book.Hug.Models.Enums;
@@ -10,18 +13,18 @@ namespace VolumeVaultInfra.Book.Hug.Controller;
 public class BadgeController : IBadgeController
 {
     private ILogger logger { get; }
+    private IValidator<UserBadgeWriteModel> userBadgeWriteModelValidator { get; }
     private IMapper mapper { get; }
     private IBadgeRepository badgeRepository { get; }
     private IUserIdentifierRepository userIdentifierRepository { get; }
-    private IEmailUserIdentifierRepository emailUserIdentifierRepository { get; }
 
-    public BadgeController(ILogger logger, IMapper mapper, IBadgeRepository badgeRepository, IUserIdentifierRepository userIdentifierRepository, IEmailUserIdentifierRepository emailUserIdentifierRepository)
+    public BadgeController(ILogger logger, IValidator<UserBadgeWriteModel> userBadgeWriteModelValidator, IMapper mapper, IBadgeRepository badgeRepository, IUserIdentifierRepository userIdentifierRepository)
     {
         this.logger = logger;
+        this.userBadgeWriteModelValidator = userBadgeWriteModelValidator;
         this.mapper = mapper;
         this.badgeRepository = badgeRepository;
         this.userIdentifierRepository = userIdentifierRepository;
-        this.emailUserIdentifierRepository = emailUserIdentifierRepository;
     }
 
     public async Task<BadgeReadModel> GetUserBadges(string userId)
@@ -41,23 +44,38 @@ public class BadgeController : IBadgeController
         return userBadgeRead;
     }
 
-    public async Task GiveBadgeToUser(string userId, BadgeCodes badgeCode)
+    public async Task<BadgeReadModel> GiveBadgeToUser(UserBadgeWriteModel userBadgeWriteModel)
     {
+        ValidationResult result = await userBadgeWriteModelValidator.ValidateAsync(userBadgeWriteModel);
+        if(!result.IsValid)
+        {
+            InvalidUserInformationException exception = new(result.Errors
+                .Select(error => error.ErrorMessage));
+            logger.Error(exception, "Invalid user information");
+            throw exception;
+        }
         UserIdentifier userIdentifier = 
-            await userIdentifierRepository.EnsureInMirror(new() { userIdentifier = userId });
+            await userIdentifierRepository.EnsureInMirror(new() { userIdentifier = userBadgeWriteModel.userId });
         
-        logger.Information("Giving badge [{BadgeCode}] to user ID[{UserID}]", badgeCode, userIdentifier.userIdentifier);
-        await badgeRepository.GiveBadgeToUser(userIdentifier, badgeCode);
+        logger.Information("Giving badge [{BadgeCode}] to user ID[{UserID}]", userBadgeWriteModel.badgeCode, userIdentifier.userIdentifier);
+        BadgeModel recivedBadge = await badgeRepository.GiveBadgeToUser(userIdentifier, userBadgeWriteModel.badgeCode);
         await badgeRepository.Flush();
+        
+        BadgeReadModel recivedBadgeRead = mapper.Map<BadgeReadModel>(recivedBadge);
+        return recivedBadgeRead;
     }
 
-    public async Task RemoveBadgeFromUser(string userId, BadgeCodes badgeCode)
+    public async Task<BadgeReadModel> RemoveBadgeFromUser(string userId, BadgeCode badgeCode)
     {
         UserIdentifier userIdentifier = 
             await userIdentifierRepository.EnsureInMirror(new() { userIdentifier = userId });
         
         logger.Information("Removing badge [{BadgeCode}] from user ID[{UserID}]", badgeCode, userIdentifier.userIdentifier);
-        await badgeRepository.RemoveBadgeFromUser(userIdentifier, badgeCode);
+
+        BadgeModel removedBadge = await badgeRepository.RemoveBadgeFromUser(userIdentifier, badgeCode);
         await badgeRepository.Flush();
+        
+        BadgeReadModel removedBadgeRead = mapper.Map<BadgeReadModel>(removedBadge);
+        return removedBadgeRead;
     }
 }

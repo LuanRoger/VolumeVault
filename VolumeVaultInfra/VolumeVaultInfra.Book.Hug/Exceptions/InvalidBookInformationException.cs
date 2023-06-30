@@ -2,10 +2,10 @@
 
 namespace VolumeVaultInfra.Book.Hug.Exceptions;
 
-public class NotValidBookInformationException : Exception
+public class InvalidBookInformationException : Exception
 {
     private const string MESSAGE = "The book informations is not valid: [{0}]";
 
-    public NotValidBookInformationException(IEnumerable<string> errorMessages) : 
+    public InvalidBookInformationException(IEnumerable<string> errorMessages) : 
         base(string.Format(MESSAGE, errorMessages.ToSeparatedString())) { }
 }
