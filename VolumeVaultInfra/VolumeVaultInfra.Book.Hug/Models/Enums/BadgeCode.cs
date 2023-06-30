@@ -1,6 +1,6 @@
 namespace VolumeVaultInfra.Book.Hug.Models.Enums;
 
-public enum BadgeCodes
+public enum BadgeCode
 {
     Creator,
     Sponsor,

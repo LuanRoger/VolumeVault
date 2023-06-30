@@ -14,5 +14,5 @@ public class BadgeModel
     
     [Required]
     [Column("BadgeCode")]
-    public BadgeCodes code { get; set; }
+    public BadgeCode code { get; set; }
 }

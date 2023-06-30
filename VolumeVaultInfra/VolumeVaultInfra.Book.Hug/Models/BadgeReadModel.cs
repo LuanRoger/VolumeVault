@@ -5,5 +5,5 @@ namespace VolumeVaultInfra.Book.Hug.Models;
 public class BadgeReadModel
 {
     public int count { get; init; }
-    public IReadOnlyList<BadgeCodes> badgeCodes { get; init; }
+    public IReadOnlyList<BadgeCode> badgeCodes { get; init; }
 }
