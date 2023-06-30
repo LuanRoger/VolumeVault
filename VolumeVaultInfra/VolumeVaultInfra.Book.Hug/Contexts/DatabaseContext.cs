@@ -27,32 +27,32 @@ public class DatabaseContext : DbContext
             new()
             {
                 id = 1,
-                code = BadgeCodes.Creator,
+                code = BadgeCode.Creator,
             },
             new()
             {
                 id = 2,
-                code = BadgeCodes.Sponsor,
+                code = BadgeCode.Sponsor,
             },
             new()
             {
                 id = 3,
-                code = BadgeCodes.Tester,
+                code = BadgeCode.Tester,
             },
             new()
             {
                 id = 4,
-                code = BadgeCodes.EalryAccessUser,
+                code = BadgeCode.EalryAccessUser,
             },
             new()
             {
                 id = 5,
-                code = BadgeCodes.BugHunter,
+                code = BadgeCode.BugHunter,
             },
             new()
             {
                 id = 6,
-                code = BadgeCodes.OpenSourceContributor,
+                code = BadgeCode.OpenSourceContributor,
             }
         });
     }

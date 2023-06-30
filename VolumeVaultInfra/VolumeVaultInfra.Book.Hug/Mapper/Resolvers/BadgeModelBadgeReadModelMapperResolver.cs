@@ -11,6 +11,6 @@ public class BadgeModelBadgeReadModelMapperResolver : ITypeConverter<BadgeModel,
         new()
         {
             count = 1,
-            badgeCodes = new List<BadgeCodes> { source.code }
+            badgeCodes = new List<BadgeCode> { source.code }
         };
 }
