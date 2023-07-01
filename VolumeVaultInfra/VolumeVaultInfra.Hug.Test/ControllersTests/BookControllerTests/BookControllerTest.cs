@@ -7,6 +7,7 @@ using VolumeVaultInfra.Book.Hug.Exceptions;
 using VolumeVaultInfra.Book.Hug.Mapper.Profiles;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Models.Base;
+using VolumeVaultInfra.Book.Hug.Models.Utils;
 using VolumeVaultInfra.Book.Hug.Repositories;
 using VolumeVaultInfra.Book.Hug.Repositories.Search;
 using VolumeVaultInfra.Book.Hug.Validators;
@@ -14,7 +15,7 @@ using VolumeVaultInfra.Hug.Test.ControllersTests.BookControllerTests.FakeData;
 
 namespace VolumeVaultInfra.Hug.Test.ControllersTests.BookControllerTests;
 
-public class UpdateBookTests
+public class BookControllerTest
 {
     private Mock<IBookRepository> bookRepository { get; } = new();
     private Mock<IBookSearchRepository> bookSearchRepository { get; } = new();
@@ -24,11 +25,11 @@ public class UpdateBookTests
     private Mock<ILogger> logger { get; } = new();
     private BookController bookController { get; }
 
-    public UpdateBookTests()
+    public BookControllerTest()
     {
         IValidator<BookWriteModel> bookValidator = new BookWriteModelValidator();
         IValidator<BookUpdateModel> bookUpdateValidator = new BookUpdateModelValidator();
-        Mapper mapper = new(new MapperConfiguration(configure =>
+        IMapper mapper = new Mapper(new MapperConfiguration(configure =>
         {
             configure.AddProfile<BookModelMapperProfile>();
             configure.AddProfile<BookSearchMapperProfile>();
@@ -38,7 +39,69 @@ public class UpdateBookTests
             userRepository.Object, tagRepository.Object, bookSearchRepository.Object, mapper,
             bookValidator, bookUpdateValidator);
     }
+
+    #region Get
+
+    [Theory]
+    [InlineData(1, 10)]
+    [InlineData(1, 20)]
+    [InlineData(1, 5)]
+    [InlineData(2, 10)]
+    [InlineData(2, 20)]
+    public async void GetBookFromUserTest(int page, int limitPerPage)
+    {
+        const string userIdentifier = "1";
+        UserIdentifier user = new()
+        {
+            id = 1,
+            userIdentifier = userIdentifier
+        };
+        BookSortOptions sortOptions = BookUtilsFakeModels.defaultBookSortOptions;
+        var dumyBooks = BookFakeGenerators.GenerateDumyBooks(limitPerPage).ToList();
+        
+        userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
+            .ReturnsAsync(user);
+        genreRepository.Setup(ex => ex.GetBookGenres(It.IsAny<BookModel>()))
+            .ReturnsAsync(BookUtilsFakeModels.bookGenres);
+        tagRepository.Setup(ex => ex.GetBookTags(It.IsAny<BookModel>()))
+            .ReturnsAsync(BookUtilsFakeModels.bookTags);
+        bookRepository.Setup(ex => 
+            ex.GetUserOwnedBooksSplited(user, page, limitPerPage, It.IsAny<BookSortOptions>()))
+            .ReturnsAsync(dumyBooks);
+        
+        BookUserRelatedReadModel booksResult = await bookController
+            .GetUserOwnedBook(user.userIdentifier, page, limitPerPage, sortOptions);
+        
+        Assert.Equal(page, booksResult.page);
+        Assert.Equal(limitPerPage, booksResult.limitPerPage);
+    }
     
+    [Fact]
+    public async void GetUserBooksGenres()
+    {
+        const string userIdentifier = "1";
+        UserIdentifier user = new()
+        {
+            id = 1,
+            userIdentifier = userIdentifier
+        };
+        var genreModels = BookUtilsFakeModels.bookGenres;
+        
+        userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
+            .ReturnsAsync(user);
+        genreRepository.Setup(ex => ex.GetUserGenres(It.IsAny<UserIdentifier>()))
+            .ReturnsAsync(genreModels);
+        
+        GenresReadModel genresResult = await bookController.GetUserBooksGenres(userIdentifier);
+
+        Assert.Equal(genreModels.Count, genresResult.count);
+        Assert.Equal(genreModels.Select(genre => genre.genre), genresResult.genres);
+    }
+
+    #endregion
+
+    #region Search
+
     //TODO: Check tags and genres latter
     [Fact]
     public async void UpdateBookTest()
@@ -103,4 +166,56 @@ public class UpdateBookTests
         await Assert.ThrowsAsync<NotModifiedBookException>(() => 
             bookController.UpdateBook(bookUpdate, book.id, userIdentifier));
     }
+
+    #endregion
+
+    #region Register
+
+    [Fact]
+    public async void RegsiterValidBookTest()
+    {
+        const string userIdentifier = "1";
+        UserIdentifier user = new()
+        {
+            id = 1,
+            userIdentifier = userIdentifier
+        };
+        BookWriteModel bookWrite = BookFakeModels.bookWriteModelTestDumy;
+        
+        userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
+            .ReturnsAsync(user);
+        bookRepository.Setup(ex => ex.AddBook(It.IsAny<BookModel>()))
+            .ReturnsAsync(BookFakeModels.bookModelTestDumy);
+        
+        await bookController.CreateBook(bookWrite, userIdentifier);
+    }
+
+    #endregion
+    
+    #region Delete
+    
+    [Fact]
+    public async void DeleteBookTest()
+    {
+        const string userIdentifier = "1";
+        UserIdentifier user = new()
+        {
+            id = 1,
+            userIdentifier = userIdentifier
+        };
+        
+        BookModel book = BookFakeModels.bookModelTestDumy;
+        book.owner = user;
+        
+        userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
+            .ReturnsAsync(user);
+        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<int>()))
+            .ReturnsAsync(book);
+        bookRepository.Setup(ex => ex.DeleteBook(book))
+            .Returns(book);
+        
+        await bookController.RemoveBook(It.IsAny<int>(), userIdentifier);
+    }
+
+    #endregion
 }

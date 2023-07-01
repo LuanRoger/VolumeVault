@@ -32,7 +32,7 @@ internal static class BookFakeGenerators
                 }
             };
     }
-    public static IEnumerable<BookSearchModel> GenerateDumySearchResult(int count = 10)
+    /*public static IEnumerable<BookSearchModel> GenerateDumySearchResult(int count = 10)
     {
         for (int i = 0; i < count; i++)
             yield return new()
@@ -87,5 +87,5 @@ internal static class BookFakeGenerators
         int genreIndex = 1;
         for(int c = 0; c != count; c++)
             yield return "genre" + genreIndex++;
-    }
+    }*/
 }
