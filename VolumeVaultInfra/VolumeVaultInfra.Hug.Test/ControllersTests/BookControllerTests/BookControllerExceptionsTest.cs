@@ -38,6 +38,64 @@ public class BookControllerExceptionsTest
     private const string USER_IDENTIFIER = "1";
     
     [Fact]
+    public async void GetBookInfoByIdBookNotFoundExceptionTest()
+    {
+        const string userIdentifier = "1";
+        const int bookId = 1;
+        UserIdentifier user = new()
+        {
+            id = 1,
+            userIdentifier = userIdentifier
+        };
+        BookModel? returnedBooModel = null;
+        returnedBooModel.owner = user;
+        
+        userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
+            .ReturnsAsync(user);
+        genreRepository.Setup(ex => ex.GetBookGenres(It.IsAny<BookModel>()))
+            .ReturnsAsync(BookUtilsFakeModels.bookGenres);
+        tagRepository.Setup(ex => ex.GetBookTags(It.IsAny<BookModel>()))
+            .ReturnsAsync(BookUtilsFakeModels.bookTags);
+        bookRepository.Setup(ex => 
+                ex.GetBookById(It.IsAny<int>()))
+            .ReturnsAsync(returnedBooModel);
+        
+        await Assert.ThrowsAsync<BookNotFoundException>(() => bookController
+            .GetBookById(bookId, userIdentifier));
+    }
+    [Fact]
+    public async void GetSingleBookInfoTest()
+    {
+        const string userIdentifier = "1";
+        const int bookId = 1;
+        UserIdentifier user = new()
+        {
+            id = 1,
+            userIdentifier = userIdentifier
+        };
+        BookModel returnedBooModel = BookFakeModels.bookModelTestDumy;
+        returnedBooModel.owner = user;
+        
+        userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
+            .ReturnsAsync(user);
+        genreRepository.Setup(ex => ex.GetBookGenres(It.IsAny<BookModel>()))
+            .ReturnsAsync(BookUtilsFakeModels.bookGenres);
+        tagRepository.Setup(ex => ex.GetBookTags(It.IsAny<BookModel>()))
+            .ReturnsAsync(BookUtilsFakeModels.bookTags);
+        bookRepository.Setup(ex => 
+                ex.GetBookById(It.IsAny<int>()))
+            .ReturnsAsync(returnedBooModel);
+        
+        BookReadModel booksResult = await bookController
+            .GetBookById(bookId, userIdentifier);
+        
+        Assert.Equal(returnedBooModel.id, booksResult.id);
+        Assert.Equal(returnedBooModel.title, booksResult.title);
+        Assert.Equal(returnedBooModel.author, booksResult.author);
+        Assert.Equal(returnedBooModel.isbn, booksResult.isbn);
+    }
+    
+    [Fact]
     public void RegisterInvalidBookTest()
     {
         BookWriteModel invalidBook = BookFakeModels.invalidBookWriteModelTestDumy;

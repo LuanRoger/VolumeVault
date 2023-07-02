@@ -1,4 +1,3 @@
-using System.Collections;
 using FluentValidation;
 using FluentValidation.Results;
 using VolumeVaultInfra.Book.Hug.Models;
@@ -11,18 +10,18 @@ public class UserBadgeWriteModelValidationTest
 {
     [Theory]
     [MemberData(nameof(GetValidUserBadgeWriteModelParameters))]
-    public async void ValidateUserBadgeModelValidTest(UserBadgeWriteModel userBadgeWriteModel)
+    public async void ValidateUserBadgeModelValidTest(GiveUserBadgeRequest giveUserBadgeRequest)
     {
-        IValidator<UserBadgeWriteModel> validator = new UserBadgeWriteModelValidator();
-        ValidationResult result = await validator.ValidateAsync(userBadgeWriteModel);
+        IValidator<GiveUserBadgeRequest> validator = new UserBadgeWriteModelValidator();
+        ValidationResult result = await validator.ValidateAsync(giveUserBadgeRequest);
         Assert.True(result.IsValid);
     }
     [Theory]
     [MemberData(nameof(GetInvalidUserBadgeWriteModelParameters))]
-    public async void ValidateUserBadgeModelInvalidTest(UserBadgeWriteModel userBadgeWriteModel)
+    public async void ValidateUserBadgeModelInvalidTest(GiveUserBadgeRequest giveUserBadgeRequest)
     {
-        IValidator<UserBadgeWriteModel> validator = new UserBadgeWriteModelValidator();
-        ValidationResult result = await validator.ValidateAsync(userBadgeWriteModel);
+        IValidator<GiveUserBadgeRequest> validator = new UserBadgeWriteModelValidator();
+        ValidationResult result = await validator.ValidateAsync(giveUserBadgeRequest);
         Assert.False(result.IsValid);
     }
     
@@ -30,14 +29,14 @@ public class UserBadgeWriteModelValidationTest
     
     public static IEnumerable<object[]> GetValidUserBadgeWriteModelParameters()
     {
-        foreach (UserBadgeWriteModel userBadgeWriteModel in GetValidBadgeWriteModelParametersInput())
+        foreach (GiveUserBadgeRequest userBadgeWriteModel in GetValidBadgeWriteModelParametersInput())
             yield return new object[] { userBadgeWriteModel };
     }
-    private static IEnumerable<UserBadgeWriteModel> GetValidBadgeWriteModelParametersInput()
+    private static IEnumerable<GiveUserBadgeRequest> GetValidBadgeWriteModelParametersInput()
     {
         return new []
         {
-            new UserBadgeWriteModel
+            new GiveUserBadgeRequest
             {
                 userId = "0",
                 badgeCode = BadgeCode.Tester
@@ -51,15 +50,15 @@ public class UserBadgeWriteModelValidationTest
 
     public static IEnumerable<object[]> GetInvalidUserBadgeWriteModelParameters()
     {
-        foreach (UserBadgeWriteModel userBadgeWriteModel in GetInvalidBadgeWriteModelParametersInput())
+        foreach (GiveUserBadgeRequest userBadgeWriteModel in GetInvalidBadgeWriteModelParametersInput())
             yield return new object[] { userBadgeWriteModel };
     }
-    private static IEnumerable<UserBadgeWriteModel> GetInvalidBadgeWriteModelParametersInput()
+    private static IEnumerable<GiveUserBadgeRequest> GetInvalidBadgeWriteModelParametersInput()
     {
         return new []
         {
             //User ID
-            new UserBadgeWriteModel
+            new GiveUserBadgeRequest
             {
                 userId = "",
                 badgeCode = BadgeCode.Tester

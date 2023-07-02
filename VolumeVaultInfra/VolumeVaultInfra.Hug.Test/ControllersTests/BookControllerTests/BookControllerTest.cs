@@ -41,7 +41,34 @@ public class BookControllerTest
     }
 
     #region Get
-
+    
+    [Fact]
+    public async void GetSingleBookInfoTest()
+    {
+        const string userIdentifier = "1";
+        const int bookId = 1;
+        UserIdentifier user = new()
+        {
+            id = 1,
+            userIdentifier = userIdentifier
+        };
+        BookModel returnedBooModel = BookFakeModels.bookModelTestDumy;
+        // returnedBooModel.owner = user; The owner is not the same by default
+        
+        userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
+            .ReturnsAsync(user);
+        genreRepository.Setup(ex => ex.GetBookGenres(It.IsAny<BookModel>()))
+            .ReturnsAsync(BookUtilsFakeModels.bookGenres);
+        tagRepository.Setup(ex => ex.GetBookTags(It.IsAny<BookModel>()))
+            .ReturnsAsync(BookUtilsFakeModels.bookTags);
+        bookRepository.Setup(ex => 
+                ex.GetBookById(It.IsAny<int>()))
+            .ReturnsAsync(returnedBooModel);
+        
+        await Assert.ThrowsAsync<NotOwnerBookException>(() => bookController
+            .GetBookById(bookId, userIdentifier));
+    }
+    
     [Theory]
     [InlineData(1, 10)]
     [InlineData(1, 20)]
@@ -70,7 +97,7 @@ public class BookControllerTest
             .ReturnsAsync(dumyBooks);
         
         BookUserRelatedReadModel booksResult = await bookController
-            .GetUserOwnedBook(user.userIdentifier, page, limitPerPage, sortOptions);
+            .GetUserOwnedBooks(user.userIdentifier, page, limitPerPage, sortOptions);
         
         Assert.Equal(page, booksResult.page);
         Assert.Equal(limitPerPage, booksResult.limitPerPage);
