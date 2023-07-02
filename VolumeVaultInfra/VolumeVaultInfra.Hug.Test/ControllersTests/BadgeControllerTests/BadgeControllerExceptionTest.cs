@@ -21,7 +21,7 @@ public class BadgeControllerExceptionTest
 
     public BadgeControllerExceptionTest()
     {
-        IValidator<UserBadgeWriteModel> userBadgeWriteModelValidator = new UserBadgeWriteModelValidator();
+        IValidator<GiveUserBadgeRequest> userBadgeWriteModelValidator = new UserBadgeWriteModelValidator();
         IMapper badgeReadModelMapper = new Mapper(new MapperConfiguration(configure =>
         {
             configure.AddProfile<BadgeModelBadgeReadModelMapperProfile>();
@@ -32,9 +32,9 @@ public class BadgeControllerExceptionTest
     [Fact]
     public async void GiveBadgeToUserInvalidUserInformationExceptionTest()
     {
-        UserBadgeWriteModel userBadgeWriteModel = BadgeFakeData.fakeInvalidUserBadgeWriteModel;
+        GiveUserBadgeRequest giveUserBadgeRequest = BadgeFakeData.fakeInvalidGiveUserBadgeRequest;
         
         await Assert.ThrowsAsync<InvalidUserInformationException>(() => 
-            badgeController.GiveBadgeToUser(userBadgeWriteModel));
+            badgeController.GiveBadgeToUser(giveUserBadgeRequest));
     }
 }

@@ -22,7 +22,7 @@ public class BadgeControllerTest
 
     public BadgeControllerTest()
     {
-        IValidator<UserBadgeWriteModel> userBadgeWriteModelValidator = new UserBadgeWriteModelValidator();
+        IValidator<GiveUserBadgeRequest> userBadgeWriteModelValidator = new UserBadgeWriteModelValidator();
         IMapper badgeReadModelMapper = new Mapper(new MapperConfiguration(configure =>
         {
             configure.AddProfile<BadgeModelBadgeReadModelMapperProfile>();
@@ -70,7 +70,7 @@ public class BadgeControllerTest
     [Fact]
     public async void GiveBadgeToUserTest()
     {
-        UserBadgeWriteModel badgeWriteModel = BadgeFakeData.fakeUserBadgeWriteModel;
+        GiveUserBadgeRequest badgeRequest = BadgeFakeData.fakeGiveUserBadgeRequest;
         const BadgeCode badgeToGive = BadgeCode.Tester;
         UserIdentifier userIdentifier = BadgeFakeData.fakeUserIdentifier;
         userIdentifierRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
@@ -78,7 +78,7 @@ public class BadgeControllerTest
         badgeRepository.Setup(ex => ex.GiveBadgeToUser(It.IsAny<UserIdentifier>(), badgeToGive))
             .ReturnsAsync(BadgeFakeData.fakeBadgeModel);
         
-        BadgeReadModel recivedBadge = await badgeController.GiveBadgeToUser(badgeWriteModel);
+        BadgeReadModel recivedBadge = await badgeController.GiveBadgeToUser(badgeRequest);
         
         Assert.Equal(1, recivedBadge.count);
         Assert.Equal(badgeToGive, recivedBadge.badgeCodes[0]);

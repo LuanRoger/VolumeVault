@@ -11,12 +11,12 @@ public static class BadgeFakeData
         id = 1,
         userIdentifier = "0"
     };
-    public static UserBadgeWriteModel fakeUserBadgeWriteModel => new()
+    public static GiveUserBadgeRequest fakeGiveUserBadgeRequest => new()
     {
         userId = "0",
         badgeCode = BadgeCode.Tester
     };
-    public static UserBadgeWriteModel fakeInvalidUserBadgeWriteModel => new()
+    public static GiveUserBadgeRequest fakeInvalidGiveUserBadgeRequest => new()
     {
         userId = "",
         badgeCode = BadgeCode.Tester
