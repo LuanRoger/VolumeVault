@@ -48,6 +48,28 @@ internal static class BookFakeModels
         createdAt = DateTime.Today,
         lastModification = DateTime.Today
     };
+    public static BookWriteModel invalidBookWriteModelTestDumy => new()
+    {
+        title = "test",
+        author = "test",
+        isbn = "000-00-0000-000-", //Not valid ISBN
+        publicationYear = 0,
+        publisher = "test",
+        edition = 1,
+        pagesNumber = 1,
+        genre = new() { "test" },
+        format = 0,
+        observation = "test",
+        synopsis = "test",
+        coverLink = "test",
+        buyLink = "test",
+        readStatus = ReadStatus.HasReaded,
+        readStartDay = new DateTime(2023, 1, 1),
+        readEndDay = new DateTime(2023, 1, 7),
+        tags = new() { "test" },
+        lastModification = DateTime.Today,
+        createdAt = DateTime.Today
+    };
     public static BookUpdateModel bookUpdateModelTestDumy => new()
     {
         title = "changed",
@@ -66,5 +88,23 @@ internal static class BookFakeModels
         readStatus = ReadStatus.NotRead,
         tags = new() { "changed", "changed" },
         lastModification = DateTime.Now
+    };
+    public static BookUpdateModel invalidBookUpdateModelTestDumy => new()
+    {
+        title = "changed",
+        author = "changed",
+        isbn = "999-99-9999-999", //Not valid ISBN
+        publicationYear = 1,
+        publisher = "changed",
+        edition = 2,
+        pagesNumber = 2,
+        genre = new() { "changed" },
+        format = BookFormat.HARDBACK,
+        observation = "changed",
+        synopsis = "changed",
+        coverLink = "changed",
+        buyLink = "changed",
+        readStatus = ReadStatus.NotRead,
+        tags = new() { "changed", "changed" }
     };
 }
