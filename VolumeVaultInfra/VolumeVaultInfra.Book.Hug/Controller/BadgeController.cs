@@ -13,12 +13,12 @@ namespace VolumeVaultInfra.Book.Hug.Controller;
 public class BadgeController : IBadgeController
 {
     private ILogger logger { get; }
-    private IValidator<UserBadgeWriteModel> userBadgeWriteModelValidator { get; }
+    private IValidator<GiveUserBadgeRequest> userBadgeWriteModelValidator { get; }
     private IMapper mapper { get; }
     private IBadgeRepository badgeRepository { get; }
     private IUserIdentifierRepository userIdentifierRepository { get; }
 
-    public BadgeController(ILogger logger, IValidator<UserBadgeWriteModel> userBadgeWriteModelValidator, IMapper mapper, IBadgeRepository badgeRepository, IUserIdentifierRepository userIdentifierRepository)
+    public BadgeController(ILogger logger, IValidator<GiveUserBadgeRequest> userBadgeWriteModelValidator, IMapper mapper, IBadgeRepository badgeRepository, IUserIdentifierRepository userIdentifierRepository)
     {
         this.logger = logger;
         this.userBadgeWriteModelValidator = userBadgeWriteModelValidator;
@@ -44,9 +44,9 @@ public class BadgeController : IBadgeController
         return userBadgeRead;
     }
 
-    public async Task<BadgeReadModel> GiveBadgeToUser(UserBadgeWriteModel userBadgeWriteModel)
+    public async Task<BadgeReadModel> GiveBadgeToUser(GiveUserBadgeRequest giveUserBadgeRequest)
     {
-        ValidationResult result = await userBadgeWriteModelValidator.ValidateAsync(userBadgeWriteModel);
+        ValidationResult result = await userBadgeWriteModelValidator.ValidateAsync(giveUserBadgeRequest);
         if(!result.IsValid)
         {
             InvalidUserInformationException exception = new(result.Errors
@@ -55,10 +55,23 @@ public class BadgeController : IBadgeController
             throw exception;
         }
         UserIdentifier userIdentifier = 
-            await userIdentifierRepository.EnsureInMirror(new() { userIdentifier = userBadgeWriteModel.userId });
+            await userIdentifierRepository.EnsureInMirror(new() { userIdentifier = giveUserBadgeRequest.userId });
         
-        logger.Information("Giving badge [{BadgeCode}] to user ID[{UserID}]", userBadgeWriteModel.badgeCode, userIdentifier.userIdentifier);
-        BadgeModel recivedBadge = await badgeRepository.GiveBadgeToUser(userIdentifier, userBadgeWriteModel.badgeCode);
+        logger.Information("Giving badge [{BadgeCode}] to user ID[{UserID}]", giveUserBadgeRequest.badgeCode, userIdentifier.userIdentifier);
+        BadgeGivingUser badgeGivingUser = new()
+        {
+            badgeCode = giveUserBadgeRequest.badgeCode,
+            recivedAt = giveUserBadgeRequest.recivedAt
+        };
+        BadgeModel? recivedBadge = await badgeRepository.GiveBadgeToUser(userIdentifier, badgeGivingUser);
+        if(recivedBadge is null)
+        {
+            AllreadyClaimedBadgeException exception = new(giveUserBadgeRequest.badgeCode, userIdentifier.userIdentifier);
+            logger.Error(exception, "User ID[{UserID}] allready has badge [{BadgeCode}]",
+                userIdentifier.userIdentifier, giveUserBadgeRequest.badgeCode);
+            throw exception;
+        }
+        
         await badgeRepository.Flush();
         
         BadgeReadModel recivedBadgeRead = mapper.Map<BadgeReadModel>(recivedBadge);
