@@ -19,4 +19,8 @@ public class BadgeEmailUserModel
     [Required]
     [ForeignKey("Badge")]
     public BadgeModel badge { get; set; }
+    
+    [Required]
+    [Column("AttachDateTime")]
+    public DateTime attachDateTime { get; set; }
 }

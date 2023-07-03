@@ -9,9 +9,8 @@ public class BookModel
 {
     [Key]
     [Required]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Column("ID")]
-    public int id { get; set; }
+    public Guid id { get; set; }
     
     [Column("Title")]
     [MaxLength(100)]
