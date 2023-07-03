@@ -8,7 +8,7 @@ namespace VolumeVaultInfra.Book.Hug.Models;
 
 public class BookReadModel
 {
-    public required int id { get; init; }
+    public required Guid id { get; init; }
     public required string title { get; init; }
     
     public required string author { get; init; }
