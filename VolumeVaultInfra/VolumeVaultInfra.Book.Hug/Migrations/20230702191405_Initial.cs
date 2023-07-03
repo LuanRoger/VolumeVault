@@ -4,6 +4,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace VolumeVaultInfra.Book.Hug.Migrations
 {
     /// <inheritdoc />
@@ -12,6 +14,19 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Badge",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    BadgeCode = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Badge", x => x.ID);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Genres",
                 columns: table => new
@@ -52,11 +67,37 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Books",
+                name: "BadgeUser",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    BadgeCode = table.Column<int>(type: "integer", nullable: false),
+                    User = table.Column<int>(type: "integer", nullable: false),
+                    ClaimedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BadgeUser", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_BadgeUser_Badge_BadgeCode",
+                        column: x => x.BadgeCode,
+                        principalTable: "Badge",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BadgeUser_UserIdentifier_User",
+                        column: x => x.User,
+                        principalTable: "UserIdentifier",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Books",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Author = table.Column<string>(type: "text", nullable: false),
                     ISBN = table.Column<string>(type: "character varying(17)", maxLength: 17, nullable: false),
@@ -88,12 +129,31 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EmailUserIdentifier",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    UserIdentifier = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmailUserIdentifier", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_EmailUserIdentifier_UserIdentifier_UserIdentifier",
+                        column: x => x.UserIdentifier,
+                        principalTable: "UserIdentifier",
+                        principalColumn: "ID");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BookGenre",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Book = table.Column<int>(type: "integer", nullable: false),
+                    Book = table.Column<Guid>(type: "uuid", nullable: false),
                     Genre = table.Column<int>(type: "integer", nullable: false),
                     UserIdentifier = table.Column<int>(type: "integer", nullable: false)
                 },
@@ -126,7 +186,7 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                 {
                     ID = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    BookId = table.Column<int>(type: "integer", nullable: false),
+                    BookId = table.Column<Guid>(type: "uuid", nullable: false),
                     TagId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -145,6 +205,66 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "BadgeEmailUser",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    EmailIdentifier = table.Column<int>(type: "integer", nullable: false),
+                    Badge = table.Column<int>(type: "integer", nullable: false),
+                    AttachDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BadgeEmailUser", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_BadgeEmailUser_Badge_Badge",
+                        column: x => x.Badge,
+                        principalTable: "Badge",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BadgeEmailUser_EmailUserIdentifier_EmailIdentifier",
+                        column: x => x.EmailIdentifier,
+                        principalTable: "EmailUserIdentifier",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Badge",
+                columns: new[] { "ID", "BadgeCode" },
+                values: new object[,]
+                {
+                    { 1, 0 },
+                    { 2, 1 },
+                    { 3, 2 },
+                    { 4, 3 },
+                    { 5, 4 },
+                    { 6, 5 }
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BadgeEmailUser_Badge",
+                table: "BadgeEmailUser",
+                column: "Badge");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BadgeEmailUser_EmailIdentifier",
+                table: "BadgeEmailUser",
+                column: "EmailIdentifier");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BadgeUser_BadgeCode",
+                table: "BadgeUser",
+                column: "BadgeCode");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BadgeUser_User",
+                table: "BadgeUser",
+                column: "User");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BookGenre_Book",
@@ -177,6 +297,17 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                 column: "TagId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EmailUserIdentifier_Email",
+                table: "EmailUserIdentifier",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EmailUserIdentifier_UserIdentifier",
+                table: "EmailUserIdentifier",
+                column: "UserIdentifier");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Genres_Genre",
                 table: "Genres",
                 column: "Genre",
@@ -199,10 +330,22 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "BadgeEmailUser");
+
+            migrationBuilder.DropTable(
+                name: "BadgeUser");
+
+            migrationBuilder.DropTable(
                 name: "BookGenre");
 
             migrationBuilder.DropTable(
                 name: "BookTag");
+
+            migrationBuilder.DropTable(
+                name: "EmailUserIdentifier");
+
+            migrationBuilder.DropTable(
+                name: "Badge");
 
             migrationBuilder.DropTable(
                 name: "Genres");

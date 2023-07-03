@@ -13,9 +13,9 @@ public class DatabaseContext : DbContext
     public DbSet<BookTagModel> bookTag { get; set; } = null!;
     public DbSet<BadgeModel> badges { get; set; } = null!;
     public DbSet<BadgeUserModel> badgeUser { get; set; } = null!;
-    public DbSet<BadgeEmailUserModel> badgeEmailClaimQueue { get; set; }
+    public DbSet<BadgeEmailUserModel> badgeEmailArchive { get; set; } = null!;
     public DbSet<UserIdentifier> userIdentifiers { get; set; } = null!;
-    public DbSet<EmailUserIdentifier> emailUserIdentifiers { get; set; }
+    public DbSet<EmailUserIdentifier> emailUserIdentifiers { get; set; } = null!;
 
     public DatabaseContext(DbContextOptions<DatabaseContext> options)
         : base(options) { }

@@ -12,8 +12,8 @@ using VolumeVaultInfra.Book.Hug.Contexts;
 namespace VolumeVaultInfra.Book.Hug.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230627225555_BadgeArchive")]
-    partial class BadgeArchive
+    [Migration("20230702191405_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,6 +39,10 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
 
                     b.Property<int>("EmailIdentifier")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime>("attachDateTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("AttachDateTime");
 
                     b.HasKey("id");
 
@@ -136,8 +140,8 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
-                    b.Property<int>("Book")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("Book")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Genre")
                         .HasColumnType("integer");
@@ -158,12 +162,10 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
 
             modelBuilder.Entity("VolumeVaultInfra.Book.Hug.Models.Base.BookModel", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("ID");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
                     b.Property<string>("author")
                         .IsRequired()
@@ -261,8 +263,8 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
-                    b.Property<int>("BookId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("TagId")
                         .HasColumnType("integer");
