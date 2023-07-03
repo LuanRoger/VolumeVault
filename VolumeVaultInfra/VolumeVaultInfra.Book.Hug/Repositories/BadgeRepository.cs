@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using VolumeVaultInfra.Book.Hug.Contexts;
+using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Models.Base;
 using VolumeVaultInfra.Book.Hug.Models.Enums;
 
@@ -23,13 +24,20 @@ public class BadgeRepository : IBadgeRepository
             .Select(badgeUser => badgeUser.badge)
             .ToListAsync();
 
-    public async Task<BadgeModel> GiveBadgeToUser(UserIdentifier user, BadgeCode badgeCode)
+    public async Task<BadgeModel?> GiveBadgeToUser(UserIdentifier user, BadgeGivingUser badgeGivingUserInfo)
     {
-        BadgeModel badgeModel = await badgeDb.badges.FirstAsync(badge => badge.code == badgeCode);
+        BadgeUserModel? allreadyClaimedBadge = await badgeDb.badgeUser
+            .FirstOrDefaultAsync(badgeUser => badgeUser.userIdentifier == user && 
+            badgeUser.badge.code == badgeGivingUserInfo.badgeCode);
+        if(allreadyClaimedBadge is not null)
+            return null;
+            
+        BadgeModel badgeModel = await badgeDb.badges.FirstAsync(badge => badge.code == badgeGivingUserInfo.badgeCode);
         await badgeDb.badgeUser.AddAsync(new()
         {
             badge = badgeModel,
-            userIdentifier = user
+            userIdentifier = user,
+            claimedAt = badgeGivingUserInfo.recivedAt
         });
         
         return badgeModel;

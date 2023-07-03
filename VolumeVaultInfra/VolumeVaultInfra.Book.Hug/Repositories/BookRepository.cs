@@ -14,7 +14,13 @@ public class BookRepository : IBookRepository
         this.bookDb = bookDb;
     }
     
-    public async Task<BookModel> AddBook(BookModel book) => (await bookDb.books.AddAsync(book)).Entity;
+    public async Task<BookModel> AddBook(BookModel book)
+    {
+        book.id = Guid.NewGuid();
+        var addedBook = await bookDb.books.AddAsync(book);
+        
+        return addedBook.Entity;
+    }
     
     public async Task<BookModel?> GetBookById(int id) => await bookDb.books.FindAsync(id);
 

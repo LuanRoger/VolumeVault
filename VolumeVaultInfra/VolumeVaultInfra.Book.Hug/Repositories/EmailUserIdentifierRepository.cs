@@ -13,7 +13,7 @@ public class EmailUserIdentifierRepository : IEmailUserIdentifierRepository
         this.context = context;
     }
     
-    public async Task<EmailUserIdentifier> EnsureEmailExists(EmailUserIdentifier? emailUserIdentifier)
+    public async Task<EmailUserIdentifier> EnsureEmailExists(EmailUserIdentifier emailUserIdentifier)
     {
         EmailUserIdentifier? identifier = await context.emailUserIdentifiers.FirstOrDefaultAsync(emailIdentifier => emailIdentifier.email == emailUserIdentifier.email);
         identifier ??= (await context.emailUserIdentifiers.AddAsync(emailUserIdentifier)).Entity;
