@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using VolumeVaultInfra.Book.Hug.Controller;
+using VolumeVaultInfra.Book.Hug.Exceptions;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Models.Enums;
 
@@ -9,16 +10,32 @@ public static class BadgeArchiveEndpoints
 {
     public static RouteGroupBuilder MapBadgeArchiveEndpoints(this RouteGroupBuilder builder)
     {
-        builder.MapPost("/",
+        builder.MapGet("/", 
             async (HttpContext _,
                 [FromQuery] string email,
-                [FromQuery] BadgeCodes badgeCode,
+                [FromServices] IBadgeArchiveController controller) =>
+        {
+            BadgeReadModel badgeReadModel;
+            try
+            {
+                badgeReadModel = await controller.GetUserBadgesOnArchive(email);
+            }
+            catch(Exception e)
+            {
+                return Results.BadRequest(e.Message);
+            }
+            
+            return Results.Ok(badgeReadModel);
+        });
+        builder.MapPost("/",
+            async (HttpContext _,
+                [FromBody] AttachBadgeToEmailRequest request,
                 [FromServices] IBadgeArchiveController controller) =>
             {
                 BadgeReadModel attachedBadge;
                 try
                 {
-                    attachedBadge = await controller.AttachBadgeToEmail(email, badgeCode);
+                    attachedBadge = await controller.AttachBadgeToEmail(request);
                 }
                 catch(Exception e)
                 {
@@ -27,16 +44,37 @@ public static class BadgeArchiveEndpoints
                 
                 return Results.Ok(attachedBadge);
             });
+        builder.MapPut("/", 
+            async (HttpContext _,
+                [FromBody] ClaimUserBadgesRequest request,
+                [FromServices] IBadgeArchiveController controller) =>
+            {
+                BadgeReadModel badgeReadModel;
+                try
+                {
+                    badgeReadModel = await controller.ClaimBadgeFromEmailInArchive(request);
+                }
+                catch(UserEmailDoesNotExitsException e)
+                {
+                    return Results.NotFound(e.Message);
+                }
+                catch(Exception e)
+                {
+                    return Results.BadRequest(e.Message);
+                }
+                
+                return Results.Ok(badgeReadModel);
+            });
         builder.MapDelete("/", 
             async (HttpContext _,
                 [FromQuery] string email,
-                [FromQuery] BadgeCodes badgeCode,
+                [FromQuery] BadgeCode badgeCode,
                 [FromServices] IBadgeArchiveController controller) =>
             {
                 BadgeReadModel? badgeReadModel;
                 try
                 {
-                    badgeReadModel = await controller.DetachBadgeToEmail(email, badgeCode);
+                    badgeReadModel = await controller.DetachBadgeFromEmail(email, badgeCode);
                 }
                 catch (Exception e)
                 {

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using VolumeVaultInfra.Book.Hug.Controller;
+using VolumeVaultInfra.Book.Hug.Exceptions;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Models.Enums;
 
@@ -28,24 +29,27 @@ public static class BadgeEndpoints
         });
         builder.MapPost("/", 
             async (HttpContext _,
-                [FromQuery] string userId,
-                [FromQuery] BadgeCodes badgeCode,
+                [FromBody] GiveUserBadgeRequest userBadgeWrite,
                 [FromServices] IBadgeController controller) =>
             {
                 try
                 {
-                    await controller.GiveBadgeToUser(userId, badgeCode);
+                    await controller.GiveBadgeToUser(userBadgeWrite);
+                }
+                catch(AllreadyClaimedBadgeException e)
+                {
+                    return Results.Conflict(e.Message);
                 }
                 catch(Exception e)
                 {
                     return Results.BadRequest(e.Message);
                 }
                 
-                return Results.Created("database/badges", badgeCode);
+                return Results.Created("database/badges", userBadgeWrite.badgeCode);
             });
         builder.MapDelete("{badgeCode}",
             async (HttpContext _, 
-                    BadgeCodes badgeCode,
+                    BadgeCode badgeCode,
                     [FromQuery] string userId,
                     [FromServices] IBadgeController controller) =>
             {
