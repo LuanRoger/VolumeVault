@@ -31,7 +31,7 @@ public class BookSearchRepository : IBookSearchRepository
         await bookSearchIndex.UpdateSettingsAsync(bookIndexSettings);
     }
 
-    public async Task<BookSearchModel?> GetBookInSearchById(int bookId, string ownerId)
+    public async Task<BookSearchModel?> GetBookInSearchById(string bookId, string ownerId)
     {
         BookSearchModel bookResult;
         try
@@ -50,13 +50,13 @@ public class BookSearchRepository : IBookSearchRepository
                 primaryKey: BOOK_INDEX_PRIMARY_KEY);
     }
     
-    public async Task UpdateSearchBook(int bookId, BookSearchModel updateModel)
+    public async Task UpdateSearchBook(string bookId, BookSearchModel updateModel)
     {
         await bookSearchIndex.UpdateDocumentsAsync(new[] { updateModel }, 
             primaryKey: BOOK_INDEX_PRIMARY_KEY);
     }
     
-    public async Task<bool> DeleteBookFromSearch(int bookId)
+    public async Task<bool> DeleteBookFromSearch(string bookId)
     {
         TaskInfo taskInfo = await bookSearchIndex.DeleteDocumentsAsync(new[] { bookId });
         TaskResource endResources = await client.WaitForTaskAsync(taskInfo.TaskUid);
