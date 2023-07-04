@@ -544,3 +544,5 @@ lib/firebase_options.dart
 macos/firebase_app_id_file.json
 
 macos/Runner/GoogleService-Info.plist
+
+VolumeVaultInfra/VolumeVaultInfra.Book.Hug/volumevault-firebase-adminsdk.json

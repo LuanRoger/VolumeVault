@@ -6,6 +6,6 @@ public interface IBookSearchRepository
 {
     public Task EnsureCreatedAndReady();
     public Task MadeBookSearchable(BookSearchModel bookSearchModel);
-    public Task<bool> DeleteBookFromSearch(int bookId);
-    public Task UpdateSearchBook(int bookId, BookSearchModel updateModel);
+    public Task<bool> DeleteBookFromSearch(string bookId);
+    public Task UpdateSearchBook(BookSearchModel updateModel);
 }

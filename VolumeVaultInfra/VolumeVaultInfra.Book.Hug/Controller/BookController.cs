@@ -39,7 +39,7 @@ public class BookController : IBookController
         this.searchRepository = searchRepository;
     }
 
-    public async Task<BookReadModel> GetBook(int bookId, string userId)
+    public async Task<BookReadModel> GetBookById(string bookId, string userId)
     {
         UserIdentifier user = await userIdentifierRepository.EnsureInMirror(new() 
             {userIdentifier = userId});
@@ -72,7 +72,7 @@ public class BookController : IBookController
         return readModel;
     }
 
-    public async Task<BookUserRelatedReadModel> GetUserOwnedBook(string userId, int page, int limitPerPage, 
+    public async Task<BookUserRelatedReadModel> GetUserOwnedBooks(string userId, int page, int limitPerPage, 
         BookSortOptions? sort)
     {
         UserIdentifier user = await userIdentifierRepository.EnsureInMirror(new()
@@ -119,7 +119,7 @@ public class BookController : IBookController
         };
     }
 
-    public async Task<int> CreateBook(BookWriteModel writeModel, string userId)
+    public async Task<Guid> RegisterNewBook(BookWriteModel writeModel, string userId)
     {
         UserIdentifier user = await userIdentifierRepository.EnsureInMirror(new() 
             { userIdentifier = userId});
@@ -127,7 +127,7 @@ public class BookController : IBookController
         ValidationResult validationResult = await bookWriteValidation.ValidateAsync(writeModel);
         if(!validationResult.IsValid)
         {
-            NotValidBookInformationException exception = new(validationResult
+            InvalidBookInformationException exception = new(validationResult
                 .Errors
                 .Select(e => e.ErrorMessage));
             logger.Error(exception, "Invalid book info");
@@ -151,7 +151,7 @@ public class BookController : IBookController
         if(searchRepository is not null)
         {
             BookSearchModel searchModel = mapper.Map<BookSearchModel>(writeModel);
-            searchModel.id = newBook.id;
+            searchModel.id = newBook.id.ToString();
             searchModel.ownerId = user.userIdentifier;
             await searchRepository.MadeBookSearchable(searchModel);
         }
@@ -159,12 +159,12 @@ public class BookController : IBookController
         return newBook.id;
     }
 
-    public async Task<int> UpdateBook(BookUpdateModel updateModel, int bookId, string userId)
+    public async Task<Guid> UpdateBook(BookUpdateModel updateModel, string bookId, string userId)
     {
         ValidationResult result = await bookUpdateValidation.ValidateAsync(updateModel);
         if(!result.IsValid)
         {
-            NotValidBookInformationException exception = new(result.Errors
+            InvalidBookInformationException exception = new(result.Errors
                 .Select(e => e.ErrorMessage));
             logger.Error(exception, "Invalid book info");
             
@@ -290,7 +290,7 @@ public class BookController : IBookController
             bookToUpdate.lastModification = updateModel.lastModification;
         else
         {
-            NotModifiedBookException exception = new(bookToUpdate.id);
+            NotModifiedBookException exception = new(bookToUpdate.id.ToString());
             logger.Error(exception, "Book has not been modified");
             throw exception;
         }
@@ -299,16 +299,17 @@ public class BookController : IBookController
         if(searchRepository is not null)
         {
             BookSearchModel bookSearchModel = mapper.Map<BookSearchModel>(updateModel);
-            bookSearchModel.id = bookToUpdate.id;
+            bookSearchModel.id = bookToUpdate.id.ToString();
             bookSearchModel.ownerId = user.userIdentifier;
-            await searchRepository.UpdateSearchBook(bookId, bookSearchModel);
+            
+            await searchRepository.UpdateSearchBook(bookSearchModel);
         }
         logger.Information("Book ID[{BookId}] updated", bookToUpdate.id);
         
         return bookToUpdate.id;
     }
     
-    public async Task<int> RemoveBook(int bookId, string userId)
+    public async Task<Guid> RemoveBook(string bookId, string userId)
     {
         UserIdentifier userIdentifier = await userIdentifierRepository
             .EnsureInMirror(new() { userIdentifier = userId});
@@ -334,7 +335,7 @@ public class BookController : IBookController
         // ReSharper disable once InvertIf
         if(searchRepository is not null)
         {
-            bool searchDeleteResult = await searchRepository.DeleteBookFromSearch(deletedBook.id);
+            bool searchDeleteResult = await searchRepository.DeleteBookFromSearch(deletedBook.id.ToString());
             if(searchDeleteResult)
                 logger.Information("Book ID[{BookId}] deleted from search", deletedBook.id);
             else

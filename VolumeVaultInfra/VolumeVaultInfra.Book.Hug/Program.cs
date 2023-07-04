@@ -1,4 +1,6 @@
+using FirebaseAdmin;
 using FluentValidation;
+using Google.Apis.Auth.OAuth2;
 using Meilisearch;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -25,6 +27,11 @@ ILogger logger = new LoggerConfiguration()
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 builder.Host.UseSerilog(logger);
+
+FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromFile("volumevault-firebase-adminsdk.json")
+});
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
@@ -65,17 +72,30 @@ builder.Services.AddScoped<IBookSearchRepository, BookSearchRepository>(provider
 
 });
 
+builder.Services.AddAutoMapper(typeof(BookModelMapperProfile));
+builder.Services.AddAutoMapper(typeof(UserRecordUserInfoMapperProfile));
+builder.Services.AddAutoMapper(typeof(BadgeModelBadgeReadModelMapperProfile));
+builder.Services.AddScoped<IValidator<BookWriteModel>, BookWriteModelValidator>();
+builder.Services.AddScoped<IValidator<BookUpdateModel>, BookUpdateModelValidator>();
+builder.Services.AddScoped<IValidator<GiveUserBadgeRequest>, UserBadgeWriteModelValidator>();
+builder.Services.AddScoped<IValidator<AttachBadgeToEmailRequest>, AttachBadgeToEmailRequestValidator>();
+
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IUserIdentifierRepository, UserIdentifierRepository>();
 builder.Services.AddScoped<IStatsRepository, StatsRepository>();
-builder.Services.AddScoped<IValidator<BookWriteModel>, BookWriteModelValidator>();
-builder.Services.AddScoped<IValidator<BookUpdateModel>, BookUpdateModelValidator>();
-builder.Services.AddAutoMapper(typeof(BookModelMapperProfile));
+builder.Services.AddScoped<IBadgeRepository, BadgeRepository>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IEmailUserIdentifierRepository, EmailUserIdentifierRepository>();
+builder.Services.AddScoped<IBadgeArchiveRepository, BadgeArchiveRepository>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
 builder.Services.AddScoped<IBookController, BookController>();
 builder.Services.AddScoped<IStatsController, StatsController>();
+builder.Services.AddScoped<IBadgeController, BadgeController>();
+builder.Services.AddScoped<IBadgeArchiveController, BadgeArchiveController>();
+builder.Services.AddScoped<IAuthController, AuthController>();
 
 WebApplication app = builder.Build();
 
@@ -95,6 +115,15 @@ bookGroup.MapBookEndpoints()
     .AddEndpointFilter<ApiKeyFilter>();
 RouteGroupBuilder statsGroup = app.MapGroup("stats");
 statsGroup.MapStatsEndpoints()
+    .AddEndpointFilter<ApiKeyFilter>();
+RouteGroupBuilder badgeGroup = app.MapGroup("badge");
+badgeGroup.MapBadgeEndpoints()
+    .AddEndpointFilter<ApiKeyFilter>();
+RouteGroupBuilder badgeArchiveGroup = badgeGroup.MapGroup("archive");
+badgeArchiveGroup.MapBadgeArchiveEndpoints()
+    .AddEndpointFilter<ApiKeyFilter>();
+RouteGroupBuilder authGroup = app.MapGroup("auth");
+authGroup.MapAuthEndpoints()
     .AddEndpointFilter<ApiKeyFilter>();
 
 app.Run();

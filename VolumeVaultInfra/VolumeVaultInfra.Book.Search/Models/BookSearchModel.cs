@@ -4,7 +4,7 @@ namespace VolumeVaultInfra.Book.Search.Models;
 
 public class BookSearchModel
 {
-    public required int id { get; set; }
+    public required string id { get; set; }
     
     public required string title { get; init; }
     

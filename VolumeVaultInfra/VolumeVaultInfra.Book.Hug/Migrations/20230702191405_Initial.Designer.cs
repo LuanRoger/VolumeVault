@@ -12,7 +12,7 @@ using VolumeVaultInfra.Book.Hug.Contexts;
 namespace VolumeVaultInfra.Book.Hug.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230512195940_Initial")]
+    [Migration("20230702191405_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,6 +25,112 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("VolumeVaultInfra.Book.Hug.Models.Base.BadgeEmailUserModel", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("ID");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<int>("Badge")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EmailIdentifier")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("attachDateTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("AttachDateTime");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("Badge");
+
+                    b.HasIndex("EmailIdentifier");
+
+                    b.ToTable("BadgeEmailUser");
+                });
+
+            modelBuilder.Entity("VolumeVaultInfra.Book.Hug.Models.Base.BadgeModel", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("ID");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<int>("code")
+                        .HasColumnType("integer")
+                        .HasColumnName("BadgeCode");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Badge");
+
+                    b.HasData(
+                        new
+                        {
+                            id = 1,
+                            code = 0
+                        },
+                        new
+                        {
+                            id = 2,
+                            code = 1
+                        },
+                        new
+                        {
+                            id = 3,
+                            code = 2
+                        },
+                        new
+                        {
+                            id = 4,
+                            code = 3
+                        },
+                        new
+                        {
+                            id = 5,
+                            code = 4
+                        },
+                        new
+                        {
+                            id = 6,
+                            code = 5
+                        });
+                });
+
+            modelBuilder.Entity("VolumeVaultInfra.Book.Hug.Models.Base.BadgeUserModel", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("ID");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<int>("BadgeCode")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("User")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("claimedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("ClaimedAt");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("BadgeCode");
+
+                    b.HasIndex("User");
+
+                    b.ToTable("BadgeUser");
+                });
+
             modelBuilder.Entity("VolumeVaultInfra.Book.Hug.Models.Base.BookGenreModel", b =>
                 {
                     b.Property<int>("id")
@@ -34,8 +140,8 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
-                    b.Property<int>("Book")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("Book")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Genre")
                         .HasColumnType("integer");
@@ -56,12 +162,10 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
 
             modelBuilder.Entity("VolumeVaultInfra.Book.Hug.Models.Base.BookModel", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("ID");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
                     b.Property<string>("author")
                         .IsRequired()
@@ -159,8 +263,8 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
-                    b.Property<int>("BookId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("TagId")
                         .HasColumnType("integer");
@@ -172,6 +276,33 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                     b.HasIndex("TagId");
 
                     b.ToTable("BookTag");
+                });
+
+            modelBuilder.Entity("VolumeVaultInfra.Book.Hug.Models.Base.EmailUserIdentifier", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("ID");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<int?>("UserIdentifier")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("email")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("Email");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("UserIdentifier");
+
+                    b.HasIndex("email")
+                        .IsUnique();
+
+                    b.ToTable("EmailUserIdentifier");
                 });
 
             modelBuilder.Entity("VolumeVaultInfra.Book.Hug.Models.Base.GenreModel", b =>
@@ -241,6 +372,44 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                     b.ToTable("UserIdentifier");
                 });
 
+            modelBuilder.Entity("VolumeVaultInfra.Book.Hug.Models.Base.BadgeEmailUserModel", b =>
+                {
+                    b.HasOne("VolumeVaultInfra.Book.Hug.Models.Base.BadgeModel", "badge")
+                        .WithMany()
+                        .HasForeignKey("Badge")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VolumeVaultInfra.Book.Hug.Models.Base.EmailUserIdentifier", "emailUserIdentifier")
+                        .WithMany()
+                        .HasForeignKey("EmailIdentifier")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("badge");
+
+                    b.Navigation("emailUserIdentifier");
+                });
+
+            modelBuilder.Entity("VolumeVaultInfra.Book.Hug.Models.Base.BadgeUserModel", b =>
+                {
+                    b.HasOne("VolumeVaultInfra.Book.Hug.Models.Base.BadgeModel", "badge")
+                        .WithMany()
+                        .HasForeignKey("BadgeCode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VolumeVaultInfra.Book.Hug.Models.Base.UserIdentifier", "userIdentifier")
+                        .WithMany()
+                        .HasForeignKey("User")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("badge");
+
+                    b.Navigation("userIdentifier");
+                });
+
             modelBuilder.Entity("VolumeVaultInfra.Book.Hug.Models.Base.BookGenreModel", b =>
                 {
                     b.HasOne("VolumeVaultInfra.Book.Hug.Models.Base.BookModel", "book")
@@ -296,6 +465,15 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                     b.Navigation("book");
 
                     b.Navigation("tag");
+                });
+
+            modelBuilder.Entity("VolumeVaultInfra.Book.Hug.Models.Base.EmailUserIdentifier", b =>
+                {
+                    b.HasOne("VolumeVaultInfra.Book.Hug.Models.Base.UserIdentifier", "userIdentifier")
+                        .WithMany()
+                        .HasForeignKey("UserIdentifier");
+
+                    b.Navigation("userIdentifier");
                 });
 #pragma warning restore 612, 618
         }
