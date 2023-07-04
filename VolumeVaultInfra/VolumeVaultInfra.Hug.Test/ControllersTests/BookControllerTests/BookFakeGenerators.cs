@@ -10,7 +10,7 @@ internal static class BookFakeGenerators
         for (int i = 0; i < count; i++)
             yield return new()
             {
-                id = count,
+                id = Guid.NewGuid(),
                 title = "test",
                 author = "test",
                 isbn = "000-00-0000-000-0",

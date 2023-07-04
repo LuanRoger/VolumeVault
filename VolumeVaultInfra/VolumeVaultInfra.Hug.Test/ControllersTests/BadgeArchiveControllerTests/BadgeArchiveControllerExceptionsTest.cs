@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentValidation;
 using Moq;
 using Serilog;
 using VolumeVaultInfra.Book.Hug.Controller;
@@ -7,6 +8,7 @@ using VolumeVaultInfra.Book.Hug.Mapper.Profiles;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Models.Base;
 using VolumeVaultInfra.Book.Hug.Repositories;
+using VolumeVaultInfra.Book.Hug.Validators;
 using VolumeVaultInfra.Hug.Test.ControllersTests.BadgeArchiveControllerTests.FakeData;
 
 namespace VolumeVaultInfra.Hug.Test.ControllersTests.BadgeArchiveControllerTests;
@@ -23,18 +25,20 @@ public class BadgeArchiveControllerExceptionsTest
     
     public BadgeArchiveControllerExceptionsTest()
     {
+        IValidator<AttachBadgeToEmailRequest> attachBadgeToEmailRequestValidator = 
+            new AttachBadgeToEmailRequestValidator();
         IMapper mapper = new Mapper(new MapperConfiguration(configure =>
         {
             configure.AddProfile<BadgeModelBadgeReadModelMapperProfile>();
         }));
-        badgeArchiveController = new(logger.Object, mapper, emailUserIdentifierRepository.Object, badgeArchiveRepository.Object, 
+        badgeArchiveController = new(logger.Object, mapper, attachBadgeToEmailRequestValidator, emailUserIdentifierRepository.Object, badgeArchiveRepository.Object, 
             badgeRepository.Object, userIdentifierRepository.Object, authRepository.Object);
     }
     
     [Fact]
     public async void ClaimBadgeFromEmailInArchiveTest()
     {
-        const string userEmail = "test@test.com";
+        ClaimUserBadgesRequest claimUserBadgesRequest = BadgeArchiveFakeData.fakeClaimUserBadgesRequest;
         EmailUserIdentifier returnedEmailUserIdentifier = BadgeArchiveFakeData.fakeEmailUserIdentifierNoUser;
         UserIdentifier returnedUserIdentifier = BadgeArchiveFakeData.fakeUserIdentifier;
         UserInfo? returnedUserInfo = null;
@@ -50,6 +54,6 @@ public class BadgeArchiveControllerExceptionsTest
             .ReturnsAsync(returnedBadgeModels);
 
         await Assert.ThrowsAsync<UserEmailDoesNotExitsException>(() => badgeArchiveController
-            .ClaimBadgeFromEmailInArchive(userEmail));
+            .ClaimBadgeFromEmailInArchive(claimUserBadgesRequest));
     }
 }

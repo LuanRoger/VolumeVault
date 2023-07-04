@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentValidation;
 using Moq;
 using Serilog;
 using VolumeVaultInfra.Book.Hug.Controller;
@@ -7,6 +8,7 @@ using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Models.Base;
 using VolumeVaultInfra.Book.Hug.Models.Enums;
 using VolumeVaultInfra.Book.Hug.Repositories;
+using VolumeVaultInfra.Book.Hug.Validators;
 using VolumeVaultInfra.Hug.Test.ControllersTests.BadgeArchiveControllerTests.FakeData;
 
 namespace VolumeVaultInfra.Hug.Test.ControllersTests.BadgeArchiveControllerTests;
@@ -23,11 +25,13 @@ public class BadgeArchiveControllerTest
 
     public BadgeArchiveControllerTest()
     {
+        IValidator<AttachBadgeToEmailRequest> attachBadgeToEmailRequestValidator = 
+            new AttachBadgeToEmailRequestValidator();
         IMapper mapper = new Mapper(new MapperConfiguration(configure =>
         {
             configure.AddProfile<BadgeModelBadgeReadModelMapperProfile>();
         }));
-        badgeArchiveController = new(logger.Object, mapper, emailUserIdentifierRepository.Object, badgeArchiveRepository.Object, 
+        badgeArchiveController = new(logger.Object, mapper, attachBadgeToEmailRequestValidator, emailUserIdentifierRepository.Object, badgeArchiveRepository.Object, 
             badgeRepository.Object, userIdentifierRepository.Object, authRepository.Object);
     }
     
@@ -35,17 +39,18 @@ public class BadgeArchiveControllerTest
     public async void AttachBadgeToEmailTest()
     {
         EmailUserIdentifier returnedEmailUserIdentifier = BadgeArchiveFakeData.fakeEmailUserIdentifierNoUser;
+        AttachBadgeToEmailRequest attachBadgeToEmailRequest = BadgeArchiveFakeData.fakeAttachBadgeToEmailRequest;
         BadgeCode badgeToGive = BadgeCode.Tester;
         BadgeModel returnedBadgeModel = BadgeArchiveFakeData.fakeBadgeModel;
         emailUserIdentifierRepository.Setup(ex => 
             ex.EnsureEmailExists(It.IsAny<EmailUserIdentifier>()))
             .ReturnsAsync(returnedEmailUserIdentifier);
         badgeArchiveRepository.Setup(ex => 
-            ex.AttachBadgeToEmail(It.IsAny<EmailUserIdentifier>(), badgeToGive))
+            ex.AttachBadgeToEmail(It.IsAny<EmailUserIdentifier>(), It.IsAny<AttachBadgeToEmailInfo>()))
             .ReturnsAsync(returnedBadgeModel);
         
         BadgeReadModel attachedBadge = await badgeArchiveController
-            .AttachBadgeToEmail(returnedEmailUserIdentifier.email, badgeToGive);
+            .AttachBadgeToEmail(attachBadgeToEmailRequest);
         
         Assert.Contains(badgeToGive, attachedBadge.badgeCodes);
         Assert.Equal(1, attachedBadge.count);
@@ -75,7 +80,7 @@ public class BadgeArchiveControllerTest
     [Fact]
     public async void ClaimBadgeFromEmailInArchiveTest()
     {
-        const string userEmail = "test@test.com";
+        ClaimUserBadgesRequest claimUserBadgesRequest = BadgeArchiveFakeData.fakeClaimUserBadgesRequest;
         EmailUserIdentifier returnedEmailUserIdentifier = BadgeArchiveFakeData.fakeEmailUserIdentifierNoUser;
         UserIdentifier returnedUserIdentifier = BadgeArchiveFakeData.fakeUserIdentifier;
         UserInfo returnedUserInfo = BadgeArchiveFakeData.fakeUserInfo;
@@ -91,7 +96,7 @@ public class BadgeArchiveControllerTest
             .ReturnsAsync(returnedBadgeModels);
 
         await badgeArchiveController
-            .ClaimBadgeFromEmailInArchive(userEmail);
+            .ClaimBadgeFromEmailInArchive(claimUserBadgesRequest);
         
         Assert.NotNull(returnedEmailUserIdentifier.userIdentifier);
     }

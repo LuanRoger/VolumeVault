@@ -46,7 +46,7 @@ public class BookControllerTest
     public async void GetSingleBookInfoTest()
     {
         const string userIdentifier = "1";
-        const int bookId = 1;
+        const string bookId = "1";
         UserIdentifier user = new()
         {
             id = 1,
@@ -62,7 +62,7 @@ public class BookControllerTest
         tagRepository.Setup(ex => ex.GetBookTags(It.IsAny<BookModel>()))
             .ReturnsAsync(BookUtilsFakeModels.bookTags);
         bookRepository.Setup(ex => 
-                ex.GetBookById(It.IsAny<int>()))
+                ex.GetBookById(It.IsAny<string>()))
             .ReturnsAsync(returnedBooModel);
         
         await Assert.ThrowsAsync<NotOwnerBookException>(() => bookController
@@ -148,14 +148,14 @@ public class BookControllerTest
         
         userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
             .ReturnsAsync(user);
-        bookRepository.Setup(ex => ex.GetBookById(book.id))
+        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<string>()))
             .ReturnsAsync(book);
         genreRepository.Setup(ex => ex.GetBookGenres(book))
             .ReturnsAsync(bookGeneres);
         tagRepository.Setup(ex => ex.GetBookTags(book))
             .ReturnsAsync(bookTags);
         
-        await bookController.UpdateBook(bookUpdate, book.id, userIdentifier);
+        await bookController.UpdateBook(bookUpdate, book.id.ToString(), userIdentifier);
 
         Assert.Equal(book.title, bookUpdate.title);
         Assert.Equal(book.author, bookUpdate.author);
@@ -187,11 +187,11 @@ public class BookControllerTest
         
         userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
             .ReturnsAsync(user);
-        bookRepository.Setup(ex => ex.GetBookById(book.id))
+        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<string>()))
             .ReturnsAsync(book);
         
         await Assert.ThrowsAsync<NotModifiedBookException>(() => 
-            bookController.UpdateBook(bookUpdate, book.id, userIdentifier));
+            bookController.UpdateBook(bookUpdate, book.id.ToString(), userIdentifier));
     }
 
     #endregion
@@ -214,7 +214,7 @@ public class BookControllerTest
         bookRepository.Setup(ex => ex.AddBook(It.IsAny<BookModel>()))
             .ReturnsAsync(BookFakeModels.bookModelTestDumy);
         
-        await bookController.CreateBook(bookWrite, userIdentifier);
+        await bookController.RegisterNewBook(bookWrite, userIdentifier);
     }
 
     #endregion
@@ -236,12 +236,12 @@ public class BookControllerTest
         
         userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
             .ReturnsAsync(user);
-        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<int>()))
+        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<string>()))
             .ReturnsAsync(book);
         bookRepository.Setup(ex => ex.DeleteBook(book))
             .Returns(book);
         
-        await bookController.RemoveBook(It.IsAny<int>(), userIdentifier);
+        await bookController.RemoveBook(It.IsAny<string>(), userIdentifier);
     }
 
     #endregion

@@ -75,7 +75,7 @@ public class BadgeControllerTest
         UserIdentifier userIdentifier = BadgeFakeData.fakeUserIdentifier;
         userIdentifierRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
             .ReturnsAsync(userIdentifier);
-        badgeRepository.Setup(ex => ex.GiveBadgeToUser(It.IsAny<UserIdentifier>(), badgeToGive))
+        badgeRepository.Setup(ex => ex.GiveBadgeToUser(It.IsAny<UserIdentifier>(), It.IsAny<BadgeGivingUser>()))
             .ReturnsAsync(BadgeFakeData.fakeBadgeModel);
         
         BadgeReadModel recivedBadge = await badgeController.GiveBadgeToUser(badgeRequest);

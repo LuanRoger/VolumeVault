@@ -6,6 +6,17 @@ namespace VolumeVaultInfra.Hug.Test.ControllersTests.BadgeArchiveControllerTests
 
 public static class BadgeArchiveFakeData
 {
+    public static ClaimUserBadgesRequest fakeClaimUserBadgesRequest => new()
+    {
+        email = "test@test.com",
+        claimedAt = DateTime.Today
+    };
+    public static AttachBadgeToEmailRequest fakeAttachBadgeToEmailRequest => new()
+    {
+        email = "test@test.com",
+        attachDate = DateTime.Today,
+        badgeCode = BadgeCode.Tester
+    };
     public static UserIdentifier fakeUserIdentifier => new()
     {
         userIdentifier = "0"
@@ -15,7 +26,7 @@ public static class BadgeArchiveFakeData
         uid = "0",
         email = "test@test.com",
         disabled = false,
-        name = "tester",
+        displayName = "tester",
         verifiedEmail = false
     };
     public static EmailUserIdentifier fakeEmailUserIdentifierNoUser => new()

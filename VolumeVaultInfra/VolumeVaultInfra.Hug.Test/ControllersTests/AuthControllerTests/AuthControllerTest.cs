@@ -37,7 +37,7 @@ public class AuthControllerTest
         
         Assert.Equal(returnedUserInfo.uid, userInfo.uid);
         Assert.Equal(returnedUserInfo.email, userInfo.email);
-        Assert.Equal(returnedUserInfo.name, userInfo.name);
+        Assert.Equal(returnedUserInfo.displayName, userInfo.displayName);
         Assert.Equal(returnedUserInfo.disabled, userInfo.disabled);
         Assert.Equal(returnedUserInfo.verifiedEmail, userInfo.verifiedEmail);
     }
@@ -58,7 +58,7 @@ public class AuthControllerTest
         
         Assert.Equal(returnedUserInfo.uid, userInfo.uid);
         Assert.Equal(returnedUserInfo.email, userInfo.email);
-        Assert.Equal(returnedUserInfo.name, userInfo.name);
+        Assert.Equal(returnedUserInfo.displayName, userInfo.displayName);
         Assert.Equal(returnedUserInfo.disabled, userInfo.disabled);
         Assert.Equal(returnedUserInfo.verifiedEmail, userInfo.verifiedEmail);
     }

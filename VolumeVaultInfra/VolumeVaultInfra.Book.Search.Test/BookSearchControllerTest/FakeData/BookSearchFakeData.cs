@@ -14,7 +14,7 @@ public static class BookSearchFakeData
         {
             new()
             {
-                id = 1,
+                id = Guid.NewGuid().ToString(),
                 title = "test",
                 author = "test",
                 isbn = "test",
@@ -34,7 +34,7 @@ public static class BookSearchFakeData
             },
             new()
             {
-                id = 1,
+                id = Guid.NewGuid().ToString(),
                 title = "test",
                 author = "test",
                 isbn = "test",
@@ -54,7 +54,7 @@ public static class BookSearchFakeData
             },
             new()
             {
-                id = 1,
+                id = Guid.NewGuid().ToString(),
                 title = "test",
                 author = "test",
                 isbn = "test",

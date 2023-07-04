@@ -8,7 +8,7 @@ internal static class BookFakeModels
 {
     public static BookModel bookModelTestDumy => new()
     {
-        id = 1,
+        id = Guid.NewGuid(),
         title = "test",
         author = "test",
         isbn = "000-00-0000-000-0",

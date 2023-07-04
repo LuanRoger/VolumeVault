@@ -20,7 +20,7 @@ public static class AuthFakeData
         uid = "0",
         email = "test@test.com",
         disabled = false,
-        name = "tester",
+        displayName = "tester",
         verifiedEmail = false
     };
 }
