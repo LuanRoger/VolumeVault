@@ -21,7 +21,9 @@ public class BadgeArchiveController : IBadgeArchiveController
     private IBadgeArchiveRepository badgeArchiveRepository { get; }
     private IAuthRepository authRepository { get; }
 
-    public BadgeArchiveController(ILogger logger, IMapper mapper, IValidator<AttachBadgeToEmailRequest> attachBadgeToEmailRequestValidator, IEmailUserIdentifierRepository emailUserIdentifierRepository, IBadgeArchiveRepository badgeArchiveRepository, IBadgeRepository badgeRepository, IUserIdentifierRepository userIdentifierRepository, IAuthRepository authRepository)
+    public BadgeArchiveController(ILogger logger, IMapper mapper, IValidator<AttachBadgeToEmailRequest> attachBadgeToEmailRequestValidator, IEmailUserIdentifierRepository emailUserIdentifierRepository,
+        IBadgeArchiveRepository badgeArchiveRepository, IBadgeRepository badgeRepository, IUserIdentifierRepository userIdentifierRepository,
+        IAuthRepository authRepository)
     {
         this.logger = logger;
         this.mapper = mapper;

@@ -39,7 +39,7 @@ public class BookController : IBookController
         this.searchRepository = searchRepository;
     }
 
-    public async Task<BookReadModel> GetBookById(int bookId, string userId)
+    public async Task<BookReadModel> GetBookById(string bookId, string userId)
     {
         UserIdentifier user = await userIdentifierRepository.EnsureInMirror(new() 
             {userIdentifier = userId});
@@ -159,7 +159,7 @@ public class BookController : IBookController
         return newBook.id;
     }
 
-    public async Task<Guid> UpdateBook(BookUpdateModel updateModel, int bookId, string userId)
+    public async Task<Guid> UpdateBook(BookUpdateModel updateModel, string bookId, string userId)
     {
         ValidationResult result = await bookUpdateValidation.ValidateAsync(updateModel);
         if(!result.IsValid)
@@ -309,7 +309,7 @@ public class BookController : IBookController
         return bookToUpdate.id;
     }
     
-    public async Task<Guid> RemoveBook(int bookId, string userId)
+    public async Task<Guid> RemoveBook(string bookId, string userId)
     {
         UserIdentifier userIdentifier = await userIdentifierRepository
             .EnsureInMirror(new() { userIdentifier = userId});

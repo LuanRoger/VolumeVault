@@ -30,16 +30,16 @@ public static class BookEndpoints
 
                 return Results.Ok(userBooks);
             });
-            builder.MapGet("{bookId:int}", 
+            builder.MapGet("{bookId:guid}", 
                 async (HttpContext _,
-                    int bookId,
+                    [FromRoute] Guid bookId,
                     [FromQuery] string userId,
                     [FromServices] IBookController controller) =>
                 {
                     BookReadModel book;
                     try
                     { 
-                        book = await controller.GetBookById(bookId, userId);
+                        book = await controller.GetBookById(bookId.ToString(), userId);
                     }
                     catch(BookNotFoundException e)
                     {
@@ -90,16 +90,16 @@ public static class BookEndpoints
                 
                 return Results.Created("database/search", newBookId);
             });
-        builder.MapPut("{bookId:int}", 
+        builder.MapPut("{bookId:guid}", 
             async ([FromQuery] string userId,
-                [FromRoute] int bookId,
+                [FromRoute] Guid bookId,
                 [FromBody] BookUpdateModel bookUpdateModel,
                 [FromServices] IBookController controller) =>
             {
                 Guid updatedBookId;
                 try
                 {
-                    updatedBookId = await controller.UpdateBook(bookUpdateModel, bookId, userId);
+                    updatedBookId = await controller.UpdateBook(bookUpdateModel, bookId.ToString(), userId);
                 }
                 catch(InvalidBookInformationException e)
                 {
@@ -112,16 +112,16 @@ public static class BookEndpoints
                 
                 return Results.Ok(updatedBookId);
             });
-        builder.MapDelete("{bookId:int}",
+        builder.MapDelete("{bookId:guid}",
             async (HttpContext _,
-                [FromRoute] int bookId,
+                [FromRoute] Guid bookId,
                 [FromQuery] string userId,
                 [FromServices] IBookController controller) =>
             {
                 Guid deletedBookId;
                 try
                 {
-                    deletedBookId = await controller.RemoveBook(bookId, userId);
+                    deletedBookId = await controller.RemoveBook(bookId.ToString(), userId);
                 }
                 catch(BookNotFoundException e)
                 {
