@@ -108,9 +108,7 @@ class SigninSection extends HookConsumerWidget {
                           return;
                         }
 
-                        context.goNamed(
-                          AppRoutes.homePageRoute,
-                        );
+                        context.goNamed(AppRoutes.homeNamedRoute);
                       },
                       child: Text(
                           AppLocalizations.of(context)!.signinButtonSigninPage),

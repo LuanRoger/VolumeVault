@@ -90,10 +90,8 @@ class LoginSection extends HookConsumerWidget {
                             isLoadingState.value = false;
                             return;
                           }
-                          //TODO: Check latter
-                          context.go(
-                            AppRoutes.homePageRoute,
-                          );
+
+                          context.goNamed(AppRoutes.homeNamedRoute);
                         },
                         child: Text(AppLocalizations.of(context)!
                             .loginButtonLoginPage)),

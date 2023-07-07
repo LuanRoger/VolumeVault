@@ -1,5 +1,6 @@
 class AppRoutes {
   static const String homePageRoute = "/";
+  static const String homeNamedRoute = "home";
   static const String loginSigninPage = "/loginSigninPage";
   static const String bookInfoViewerPageRoute = "/bookInfoViewer";
   static const String registerEditBookPageRoute = "/registerEditBook";
