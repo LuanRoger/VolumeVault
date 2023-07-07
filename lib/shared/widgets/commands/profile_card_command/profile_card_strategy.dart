@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
+import "package:volume_vault/models/user_badge_model.dart";
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/widgets/bottom_sheet/image_source_selector.dart';
@@ -13,7 +14,7 @@ abstract class ProfileCardStrategy {
   Future<void> showLogoutDialog(BuildContext context, WidgetRef ref) async {
     bool exit = false;
 
-    await showDialog(
+    await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
           title: Text(AppLocalizations.of(context)!.signoutDialogTitle),
@@ -71,5 +72,15 @@ abstract class ProfileCardStrategy {
 
     final File imageFile = File(backgroundImage.path);
     await profileStorageProvider.uploadBackgroundImage(imageFile);
+  }
+
+  Future<UserBadgeModel?> getUserBadges(
+      BuildContext context, WidgetRef ref) async {
+    final userSession = ref.read(userSessionAuthProvider);
+    final badgeController = await ref.read(badgeControllerProvider.future);
+    if (userSession == null) return null;
+
+    final userBadgeModel = await badgeController.getUserBadges(userSession.uid);
+    return userBadgeModel;
   }
 }

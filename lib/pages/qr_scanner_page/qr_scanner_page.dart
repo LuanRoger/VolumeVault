@@ -16,8 +16,8 @@ class QrScannerPage extends HookConsumerWidget {
   BookModel? _decodeBookFromQrCode(String base64Book) {
     late final BookModel? decodedBook;
     try {
-      final String jsonBook = utf8.decode(base64.decode(base64Book));
-      final Map<String, dynamic> bookMap = json.decode(jsonBook);
+      final jsonBook = utf8.decode(base64.decode(base64Book));
+      final bookMap = json.decode(jsonBook) as Map<String, dynamic>;
       decodedBook = BookModel.fromJson(bookMap);
     } catch (_) {
       decodedBook = null;
@@ -34,82 +34,74 @@ class QrScannerPage extends HookConsumerWidget {
     final detectedBookState = useState<BookModel?>(null);
 
     return Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-        ),
-        body: MobileScanner(
-          onDetect: (capture) {
-            if (capture.barcodes.isNotEmpty &&
-                capture.barcodes.first.rawValue != null) {
-              final String base64Book = capture.barcodes.first.rawValue!;
-              final BookModel? book = _decodeBookFromQrCode(base64Book);
-              detectedBookState.value = book;
-            }
-          },
-        ),
-        bottomSheet: AnimatedSize(
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeOutQuart,
-          child: Container(
-            padding: const EdgeInsets.all(10.0),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    IconButton.filled(
-                      icon: scannerController.torchEnabled
-                          ? const Icon(LucideIcons.zap)
-                          : const Icon(LucideIcons.zapOff),
-                      onPressed: () {
-                        scannerController.toggleTorch();
-                      },
-                    ),
-                    IconButton.filled(
-                      icon: const Icon(Icons.cameraswitch_rounded),
-                      onPressed: () {
-                        scannerController.switchCamera();
-                      },
-                    ),
-                  ],
-                ),
-                if (detectedBookState.value != null) ...[
-                  DetectedBookPreview(book: detectedBookState.value!),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(detectedBookState.value!);
-                          },
-                          child: Text(
-                              AppLocalizations.of(context)!.addQrDetectedInfo)),
-                      const SizedBox(width: 10),
-                      ElevatedButton(
-                          onPressed: () {
-                            detectedBookState.value = null;
-                          },
-                          child: Text(
-                              AppLocalizations.of(context)!.addQrDetectedInfo))
-                    ],
-                  )
-                ]
-              ],
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        actions: [
+          IconButton(
+            icon: scannerController.torchEnabled
+                ? const Icon(LucideIcons.zap)
+                : const Icon(LucideIcons.zapOff),
+            onPressed: scannerController.toggleTorch,
+          ),
+          IconButton(
+            icon: const Icon(Icons.cameraswitch_rounded),
+            onPressed: scannerController.switchCamera,
+          ),
+        ],
+      ),
+      body: MobileScanner(
+        onDetect: (capture) {
+          if (capture.barcodes.isNotEmpty &&
+              capture.barcodes.first.rawValue != null) {
+            final String base64Book = capture.barcodes.first.rawValue!;
+            final BookModel? book = _decodeBookFromQrCode(base64Book);
+            detectedBookState.value = book;
+          }
+        },
+      ),
+      bottomSheet: AnimatedSize(
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeOutQuart,
+        child: Container(
+          padding: const EdgeInsets.all(10.0),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
             ),
           ),
-        ));
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (detectedBookState.value != null) ...[
+                DetectedBookPreview(book: detectedBookState.value!),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(detectedBookState.value);
+                        },
+                        child: Text(
+                            AppLocalizations.of(context)!.addQrDetectedInfo)),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                        onPressed: () {
+                          detectedBookState.value = null;
+                        },
+                        child: Text(
+                            AppLocalizations.of(context)!.addQrDetectedInfo))
+                  ],
+                )
+              ]
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

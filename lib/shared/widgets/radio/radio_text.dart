@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class RadioText extends StatelessWidget {
-  final dynamic value;
-  final dynamic groupValue;
-  final dynamic onChanged;
+class RadioText<T> extends StatelessWidget {
+  final T value;
+  final T groupValue;
+  final void Function(T?) onChanged;
   final String text;
 
   const RadioText(
@@ -17,7 +17,7 @@ class RadioText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Radio(
+        Radio<T>(
           value: value,
           groupValue: groupValue,
           onChanged: onChanged,
