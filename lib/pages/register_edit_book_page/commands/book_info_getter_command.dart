@@ -195,10 +195,35 @@ class BookInfoGetterCommand {
                     value: BookFormat.ebook,
                     child: Text(
                         L10n.bookFormat(context, format: BookFormat.ebook)),
-                  )
+                  ),
+                  DropdownMenuItem(
+                    value: BookFormat.pocket,
+                    child: Text(
+                        L10n.bookFormat(context, format: BookFormat.pocket)),
+                  ),
+                  DropdownMenuItem(
+                    value: BookFormat.audioBook,
+                    child: Text(
+                        L10n.bookFormat(context, format: BookFormat.audioBook)),
+                  ),
+                  DropdownMenuItem(
+                    value: BookFormat.spiral,
+                    child: Text(
+                        L10n.bookFormat(context, format: BookFormat.spiral)),
+                  ),
+                  DropdownMenuItem(
+                    value: BookFormat.hq,
+                    child:
+                        Text(L10n.bookFormat(context, format: BookFormat.hq)),
+                  ),
+                  DropdownMenuItem(
+                    value: BookFormat.collectorsEdition,
+                    child: Text(L10n.bookFormat(context,
+                        format: BookFormat.collectorsEdition)),
+                  ),
                 ],
-                onChanged: (newValue) =>
-                    bookFormat = newValue ?? BookFormat.hardcover,
+                onChanged: (newValue) => aditionalInfoModel.bookFormat =
+                    newValue ?? BookFormat.hardcover,
               ),
               const SizedBox(height: 15),
               TextFormField(

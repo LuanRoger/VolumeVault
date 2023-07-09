@@ -89,6 +89,11 @@
     "hardbackRegisterBookFormatOption": "Hardback",
     "paperbackRegisterBookFormatOption": "Paperback",
     "ebookRegisterBookFormatOption": "Ebook",
+    "pocketBookRegisterBookFormatOption": "Pocket book",
+    "audiobookRegisterBookFormatOption": "Audiobook",
+    "spiralBoundRegisterBookFormatOption": "Spiral bound",
+    "hqRegisterBookFormatOption": "HQ",
+    "collectorsEditionRegisterBookFormatOption": "Collector's edition",
 
     "addQrDetectedInfo": "Add",
     "recuseQrDetectedInfo": "Refuse",
