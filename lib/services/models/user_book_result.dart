@@ -17,8 +17,9 @@ class UserBookResult {
 
   factory UserBookResult.fromJson(Map<String, dynamic> json) {
     return UserBookResult(
-        books:
-            (json["books"] as List).map((e) => BookModel.fromJson(e)).toList(),
+        books: (json["books"] as List)
+            .map((e) => BookModel.fromJson(e as Map<String, dynamic>))
+            .toList(),
         page: json["page"] as int,
         limitPerPage: json["limitPerPage"] as int,
         count: json["countInPage"] as int);

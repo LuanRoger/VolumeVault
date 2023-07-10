@@ -19,7 +19,8 @@ class BookSearchService {
     });
   }
 
-  String get _baseUrl => "${_apiConfig.protocol}://${_apiConfig.host}:${_apiConfig.port}/search";
+  String get _baseUrl =>
+      "${_apiConfig.protocol}://${_apiConfig.host}:${_apiConfig.port}/search";
   String get _searchBookUrl => _baseUrl;
 
   Future<BookSearchResult?> searchBook(BookSearchRequest requestParams) async {
@@ -31,10 +32,12 @@ class BookSearchService {
 
     HttpResponse response =
         await _httpModule.get(_searchBookUrl, query: queryParams);
-    if (response.statusCode != HttpCode.OK) return null;
+    if (response.statusCode != HttpCode.OK &&
+        response.body == null &&
+        response.body is! Map) return null;
 
     BookSearchResult bookSearchResult =
-        BookSearchResult.fromJson(response.body);
+        BookSearchResult.fromJson(response.body as Map<String, dynamic>);
 
     return bookSearchResult;
   }
