@@ -6,7 +6,7 @@ namespace VolumeVaultInfra.Book.Hug.Repositories;
 public interface IBookRepository
 {
     public Task<BookModel> AddBook(BookModel book);
-    public Task<BookModel?> GetBookById(string id);
+    public Task<BookModel?> GetBookById(Guid id);
     public Task<IReadOnlyList<BookModel>> GetUserOwnedBooksSplited(UserIdentifier user, int section, int limitPerSection, 
         BookSortOptions? bookSortOptions);
     

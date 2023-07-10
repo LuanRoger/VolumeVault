@@ -43,7 +43,7 @@ public class BookController : IBookController
     {
         UserIdentifier user = await userIdentifierRepository.EnsureInMirror(new() 
             {userIdentifier = userId});
-        BookModel? bookResult = await bookRepository.GetBookById(bookId);
+        BookModel? bookResult = await bookRepository.GetBookById(new(bookId));
         if(bookResult is null)
         {
             BookNotFoundException exception = new(bookId);
@@ -172,7 +172,7 @@ public class BookController : IBookController
         }
         UserIdentifier user = await userIdentifierRepository
             .EnsureInMirror(new() { userIdentifier = userId});
-        BookModel? bookToUpdate = await bookRepository.GetBookById(bookId);
+        BookModel? bookToUpdate = await bookRepository.GetBookById(new(bookId));
         if(bookToUpdate is null)
         {
             BookNotFoundException exception = new(bookId);
@@ -313,7 +313,7 @@ public class BookController : IBookController
     {
         UserIdentifier userIdentifier = await userIdentifierRepository
             .EnsureInMirror(new() { userIdentifier = userId});
-        BookModel? bookToRemove = await bookRepository.GetBookById(bookId);
+        BookModel? bookToRemove = await bookRepository.GetBookById(new(bookId));
         if(bookToRemove is null)
         {
             BookNotFoundException exception = new(bookId);

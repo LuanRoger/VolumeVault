@@ -22,7 +22,7 @@ public class BookRepository : IBookRepository
         return addedBook.Entity;
     }
     
-    public async Task<BookModel?> GetBookById(string id) => await bookDb.books.FindAsync(id);
+    public async Task<BookModel?> GetBookById(Guid id) => await bookDb.books.FindAsync(id);
 
     public async Task<IReadOnlyList<BookModel>> GetUserOwnedBooksSplited(UserIdentifier user, int section, int limitPerSection, 
         BookSortOptions? bookSortOptions)
