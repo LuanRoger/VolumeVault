@@ -46,13 +46,16 @@ class _ProfileCard extends HookConsumerWidget {
     final profileBackgroundImageLoadState = useState(false);
 
     final profileImageMemoize =
-        useMemoized(() => profileStorageProvider.getProfileImageFromBucket());
-    final profileBackgroundImageMemoize = useMemoized(
-        () => profileStorageProvider.getProfileBackgroundImageFromBucket());
+        useMemoized(profileStorageProvider.getProfileImageFromBucket);
+    final profileBackgroundImageMemoize =
+        useMemoized(profileStorageProvider.getProfileBackgroundImageFromBucket);
+    final userBadgesMemoize =
+        useMemoized(() => _commands.getUserBadges(context, ref));
 
     final profileImageFuture = useFuture(profileImageMemoize);
     final profileBackgroundImageFuture =
         useFuture(profileBackgroundImageMemoize);
+    final userBadgesFuture = useFuture(userBadgesMemoize);
 
     useEffect(() {
       imageCache.clearLiveImages();
@@ -136,20 +139,15 @@ class _ProfileCard extends HookConsumerWidget {
                   alignment: Alignment.centerRight,
                   child: Container(
                     margin: const EdgeInsets.only(top: 10),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        BadgesShowcaseContainer(badgesCodes: [
-                          BadgeCode.creator,
-                          BadgeCode.sponsor,
-                          BadgeCode.openSourceContributor,
-                          BadgeCode.bugHunter,
-                          BadgeCode.tester,
-                          BadgeCode.earlyAccessUser
-                        ]),
-                        SizedBox(width: 10),
-                        PremiumBadge(),
+                        if(userBadgesFuture.hasData) BadgesShowcaseContainer(
+                          badgesCodes:userBadgesFuture.data!.badges
+                        ),
+                        const SizedBox(width: 10),
+                        const PremiumBadge(),
                       ],
                     ),
                   ),
