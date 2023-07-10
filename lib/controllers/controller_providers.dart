@@ -11,6 +11,11 @@ final bookSearchControllerProvider =
 
   return BookSearchController(service: service);
 });
+final badgeControllerProvider = FutureProvider<BadgeController>((ref) async {
+  final service = await ref.watch(_badgeServiceProvider.future);
+
+  return BadgeController(service: service);
+});
 final statsControllerProvider = FutureProvider<StatsController>((ref) async {
   final service = await ref.watch(_statsServiceProvider.future);
 
