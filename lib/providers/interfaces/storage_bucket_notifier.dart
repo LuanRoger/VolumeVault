@@ -21,7 +21,7 @@ class StorageBucketNotifier extends ChangeNotifier {
     final inAppProfileImage =
         path.join(profileUserFolder.path, UserStorageBucket.profileImageName);
     final inAppProfileImageFile = File(inAppProfileImage);
-    if (await inAppProfileImageFile.exists()) {
+    if (inAppProfileImageFile.existsSync()) {
       return inAppProfileImageFile;
     }
 
@@ -52,7 +52,7 @@ class StorageBucketNotifier extends ChangeNotifier {
     final inAppProfileBackgroundImage = path.join(
         profileUserFolder.path, UserStorageBucket.profileBackgroundName);
     final inAppProfileBackgroundImageFile = File(inAppProfileBackgroundImage);
-    if (await inAppProfileBackgroundImageFile.exists()) {
+    if (inAppProfileBackgroundImageFile.existsSync()) {
       return inAppProfileBackgroundImageFile;
     }
 
