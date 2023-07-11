@@ -2,7 +2,7 @@ import 'package:volume_vault/models/enums/book_format.dart';
 import 'package:volume_vault/models/enums/read_status.dart';
 
 class BookSearchResultModel {
-  int id;
+  String id;
   String title;
   String author;
   String isbn;
@@ -40,47 +40,42 @@ class BookSearchResultModel {
       required this.ownerId});
 
   factory BookSearchResultModel.empty() => BookSearchResultModel(
-      id: -1,
-      title: "",
-      author: "",
-      isbn: "",
-      ownerId: "",
-      publicationYear: null,
-      publisher: null,
-      edition: null,
-      pagesNumber: null,
-      genre: null,
-      format: null,
-      readStatus: null,
-      readStartDay: null,
-      readEndDay: null,
-      tags: null,
-      createdAt: null,
-      lastModification: null);
+        id: "",
+        title: "",
+        author: "",
+        isbn: "",
+        ownerId: "",
+      );
 
   factory BookSearchResultModel.fromJson(Map<String, dynamic> json) =>
       BookSearchResultModel(
-          id: json["id"],
-          title: json["title"],
-          author: json["author"],
-          isbn: json["isbn"],
-          publicationYear: json["publicationYear"],
-          publisher: json["publisher"],
-          edition: json["edition"],
-          pagesNumber: json["pagesNumber"],
-          genre: json["genre"] != null ? (json["genre"] as List).map((e) => e as String).toList() : null,
-          format: json["format"] != null ? BookFormat.values[json["format"]] : null,
+          id: json["id"] as String,
+          title: json["title"] as String,
+          author: json["author"] as String,
+          isbn: json["isbn"] as String,
+          publicationYear: json["publicationYear"] as int?,
+          publisher: json["publisher"] as String?,
+          edition: json["edition"] as int?,
+          pagesNumber: json["pagesNumber"] as int?,
+          genre: json["genre"] != null
+              ? (json["genre"] as List).map((e) => e as String).toList()
+              : null,
+          format: json["format"] != null
+              ? BookFormat.values[json["format"] as int]
+              : null,
           readStatus: json["readStatus"] != null
-            ? ReadStatus.values[json["readStatus"]]
-            : null,
-        readStartDay: json["readStartDay"] != null
-            ? DateTime.parse(json["readStartDay"])  
-            : null,
-        readEndDay: json["readEndDay"] != null
-            ? DateTime.parse(json["readEndDay"])
-            : null,
-          tags: json["tags"] != null ? (json["tags"] as List).map((e) => e as String).toList() : null,
-          createdAt: DateTime.parse(json["createdAt"]),
-        lastModification: DateTime.parse(json["lastModification"]),
-          ownerId: json["ownerId"]);
+              ? ReadStatus.values[json["readStatus"] as int]
+              : null,
+          readStartDay: json["readStartDay"] != null
+              ? DateTime.parse(json["readStartDay"] as String)
+              : null,
+          readEndDay: json["readEndDay"] != null
+              ? DateTime.parse(json["readEndDay"] as String)
+              : null,
+          tags: json["tags"] != null
+              ? (json["tags"] as List).map((e) => e as String).toList()
+              : null,
+          createdAt: DateTime.parse(json["createdAt"] as String),
+          lastModification: DateTime.parse(json["lastModification"] as String),
+          ownerId: json["ownerId"] as String);
 }
