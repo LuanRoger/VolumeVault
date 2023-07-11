@@ -17,6 +17,7 @@ public static class BookEndpoints
                 [FromQuery] int page,
                 [FromQuery] int? limitPerPage,
                 [FromQuery] BookSort? sort,
+                [FromQuery] BookFormat? bookFormat,
                 [FromQuery] bool? ascending,
                 [FromServices] IBookController bookController) =>
             {
@@ -25,7 +26,12 @@ public static class BookEndpoints
                     sortOptions = sort,
                     ascending = ascending ?? true
                 };
-                BookUserRelatedReadModel  userBooks = await bookController.GetUserOwnedBooks(userId, page, limitPerPage ?? 10, sortOptions);
+                BookResultLimiter? resultLimiter = bookFormat is null ? null : new()
+                {
+                    bookFormat = bookFormat
+                };
+                BookUserRelatedReadModel  userBooks = await bookController.GetUserOwnedBooks(userId, page, 
+                    limitPerPage ?? 10, resultLimiter, sortOptions);
                 
 
                 return Results.Ok(userBooks);

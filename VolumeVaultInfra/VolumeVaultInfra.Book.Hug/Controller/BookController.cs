@@ -4,6 +4,7 @@ using FluentValidation.Results;
 using VolumeVaultInfra.Book.Hug.Exceptions;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Models.Base;
+using VolumeVaultInfra.Book.Hug.Models.Enums;
 using VolumeVaultInfra.Book.Hug.Models.Utils;
 using VolumeVaultInfra.Book.Hug.Repositories;
 using VolumeVaultInfra.Book.Hug.Repositories.Search;
@@ -73,12 +74,12 @@ public class BookController : IBookController
     }
 
     public async Task<BookUserRelatedReadModel> GetUserOwnedBooks(string userId, int page, int limitPerPage, 
-        BookSortOptions? sort)
+        BookResultLimiter? resultLimiter, BookSortOptions? sort)
     {
         UserIdentifier user = await userIdentifierRepository.EnsureInMirror(new()
         { userIdentifier = userId });
         var booksResult = await bookRepository
-            .GetUserOwnedBooksSplited(user, page, limitPerPage, sort);
+            .GetUserOwnedBooksSplited(user, page, limitPerPage, resultLimiter, sort);
         
         List<BookReadModel> readBooks = new();
         foreach (BookModel userBook in booksResult)
