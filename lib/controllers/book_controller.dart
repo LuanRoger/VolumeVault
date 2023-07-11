@@ -32,12 +32,10 @@ class BookController {
     return _service!.deleteBook(bookId);
   }
 
-  Future<UserBookResult> getUserBooks(GetUserBookRequest request,
-      {BookSortOption? sortOption}) async {
+  Future<UserBookResult> getUserBooks(GetUserBookRequest request) async {
     if (_service == null) return UserBookResult.empty();
 
-    UserBookResult? userBookResult =
-        await _service!.getUserBook(request, sortOption: sortOption);
+    final userBookResult = await _service!.getUserBook(request);
 
     return userBookResult ?? UserBookResult.empty();
   }

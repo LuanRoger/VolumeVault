@@ -1,3 +1,5 @@
+// ignore_for_file: omit_local_variable_types
+
 import 'dart:convert';
 
 import 'package:volume_vault/models/api_config_params.dart';
@@ -31,7 +33,7 @@ class BookService {
   String get _bookRootUrl => _baseUrl;
   String get _bookGenresUrl => "$_baseUrl/genres";
   String get _bookAndIdUrl => "$_bookRootUrl/"; // + bookId
-  String get _searchBookUrl => "$_bookRootUrl/search";
+  //String get _searchBookUrl => "$_bookRootUrl/search";
 
   final String _userIdQueryHeader = "userId";
 
@@ -45,19 +47,18 @@ class BookService {
     return BookModel.fromJson(response.body as Map<String, dynamic>);
   }
 
-  Future<UserBookResult?> getUserBook(GetUserBookRequest getUserBookRequest,
-      {BookSortOption? sortOption}) async {
-    Map<String, String> requestQuery = Map.of(getUserBookRequest.forRequest());
-    requestQuery.addAll({_userIdQueryHeader: userIdentifier});
-    if (sortOption != null) requestQuery.addAll(sortOption.forRequest());
+  Future<UserBookResult?> getUserBook(
+      GetUserBookRequest getUserBookRequest) async {
+    final requestQuery = getUserBookRequest.toJson();
+    requestQuery[_userIdQueryHeader] = userIdentifier;
 
-    HttpResponse response =
+    final HttpResponse response =
         await _httpModule.get(_baseUrl, query: requestQuery);
     if (response.statusCode != HttpCode.OK && response.body is! Map) {
       return null;
     }
 
-    UserBookResult userBooks =
+    final UserBookResult userBooks =
         UserBookResult.fromJson(response.body as Map<String, dynamic>);
 
     return userBooks;
