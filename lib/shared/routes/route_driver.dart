@@ -54,7 +54,7 @@ final List<RouteBase> routes = [
   GoRoute(
     path: AppRoutes.qrCodeScannerPageRoute,
     builder: (_, __) {
-      return const QrScannerPage();
+      return QrScannerPage();
     },
   ),
   GoRoute(

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:volume_vault/models/book_model.dart';
+import "package:volume_vault/models/enums/qr_scanner_result_type.dart";
+import "package:volume_vault/models/qr_share.dart";
 import 'package:volume_vault/providers/providers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:volume_vault/shared/widgets/dialogs/qr_book_share_dialog.dart';
@@ -10,7 +12,7 @@ abstract class BookInfoViewerStrategy {
   const BookInfoViewerStrategy();
 
   Future<BookModel?> refreshBookInfo(
-      BuildContext context, WidgetRef ref, int bookId) async {
+      BuildContext context, WidgetRef ref, String bookId) async {
     final bookController = await ref.read(bookControllerProvider.future);
     final BookModel? newBookInfo = await bookController.getBookInfoById(bookId);
 
@@ -53,7 +55,7 @@ abstract class BookInfoViewerStrategy {
   }
 
   Future<bool> deleteBook(
-      BuildContext context, WidgetRef ref, int bookId) async {
+      BuildContext context, WidgetRef ref, String bookId) async {
     final controller = await ref.read(bookControllerProvider.future);
     final result = await controller.deleteBook(bookId);
 
@@ -74,6 +76,12 @@ abstract class BookInfoViewerStrategy {
 
   Future<void> showBookShareQrCode(BuildContext context,
       {required BookModel bookModel}) async {
-    await QrBookShareDialog(book: bookModel).show(context);
+    final infoToShare =
+        QrShare(resultType: QrScannerResultType.book, objectToSend: bookModel);
+    await QrBookShareDialog(
+      shareInfo: infoToShare,
+      title: bookModel.title,
+      subtitle: bookModel.author,
+    ).show(context);
   }
 }
