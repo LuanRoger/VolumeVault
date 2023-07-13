@@ -89,7 +89,7 @@ abstract class RegisterEditBookPageStrategy {
           publisherController.text.isNotEmpty ? publisherController.text : null,
       edition: int.tryParse(editionController.text),
       pagesNumber: int.tryParse(pageNumbController.text),
-      genre: genreController.hasTags ? genreController.getTags!.toSet() : null,
+      genre: genreController.getTags!.toSet(),
       format: bookFormat.index,
       observation: observationController.text.isNotEmpty
           ? observationController.text
@@ -135,7 +135,7 @@ abstract class RegisterEditBookPageStrategy {
     required DateTime? readEndDay,
     required Set<String> tagLabels,
   }) async {
-    final RegisterBookRequest newBook = RegisterBookRequest(
+    final newBook = RegisterBookRequest(
       title: titleController.text,
       author: authorController.text,
       isbn: isbnController.text,
@@ -166,7 +166,7 @@ abstract class RegisterEditBookPageStrategy {
       lastModification: DateTime.now(),
     );
 
-    int? newBookId = await bookController.registerBook(newBook);
+    final newBookId = await bookController.registerBook(newBook);
     return newBookId != null;
   }
 }
