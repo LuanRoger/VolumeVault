@@ -4,8 +4,8 @@ import 'package:volume_vault/models/enums/visualization_type.dart';
 import "package:volume_vault/shared/widgets/lists/pagination_list_grid_base.dart";
 import 'package:volume_vault/shared/widgets/placeholders/no_registered_book_placeholder.dart';
 
-class PaginationListGrid<T, K> extends PaginationListGridBase<T, K> {
-  const PaginationListGrid(
+class PaginationSliverListGrid<T, K> extends PaginationListGridBase<T, K> {
+  const PaginationSliverListGrid(
       {required super.visualizationType,
       required super.pagingController,
       required super.itemBuilder,
@@ -15,7 +15,7 @@ class PaginationListGrid<T, K> extends PaginationListGridBase<T, K> {
   Widget build(BuildContext context) {
     switch (visualizationType) {
       case VisualizationType.LIST:
-        return PagedListView<T, K>(
+        return PagedSliverList<T, K>(
           pagingController: pagingController,
           builderDelegate: PagedChildBuilderDelegate<K>(
             itemBuilder: itemBuilder,
@@ -24,7 +24,7 @@ class PaginationListGrid<T, K> extends PaginationListGridBase<T, K> {
           ),
         );
       case VisualizationType.GRID:
-        return PagedGridView<T, K>(
+        return PagedSliverGrid<T, K>(
           pagingController: pagingController,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2, childAspectRatio: 0.5),
