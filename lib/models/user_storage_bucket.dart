@@ -1,11 +1,13 @@
-import 'package:path/path.dart' as path;
+// ignore_for_file: unused_field
+
+import "package:path/path.dart" as path;
 
 class UserStorageBucket {
   final String _uid;
   final String _username;
   final String _email;
 
-  String get internalUserFolder => "$_username.$_email.$_uid";
+  String get internalUserFolder => _uid;
   static const String profileImageName = "profile_image";
   static const String profileBackgroundName = "profile_background";
 
