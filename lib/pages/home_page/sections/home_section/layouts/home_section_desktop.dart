@@ -5,18 +5,23 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
+import "package:volume_vault/l10n/l10n.dart";
 import 'package:volume_vault/models/book_model.dart';
+import "package:volume_vault/models/book_result_limiter.dart";
 import 'package:volume_vault/models/book_sort_option.dart';
+import "package:volume_vault/models/enums/book_format.dart";
 import 'package:volume_vault/models/enums/visualization_type.dart';
 import 'package:volume_vault/pages/book_info_view/commands/book_info_viewer_command.dart';
 import 'package:volume_vault/pages/home_page/sections/home_section/commands/home_section_desktop_command.dart';
 import 'package:volume_vault/pages/home_page/sections/widgets/card_book_view_content.dart';
 import 'package:volume_vault/providers/providers.dart';
+import "package:volume_vault/services/models/book_stats.dart";
 import 'package:volume_vault/services/models/get_user_book_request.dart';
 import 'package:volume_vault/services/models/user_book_result.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/widgets/images/user_profile_image.dart';
-import 'package:volume_vault/shared/widgets/lists/pagination_list_grid.dart';
+import "package:volume_vault/shared/widgets/lists/pagination_list_grid.dart";
+import 'package:volume_vault/shared/widgets/lists/pagination_sliver_list_grid.dart';
 import 'package:volume_vault/shared/widgets/text_fields/search_text_field.dart';
 import 'package:volume_vault/shared/widgets/widget_switcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -40,24 +45,23 @@ class HomeSectionDesktop extends HookConsumerWidget {
         () => _commands.search(searchTextController.text, ref),
         [refreshSearchResultKey.value]);
     final searchFuture = useFuture(searchMemoize);
+    final tabBookFormatController = useTabController(initialLength: 10);
 
     final userInfo = ref.watch(userSessionAuthProvider);
     final visualizationTypeState = useState(VisualizationType.LIST);
+    final resultLimiterState = useState<BookResultLimiter?>(null);
     final sortOptionState = useState(BookSortOption());
-
-    final refreshKeyState = useState(UniqueKey());
-    final bookStatsMemoize = useMemoized(
-      () => _commands.getUserBookStats(ref),
-      [refreshKeyState.value],
-    );
-    final bookStatsFuture = useFuture(bookStatsMemoize);
+    final bookStatsState = useState<BookStats?>(null);
 
     useEffect(() {
-      bookFetcher(pageKey) async {
-        UserBookResult result = await _commands.fetchUserBooks(
+      Future<void> bookFetcher(int pageKey) async {
+        bookStatsState.value = await _commands.getUserBookStats(ref);
+        final result = await _commands.fetchUserBooks(
           ref,
-          GetUserBookRequest(page: pageKey),
-          sortOptions: sortOptionState.value,
+          GetUserBookRequest(
+              page: pageKey,
+              sortOptions: sortOptionState.value,
+              resultLimiter: resultLimiterState.value),
         );
         if (result.books.isEmpty) {
           pagingController.appendLastPage(result.books);
@@ -66,10 +70,11 @@ class HomeSectionDesktop extends HookConsumerWidget {
         pagingController.appendPage(result.books, pageKey + 1);
       }
 
-      onSearchTextChange() {
+      void onSearchTextChange() {
         refreshSearchResultKey.value = UniqueKey();
       }
 
+      _commands.bookOnViwerState = bookOnViwer;
       pagingController.addPageRequestListener(bookFetcher);
       searchTextController.addListener(onSearchTextChange);
 
@@ -77,11 +82,6 @@ class HomeSectionDesktop extends HookConsumerWidget {
         pagingController.removePageRequestListener(bookFetcher);
         searchTextController.removeListener(onSearchTextChange);
       };
-    }, [refreshKeyState.value]);
-    useEffect(() {
-      _commands.bookOnViwerState = bookOnViwer;
-
-      return () {};
     });
 
     return Scaffold(
@@ -103,11 +103,9 @@ class HomeSectionDesktop extends HookConsumerWidget {
         ],
       ),
       body: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            flex: 1,
             child: Column(
               children: [
                 Flexible(
@@ -143,10 +141,7 @@ class HomeSectionDesktop extends HookConsumerWidget {
                       Flexible(
                         flex: 0,
                         child: IconButton(
-                          onPressed: () {
-                            pagingController.refresh();
-                            refreshKeyState.value = UniqueKey();
-                          },
+                          onPressed: () async => pagingController.refresh(),
                           icon: const Icon(Icons.refresh_rounded),
                         ),
                       )
@@ -160,9 +155,7 @@ class HomeSectionDesktop extends HookConsumerWidget {
                     children: [
                       Text(
                           AppLocalizations.of(context)!.bookCountStatsHomePage(
-                              bookStatsFuture.hasData
-                                  ? bookStatsFuture.data!.count
-                                  : 0),
+                              bookStatsState.value?.count ?? 0),
                           style: Theme.of(context).textTheme.bodyLarge),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -200,8 +193,58 @@ class HomeSectionDesktop extends HookConsumerWidget {
                     ],
                   ),
                 ),
+                Flexible(
+                  flex: 0,
+                  child: TabBar(
+                    controller: tabBookFormatController,
+                    isScrollable: true,
+                    onTap: (index) {
+                      resultLimiterState.value = BookResultLimiter(
+                          format:
+                              index != 0 ? BookFormat.values[index - 1] : null);
+                      pagingController.refresh();
+                    },
+                    tabs: [
+                      Tab(
+                          text: AppLocalizations.of(context)!
+                              .allBooksFormatsTabOption),
+                      Tab(
+                        text: L10n.bookFormat(context,
+                            format: BookFormat.hardcover),
+                      ),
+                      Tab(
+                          text: L10n.bookFormat(context,
+                              format: BookFormat.hardback)),
+                      Tab(
+                        text: L10n.bookFormat(context,
+                            format: BookFormat.paperback),
+                      ),
+                      Tab(
+                        text:
+                            L10n.bookFormat(context, format: BookFormat.ebook),
+                      ),
+                      Tab(
+                        text:
+                            L10n.bookFormat(context, format: BookFormat.pocket),
+                      ),
+                      Tab(
+                          text: L10n.bookFormat(context,
+                              format: BookFormat.audioBook)),
+                      Tab(
+                        text:
+                            L10n.bookFormat(context, format: BookFormat.spiral),
+                      ),
+                      Tab(
+                          text:
+                              L10n.bookFormat(context, format: BookFormat.hq)),
+                      Tab(
+                        text: L10n.bookFormat(context,
+                            format: BookFormat.collectorsEdition),
+                      ),
+                    ],
+                  ),
+                ),
                 Expanded(
-                  flex: 1,
                   child: PageTransitionSwitcher(
                     transitionBuilder: (child, animation, secondaryAnimation) =>
                         SharedAxisTransition(
@@ -220,7 +263,8 @@ class HomeSectionDesktop extends HookConsumerWidget {
                                   book: data,
                                   viewType: visualizationTypeState.value,
                                   onUpdate: pagingController.refresh,
-                                  bookInfoViewerStrategy: _bookInfoViewerCommand,
+                                  bookInfoViewerStrategy:
+                                      _bookInfoViewerCommand,
                                   onSelect: (book) => _commands.onBookSelect(
                                       context, ref, book));
                             },
@@ -268,8 +312,8 @@ class HomeSectionDesktop extends HookConsumerWidget {
                                 pagingController.refresh();
 
                                 if (bookOnViwer.value == null) return;
-                                bookOnViwer.value =
-                                    await _bookInfoViewerCommand.refreshBookInfo(
+                                bookOnViwer.value = await _bookInfoViewerCommand
+                                    .refreshBookInfo(
                                         context, ref, bookOnViwer.value!.id);
                               },
                               icon: const Icon(Icons.edit_rounded)),

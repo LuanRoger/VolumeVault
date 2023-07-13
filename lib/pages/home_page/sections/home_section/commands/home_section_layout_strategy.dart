@@ -65,12 +65,11 @@ abstract class HomeSectionLayoutStrategy {
   }
 
   Future<UserBookResult> fetchUserBooks(
-      WidgetRef ref, GetUserBookRequest getUserBookRequest,
-      {BookSortOption? sortOptions}) async {
+      WidgetRef ref, GetUserBookRequest getUserBookRequest) async {
     final bookController = await ref.read(bookControllerProvider.future);
 
-    UserBookResult userBookResult = await bookController
-        .getUserBooks(getUserBookRequest, sortOption: sortOptions);
+    final userBookResult =
+        await bookController.getUserBooks(getUserBookRequest);
     return userBookResult;
   }
 
@@ -87,6 +86,7 @@ abstract class HomeSectionLayoutStrategy {
       void Function()? onUpdate,
       void Function(BookModel)? onSelect,
       VisualizationType viewType = VisualizationType.LIST}) {
+    final slidableBackgroundColor = Theme.of(context).colorScheme.surface;
     return switch (viewType) {
       VisualizationType.LIST => Slidable(
           closeOnScroll: true,
@@ -95,12 +95,14 @@ abstract class HomeSectionLayoutStrategy {
               extentRatio: 0.3,
               children: [
                 SlidableAction(
+                    backgroundColor: slidableBackgroundColor,
                     onPressed: (context) {
                       context.push(AppRoutes.registerEditBookPageRoute,
                           extra: [book, true]);
                     },
                     icon: Icons.edit_rounded),
                 SlidableAction(
+                    backgroundColor: slidableBackgroundColor,
                     onPressed: (context) => bookInfoViewerStrategy
                         .showBookShareQrCode(context, bookModel: book),
                     icon: Icons.share_rounded),
