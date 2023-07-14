@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import "package:lucide_icons/lucide_icons.dart";
 import 'package:volume_vault/models/enums/badge_code.dart';
+import "package:volume_vault/shared/widgets/badges/verified_badge.dart";
 import 'package:volume_vault/shared/widgets/commands/profile_card_command/profile_card_command.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/widgets/badges/badges_showcase_container.dart';
@@ -19,10 +21,10 @@ class ProfileCard {
   const ProfileCard({this.heightFactor, this.widthFactor});
 
   Future<void> show(BuildContext context) async {
-    ContentDialog profileCardDialog = ContentDialog(
+    final profileCardDialog = ContentDialog(
       heightFactor: heightFactor ?? 0.4,
       widthFactor: widthFactor ?? 1.3,
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8),
       alignment: Alignment.topCenter,
       borderRadius: 10,
       content: _ProfileCard(),
@@ -143,9 +145,10 @@ class _ProfileCard extends HookConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if(userBadgesFuture.hasData) BadgesShowcaseContainer(
-                          badgesCodes:userBadgesFuture.data!.badges
-                        ),
+                        if (userBadgesFuture.hasData &&
+                            userBadgesFuture.data!.count > 0)
+                          BadgesShowcaseContainer(
+                              badgesCodes: userBadgesFuture.data!.badges),
                         const SizedBox(width: 10),
                         const PremiumBadge(),
                       ],
@@ -156,11 +159,17 @@ class _ProfileCard extends HookConsumerWidget {
               const SizedBox(height: 8),
               Flexible(
                 flex: 0,
-                child: Text(
-                  userInfo.name,
-                  style: Theme.of(context).textTheme.headlineMedium,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                child: Row(
+                  children: [
+                    Text(
+                      userInfo.name,
+                      style: Theme.of(context).textTheme.headlineMedium,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(width: 5),
+                    VerifierdBadge(isVerified: userInfo.verified),
+                  ],
                 ),
               ),
               Flexible(

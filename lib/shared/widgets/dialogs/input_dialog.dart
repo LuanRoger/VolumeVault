@@ -17,10 +17,10 @@ class InputDialog {
       this.textFieldLabel,
       this.prefixIcon});
 
-  Future show(BuildContext context) async {
-    String textMemento = controller.text;
+  Future<void> show(BuildContext context) async {
+    final textMemento = controller.text;
 
-    await showDialog(
+    return showDialog(
         context: context,
         barrierDismissible: false,
         useSafeArea: true,
@@ -29,12 +29,14 @@ class InputDialog {
               title: title != null ? Text(title!) : null,
               icon: icon,
               content: TextField(
-                  controller: controller,
-                  decoration: InputDecoration(
-                      label: textFieldLabel ?? const Text("Enter a value"),
-                      filled: true,
-                      prefixIcon: prefixIcon,
-                      border: const UnderlineInputBorder())),
+                controller: controller,
+                decoration: InputDecoration(
+                  label: textFieldLabel ?? const Text("Enter a value"),
+                  filled: true,
+                  prefixIcon: prefixIcon,
+                  border: const UnderlineInputBorder(),
+                ),
+              ),
               actions: [
                 TextButton(
                     onPressed: () {
