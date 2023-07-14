@@ -12,6 +12,8 @@
     "titleSigninPage": "Signin",
     "emailTextFieldHint": "E-mail",
     "signinButtonSigninPage": "Signin",
+    "fogotPasswordButtonSigninPage": "Forgot password?",
+    "resetPasswordDialogTitle": "Reset password",
     "alreadyHaveAccountSigninPage": "Already have an account?",
     "loginButtonSigninPage": "Login",
 
@@ -132,6 +134,9 @@
     "lightThemeSelectionDialogOption": "Light",
     "darkThemeSelectionDialogOption": "Dark",
     "systemThemeSelectionDialogOption": "System",
+    "verifyEmailDialogTitle": "Verify email",
+    "verifyEmailDialogMessage": "Your account does not have a verified email, so it has limitations. Do you want to check your email?",
+    "sendVerificationEmailDialogButton": "Send verification email",
 
     "saveBottomSheetButton": "Save",
     "selectBottomSheetButton": "Select",
@@ -161,11 +166,27 @@
 
     "wasNotPossibleToUpdateTheBookSnackbarMessage": "Was not possible to update the book informations.",
     "registerBookErrorSnackbarMessage": "An error occurs.",
+    "incorrectCredentialErrorSnackbarMessage": "Incorrect credentials.",
+    "userDoesNotExistErrorSnackbarMessage": "This user does not exists. Create an account.",
+    "aErrorOccursErrorSnackbarMessage": "A error occurs.",
+    "recoveryPasswordEmailSentSnackbarMessage": "A recovery email was sent to {email}",
+    "@recoveryPasswordEmailSentSnackbarMessage": {
+        "placeholders": {
+            "email": {
+                "type": "String?"
+            }
+        }
+    },
+    "emailAlreadyInUseErrorSnackbarMessage": "This email is allready being used.",
+    "invalidEmailErrorSnackbarMessage": "This email is invalid.",
+    "verificationEmailSentSnackbarMessage": "The verification email was sent.",
 
     "badgeCreator": "Creator of VolumeVault",
     "badgeSponsor": "Sponsor",
     "badgeContributor": "Contributor",
     "badgeTester": "Tester",
     "badgeBugHunter": "Bug Hunter",
-    "badgeEarlyAccessUser": "Early Access User"
+    "badgeEarlyAccessUser": "Early Access User",
+    "badgeVerifiedAccount": "Verified Account",
+    "badgeUnverifiedAccount": "Unverified Account"
 }

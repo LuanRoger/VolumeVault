@@ -17,7 +17,7 @@ final List<RouteBase> routes = [
   GoRoute(
     path: AppRoutes.homePageRoute,
     name: AppRoutes.homeNamedRoute,
-    builder: (context, state) => const HomePage(),
+    builder: (_, __) => const HomePage(),
   ),
   GoRoute(
     path: AppRoutes.loginSigninPage,

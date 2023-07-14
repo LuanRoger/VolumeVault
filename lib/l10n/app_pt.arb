@@ -12,6 +12,8 @@
     "titleSigninPage": "Cadastrar",
     "emailTextFieldHint": "E-mail",
     "signinButtonSigninPage": "Registrar-se",
+    "fogotPasswordButtonSigninPage": "Esqueceu a senha?",
+    "resetPasswordDialogTitle": "Redefinir senha",
     "alreadyHaveAccountSigninPage": "Já tem uma conta?",
     "loginButtonSigninPage": "Entre",
 
@@ -132,6 +134,9 @@
     "lightThemeSelectionDialogOption": "Claro",
     "darkThemeSelectionDialogOption": "Escuro",
     "systemThemeSelectionDialogOption": "Sistema",
+    "verifyEmailDialogTitle": "Verifique seu email",
+    "verifyEmailDialogMessage": "A sua conta não possui um email verificado, portanto, ela possui limitações. Deseja verificar seu email?",
+    "sendVerificationEmailDialogButton": "Envir email de verificação",
 
     "saveBottomSheetButton": "Salvar",
     "selectBottomSheetButton": "Selecionar",
@@ -161,11 +166,27 @@
 
     "wasNotPossibleToUpdateTheBookSnackbarMessage": "Não foi possível atualizar o livro.",
     "registerBookErrorSnackbarMessage": "Não foi possível cadastrar o livro.",
+    "incorrectCredentialErrorSnackbarMessage": "Suas credenciais estão incorretas.",
+    "userDoesNotExistErrorSnackbarMessage": "Este usuário não existe. Crie uma conta.",
+    "aErrorOccursErrorSnackbarMessage": "Occoreu um error.",
+    "recoveryPasswordEmailSentSnackbarMessage": "Um email de recuperação da sua senha foi enviado para o email {email}",
+    "@recoveryPasswordEmailSentSnackbarMessage": {
+        "placeholders": {
+            "email": {
+                "type": "String?"
+            }
+        }
+    },
+    "emailAlreadyInUseErrorSnackbarMessage": "Este email já está em uso.",
+    "invalidEmailErrorSnackbarMessage": "Este email é inválido.",
+    "verificationEmailSentSnackbarMessage": "O email de verificação foi enviado.",
 
     "badgeCreator": "Criador do VolumeVault",
     "badgeSponsor": "Apoiador",
     "badgeContributor": "Contribuidor",
     "badgeTester": "Testador",
     "badgeBugHunter": "Caçador de bugs",
-    "badgeEarlyAccessUser": "Usuário do Acesso Antecipado"
+    "badgeEarlyAccessUser": "Usuário do Acesso Antecipado",
+    "badgeVerifiedAccount": "Conta verificada",
+    "badgeUnverifiedAccount": "Conta não verificada"
 }
