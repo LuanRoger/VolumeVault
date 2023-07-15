@@ -72,7 +72,7 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                 {
                     ID = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    BadgeCode = table.Column<int>(type: "integer", nullable: false),
+                    Badge = table.Column<int>(type: "integer", nullable: false),
                     User = table.Column<int>(type: "integer", nullable: false),
                     ClaimedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -80,8 +80,8 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                 {
                     table.PrimaryKey("PK_BadgeUser", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_BadgeUser_Badge_BadgeCode",
-                        column: x => x.BadgeCode,
+                        name: "FK_BadgeUser_Badge_Badge",
+                        column: x => x.Badge,
                         principalTable: "Badge",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
@@ -257,9 +257,9 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                 column: "EmailIdentifier");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BadgeUser_BadgeCode",
+                name: "IX_BadgeUser_Badge",
                 table: "BadgeUser",
-                column: "BadgeCode");
+                column: "Badge");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BadgeUser_User",

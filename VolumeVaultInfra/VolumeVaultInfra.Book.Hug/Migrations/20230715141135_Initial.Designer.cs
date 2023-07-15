@@ -12,7 +12,7 @@ using VolumeVaultInfra.Book.Hug.Contexts;
 namespace VolumeVaultInfra.Book.Hug.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230702191405_Initial")]
+    [Migration("20230715141135_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -112,7 +112,7 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
-                    b.Property<int>("BadgeCode")
+                    b.Property<int>("Badge")
                         .HasColumnType("integer");
 
                     b.Property<int>("User")
@@ -124,7 +124,7 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("BadgeCode");
+                    b.HasIndex("Badge");
 
                     b.HasIndex("User");
 
@@ -395,7 +395,7 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                 {
                     b.HasOne("VolumeVaultInfra.Book.Hug.Models.Base.BadgeModel", "badge")
                         .WithMany()
-                        .HasForeignKey("BadgeCode")
+                        .HasForeignKey("Badge")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
