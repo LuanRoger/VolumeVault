@@ -1,5 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import "package:volume_vault/controllers/badge_archive_controller.dart";
 import "package:volume_vault/controllers/badge_controller.dart";
 import 'package:volume_vault/controllers/book_controller.dart';
 import 'package:volume_vault/controllers/book_search_controller.dart';
@@ -13,6 +14,7 @@ import 'package:volume_vault/providers/interfaces/localization_preferences_state
 import 'package:volume_vault/providers/interfaces/storage_bucket_notifier.dart';
 import 'package:volume_vault/providers/interfaces/theme_preferences_state.dart';
 import 'package:volume_vault/providers/interfaces/user_session_state.dart';
+import "package:volume_vault/services/badge_archive_service.dart";
 import "package:volume_vault/services/badges_service.dart";
 import 'package:volume_vault/services/book_search_service.dart';
 import 'package:volume_vault/services/book_service.dart';
@@ -116,6 +118,18 @@ final _badgeServiceProvider = FutureProvider<BadgeService?>((ref) async {
   if (userSession == null) return null;
 
   return BadgeService(
+    apiConfig: apiConfig,
+    userIdentifier: userSession.uid,
+  );
+});
+final _badgeArchiveServiceProvider =
+    FutureProvider<BadgeArchiveService?>((ref) async {
+  final apiConfig = await ref.watch(apiParamsProvider.future);
+  final userSession = ref.watch(userSessionAuthProvider);
+
+  if (userSession == null) return null;
+
+  return BadgeArchiveService(
     apiConfig: apiConfig,
     userIdentifier: userSession.uid,
   );

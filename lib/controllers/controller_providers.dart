@@ -16,6 +16,12 @@ final badgeControllerProvider = FutureProvider<BadgeController>((ref) async {
 
   return BadgeController(service: service);
 });
+final badgeArchiveControllerProvider =
+    FutureProvider<BadgeArchiveController>((ref) async {
+  final service = await ref.watch(_badgeArchiveServiceProvider.future);
+
+  return BadgeArchiveController(service: service);
+});
 final statsControllerProvider = FutureProvider<StatsController>((ref) async {
   final service = await ref.watch(_statsServiceProvider.future);
 

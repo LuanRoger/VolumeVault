@@ -1,8 +1,11 @@
+import "dart:convert";
+
 import "package:volume_vault/models/api_config_params.dart";
 import "package:volume_vault/models/http_code.dart";
 import "package:volume_vault/models/http_response.dart";
 import "package:volume_vault/models/interfaces/http_module.dart";
 import "package:volume_vault/models/user_badge_model.dart";
+import "package:volume_vault/services/models/claim_badge_request_model.dart";
 import "package:volume_vault/shared/consts.dart";
 
 class BadgeArchiveService {
@@ -30,6 +33,19 @@ class BadgeArchiveService {
     }
 
     UserBadgeModel userBadgeModel =
+        UserBadgeModel.fromJson(response.body as Map<String, dynamic>);
+    return userBadgeModel;
+  }
+
+  Future<UserBadgeModel?> claimBadgesOnArchive(
+      ClaimBadgeRequestModel request) async {
+    final bodyRequest = json.encode(request);
+    final response = await _httpModule.put(_baseUrl, body: bodyRequest);
+    if (response.statusCode != HttpCode.OK || response.body is! Map) {
+      return null;
+    }
+
+    final userBadgeModel =
         UserBadgeModel.fromJson(response.body as Map<String, dynamic>);
     return userBadgeModel;
   }
