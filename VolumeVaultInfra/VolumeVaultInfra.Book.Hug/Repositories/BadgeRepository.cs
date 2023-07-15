@@ -43,17 +43,17 @@ public class BadgeRepository : IBadgeRepository
         return badgeModel;
     }
 
-    public async Task<BadgeModel> RemoveBadgeFromUser(UserIdentifier user, BadgeCode badgeCode)
+    public async Task<BadgeModel?> RemoveBadgeFromUser(UserIdentifier user, BadgeCode badgeCode)
     {
         BadgeModel badgeModel = await badgeDb.badges.FirstAsync(badge => badge.code == badgeCode);
+        BadgeUserModel? badgeUserModel = await badgeDb.badgeUser
+            .FirstOrDefaultAsync(badgeUser => badgeUser.userIdentifier == user && 
+                                              badgeUser.badge == badgeModel);
+        if(badgeUserModel is null)
+            return null;
+        badgeDb.badgeUser.Remove(badgeUserModel);
         
-        await badgeDb.badgeUser.AddAsync(new()
-        {
-            badge = badgeModel,
-            userIdentifier = user
-        });
-        
-        return badgeModel;
+        return badgeUserModel.badge;
     }
 
     public async Task Flush() => await badgeDb.SaveChangesAsync();

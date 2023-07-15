@@ -13,7 +13,7 @@ public class BadgeUserModel
     public int id { get; set; }
     
     [Required]
-    [ForeignKey("BadgeCode")]
+    [ForeignKey("Badge")]
     public BadgeModel badge { get; set; }
     
     [Required]

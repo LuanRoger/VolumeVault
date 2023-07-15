@@ -9,6 +9,6 @@ public interface IBadgeRepository
     public Task<BadgeModel?> GetBadgeByCode(BadgeCode code);
     public Task<IReadOnlyList<BadgeModel>> GetUserBadges(UserIdentifier user);
     public Task<BadgeModel?> GiveBadgeToUser(UserIdentifier user, BadgeGivingUser badgeGivingUserInfo);
-    public Task<BadgeModel> RemoveBadgeFromUser(UserIdentifier user, BadgeCode badgeCode);
+    public Task<BadgeModel?> RemoveBadgeFromUser(UserIdentifier user, BadgeCode badgeCode);
     public Task Flush();
 }
