@@ -75,8 +75,17 @@ abstract class SnackbarUtils {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          AppLocalizations.of(context)!
-              .verificationEmailSentSnackbarMessage,
+          AppLocalizations.of(context)!.verificationEmailSentSnackbarMessage,
+        ),
+      ),
+    );
+  }
+
+  static void showErrorBadgeClaimSnackbar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          AppLocalizations.of(context)!.errorBadgeClaimSnackbarMessage,
         ),
       ),
     );

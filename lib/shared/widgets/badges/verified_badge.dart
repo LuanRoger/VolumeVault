@@ -20,7 +20,9 @@ class VerifierdBadge extends ConsumerWidget {
     return isVerified
         ? Tooltip(
             message: AppLocalizations.of(context)!.badgeVerifiedAccount,
-            child: const Icon(LucideIcons.badgeCheck, color: Colors.blue))
+            child: Icon(LucideIcons.badgeCheck,
+                color: Theme.of(context).colorScheme.secondary),
+          )
         : GestureDetector(
             onTap: () async {
               final sendEmail =

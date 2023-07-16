@@ -7,12 +7,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import "package:volume_vault/models/user_badge_model.dart";
 import 'package:volume_vault/providers/providers.dart';
+import "package:volume_vault/services/models/claim_badge_request_model.dart";
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/widgets/bottom_sheet/image_source_selector.dart';
 
 abstract class ProfileCardStrategy {
   Future<void> showLogoutDialog(BuildContext context, WidgetRef ref) async {
-    bool exit = false;
+    var exit = false;
 
     await showDialog<void>(
       context: context,
@@ -82,5 +83,32 @@ abstract class ProfileCardStrategy {
 
     final userBadgeModel = await badgeController.getUserBadges(userSession.uid);
     return userBadgeModel;
+  }
+
+  Future<UserBadgeModel?> getBadgeInArchive(WidgetRef ref) async {
+    final badgeController =
+        await ref.read(badgeArchiveControllerProvider.future);
+    final userSession = ref.read(userSessionAuthProvider);
+    if (userSession == null) return null;
+
+    final badgeReadModel =
+        await badgeController.getUserBadgesOnArchive(userSession.email);
+    return badgeReadModel;
+  }
+
+  Future<bool> claimCurrentUserBadgesOnArchive(WidgetRef ref) async {
+    final badgeController =
+        await ref.read(badgeArchiveControllerProvider.future);
+    final userSession = ref.read(userSessionAuthProvider);
+    if (userSession == null) return false;
+
+    final claimBadgeRequestModel = ClaimBadgeRequestModel(
+      email: userSession.email,
+      claimedAt: DateTime.now(),
+    );
+
+    final claimedBadges =
+        await badgeController.claimBadgesOnArchive(claimBadgeRequestModel);
+    return claimedBadges != null && claimedBadges.count > 0;
   }
 }

@@ -56,6 +56,7 @@
     "allBooksFormatsTabOption": "All",
 
     "profileSectionErrorMessage": "This could not be possible",
+    "claimBadgesUserButtonMessage": "Claim badges",
 
     "synopsisBookViewerPage": "Synopsis",
     "informationsBookViewerPage": "Informations",
@@ -180,6 +181,7 @@
     "emailAlreadyInUseErrorSnackbarMessage": "This email is allready being used.",
     "invalidEmailErrorSnackbarMessage": "This email is invalid.",
     "verificationEmailSentSnackbarMessage": "The verification email was sent.",
+    "errorBadgeClaimSnackbarMessage": "An error occurs while claiming the badge.",
 
     "badgeCreator": "Creator of VolumeVault",
     "badgeSponsor": "Sponsor",

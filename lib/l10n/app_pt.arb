@@ -56,6 +56,7 @@
     "allBooksFormatsTabOption": "Todos",
     
     "profileSectionErrorMessage": "This could not be possible",
+    "claimBadgesUserButtonMessage": "Resgatar distintivos",
 
     "synopsisBookViewerPage": "Sinopse",
     "informationsBookViewerPage": "Informações",
@@ -180,6 +181,7 @@
     "emailAlreadyInUseErrorSnackbarMessage": "Este email já está em uso.",
     "invalidEmailErrorSnackbarMessage": "Este email é inválido.",
     "verificationEmailSentSnackbarMessage": "O email de verificação foi enviado.",
+    "errorBadgeClaimSnackbarMessage": "Não foi possível regatar os distintivos.",
 
     "badgeCreator": "Criador do VolumeVault",
     "badgeSponsor": "Apoiador",
