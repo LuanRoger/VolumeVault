@@ -27,7 +27,7 @@ class PaginationSliverListGrid<T, K> extends PaginationListGridBase<T, K> {
         return PagedSliverGrid<T, K>(
           pagingController: pagingController,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, childAspectRatio: 0.5),
+              crossAxisCount: 2, childAspectRatio: 0.46),
           builderDelegate: PagedChildBuilderDelegate<K>(
             itemBuilder: itemBuilder,
             noItemsFoundIndicatorBuilder: (context) =>

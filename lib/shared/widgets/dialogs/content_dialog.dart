@@ -37,7 +37,6 @@ class ContentDialog {
         height: size?.height,
         width: size?.width,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Flexible(
@@ -55,7 +54,7 @@ class ContentDialog {
             ),
             Expanded(flex: 10, child: content!),
             if (actions != null)
-              ...(() {
+              ...() {
                 return [
                   const Spacer(),
                   Flexible(
@@ -67,7 +66,7 @@ class ContentDialog {
                     ),
                   )
                 ];
-              }())
+              }()
           ],
         ),
       ),
@@ -75,7 +74,7 @@ class ContentDialog {
   }
 
   Future<void> show(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery.sizeOf(context);
     final width = size.width * widthFactor;
     final height = size.height * heightFactor;
 

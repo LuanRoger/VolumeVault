@@ -19,6 +19,7 @@ import 'package:volume_vault/shared/widgets/chip/chip_list.dart';
 import 'package:volume_vault/shared/widgets/icon/icon_text.dart';
 import 'package:volume_vault/shared/widgets/progress_indicators/read_progress.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import "package:volume_vault/shared/widgets/texts/scroll_text.dart";
 import 'package:volume_vault/shared/widgets/viewers/book_showcase.dart';
 
 class BookInfoViewerPage extends HookConsumerWidget {
@@ -164,27 +165,13 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
                 )),
           Column(
             children: [
-              TextScroll(
+              ScrollText(
                 book.title,
-                mode: TextScrollMode.bouncing,
-                pauseBetween: const Duration(seconds: 1),
-                velocity: const Velocity(pixelsPerSecond: Offset(20, 0)),
-                fadedBorder: true,
-                pauseOnBounce: const Duration(seconds: 2),
-                fadedBorderWidth: 0.01,
-                delayBefore: const Duration(seconds: 2),
                 textAlign: TextAlign.center,
                 style: headlineSmall.copyWith(fontWeight: FontWeight.bold),
               ),
-              TextScroll(
+              ScrollText(
                 book.author,
-                mode: TextScrollMode.bouncing,
-                pauseBetween: const Duration(seconds: 1),
-                velocity: const Velocity(pixelsPerSecond: Offset(20, 0)),
-                fadedBorder: true,
-                pauseOnBounce: const Duration(seconds: 2),
-                fadedBorderWidth: 0.01,
-                delayBefore: const Duration(seconds: 2),
                 textAlign: TextAlign.center,
                 style: titleMedium.copyWith(fontSize: 25),
               ),
