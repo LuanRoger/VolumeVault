@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import "package:volume_vault/shared/theme/text_themes.dart";
 
 class TitleCard extends StatelessWidget {
   Widget title;
@@ -13,8 +14,6 @@ class TitleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).textTheme.titleLarge!;
-
     return SizedBox(
       width: expand ? double.infinity : null,
       child: Card(
@@ -24,7 +23,12 @@ class TitleCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              DefaultTextStyle(style: theme, child: title),
+              DefaultTextStyle(
+                  style: titleMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textTheme.titleLarge!.color,
+                  ),
+                  child: title),
               const SizedBox(height: 5),
               content
             ],

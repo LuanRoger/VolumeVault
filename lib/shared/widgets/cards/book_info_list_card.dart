@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import "package:volume_vault/shared/theme/text_themes.dart";
 import 'package:volume_vault/shared/widgets/cards/book_info_card.dart';
 import 'package:volume_vault/shared/widgets/fx/fade.dart';
 
@@ -40,14 +41,18 @@ class BookInfoListCard extends BookInfoCard {
                         flex: 0,
                         child: Text(
                           bookModel.title,
-                          style: Theme.of(context).textTheme.titleLarge,
+                          overflow: TextOverflow.fade,
+                          maxLines: 1,
+                          style:
+                              titleLarge.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ),
                       Flexible(
                         flex: 0,
                         child: Text(
                           bookModel.author,
-                          style: Theme.of(context).textTheme.titleSmall,
+                          overflow: TextOverflow.fade,
+                          style: titleSmall.copyWith(fontSize: 20),
                         ),
                       ),
                       const Spacer(),
