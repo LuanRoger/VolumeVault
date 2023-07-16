@@ -303,8 +303,8 @@ class HomeSectionDesktop extends HookConsumerWidget {
                         children: [
                           IconButton(
                               onPressed: () async {
-                                final bool? refresh = await context
-                                    .pushNamed<bool>(
+                                final refresh = await context
+                                    .push<bool>(
                                         AppRoutes.registerEditBookPageRoute,
                                         extra: [bookOnViwer.value!, true]);
                                 if (refresh == null || !refresh) return;

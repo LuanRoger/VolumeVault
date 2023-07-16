@@ -16,7 +16,7 @@ import 'package:volume_vault/shared/routes/app_routes.dart';
 final List<RouteBase> routes = [
   GoRoute(
     path: AppRoutes.homePageRoute,
-    name: AppRoutes.homeNamedRoute,
+    name: AppRoutes.homeRouteName,
     builder: (_, __) => const HomePage(),
   ),
   GoRoute(
