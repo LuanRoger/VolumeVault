@@ -92,7 +92,7 @@ class LoginSection extends HookConsumerWidget {
                             return;
                           }
 
-                          context.goNamed(AppRoutes.homeRouteName);
+                          context.go(AppRoutes.homePageRoute);
                         },
                         child: Text(AppLocalizations.of(context)!
                             .loginButtonLoginPage)),
