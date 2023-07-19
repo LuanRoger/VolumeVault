@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
+import "package:firebase_crashlytics/firebase_crashlytics.dart";
+import "package:flutter/foundation.dart";
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,12 +37,7 @@ AppPreferences loadPreferences(SharedPreferences preferences) {
 }
 
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
-  FlutterError.onError = (details) {
-    log(details.exceptionAsString(), stackTrace: details.stack);
-  };
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Add cross-flavor configuration here
 
   final sharedPreferences = await SharedPreferences.getInstance();
   final appPreferences = loadPreferences(sharedPreferences);

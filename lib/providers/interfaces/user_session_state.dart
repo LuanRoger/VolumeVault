@@ -1,3 +1,5 @@
+// ignore_for_file: omit_local_variable_types
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/enums/login_auth_result.dart';
@@ -9,13 +11,23 @@ import 'package:volume_vault/services/models/user_signin_request.dart';
 class UserSessionState extends Notifier<UserSession?> {
   @override
   UserSession? build() {
-    final User? currentUser = FirebaseAuth.instance.currentUser;
+    final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) return null;
+    currentUser.reload();
 
     return UserSession(
         uid: currentUser.uid,
         name: currentUser.displayName!,
-        email: currentUser.email!);
+        email: currentUser.email!,
+        verified: currentUser.emailVerified);
+  }
+
+  void recreateUserState(User newUserState) {
+    state = UserSession(
+        uid: newUserState.uid,
+        name: newUserState.displayName!,
+        email: newUserState.email!,
+        verified: newUserState.emailVerified);
   }
 
   Future<LoginAuthResult> loginUser(UserLoginRequest loginRequest) async {
@@ -37,12 +49,13 @@ class UserSessionState extends Notifier<UserSession?> {
           return LoginAuthResult.unknown;
       }
     }
-    User currentUser = credential.user!;
+    final User currentUser = credential.user!;
 
     state = UserSession(
         uid: currentUser.uid,
         name: currentUser.displayName!,
-        email: currentUser.email!);
+        email: currentUser.email!,
+        verified: currentUser.emailVerified);
 
     return LoginAuthResult.success;
   }
@@ -67,17 +80,26 @@ class UserSessionState extends Notifier<UserSession?> {
       }
     }
 
-    User currentUser = credential.user!;
+    final User currentUser = credential.user!;
     await currentUser.updateDisplayName(signinRequest.username);
     state = UserSession(
         uid: currentUser.uid,
         name: signinRequest.username,
-        email: currentUser.email!);
+        email: currentUser.email!,
+        verified: currentUser.emailVerified);
 
     return SigninAuthResult.success;
   }
 
-  Future logout() async {
+  Future<void> logout() async {
     await FirebaseAuth.instance.signOut();
+  }
+
+  Future<void> recoveryFogotenPassword(String email) async =>
+      FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+
+  Future<void> sendVerificationEmail() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    await currentUser?.sendEmailVerification();
   }
 }

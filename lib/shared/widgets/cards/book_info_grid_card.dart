@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import "package:volume_vault/shared/theme/text_themes.dart";
 import 'package:volume_vault/shared/widgets/viewers/book_image_viewer.dart';
 import 'package:volume_vault/shared/widgets/cards/book_info_card.dart';
 
 class BookInfoGridCard extends BookInfoCard {
   const BookInfoGridCard(super.bookModel,
-      {super.key, required super.onPressed});
+      {required super.onPressed, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,51 +13,57 @@ class BookInfoGridCard extends BookInfoCard {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onPressed,
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              if (bookModel.coverLink != null)
-                Expanded(
-                  flex: 0,
-                  child: BookImageViewer(
-                    image: NetworkImage(bookModel.coverLink!),
-                    sizeMultiplier: 1.2,
-                    border: Border.all(width: 0.0),
-                    borderRadius: BorderRadius.zero,
-                  ),
-                ),
-              Flexible(
-                flex: 0,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Expanded(
+            flex: 0,
+            child: BookImageViewer(
+              image: bookModel.coverLink != null
+                  ? NetworkImage(bookModel.coverLink!)
+                  : null,
+              border: Border.all(width: 0),
+              borderRadius: BorderRadius.zero,
+              fit: BoxFit.fitWidth,
+            ),
+          ),
+          Flexible(
+            flex: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(3),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            bookModel.title,
-                            style: Theme.of(context).textTheme.titleLarge,
-                            overflow: TextOverflow.clip,
-                            maxLines: 2,
-                          ),
-                          Text(
-                            bookModel.publicationYear == null
-                                ? bookModel.author
-                                : "${bookModel.author} - ${bookModel.publicationYear.toString()}",
-                            style: Theme.of(context).textTheme.titleMedium,
-                            overflow: TextOverflow.clip,
-                          ),
-                        ],
+                      Text(
+                        bookModel.title,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: titleLarge.copyWith(fontWeight: FontWeight.bold),
                       ),
+                      Text(
+                        bookModel.publicationYear == null
+                            ? bookModel.author
+                            : "${bookModel.author} - "
+                                "${bookModel.publicationYear}",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: titleSmall,
+                      ),
+                      if (bookModel.synopsis != null)
+                        ...(() => [
+                              const Divider(),
+                              Text(bookModel.synopsis!,
+                                  overflow: TextOverflow.fade, maxLines: 4),
+                            ])()
                     ],
                   ),
-                ),
+                ],
               ),
-            ]),
+            ),
+          ),
+        ]),
       ),
     );
   }

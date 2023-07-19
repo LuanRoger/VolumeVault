@@ -46,7 +46,6 @@ public class BookControllerTest
     public async void GetSingleBookInfoTest()
     {
         const string userIdentifier = "1";
-        const string bookId = "1";
         UserIdentifier user = new()
         {
             id = 1,
@@ -62,11 +61,11 @@ public class BookControllerTest
         tagRepository.Setup(ex => ex.GetBookTags(It.IsAny<BookModel>()))
             .ReturnsAsync(BookUtilsFakeModels.bookTags);
         bookRepository.Setup(ex => 
-                ex.GetBookById(It.IsAny<string>()))
+                ex.GetBookById(It.IsAny<Guid>()))
             .ReturnsAsync(returnedBooModel);
         
         await Assert.ThrowsAsync<NotOwnerBookException>(() => bookController
-            .GetBookById(bookId, userIdentifier));
+            .GetBookById(returnedBooModel.id.ToString(), userIdentifier));
     }
     
     [Theory]
@@ -84,6 +83,8 @@ public class BookControllerTest
             userIdentifier = userIdentifier
         };
         BookSortOptions sortOptions = BookUtilsFakeModels.defaultBookSortOptions;
+        BookResultLimiter resultLimiter = BookUtilsFakeModels.defaultBookResultLimiter;
+        
         var dumyBooks = BookFakeGenerators.GenerateDumyBooks(limitPerPage).ToList();
         
         userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
@@ -93,11 +94,13 @@ public class BookControllerTest
         tagRepository.Setup(ex => ex.GetBookTags(It.IsAny<BookModel>()))
             .ReturnsAsync(BookUtilsFakeModels.bookTags);
         bookRepository.Setup(ex => 
-            ex.GetUserOwnedBooksSplited(user, page, limitPerPage, It.IsAny<BookSortOptions>()))
+            ex.GetUserOwnedBooksSplited(user, page, limitPerPage,  
+                It.IsAny<BookResultLimiter>(), It.IsAny<BookSortOptions>()))
             .ReturnsAsync(dumyBooks);
         
         BookUserRelatedReadModel booksResult = await bookController
-            .GetUserOwnedBooks(user.userIdentifier, page, limitPerPage, sortOptions);
+            .GetUserOwnedBooks(user.userIdentifier, page, limitPerPage, 
+                resultLimiter, sortOptions);
         
         Assert.Equal(page, booksResult.page);
         Assert.Equal(limitPerPage, booksResult.limitPerPage);
@@ -148,7 +151,7 @@ public class BookControllerTest
         
         userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
             .ReturnsAsync(user);
-        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<string>()))
+        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<Guid>()))
             .ReturnsAsync(book);
         genreRepository.Setup(ex => ex.GetBookGenres(book))
             .ReturnsAsync(bookGeneres);
@@ -187,7 +190,7 @@ public class BookControllerTest
         
         userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
             .ReturnsAsync(user);
-        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<string>()))
+        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<Guid>()))
             .ReturnsAsync(book);
         
         await Assert.ThrowsAsync<NotModifiedBookException>(() => 
@@ -236,12 +239,12 @@ public class BookControllerTest
         
         userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
             .ReturnsAsync(user);
-        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<string>()))
+        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<Guid>()))
             .ReturnsAsync(book);
         bookRepository.Setup(ex => ex.DeleteBook(book))
             .Returns(book);
         
-        await bookController.RemoveBook(It.IsAny<string>(), userIdentifier);
+        await bookController.RemoveBook(book.id.ToString(), userIdentifier);
     }
 
     #endregion

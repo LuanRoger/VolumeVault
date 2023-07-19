@@ -49,6 +49,18 @@ public class GenreRepository : IGenreRepository
             .OrderBy(genre => genre.genre)
             .ToListAsync();
 
+    public async Task<IReadOnlyList<BookModel>> GetBooksByGenre(string genre, UserIdentifier user) =>
+       await genreDb.bookGenre
+            .Where(relation => relation.genre.genre == genre && relation.userIdentifier == user)
+            .Select(relation => relation.book)
+            .ToListAsync();
+    public async Task<IReadOnlyList<BookModel>> GetBooksByGenres(List<string> genre, UserIdentifier user) =>
+        await genreDb.bookGenre
+            .Where(relation => relation.userIdentifier == user && 
+                               genre.Contains(relation.genre.genre))
+            .Select(relation => relation.book)
+            .ToListAsync();
+
     public async Task RemoveAllGenreRalationWithBook(BookModel book)
     {
         var relationsToRemove = await genreDb.bookGenre

@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import "package:text_scroll/text_scroll.dart";
 import 'package:volume_vault/l10n/l10n.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/pages/book_info_view/commands/book_info_viewer_command.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
+import "package:volume_vault/shared/theme/text_themes.dart";
 import 'package:volume_vault/shared/time_formats.dart';
 import 'package:volume_vault/shared/utils/image_utils.dart';
 import 'package:volume_vault/shared/widgets/cards/title_card.dart';
@@ -17,6 +19,7 @@ import 'package:volume_vault/shared/widgets/chip/chip_list.dart';
 import 'package:volume_vault/shared/widgets/icon/icon_text.dart';
 import 'package:volume_vault/shared/widgets/progress_indicators/read_progress.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import "package:volume_vault/shared/widgets/texts/scroll_text.dart";
 import 'package:volume_vault/shared/widgets/viewers/book_showcase.dart';
 
 class BookInfoViewerPage extends HookConsumerWidget {
@@ -161,17 +164,16 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
                   },
                 )),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
+              ScrollText(
                 book.title,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineSmall,
+                style: headlineSmall.copyWith(fontWeight: FontWeight.bold),
               ),
-              Text(
+              ScrollText(
                 book.author,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium,
+                style: titleMedium.copyWith(fontSize: 25),
               ),
             ],
           ),

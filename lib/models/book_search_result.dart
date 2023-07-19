@@ -12,9 +12,11 @@ class BookSearchResult {
 
   factory BookSearchResult.fromJson(Map<String, dynamic> json) =>
       BookSearchResult(
-          count: json["count"],
-          searchElapsedTime: Duration(milliseconds: json["searchElapsedTime"]),
+          count: json["count"] as int,
+          searchElapsedTime:
+              Duration(milliseconds: json["searchElapsedTime"] as int),
           results: (json["results"] as List)
-              .map((e) => BookSearchResultModel.fromJson(e))
+              .map((e) =>
+                  BookSearchResultModel.fromJson(e as Map<String, dynamic>))
               .toList());
 }

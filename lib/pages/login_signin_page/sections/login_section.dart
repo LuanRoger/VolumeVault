@@ -26,6 +26,7 @@ class LoginSection extends HookConsumerWidget {
     final passwordController = useTextEditingController();
     final isLoadingState = useState(false);
     final obscurePassword = useState(true);
+    final resetPasswordEmailController = useTextEditingController();
 
     return isLoadingState.value
         ? loadingProgressIndicator ??
@@ -91,16 +92,30 @@ class LoginSection extends HookConsumerWidget {
                             return;
                           }
 
-                          context.goNamed(AppRoutes.homeNamedRoute);
+                          context.go(AppRoutes.homePageRoute);
                         },
                         child: Text(AppLocalizations.of(context)!
                             .loginButtonLoginPage)),
                   ],
                 ),
               ),
+              TextButton(
+                onPressed: () async {
+                  final (success, email) = await _command
+                      .sendResetPasswordEmail(resetPasswordEmailController,
+                          context: context, ref: ref);
+
+                  // ignore: use_build_context_synchronously
+                  if (!success || !context.mounted) return;
+
+                  SnackbarUtils.showResetPasswordEmailSendSnackbar(context,
+                      email: email);
+                },
+                child: Text(AppLocalizations.of(context)!
+                    .fogotPasswordButtonSigninPage),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(AppLocalizations.of(context)!
                       .doesNotHaveAccountLoginPage),

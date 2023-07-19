@@ -1,8 +1,11 @@
+// ignore_for_file: omit_local_variable_types
+
 import 'dart:convert';
 
 import 'package:volume_vault/models/api_config_params.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/book_sort_option.dart';
+import "package:volume_vault/models/books_genres_model.dart";
 import 'package:volume_vault/models/http_code.dart';
 import 'package:volume_vault/models/http_response.dart';
 import 'package:volume_vault/models/interfaces/http_module.dart';
@@ -30,11 +33,11 @@ class BookService {
   String get _bookRootUrl => _baseUrl;
   String get _bookGenresUrl => "$_baseUrl/genres";
   String get _bookAndIdUrl => "$_bookRootUrl/"; // + bookId
-  String get _searchBookUrl => "$_bookRootUrl/search";
+  //String get _searchBookUrl => "$_bookRootUrl/search";
 
   final String _userIdQueryHeader = "userId";
 
-  Future<BookModel?> getUserBookById(int bookId) async {
+  Future<BookModel?> getUserBookById(String bookId) async {
     Map<String, String> requestQuery = {_userIdQueryHeader: userIdentifier};
 
     HttpResponse response = await _httpModule
@@ -44,33 +47,37 @@ class BookService {
     return BookModel.fromJson(response.body as Map<String, dynamic>);
   }
 
-  Future<UserBookResult?> getUserBook(GetUserBookRequest getUserBookRequest,
-      {BookSortOption? sortOption}) async {
-    Map<String, String> requestQuery = Map.of(getUserBookRequest.forRequest());
-    requestQuery.addAll({_userIdQueryHeader: userIdentifier});
-    if (sortOption != null) requestQuery.addAll(sortOption.forRequest());
+  Future<UserBookResult?> getUserBook(
+      GetUserBookRequest getUserBookRequest) async {
+    final requestQuery = getUserBookRequest.toJson();
+    requestQuery[_userIdQueryHeader] = userIdentifier;
 
-    HttpResponse response =
+    final HttpResponse response =
         await _httpModule.get(_baseUrl, query: requestQuery);
-    if (response.statusCode != HttpCode.OK) return null;
+    if (response.statusCode != HttpCode.OK && response.body is! Map) {
+      return null;
+    }
 
-    UserBookResult userBooks = UserBookResult.fromJson(response.body);
+    final UserBookResult userBooks =
+        UserBookResult.fromJson(response.body as Map<String, dynamic>);
 
     return userBooks;
   }
 
-  Future<int?> registerBook(RegisterBookRequest book) async {
+  Future<String?> registerBook(RegisterBookRequest book) async {
     String bookJson = json.encode(book);
 
     Map<String, String> requestQuery = {_userIdQueryHeader: userIdentifier};
     HttpResponse response =
         await _httpModule.post(_baseUrl, body: bookJson, query: requestQuery);
-    if (response.statusCode != HttpCode.CREATED) return null;
+    if (response.statusCode != HttpCode.CREATED || response.body == null) {
+      return null;
+    }
 
-    return response.body;
+    return response.body as String;
   }
 
-  Future<bool> updateBook(int bookId, EditBookRequest newInfosBook) async {
+  Future<bool> updateBook(String bookId, EditBookRequest newInfosBook) async {
     String bookJson = json.encode(newInfosBook);
 
     Map<String, String> requestQuery = {_userIdQueryHeader: userIdentifier};
@@ -82,11 +89,23 @@ class BookService {
     return response.statusCode == HttpCode.OK;
   }
 
-  Future<bool> deleteBook(int bookId) async {
+  Future<bool> deleteBook(String bookId) async {
     Map<String, String> requestQuery = {_userIdQueryHeader: userIdentifier};
     HttpResponse response = await _httpModule
         .delete(_bookAndIdUrl + bookId.toString(), query: requestQuery);
 
     return response.statusCode == HttpCode.OK;
+  }
+
+  Future<BooksGenresModel?> getBooksGenres() async {
+    final requestQuery = {_userIdQueryHeader: userIdentifier};
+    HttpResponse response =
+        await _httpModule.get(_bookGenresUrl, query: requestQuery);
+    if (response.statusCode != HttpCode.OK || response.body is! Map)
+      return null;
+
+    final booksGenres =
+        BooksGenresModel.fromJson(response.body as Map<String, dynamic>);
+    return booksGenres;
   }
 }

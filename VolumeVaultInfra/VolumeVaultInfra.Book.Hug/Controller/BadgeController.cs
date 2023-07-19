@@ -78,17 +78,18 @@ public class BadgeController : IBadgeController
         return recivedBadgeRead;
     }
 
-    public async Task<BadgeReadModel> RemoveBadgeFromUser(string userId, BadgeCode badgeCode)
+    public async Task<BadgeReadModel?> RemoveBadgeFromUser(string userId, BadgeCode badgeCode)
     {
         UserIdentifier userIdentifier = 
             await userIdentifierRepository.EnsureInMirror(new() { userIdentifier = userId });
         
         logger.Information("Removing badge [{BadgeCode}] from user ID[{UserID}]", badgeCode, userIdentifier.userIdentifier);
 
-        BadgeModel removedBadge = await badgeRepository.RemoveBadgeFromUser(userIdentifier, badgeCode);
+        BadgeModel? removedBadge = await badgeRepository.RemoveBadgeFromUser(userIdentifier, badgeCode);
         await badgeRepository.Flush();
         
-        BadgeReadModel removedBadgeRead = mapper.Map<BadgeReadModel>(removedBadge);
+        BadgeReadModel? removedBadgeRead = removedBadge is not null ? 
+            mapper.Map<BadgeReadModel>(removedBadge) : null;
         return removedBadgeRead;
     }
 }

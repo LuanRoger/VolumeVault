@@ -53,16 +53,17 @@ public static class BadgeEndpoints
                     [FromQuery] string userId,
                     [FromServices] IBadgeController controller) =>
             {
+                BadgeReadModel? removedBadge;
                 try
                 {
-                    await controller.RemoveBadgeFromUser(userId, badgeCode);
+                   removedBadge = await controller.RemoveBadgeFromUser(userId, badgeCode);
                 }
                 catch(Exception e)
                 {
                     return Results.BadRequest(e.Message);
                 }
                 
-                return Results.Ok();
+                return removedBadge is null ? Results.NotFound() : Results.Ok(removedBadge);
             });
         return builder;
     }

@@ -8,10 +8,12 @@ namespace VolumeVaultInfra.Book.Hug.Repositories;
 public class BookRepository : IBookRepository
 {
     private DatabaseContext bookDb { get; }
+    private IGenreRepository genreRepository { get; }
 
-    public BookRepository(DatabaseContext bookDb)
+    public BookRepository(DatabaseContext bookDb, IGenreRepository genreRepository)
     {
         this.bookDb = bookDb;
+        this.genreRepository = genreRepository;
     }
     
     public async Task<BookModel> AddBook(BookModel book)
@@ -22,10 +24,10 @@ public class BookRepository : IBookRepository
         return addedBook.Entity;
     }
     
-    public async Task<BookModel?> GetBookById(string id) => await bookDb.books.FindAsync(id);
+    public async Task<BookModel?> GetBookById(Guid id) => await bookDb.books.FindAsync(id);
 
     public async Task<IReadOnlyList<BookModel>> GetUserOwnedBooksSplited(UserIdentifier user, int section, int limitPerSection, 
-        BookSortOptions? bookSortOptions)
+        BookResultLimiter? resultLimiter, BookSortOptions? bookSortOptions)
     {
         var splitedBooks = bookDb.books
             .Where(book => book.owner == user)
@@ -35,7 +37,20 @@ public class BookRepository : IBookRepository
             splitedBooks = bookSortOptions.ascending ? 
                 splitedBooks.OrderBy(bookSortOptions.GetExpression()) :
                 splitedBooks.OrderByDescending(bookSortOptions.GetExpression());
-        
+        // ReSharper disable once InvertIf
+        if(resultLimiter is not null)
+        {
+            if(resultLimiter.genres is not null)
+            {
+                var booksWithGenres = await genreRepository
+                    .GetBooksByGenres(resultLimiter.genres, user);
+                splitedBooks = splitedBooks.Where(book => booksWithGenres.Contains(book));
+            }
+            if(resultLimiter.bookFormat is not null)
+                splitedBooks = splitedBooks
+                    .Where(book => book.format == resultLimiter.bookFormat);
+        }
+
         return await splitedBooks.ToListAsync();
     }
 

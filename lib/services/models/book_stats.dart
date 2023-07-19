@@ -4,6 +4,6 @@ class BookStats {
   BookStats({required this.count});
 
   factory BookStats.fromJson(Map<String, dynamic> json) {
-    return BookStats(count: json["count"]);
+    return BookStats(count: json["count"] as int);
   }
 }

@@ -7,37 +7,45 @@ class BookImageViewer extends StatelessWidget {
   final double borderWidth;
   final BoxBorder? border;
   final BorderRadius? borderRadius;
+  final BoxFit? fit;
 
-  final double _height = 250.0;
-  final double _width = 175.0;
+  static const double _height = 250;
+  static const double _width = 175;
 
   const BookImageViewer(
-      {super.key,
-      required this.image,
+      {required this.image,
+      super.key,
       this.placeholder,
       this.sizeMultiplier = 1,
       this.borderWidth = 0.5,
       this.border,
-      this.borderRadius});
+      this.borderRadius,
+      this.fit});
 
   @override
   Widget build(BuildContext context) {
+    final useMultiplier = fit == null;
+    final containerHeight = _height * sizeMultiplier;
+    final containerWidth = _width * sizeMultiplier;
+
     return Container(
       clipBehavior: Clip.hardEdge,
-      height: _height * sizeMultiplier,
-      width: _width * sizeMultiplier,
+      height: useMultiplier ? containerHeight : null,
+      width: useMultiplier ? containerWidth : null,
       decoration: BoxDecoration(
-        borderRadius: borderRadius ?? BorderRadius.circular(15.0),
+        borderRadius: borderRadius ?? BorderRadius.circular(15),
         border: border ?? Border.all(width: borderWidth),
       ),
-      child: image != null ? Image(
-        image: image!,
-        height: _height * sizeMultiplier,
-        width: _width * sizeMultiplier,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) =>
-            const Icon(Icons.image_not_supported_rounded),
-      ) : placeholder,
+      child: image != null
+          ? Image(
+              image: image!,
+              height: useMultiplier ? _height * sizeMultiplier : null,
+              width: useMultiplier ? _width * sizeMultiplier : null,
+              fit: useMultiplier ? BoxFit.cover : fit,
+              errorBuilder: (_, __, ___) =>
+                  const Icon(Icons.image_not_supported_rounded),
+            )
+          : placeholder,
     );
   }
 }

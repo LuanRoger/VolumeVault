@@ -46,7 +46,7 @@ public class BookControllerExceptionsTest
     public async void GetBookInfoByIdBookNotFoundExceptionTest()
     {
         const string userIdentifier = "1";
-        const string bookId = "1";
+        string bookId = BookFakeModels.bookModelTestDumy.id.ToString();
         UserIdentifier user = new()
         {
             id = 1,
@@ -61,7 +61,7 @@ public class BookControllerExceptionsTest
         tagRepository.Setup(ex => ex.GetBookTags(It.IsAny<BookModel>()))
             .ReturnsAsync(BookUtilsFakeModels.bookTags);
         bookRepository.Setup(ex => 
-                ex.GetBookById(It.IsAny<string>()))
+                ex.GetBookById(It.IsAny<Guid>()))
             .ReturnsAsync(returnedBooModel);
         
         await Assert.ThrowsAsync<BookNotFoundException>(() => bookController
@@ -71,7 +71,7 @@ public class BookControllerExceptionsTest
     public async void GetSingleBookInfoTest()
     {
         const string userIdentifier = "1";
-        const string bookId = "1";
+        string bookId = BookFakeModels.bookModelTestDumy.id.ToString();
         UserIdentifier user = new()
         {
             id = 1,
@@ -87,7 +87,7 @@ public class BookControllerExceptionsTest
         tagRepository.Setup(ex => ex.GetBookTags(It.IsAny<BookModel>()))
             .ReturnsAsync(BookUtilsFakeModels.bookTags);
         bookRepository.Setup(ex => 
-                ex.GetBookById(It.IsAny<string>()))
+                ex.GetBookById(It.IsAny<Guid>()))
             .ReturnsAsync(returnedBooModel);
         
         BookReadModel booksResult = await bookController
@@ -123,14 +123,16 @@ public class BookControllerExceptionsTest
             id = 1,
             userIdentifier = USER_IDENTIFIER
         };
+        BookUpdateModel bookUpdate = BookFakeModels.bookUpdateModelTestDumy;
+        string bookId = BookFakeModels.bookModelTestDumy.id.ToString();
         
         userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
             .ReturnsAsync(user);
-        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<string>()))
+        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<Guid>()))
             .ReturnsAsync(() => null);
         
         await Assert.ThrowsAsync<BookNotFoundException>(() =>
-            bookController.UpdateBook(BookFakeModels.bookUpdateModelTestDumy, It.IsAny<string>(), USER_IDENTIFIER));
+            bookController.UpdateBook(bookUpdate, bookId, USER_IDENTIFIER));
     }
     
     [Fact]
@@ -152,7 +154,7 @@ public class BookControllerExceptionsTest
         
         userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
             .ReturnsAsync(user);
-        bookRepository.Setup(ex => ex.GetBookById(book.id.ToString()))
+        bookRepository.Setup(ex => ex.GetBookById(book.id))
             .ReturnsAsync(book);
         
         await Assert.ThrowsAsync<NotOwnerBookException>(() => 
@@ -167,14 +169,15 @@ public class BookControllerExceptionsTest
             id = 1,
             userIdentifier = USER_IDENTIFIER
         };
+        string bookId = BookFakeModels.bookModelTestDumy.id.ToString();
 
         userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
             .ReturnsAsync(user);
-        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<string>()))
+        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<Guid>()))
             .ReturnsAsync(() => null);
         
         await Assert.ThrowsAsync<BookNotFoundException>(() => 
-            bookController.RemoveBook(It.IsAny<string>(), USER_IDENTIFIER));
+            bookController.RemoveBook(bookId, USER_IDENTIFIER));
     }
     
     [Fact]
@@ -195,10 +198,10 @@ public class BookControllerExceptionsTest
         
         userRepository.Setup(ex => ex.EnsureInMirror(It.IsAny<UserIdentifier>()))
             .ReturnsAsync(user);
-        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<string>()))
+        bookRepository.Setup(ex => ex.GetBookById(It.IsAny<Guid>()))
             .ReturnsAsync(book);
         
         await Assert.ThrowsAsync<NotOwnerBookException>(() => 
-            bookController.RemoveBook(It.IsAny<string>(), USER_IDENTIFIER));
+            bookController.RemoveBook(book.id.ToString(), USER_IDENTIFIER));
     }
 }

@@ -1,9 +1,10 @@
 import 'package:volume_vault/models/enums/book_format.dart';
 import 'package:volume_vault/models/enums/read_status.dart';
+import "package:volume_vault/models/qr_sharable.dart";
 import 'package:volume_vault/models/user_info_model.dart';
 
-class BookModel {
-  int id;
+class BookModel implements QrSharable {
+  String id;
   String title;
   String author;
   String isbn;
@@ -44,6 +45,7 @@ class BookModel {
       required this.lastModification,
       required this.owner});
 
+  @override
   Map<String, dynamic> toJson() => {
         "id": id,
         "title": title,
@@ -68,37 +70,38 @@ class BookModel {
         "owner": owner.toJson(),
       };
   factory BookModel.fromJson(Map<String, dynamic> json) => BookModel(
-        json["id"],
-        json["title"],
-        json["author"],
-        json["isbn"],
-        publicationYear: json["publicationYear"],
-        publisher: json["publisher"],
-        edition: json["edition"],
-        pagesNumber: json["pagesNumber"],
+        json["id"] as String,
+        json["title"] as String,
+        json["author"] as String,
+        json["isbn"] as String,
+        publicationYear: json["publicationYear"] as int?,
+        publisher: json["publisher"] as String?,
+        edition: json["edition"] as int?,
+        pagesNumber: json["pagesNumber"] as int?,
         genre: json["genre"] != null
             ? (json["genre"] as List).map((e) => e as String).toSet()
             : null,
-        format:
-            json["format"] != null ? BookFormat.values[json["format"]] : null,
-        observation: json["observation"],
-        synopsis: json["synopsis"],
-        coverLink: json["coverLink"],
-        buyLink: json["buyLink"],
+        format: json["format"] != null
+            ? BookFormat.values[json["format"] as int]
+            : null,
+        observation: json["observation"] as String?,
+        synopsis: json["synopsis"] as String?,
+        coverLink: json["coverLink"] as String?,
+        buyLink: json["buyLink"] as String?,
         readStatus: json["readStatus"] != null
-            ? ReadStatus.values[json["readStatus"]]
+            ? ReadStatus.values[json["readStatus"] as int]
             : null,
         readStartDay: json["readStartDay"] != null
-            ? DateTime.parse(json["readStartDay"])
+            ? DateTime.parse(json["readStartDay"] as String)
             : null,
         readEndDay: json["readEndDay"] != null
-            ? DateTime.parse(json["readEndDay"])
+            ? DateTime.parse(json["readEndDay"] as String)
             : null,
         tags: json["tags"] != null
             ? (json["tags"] as List).map((e) => e as String).toSet()
             : null,
-        createdAt: DateTime.parse(json["createdAt"]),
-        lastModification: DateTime.parse(json["lastModification"]),
-        owner: UserInfoModel.fromJson(json["owner"]),
+        createdAt: DateTime.parse(json["createdAt"] as String),
+        lastModification: DateTime.parse(json["lastModification"] as String),
+        owner: UserInfoModel.fromJson(json["owner"] as Map<String, dynamic>),
       );
 }

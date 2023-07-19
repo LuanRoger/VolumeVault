@@ -1,37 +1,38 @@
 import "dart:convert";
 
 import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:lucide_icons/lucide_icons.dart";
 import "package:mobile_scanner/mobile_scanner.dart";
-import "package:volume_vault/models/book_model.dart";
+import "package:volume_vault/models/qr_share_recive.dart";
+import "package:volume_vault/pages/qr_scanner_page/qr_scanner_command.dart";
 import "package:volume_vault/pages/qr_scanner_page/widgets/detected_book_preview.dart";
 import "package:volume_vault/shared/hooks/qr_scanner_controller_hook.dart";
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class QrScannerPage extends HookConsumerWidget {
-  const QrScannerPage({super.key});
+  final QrScannerCommand _command = QrScannerCommand();
 
-  BookModel? _decodeBookFromQrCode(String base64Book) {
-    late final BookModel? decodedBook;
+  QrScannerPage({super.key});
+
+  QrShareRecive? _decodeInfoFromQrCode(String base64Book) {
+    late final QrShareRecive? decodedInfo;
     try {
       final jsonBook = utf8.decode(base64.decode(base64Book));
-      final bookMap = json.decode(jsonBook) as Map<String, dynamic>;
-      decodedBook = BookModel.fromJson(bookMap);
+      final shareInfo = json.decode(jsonBook) as Map<String, dynamic>;
+      decodedInfo = QrShareRecive.fromJson(shareInfo);
     } catch (_) {
-      decodedBook = null;
+      decodedInfo = null;
     }
 
-    return decodedBook;
+    return decodedInfo;
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scannerController = useQrScannerController(
-      useFrontCamera: true,
-    );
-    final detectedBookState = useState<BookModel?>(null);
+    final scannerController = useQrScannerController();
+    final detectedBookState = useState<QrShareRecive?>(null);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -51,12 +52,13 @@ class QrScannerPage extends HookConsumerWidget {
         ],
       ),
       body: MobileScanner(
+        controller: scannerController,
         onDetect: (capture) {
           if (capture.barcodes.isNotEmpty &&
               capture.barcodes.first.rawValue != null) {
-            final String base64Book = capture.barcodes.first.rawValue!;
-            final BookModel? book = _decodeBookFromQrCode(base64Book);
-            detectedBookState.value = book;
+            final base64Book = capture.barcodes.first.rawValue!;
+            final qrInfo = _decodeInfoFromQrCode(base64Book);
+            detectedBookState.value = qrInfo;
           }
         },
       ),
@@ -78,13 +80,14 @@ class QrScannerPage extends HookConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (detectedBookState.value != null) ...[
-                DetectedBookPreview(book: detectedBookState.value!),
+                QrDetectedInfoPreview(qrShare: detectedBookState.value!),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).pop(detectedBookState.value);
+                          _command.acceptQrCode(detectedBookState.value!,
+                              context: context);
                         },
                         child: Text(
                             AppLocalizations.of(context)!.addQrDetectedInfo)),
@@ -94,7 +97,7 @@ class QrScannerPage extends HookConsumerWidget {
                           detectedBookState.value = null;
                         },
                         child: Text(
-                            AppLocalizations.of(context)!.addQrDetectedInfo))
+                            AppLocalizations.of(context)!.recuseQrDetectedInfo))
                   ],
                 )
               ]

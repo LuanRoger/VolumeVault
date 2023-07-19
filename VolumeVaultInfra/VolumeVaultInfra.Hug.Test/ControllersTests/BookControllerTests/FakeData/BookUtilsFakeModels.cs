@@ -11,6 +11,11 @@ public static class BookUtilsFakeModels
         sortOptions = BookSort.Title,
         ascending = true
     };
+    public static BookResultLimiter defaultBookResultLimiter => new()
+    {
+        genres = null,
+        bookFormat = null
+    };
     
     public static IReadOnlyList<GenreModel> bookGenres => new List<GenreModel> { 
         new()

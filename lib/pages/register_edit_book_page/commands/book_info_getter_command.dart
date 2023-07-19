@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart' hide BottomSheet;
 import 'package:flutter/services.dart';
+import "package:go_router/go_router.dart";
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 import 'package:volume_vault/l10n/l10n.dart';
 import 'package:volume_vault/l10n/supported_locales.dart';
 import 'package:volume_vault/models/enums/book_format.dart';
 import 'package:volume_vault/models/enums/read_status.dart';
+import "package:volume_vault/models/utils/aditional_info_modal_model.dart";
+import "package:volume_vault/models/utils/read_date_info_modal_model.dart";
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import 'package:volume_vault/shared/validators/text_field_validator.dart';
 import 'package:volume_vault/shared/widgets/bottom_sheet/bottom_sheet.dart';
@@ -35,9 +38,9 @@ class BookInfoGetterCommand {
     final isbnInputFormater = MaskTextInputFormatter(
         mask: "###-##-####-###-#", type: MaskAutoCompletionType.eager);
 
-    String titleMemento = titleController?.text ?? "";
-    String authorMemento = authorController?.text ?? "";
-    String isbnMemento = isbnController?.text ?? "";
+    final titleMemento = titleController?.text ?? "";
+    final authorMemento = authorController?.text ?? "";
+    final isbnMemento = isbnController?.text ?? "";
 
     BottomSheet(
       action: (context) =>
@@ -141,30 +144,35 @@ class BookInfoGetterCommand {
     ).show(context);
   }
 
-  void showAditionalInfoModal(
+  Future<AditionalInfoModalModel?> showAditionalInfoModal(
       BuildContext context, GlobalKey<FormState> formKey,
-      {BookFormat? bookFormat,
+      {required TextfieldTagsController genreController,
+      BookFormat? bookFormat,
       TextEditingController? pageNumbController,
-      required TextfieldTagsController genreController,
       TextEditingController? buyLinkController}) async {
-    String pageNumbMemento = pageNumbController?.text ?? "";
-    List<String> genreMemento =
-        List.from(genreController.getTags ?? List.empty());
-    String buyLinkMemento = buyLinkController?.text ?? "";
-    BookFormat? bookFormatMemento = bookFormat ?? BookFormat.hardcover;
+    final pageNumbMemento = pageNumbController?.text ?? "";
+    final genreMemento =
+        List<String>.from(genreController.getTags ?? List.empty());
+    final buyLinkMemento = buyLinkController?.text ?? "";
+    final bookFormatMemento = bookFormat ?? BookFormat.hardcover;
+    final aditionalInfoModel =
+        AditionalInfoModalModel(bookFormat: bookFormat ?? BookFormat.hardcover);
+    var notSaveClose = false;
 
-    const List<String> genreSeparator = [",", ";"];
+    const genreSeparator = <String>[",", ";"];
 
     await BottomSheet(
       action: (context) =>
           bottomSheetActions(context, () => validateAndPop(context, formKey)),
       onClose: () {
         pageNumbController?.text = pageNumbMemento;
-        for (var genre in List.from(genreMemento)) {
+        // ignore: omit_local_variable_types
+        for (final String genre in List.from(genreMemento)) {
           genreController.addTag = genre;
         }
         buyLinkController?.text = buyLinkMemento;
         bookFormat = bookFormatMemento;
+        notSaveClose = true;
       },
       items: [
         Form(
@@ -173,7 +181,6 @@ class BookInfoGetterCommand {
             children: [
               DropdownButtonFormField(
                 value: bookFormat,
-                validator: null,
                 style: Theme.of(context).textTheme.bodyMedium,
                 items: [
                   DropdownMenuItem(
@@ -195,10 +202,35 @@ class BookInfoGetterCommand {
                     value: BookFormat.ebook,
                     child: Text(
                         L10n.bookFormat(context, format: BookFormat.ebook)),
-                  )
+                  ),
+                  DropdownMenuItem(
+                    value: BookFormat.pocket,
+                    child: Text(
+                        L10n.bookFormat(context, format: BookFormat.pocket)),
+                  ),
+                  DropdownMenuItem(
+                    value: BookFormat.audioBook,
+                    child: Text(
+                        L10n.bookFormat(context, format: BookFormat.audioBook)),
+                  ),
+                  DropdownMenuItem(
+                    value: BookFormat.spiral,
+                    child: Text(
+                        L10n.bookFormat(context, format: BookFormat.spiral)),
+                  ),
+                  DropdownMenuItem(
+                    value: BookFormat.hq,
+                    child:
+                        Text(L10n.bookFormat(context, format: BookFormat.hq)),
+                  ),
+                  DropdownMenuItem(
+                    value: BookFormat.collectorsEdition,
+                    child: Text(L10n.bookFormat(context,
+                        format: BookFormat.collectorsEdition)),
+                  ),
                 ],
-                onChanged: (newValue) =>
-                    bookFormat = newValue ?? BookFormat.hardcover,
+                onChanged: (newValue) => aditionalInfoModel.bookFormat =
+                    newValue ?? BookFormat.hardcover,
               ),
               const SizedBox(height: 15),
               TextFormField(
@@ -219,14 +251,13 @@ class BookInfoGetterCommand {
                 textSeparators: genreSeparator,
                 inputfieldBuilder:
                     (context, tec, fn, error, onChanged, onSubmitted) {
-                  return ((context, sc, tags, onTagDelete) => Column(
+                  return (context, sc, selectedTags, onTagDelete) => Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           TextFormField(
                             controller: tec,
                             focusNode: fn,
                             maxLength: 50,
-                            maxLines: 1,
                             decoration: InputDecoration(
                                 labelText: AppLocalizations.of(context)!
                                     .genresTextFieldHint,
@@ -234,16 +265,14 @@ class BookInfoGetterCommand {
                                 suffixIcon: IconButton(
                                   icon: const Icon(Icons.list_rounded),
                                   onPressed: () async {
-                                    final Set<String>? selectedGenres =
-                                        await Navigator.of(context)
-                                            .pushNamed<Set<String>>(
-                                      AppRoutes.selectBookGenrePageRoute,
-                                      arguments: [tags.toSet()],
-                                    );
+                                    final selectedGenres = await context
+                                        .push<Set<String>>(
+                                            AppRoutes.selectBookGenrePageRoute,
+                                            extra: [selectedTags.toSet()]);
                                     if (selectedGenres == null ||
                                         selectedGenres.isEmpty) return;
 
-                                    for (var genre in selectedGenres) {
+                                    for (final genre in selectedGenres) {
                                       genreController.addTag = genre;
                                     }
                                   },
@@ -251,9 +280,9 @@ class BookInfoGetterCommand {
                             onChanged: onChanged,
                             onFieldSubmitted: onSubmitted,
                           ),
-                          ChipList(tags.toSet(), onRemove: onTagDelete)
+                          ChipList(selectedTags.toSet(), onRemove: onTagDelete)
                         ],
-                      ));
+                      );
                 },
               ),
               const SizedBox(height: 15),
@@ -264,30 +293,33 @@ class BookInfoGetterCommand {
                     labelText:
                         AppLocalizations.of(context)!.buyLinkTextFieldHint),
                 maxLength: 500,
-                maxLines: 1,
               ),
             ],
           ),
         ),
       ],
     ).show(context);
+
+    return !notSaveClose ? aditionalInfoModel : null;
   }
 
-  void showGetReadDatesModal(BuildContext context,
-      {SupportedLocales? localization,
-      required ReadStatus readStatus,
+  Future<ReadDateInfoModalModel?> showGetReadDatesModal(BuildContext context,
+      {required ReadStatus readStatus,
+      SupportedLocales? localization,
       TextEditingController? readStartDayController,
       TextEditingController? readEndDayController,
       DateTime? readStartDay,
       DateTime? readEndDay}) async {
-    final SupportedLocales localizationOption =
-        localization ?? SupportedLocales.values[0];
+    final localizationOption = localization ?? SupportedLocales.values[0];
 
-    ReadStatus readStatusMemento = readStatus;
-    String? readStartDayControllerMemento = readStartDayController?.text;
-    String? readEndDayControllerMemento = readEndDayController?.text;
-    DateTime? readStartDayMemento = readStartDay;
-    DateTime? readEndDayMemento = readEndDay;
+    final readStartDayControllerMemento = readStartDayController?.text;
+    final readEndDayControllerMemento = readEndDayController?.text;
+
+    var notSaveClose = false;
+    final readDateInfoModalModel = ReadDateInfoModalModel(
+        readStatus: readStatus,
+        readStartDayText: readStartDay,
+        readEndDayText: readEndDay);
 
     await StatefulBottomSheet(
       dragable: true,
@@ -296,34 +328,29 @@ class BookInfoGetterCommand {
       action: (context) =>
           bottomSheetActions(context, () => Navigator.of(context).pop()),
       onClose: () {
-        readStatus = readStatusMemento;
         readStartDayController?.text = readStartDayControllerMemento ?? "";
         readEndDayController?.text = readEndDayControllerMemento ?? "";
-        if (readStartDayMemento != null) {
-          readStartDay = readStartDayMemento;
-        }
-        if (readEndDayMemento != null) {
-          readEndDay = readEndDayMemento;
-        }
+        notSaveClose = true;
       },
       child: (context, setState) {
         return Column(
           children: [
             BookReadChipChoice(
-              initialOption: readStatus,
+              initialOption: readDateInfoModalModel.readStatus,
               onChanged: (newReadStatus) {
-                readStatus = newReadStatus;
+                readDateInfoModalModel.readStatus = newReadStatus;
                 setState(() {});
               },
             ),
             DateTextField(
               label: AppLocalizations.of(context)!.readStartDayRegisterBookPage,
               controller: readStartDayController,
-              enabled: readStatus == ReadStatus.reading ||
-                  readStatus == ReadStatus.hasRead,
+              enabled:
+                  readDateInfoModalModel.readStatus == ReadStatus.reading ||
+                      readDateInfoModalModel.readStatus == ReadStatus.hasRead,
               onDateSelected: (newDate) {
                 setState(() {
-                  readStartDay = newDate;
+                  readDateInfoModalModel.readStartDayText = newDate;
                   readStartDayController?.text =
                       L10n.formatDateByLocale(localizationOption, newDate);
                 });
@@ -336,10 +363,10 @@ class BookInfoGetterCommand {
             DateTextField(
               label: AppLocalizations.of(context)!.readEndDayRegisterBookPage,
               controller: readEndDayController,
-              enabled: readStatus == ReadStatus.hasRead,
+              enabled: readDateInfoModalModel.readStatus == ReadStatus.hasRead,
               onDateSelected: (newDate) {
                 setState(() {
-                  readEndDay = newDate;
+                  readDateInfoModalModel.readEndDayText = newDate;
                   readEndDayController?.text =
                       L10n.formatDateByLocale(localizationOption, newDate);
                 });
@@ -352,5 +379,7 @@ class BookInfoGetterCommand {
         );
       },
     ).show(context);
+
+    return !notSaveClose ? readDateInfoModalModel : null;
   }
 }

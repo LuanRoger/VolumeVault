@@ -108,14 +108,13 @@ class SigninSection extends HookConsumerWidget {
                           return;
                         }
 
-                        context.goNamed(AppRoutes.homeNamedRoute);
+                        context.go(AppRoutes.homePageRoute);
                       },
                       child: Text(
                           AppLocalizations.of(context)!.signinButtonSigninPage),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
                           AppLocalizations.of(context)!

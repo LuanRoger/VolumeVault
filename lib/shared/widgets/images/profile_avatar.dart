@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import "package:volume_vault/shared/theme/text_themes.dart";
 
 class ProfileAvatar extends StatelessWidget {
   final ImageProvider? image;
@@ -39,11 +40,12 @@ class ProfileAvatar extends StatelessWidget {
                     key: UniqueKey(),
                     image: image!,
                     fit: BoxFit.cover,
-                    alignment: Alignment.center,
                   )
                 : Center(
-                    child: Text(letter,
-                        style: textStyle ?? Theme.of(context).textTheme.headlineLarge),
+                    child: Text(
+                      letter,
+                      style: textStyle ?? headlineLarge,
+                    ),
                   ),
           )
         : Shimmer.fromColors(

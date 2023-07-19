@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 import 'package:volume_vault/models/enums/book_format.dart';
 import 'package:volume_vault/models/enums/read_status.dart';
+import "package:volume_vault/models/utils/aditional_info_modal_model.dart";
 import 'package:volume_vault/pages/register_edit_book_page/commands/book_info_getter_command.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 
@@ -24,18 +25,18 @@ class BookInfoGetter extends StatelessWidget {
   final TextEditingController synopsisController;
   final TextEditingController readStartDayController;
   final TextEditingController readEndDayController;
-  final DateTime? readStartDay;
-  final DateTime? readEndDay;
+  final ValueNotifier<DateTime?> readStartDay;
+  final ValueNotifier<DateTime?> readEndDay;
 
-  final ReadStatus readStatus;
+  final ValueNotifier<ReadStatus> readStatus;
 
   final GlobalKey<FormState> _bookInfoFormKey;
   final GlobalKey<FormState> _publisherInfoFormKey;
   final GlobalKey<FormState> _aditionalInfoFormKey;
 
-  final BookFormat bookFormat;
+  final ValueNotifier<BookFormat> bookFormat;
 
-  const BookInfoGetter({
+  BookInfoGetter({
     super.key,
     required BookInfoGetterCommand command,
     this.divider,
@@ -52,8 +53,8 @@ class BookInfoGetter extends StatelessWidget {
     required this.synopsisController,
     required this.readStartDayController,
     required this.readEndDayController,
-    this.readStartDay,
-    this.readEndDay,
+    required this.readStartDay,
+    required this.readEndDay,
     required this.readStatus,
     required GlobalKey<FormState> bookInfoFormKey,
     required GlobalKey<FormState> publisherInfoFormKey,
@@ -94,19 +95,23 @@ class BookInfoGetter extends StatelessWidget {
         ),
         if (divider != null) divider!,
         ListTile(
-          leading: const Icon(Icons.info_rounded),
-          title: Text(AppLocalizations.of(context)!
-              .aditionalInformationRegisterBookPage),
-          trailing: const Icon(Icons.navigate_next_rounded),
-          onTap: () => _command.showAditionalInfoModal(
-            context,
-            _aditionalInfoFormKey,
-            bookFormat: bookFormat,
-            buyLinkController: buyLinkController,
-            genreController: genreController,
-            pageNumbController: pageNumbController,
-          ),
-        ),
+            leading: const Icon(Icons.info_rounded),
+            title: Text(AppLocalizations.of(context)!
+                .aditionalInformationRegisterBookPage),
+            trailing: const Icon(Icons.navigate_next_rounded),
+            onTap: () async {
+              final aditionalInfo = await _command.showAditionalInfoModal(
+                context,
+                _aditionalInfoFormKey,
+                bookFormat: bookFormat.value,
+                buyLinkController: buyLinkController,
+                genreController: genreController,
+                pageNumbController: pageNumbController,
+              );
+              if (aditionalInfo == null) return;
+
+              bookFormat.value = aditionalInfo.bookFormat;
+            }),
         if (divider != null) divider!,
         ListTile(
             leading: const Icon(Icons.text_snippet_rounded),
@@ -130,12 +135,21 @@ class BookInfoGetter extends StatelessWidget {
           leading: const Icon(Icons.calendar_month_rounded),
           title: Text(AppLocalizations.of(context)!.readStatusRegisterBookPage),
           trailing: const Icon(Icons.navigate_next_rounded),
-          onTap: () => _command.showGetReadDatesModal(context,
-              readStatus: readStatus,
-              readStartDay: readStartDay,
-              readEndDay: readEndDay,
-              readStartDayController: readStartDayController,
-              readEndDayController: readEndDayController),
+          onTap: () async {
+            final readDateInfoResult = await _command.showGetReadDatesModal(
+                context,
+                readStatus: readStatus.value,
+                readStartDay: readStartDay.value,
+                readEndDay: readEndDay.value,
+                readStartDayController: readStartDayController,
+                readEndDayController: readEndDayController);
+
+            if (readDateInfoResult == null) return;
+
+            readStatus.value = readDateInfoResult.readStatus;
+            readStartDay.value = readDateInfoResult.readStartDayText;
+            readEndDay.value = readDateInfoResult.readEndDayText;
+          },
         ),
       ],
     );

@@ -28,15 +28,24 @@ class L10n {
   }
 
   static String bookFormat(BuildContext context, {required BookFormat format}) {
-    return switch(format) {
-      BookFormat.hardcover => AppLocalizations.of(context)!
-                        .hardcoverRegisterBookFormatOption,
-      BookFormat.hardback => AppLocalizations.of(context)!
-                        .hardbackRegisterBookFormatOption,
-      BookFormat.paperback => AppLocalizations.of(context)!
-                        .paperbackRegisterBookFormatOption,
-      BookFormat.ebook => AppLocalizations.of(context)!
-                        .ebookRegisterBookFormatOption,
+    return switch (format) {
+      BookFormat.hardcover =>
+        AppLocalizations.of(context)!.hardcoverRegisterBookFormatOption,
+      BookFormat.hardback =>
+        AppLocalizations.of(context)!.hardbackRegisterBookFormatOption,
+      BookFormat.paperback =>
+        AppLocalizations.of(context)!.paperbackRegisterBookFormatOption,
+      BookFormat.ebook =>
+        AppLocalizations.of(context)!.ebookRegisterBookFormatOption,
+      BookFormat.pocket =>
+        AppLocalizations.of(context)!.pocketBookRegisterBookFormatOption,
+      BookFormat.audioBook =>
+        AppLocalizations.of(context)!.audiobookRegisterBookFormatOption,
+      BookFormat.spiral =>
+        AppLocalizations.of(context)!.spiralBoundRegisterBookFormatOption,
+      BookFormat.hq => AppLocalizations.of(context)!.hqRegisterBookFormatOption,
+      BookFormat.collectorsEdition =>
+        AppLocalizations.of(context)!.collectorsEditionRegisterBookFormatOption,
     };
   }
 }

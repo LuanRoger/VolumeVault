@@ -12,6 +12,8 @@
     "titleSigninPage": "Signin",
     "emailTextFieldHint": "E-mail",
     "signinButtonSigninPage": "Signin",
+    "fogotPasswordButtonSigninPage": "Forgot password?",
+    "resetPasswordDialogTitle": "Reset password",
     "alreadyHaveAccountSigninPage": "Already have an account?",
     "loginButtonSigninPage": "Login",
 
@@ -51,8 +53,10 @@
     "sortByReadEndDayChip": "Read end date",
     "sortByRegisterDateChip": "Register date",
     "searchFilterBook": "Books",
+    "allBooksFormatsTabOption": "All",
 
     "profileSectionErrorMessage": "This could not be possible",
+    "claimBadgesUserButtonMessage": "Claim badges",
 
     "synopsisBookViewerPage": "Synopsis",
     "informationsBookViewerPage": "Informations",
@@ -89,6 +93,11 @@
     "hardbackRegisterBookFormatOption": "Hardback",
     "paperbackRegisterBookFormatOption": "Paperback",
     "ebookRegisterBookFormatOption": "Ebook",
+    "pocketBookRegisterBookFormatOption": "Pocket book",
+    "audiobookRegisterBookFormatOption": "Audiobook",
+    "spiralBoundRegisterBookFormatOption": "Spiral bound",
+    "hqRegisterBookFormatOption": "HQ",
+    "collectorsEditionRegisterBookFormatOption": "Collector's edition",
 
     "addQrDetectedInfo": "Add",
     "recuseQrDetectedInfo": "Refuse",
@@ -126,6 +135,9 @@
     "lightThemeSelectionDialogOption": "Light",
     "darkThemeSelectionDialogOption": "Dark",
     "systemThemeSelectionDialogOption": "System",
+    "verifyEmailDialogTitle": "Verify email",
+    "verifyEmailDialogMessage": "Your account does not have a verified email, so it has limitations. Do you want to check your email?",
+    "sendVerificationEmailDialogButton": "Send verification email",
 
     "saveBottomSheetButton": "Save",
     "selectBottomSheetButton": "Select",
@@ -155,11 +167,28 @@
 
     "wasNotPossibleToUpdateTheBookSnackbarMessage": "Was not possible to update the book informations.",
     "registerBookErrorSnackbarMessage": "An error occurs.",
+    "incorrectCredentialErrorSnackbarMessage": "Incorrect credentials.",
+    "userDoesNotExistErrorSnackbarMessage": "This user does not exists. Create an account.",
+    "aErrorOccursErrorSnackbarMessage": "A error occurs.",
+    "recoveryPasswordEmailSentSnackbarMessage": "A recovery email was sent to {email}",
+    "@recoveryPasswordEmailSentSnackbarMessage": {
+        "placeholders": {
+            "email": {
+                "type": "String?"
+            }
+        }
+    },
+    "emailAlreadyInUseErrorSnackbarMessage": "This email is allready being used.",
+    "invalidEmailErrorSnackbarMessage": "This email is invalid.",
+    "verificationEmailSentSnackbarMessage": "The verification email was sent.",
+    "errorBadgeClaimSnackbarMessage": "An error occurs while claiming the badge.",
 
     "badgeCreator": "Creator of VolumeVault",
     "badgeSponsor": "Sponsor",
     "badgeContributor": "Contributor",
     "badgeTester": "Tester",
     "badgeBugHunter": "Bug Hunter",
-    "badgeEarlyAccessUser": "Early Access User"
+    "badgeEarlyAccessUser": "Early Access User",
+    "badgeVerifiedAccount": "Verified Account",
+    "badgeUnverifiedAccount": "Unverified Account"
 }

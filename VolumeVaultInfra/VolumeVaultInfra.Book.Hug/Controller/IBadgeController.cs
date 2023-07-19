@@ -7,5 +7,5 @@ public interface IBadgeController
 {
     public Task<BadgeReadModel> GetUserBadges(string userId);
     public Task<BadgeReadModel> GiveBadgeToUser(GiveUserBadgeRequest giveUserBadgeRequest);
-    public Task<BadgeReadModel> RemoveBadgeFromUser(string userId, BadgeCode badgeCode);
+    public Task<BadgeReadModel?> RemoveBadgeFromUser(string userId, BadgeCode badgeCode);
 }
