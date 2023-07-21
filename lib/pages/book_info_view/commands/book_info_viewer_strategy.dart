@@ -70,8 +70,9 @@ abstract class BookInfoViewerStrategy {
     return result;
   }
 
-  void launchBuyPage(String buyPageLink) async {
-    await launchUrl(Uri.parse(buyPageLink));
+  Future<void> launchBuyPage(String buyPageLink) async {
+    final buyPageUri = Uri.parse(buyPageLink);
+    await launchUrl(buyPageUri, mode: LaunchMode.externalApplication);
   }
 
   Future<void> showBookShareQrCode(BuildContext context,

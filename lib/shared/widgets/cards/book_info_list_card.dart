@@ -20,16 +20,20 @@ class BookInfoListCard extends BookInfoCard {
           child: Stack(
             alignment: Alignment.topRight,
             children: [
-              bookModel.coverLink != null
-                  ? Fade(
-                      child: Image.network(
-                        bookModel.coverLink!,
-                        fit: BoxFit.cover,
-                        alignment: Alignment.topCenter,
-                        width: 230,
-                      ),
-                    )
-                  : const SizedBox(),
+              if (bookModel.coverLink != null)
+                Fade(
+                  child: Image.network(
+                    bookModel.coverLink!,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter,
+                    width: 230,
+                    errorBuilder: (_, __, ___) => const Center(
+                      child: Icon(Icons.image_not_supported_rounded),
+                    ),
+                  ),
+                )
+              else
+                const SizedBox(),
               Padding(
                 padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 2.0),
                 child: Align(
@@ -56,16 +60,17 @@ class BookInfoListCard extends BookInfoCard {
                         ),
                       ),
                       const Spacer(),
-                      bookModel.synopsis != null
-                          ? Flexible(
-                              flex: 10,
-                              child: Text(
-                                bookModel.synopsis!,
-                                overflow: TextOverflow.fade,
-                                maxLines: 5,
-                              ),
-                            )
-                          : const SizedBox()
+                      if (bookModel.synopsis != null)
+                        Flexible(
+                          flex: 10,
+                          child: Text(
+                            bookModel.synopsis!,
+                            overflow: TextOverflow.fade,
+                            maxLines: 5,
+                          ),
+                        )
+                      else
+                        const SizedBox()
                     ],
                   ),
                 ),
