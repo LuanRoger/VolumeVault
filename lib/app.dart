@@ -17,7 +17,7 @@ class App extends ConsumerWidget {
         ref.watch(themePreferencesStateProvider).themeBrightnes;
     final localizationPreferences =
         ref.watch(localizationPreferencesStateProvider);
-    final routeConfig = ref.read(routeProvider);
+    final routeConfig = ref.watch(routeProvider);
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
