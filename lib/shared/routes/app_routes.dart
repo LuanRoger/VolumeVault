@@ -8,4 +8,5 @@ class AppRoutes {
   static const String largeInfoInputPageRoute = "/largeInfoInput";
   static const String selectBookGenrePageRoute = "/selectBookGenre";
   static const String configurationsPageRoute = "/configurations";
+  static const String aboutPageRoute = "/about";
 }

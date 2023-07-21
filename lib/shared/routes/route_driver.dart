@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/pages/book_info_view/book_info_viewer_page.dart';
 import 'package:volume_vault/pages/configuration_page/configuration_page.dart';
+import "package:volume_vault/pages/help_page/about_page.dart";
 import 'package:volume_vault/pages/home_page/home_page.dart';
 import 'package:volume_vault/pages/login_signin_page/login_signin_page.dart';
 import 'package:volume_vault/pages/qr_scanner_page/qr_scanner_page.dart';
@@ -89,6 +90,10 @@ final List<RouteBase> routes = [
       return const ConfigurationPage();
     },
   ),
+  GoRoute(
+    path: AppRoutes.aboutPageRoute,
+    builder: (_, __) => AboutPage(),
+  )
 ];
 
 final routeProvider = Provider<GoRouter>((ref) {
