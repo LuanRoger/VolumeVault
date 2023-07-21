@@ -1,31 +1,32 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:package_info_plus/package_info_plus.dart";
+import "package:shared_preferences/shared_preferences.dart";
 import "package:volume_vault/controllers/badge_archive_controller.dart";
 import "package:volume_vault/controllers/badge_controller.dart";
-import 'package:volume_vault/controllers/book_controller.dart';
-import 'package:volume_vault/controllers/book_search_controller.dart';
-import 'package:volume_vault/controllers/stats_controller.dart';
-import 'package:volume_vault/models/api_config_params.dart';
-import 'package:volume_vault/models/search_api_config_params.dart';
-import 'package:volume_vault/models/user_session.dart';
-import 'package:volume_vault/models/user_storage_bucket.dart';
-import 'package:volume_vault/providers/interfaces/graphics_preferences_state.dart';
-import 'package:volume_vault/providers/interfaces/localization_preferences_state.dart';
-import 'package:volume_vault/providers/interfaces/storage_bucket_notifier.dart';
-import 'package:volume_vault/providers/interfaces/theme_preferences_state.dart';
-import 'package:volume_vault/providers/interfaces/user_session_state.dart';
+import "package:volume_vault/controllers/book_controller.dart";
+import "package:volume_vault/controllers/book_search_controller.dart";
+import "package:volume_vault/controllers/stats_controller.dart";
+import "package:volume_vault/models/api_config_params.dart";
+import "package:volume_vault/models/search_api_config_params.dart";
+import "package:volume_vault/models/user_session.dart";
+import "package:volume_vault/models/user_storage_bucket.dart";
+import "package:volume_vault/providers/interfaces/graphics_preferences_state.dart";
+import "package:volume_vault/providers/interfaces/localization_preferences_state.dart";
+import "package:volume_vault/providers/interfaces/storage_bucket_notifier.dart";
+import "package:volume_vault/providers/interfaces/theme_preferences_state.dart";
+import "package:volume_vault/providers/interfaces/user_session_state.dart";
 import "package:volume_vault/services/badge_archive_service.dart";
 import "package:volume_vault/services/badges_service.dart";
-import 'package:volume_vault/services/book_search_service.dart';
-import 'package:volume_vault/services/book_service.dart';
-import 'package:volume_vault/services/stats_service.dart';
-import 'package:volume_vault/shared/preferences/models/graphics_preferences.dart';
-import 'package:volume_vault/shared/preferences/models/localization_preferences.dart';
-import 'package:volume_vault/shared/preferences/models/theme_preferences.dart';
-import 'package:volume_vault/shared/preferences/models/server_config.dart';
-import 'package:volume_vault/shared/utils/env_vars.dart';
+import "package:volume_vault/services/book_search_service.dart";
+import "package:volume_vault/services/book_service.dart";
+import "package:volume_vault/services/stats_service.dart";
+import "package:volume_vault/shared/preferences/models/graphics_preferences.dart";
+import "package:volume_vault/shared/preferences/models/localization_preferences.dart";
+import "package:volume_vault/shared/preferences/models/server_config.dart";
+import "package:volume_vault/shared/preferences/models/theme_preferences.dart";
+import "package:volume_vault/shared/utils/env_vars.dart";
 
-part '../controllers/controller_providers.dart';
+part "../controllers/controller_providers.dart";
 
 final userSessionAuthProvider =
     NotifierProvider<UserSessionState, UserSession?>(UserSessionState.new);
@@ -87,6 +88,9 @@ final graphicsPreferencesStateProvider =
 final localizationPreferencesStateProvider = StateNotifierProvider<
     LocalizationPreferencesState,
     LocalizationPreferences>((_) => throw UnimplementedError());
+
+final packageInfoProvider =
+    Provider<PackageInfo>((_) => throw UnimplementedError());
 
 final _bookServiceProvider = FutureProvider<BookService?>((ref) async {
   final apiConfig = await ref.watch(apiParamsProvider.future);

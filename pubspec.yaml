@@ -51,6 +51,7 @@ dependencies:
   lottie: ^2.4.0
   timelines: ^0.1.0
   text_scroll: ^0.2.0
+  package_info_plus: ^4.0.2
   
 dev_dependencies:
   flutter_test:
@@ -75,6 +76,7 @@ flutter:
     - assets/images/home_page_desktop.jpg
     - assets/images/login_signin_page_divider.jpg
     - assets/animations/no_books.json
+    - assets/icon/icon.png
 
   # fonts:
   #   - family: Schyler

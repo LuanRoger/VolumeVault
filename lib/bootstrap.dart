@@ -5,6 +5,7 @@ import "package:firebase_crashlytics/firebase_crashlytics.dart";
 import "package:flutter/foundation.dart";
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import "package:package_info_plus/package_info_plus.dart";
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:volume_vault/firebase_options.dart';
 import 'package:volume_vault/l10n/l10n.dart';
@@ -41,6 +42,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   final sharedPreferences = await SharedPreferences.getInstance();
   final appPreferences = loadPreferences(sharedPreferences);
+  final packageInfo = await PackageInfo.fromPlatform();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -66,6 +68,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
         return LocalizationPreferencesState(sharedPreferences,
             localizationPreferences: localizationPreferences);
       }),
+      packageInfoProvider.overrideWith((_) => packageInfo)
     ], child: await builder()),
   );
 }

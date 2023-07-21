@@ -9,4 +9,5 @@ class AppImages {
       AssetImage("assets/images/home_page_desktop.jpg");
   static const AssetImage loginSigninPageDivider =
       AssetImage("assets/images/login_signin_page_divider.jpg");
+  static const AssetImage volumeVaultIcon = AssetImage("assets/icon/icon.png");
 }
