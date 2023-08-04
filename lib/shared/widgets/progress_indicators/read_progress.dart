@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:volume_vault/l10n/l10n.dart';
 import 'package:volume_vault/models/enums/read_status.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import "package:volume_vault/l10n/formaters/time_formater.dart";
 
 class ReadProgress extends StatelessWidget {
   final ReadStatus readStatus;
@@ -70,7 +70,8 @@ class ProgressInfoTimeline extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final localizationPreferences =
-        ref.watch(localizationPreferencesStateProvider);
+        ref.read(localizationPreferencesStateProvider);
+    final localization = localizationPreferences.localization;
 
     return Chip(
       label: Padding(
@@ -78,9 +79,7 @@ class ProgressInfoTimeline extends ConsumerWidget {
         child: Column(
           children: [
             Text(label),
-            if (date != null)
-              Text(L10n.formatDateByLocale(
-                  localizationPreferences.localization, date!)),
+            if (date != null) Text(formatDateByLocale(localization, date!)),
           ],
         ),
       ),

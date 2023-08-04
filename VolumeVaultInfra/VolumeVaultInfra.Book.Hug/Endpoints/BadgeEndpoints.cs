@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using VolumeVaultInfra.Book.Hug.Controller;
 using VolumeVaultInfra.Book.Hug.Exceptions;
+using VolumeVaultInfra.Book.Hug.Middleware.Policies.Cache;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Models.Enums;
 
@@ -26,15 +28,20 @@ public static class BadgeEndpoints
             }
             
             return Results.Ok(badgeReadModel);
-        });
+        })
+            .CacheBadgeOutputDiffByUserId("userId");
         builder.MapPost("/", 
             async (HttpContext _,
                 [FromBody] GiveUserBadgeRequest userBadgeWrite,
-                [FromServices] IBadgeController controller) =>
+                [FromServices] IBadgeController controller,
+                [FromServices] IOutputCacheStore cacheStore,
+                CancellationToken cancellationToken) =>
             {
                 try
                 {
                     await controller.GiveBadgeToUser(userBadgeWrite);
+                    await cacheStore.EvictByTagAsync(CacheTags.CACHE_BADGE_TAG,
+                        cancellationToken);
                 }
                 catch(AllreadyClaimedBadgeException e)
                 {
@@ -51,12 +58,16 @@ public static class BadgeEndpoints
             async (HttpContext _, 
                     BadgeCode badgeCode,
                     [FromQuery] string userId,
-                    [FromServices] IBadgeController controller) =>
+                    [FromServices] IBadgeController controller,
+                    [FromServices] IOutputCacheStore cacheStore,
+                    CancellationToken cancellationToken) =>
             {
                 BadgeReadModel? removedBadge;
                 try
                 {
                    removedBadge = await controller.RemoveBadgeFromUser(userId, badgeCode);
+                   await cacheStore.EvictByTagAsync(CacheTags.CACHE_BADGE_TAG,
+                       cancellationToken);
                 }
                 catch(Exception e)
                 {

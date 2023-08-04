@@ -10,6 +10,7 @@ import 'package:volume_vault/models/enums/read_status.dart';
 import "package:volume_vault/models/utils/aditional_info_modal_model.dart";
 import "package:volume_vault/models/utils/read_date_info_modal_model.dart";
 import 'package:volume_vault/shared/routes/app_routes.dart';
+import "package:volume_vault/l10n/formaters/time_formater.dart";
 import 'package:volume_vault/shared/validators/text_field_validator.dart';
 import 'package:volume_vault/shared/widgets/bottom_sheet/bottom_sheet.dart';
 import 'package:volume_vault/shared/widgets/bottom_sheet/stateful_bottom_sheet.dart';
@@ -352,7 +353,7 @@ class BookInfoGetterCommand {
                 setState(() {
                   readDateInfoModalModel.readStartDayText = newDate;
                   readStartDayController?.text =
-                      L10n.formatDateByLocale(localizationOption, newDate);
+                      formatDateByLocale(localizationOption, newDate);
                 });
               },
               initialDate: DateTime.now(),
@@ -368,7 +369,7 @@ class BookInfoGetterCommand {
                 setState(() {
                   readDateInfoModalModel.readEndDayText = newDate;
                   readEndDayController?.text =
-                      L10n.formatDateByLocale(localizationOption, newDate);
+                      formatDateByLocale(localizationOption, newDate);
                 });
               },
               initialDate: DateTime.now(),

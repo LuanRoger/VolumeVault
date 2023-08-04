@@ -202,7 +202,8 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                         .HasColumnName("LastModification");
 
                     b.Property<string>("observation")
-                        .HasColumnType("text")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("Obsevation");
 
                     b.Property<int>("ownerid")
@@ -234,8 +235,7 @@ namespace VolumeVaultInfra.Book.Hug.Migrations
                         .HasColumnName("Readed");
 
                     b.Property<string>("synopsis")
-                        .HasMaxLength(300)
-                        .HasColumnType("character varying(300)")
+                        .HasColumnType("text")
                         .HasColumnName("Synopsis");
 
                     b.Property<string>("title")

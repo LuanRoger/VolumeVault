@@ -9,12 +9,12 @@ public static class BadgeArchiveFakeData
     public static ClaimUserBadgesRequest fakeClaimUserBadgesRequest => new()
     {
         email = "test@test.com",
-        claimedAt = DateTime.Today
+        claimedAt = DateTime.Now
     };
     public static AttachBadgeToEmailRequest fakeAttachBadgeToEmailRequest => new()
     {
         email = "test@test.com",
-        attachDate = DateTime.Today,
+        attachDate = DateTime.Now,
         badgeCode = BadgeCode.Tester
     };
     public static UserIdentifier fakeUserIdentifier => new()

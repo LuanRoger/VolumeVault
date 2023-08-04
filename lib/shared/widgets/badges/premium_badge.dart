@@ -1,25 +1,19 @@
 import "package:flutter/material.dart";
+import "package:volume_vault/shared/widgets/badges/text_badge.dart";
 
 class PremiumBadge extends StatelessWidget {
-  const PremiumBadge({super.key});
+  final double? width;
+  final double? height;
+
+  const PremiumBadge({this.width, this.height, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = Theme.of(context).colorScheme.tertiary;
-
-    return Container(
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(50),
-        border: Border.all(color: accentColor, width: 1),
-      ),
-      child: Text(
-        "Premium",
-        style: TextStyle(
-          color: accentColor,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+    return TextBadge(
+      text: "Premium",
+      color: Theme.of(context).colorScheme.tertiary,
+      height: height,
+      width: width,
     );
   }
 }

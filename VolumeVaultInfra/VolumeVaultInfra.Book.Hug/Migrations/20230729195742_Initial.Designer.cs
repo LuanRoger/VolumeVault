@@ -12,7 +12,7 @@ using VolumeVaultInfra.Book.Hug.Contexts;
 namespace VolumeVaultInfra.Book.Hug.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230715141135_Initial")]
+    [Migration("20230729195742_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

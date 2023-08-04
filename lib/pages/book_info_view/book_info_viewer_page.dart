@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import "package:text_scroll/text_scroll.dart";
+import "package:volume_vault/l10n/formaters/time_formater.dart";
 import 'package:volume_vault/l10n/l10n.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/pages/book_info_view/commands/book_info_viewer_command.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 import "package:volume_vault/shared/theme/text_themes.dart";
-import 'package:volume_vault/shared/time_formats.dart';
 import 'package:volume_vault/shared/utils/image_utils.dart';
 import 'package:volume_vault/shared/widgets/cards/title_card.dart';
 import 'package:volume_vault/shared/widgets/cards/title_text_card.dart';
@@ -137,6 +136,9 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final graphicsPreferences = ref.watch(graphicsPreferencesStateProvider);
     final size = MediaQuery.of(context).size;
+    final localizationPreferences =
+        ref.read(localizationPreferencesStateProvider);
+    final localization = localizationPreferences.localization;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -229,14 +231,14 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
                 title:
                     Text(AppLocalizations.of(context)!.createdAtBookViewerPage),
                 trailing: Text(
-                  dayMonthYearFormat.format(book.createdAt),
+                  formatDateByLocale(localization, book.createdAt),
                 ),
               ),
               ListTile(
                 title: Text(
                     AppLocalizations.of(context)!.lastUpdateBookViewerPage),
                 trailing: Text(
-                  dayMonthYearFormat.format(book.lastModification),
+                  formatDateByLocale(localization, book.lastModification),
                 ),
               ),
             ],

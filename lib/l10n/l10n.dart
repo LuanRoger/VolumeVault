@@ -16,17 +16,6 @@ class L10n {
     }
   }
 
-  static String formatDateByLocale(SupportedLocales locale, DateTime date) {
-    switch (locale) {
-      case SupportedLocales.enUS:
-        return DateFormat('MM/dd/yyyy').format(date);
-      case SupportedLocales.ptBR:
-        return DateFormat('dd/MM/yyyy').format(date);
-      default:
-        return DateFormat('MM/dd/yyyy').format(date);
-    }
-  }
-
   static String bookFormat(BuildContext context, {required BookFormat format}) {
     return switch (format) {
       BookFormat.hardcover =>

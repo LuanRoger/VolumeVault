@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart' hide BottomSheet;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:volume_vault/l10n/l10n.dart';
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/models/enums/book_format.dart';
 import 'package:volume_vault/models/enums/read_status.dart';
@@ -10,6 +9,7 @@ import 'package:volume_vault/pages/register_edit_book_page/commands/register_edi
 import 'package:volume_vault/pages/register_edit_book_page/widgets/book_info_getter.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/hooks/text_field_tags_controller_hook.dart';
+import "package:volume_vault/l10n/formaters/time_formater.dart";
 import 'package:volume_vault/shared/widgets/chip/chip_list.dart';
 import 'package:volume_vault/shared/widgets/viewers/book_image_viewer.dart';
 import 'package:volume_vault/shared/widgets/icon/icon_text.dart';
@@ -39,6 +39,7 @@ class RegisterEditBookPageDesktop extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final localizationPreferences =
         ref.read(localizationPreferencesStateProvider);
+    final localization = localizationPreferences.localization;
 
     final coverUrlController =
         useTextEditingController(text: editBookModel?.coverLink);
@@ -77,14 +78,13 @@ class RegisterEditBookPageDesktop extends HookConsumerWidget {
     final readStartDay = useState<DateTime?>(editBookModel?.readStartDay);
     final readStartDayController = useTextEditingController(
         text: editBookModel?.readStartDay != null
-            ? L10n.formatDateByLocale(localizationPreferences.localization,
+            ? formatDateByLocale(localizationPreferences.localization,
                 editBookModel!.readStartDay!)
             : null);
     final readEndDay = useState<DateTime?>(editBookModel?.readEndDay);
     final readEndDayController = useTextEditingController(
         text: editBookModel?.readEndDay != null
-            ? L10n.formatDateByLocale(localizationPreferences.localization,
-                editBookModel!.readEndDay!)
+            ? formatDateByLocale(localization, editBookModel!.readEndDay!)
             : null);
     final tagLabelsState = useState<Set<String>>(editBookModel?.tags ?? {});
     final editMode = editBookModel != null;

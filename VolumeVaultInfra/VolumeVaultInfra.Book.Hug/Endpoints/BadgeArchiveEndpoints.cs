@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using VolumeVaultInfra.Book.Hug.Controller;
 using VolumeVaultInfra.Book.Hug.Exceptions;
+using VolumeVaultInfra.Book.Hug.Middleware.Policies.Cache;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Models.Enums;
 
@@ -26,16 +28,21 @@ public static class BadgeArchiveEndpoints
             }
             
             return Results.Ok(badgeReadModel);
-        });
+        })
+            .CacheBadgeArchiveOutputDiffByEmail("email");
         builder.MapPost("/",
             async (HttpContext _,
                 [FromBody] AttachBadgeToEmailRequest request,
-                [FromServices] IBadgeArchiveController controller) =>
+                [FromServices] IBadgeArchiveController controller,
+                [FromServices] IOutputCacheStore cacheStore, 
+                CancellationToken cancellationToken) =>
             {
                 BadgeReadModel attachedBadge;
                 try
                 {
                     attachedBadge = await controller.AttachBadgeToEmail(request);
+                    await cacheStore.EvictByTagAsync(CacheTags.CACHE_BADGE_ARCHIVE, 
+                        cancellationToken);
                 }
                 catch(Exception e)
                 {
@@ -47,12 +54,16 @@ public static class BadgeArchiveEndpoints
         builder.MapPut("/", 
             async (HttpContext _,
                 [FromBody] ClaimUserBadgesRequest request,
-                [FromServices] IBadgeArchiveController controller) =>
+                [FromServices] IBadgeArchiveController controller,
+                [FromServices] IOutputCacheStore cacheStore, 
+                CancellationToken cancellationToken) =>
             {
                 BadgeReadModel badgeReadModel;
                 try
                 {
                     badgeReadModel = await controller.ClaimBadgeFromEmailInArchive(request);
+                    await cacheStore.EvictByTagAsync(CacheTags.CACHE_BADGE_ARCHIVE, 
+                        cancellationToken);
                 }
                 catch(UserEmailDoesNotExitsException e)
                 {
@@ -69,12 +80,16 @@ public static class BadgeArchiveEndpoints
             async (HttpContext _,
                 [FromQuery] string email,
                 [FromQuery] BadgeCode badgeCode,
-                [FromServices] IBadgeArchiveController controller) =>
+                [FromServices] IBadgeArchiveController controller,
+                [FromServices] IOutputCacheStore cacheStore, 
+                CancellationToken cancellationToken) =>
             {
                 BadgeReadModel? badgeReadModel;
                 try
                 {
                     badgeReadModel = await controller.DetachBadgeFromEmail(email, badgeCode);
+                    await cacheStore.EvictByTagAsync(CacheTags.CACHE_BADGE_ARCHIVE, 
+                        cancellationToken);
                 }
                 catch (Exception e)
                 {

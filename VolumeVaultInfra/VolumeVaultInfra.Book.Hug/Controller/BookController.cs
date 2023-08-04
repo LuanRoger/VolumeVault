@@ -4,7 +4,6 @@ using FluentValidation.Results;
 using VolumeVaultInfra.Book.Hug.Exceptions;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Models.Base;
-using VolumeVaultInfra.Book.Hug.Models.Enums;
 using VolumeVaultInfra.Book.Hug.Models.Utils;
 using VolumeVaultInfra.Book.Hug.Repositories;
 using VolumeVaultInfra.Book.Hug.Repositories.Search;

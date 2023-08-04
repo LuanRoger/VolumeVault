@@ -15,13 +15,15 @@ public class BadgeArchiveController : IBadgeArchiveController
     private ILogger logger { get; }
     private IMapper mapper { get; }
     private IValidator<AttachBadgeToEmailRequest> attachBadgeToEmailRequestValidator { get; }
+    private IValidator<ClaimUserBadgesRequest> claimUserBadgesRequestValidator { get; }
     private IEmailUserIdentifierRepository emailUserIdentifierRepository { get; }
     private IUserIdentifierRepository userIdentifierRepository { get; }
     private IBadgeRepository badgeRepository { get; }
     private IBadgeArchiveRepository badgeArchiveRepository { get; }
     private IAuthRepository authRepository { get; }
 
-    public BadgeArchiveController(ILogger logger, IMapper mapper, IValidator<AttachBadgeToEmailRequest> attachBadgeToEmailRequestValidator, IEmailUserIdentifierRepository emailUserIdentifierRepository,
+    public BadgeArchiveController(ILogger logger, IMapper mapper, IValidator<AttachBadgeToEmailRequest> attachBadgeToEmailRequestValidator, 
+        IValidator<ClaimUserBadgesRequest> claimUserBadgesRequestValidator, IEmailUserIdentifierRepository emailUserIdentifierRepository, 
         IBadgeArchiveRepository badgeArchiveRepository, IBadgeRepository badgeRepository, IUserIdentifierRepository userIdentifierRepository,
         IAuthRepository authRepository)
     {
@@ -33,6 +35,7 @@ public class BadgeArchiveController : IBadgeArchiveController
         this.badgeRepository = badgeRepository;
         this.badgeArchiveRepository = badgeArchiveRepository;
         this.authRepository = authRepository;
+        this.claimUserBadgesRequestValidator = claimUserBadgesRequestValidator;
     }
     
     public async Task<BadgeReadModel> AttachBadgeToEmail(AttachBadgeToEmailRequest requestInfo)
@@ -93,6 +96,15 @@ public class BadgeArchiveController : IBadgeArchiveController
 
     public async Task<BadgeReadModel> ClaimBadgeFromEmailInArchive(ClaimUserBadgesRequest requestInfo)
     {
+        ValidationResult result = await claimUserBadgesRequestValidator.ValidateAsync(requestInfo);
+        if(!result.IsValid)
+        {
+            InvalidClaimUserBadgeRequestException exception = new(result.Errors
+                .Select(error => error.ErrorMessage));
+            logger.Error(exception, "The claim user badge request is not valid");
+            throw exception;
+        }
+        
         EmailUserIdentifier emailUserIdentifier = await emailUserIdentifierRepository.EnsureEmailExists(new() { email = requestInfo.email});
         UserInfo? userInfo = await authRepository.GetUserByEmail(emailUserIdentifier);
         if(userInfo is null)

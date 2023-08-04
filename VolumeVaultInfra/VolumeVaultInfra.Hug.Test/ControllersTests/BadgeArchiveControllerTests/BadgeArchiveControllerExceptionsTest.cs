@@ -27,12 +27,15 @@ public class BadgeArchiveControllerExceptionsTest
     {
         IValidator<AttachBadgeToEmailRequest> attachBadgeToEmailRequestValidator = 
             new AttachBadgeToEmailRequestValidator();
+        IValidator<ClaimUserBadgesRequest> claimUserBadgesRequestValidator = 
+            new ClaimUserBadgeRequestValidator();
         IMapper mapper = new Mapper(new MapperConfiguration(configure =>
         {
             configure.AddProfile<BadgeModelBadgeReadModelMapperProfile>();
         }));
-        badgeArchiveController = new(logger.Object, mapper, attachBadgeToEmailRequestValidator, emailUserIdentifierRepository.Object, badgeArchiveRepository.Object, 
-            badgeRepository.Object, userIdentifierRepository.Object, authRepository.Object);
+        badgeArchiveController = new(logger.Object, mapper, attachBadgeToEmailRequestValidator, claimUserBadgesRequestValidator, 
+            emailUserIdentifierRepository.Object, badgeArchiveRepository.Object, badgeRepository.Object, 
+            userIdentifierRepository.Object, authRepository.Object);
     }
     
     [Fact]

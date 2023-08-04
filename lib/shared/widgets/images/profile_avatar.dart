@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import "package:volume_vault/shared/theme/text_themes.dart";
+import "package:volume_vault/shared/widgets/fx/shimmer_effect.dart";
 
 class ProfileAvatar extends StatelessWidget {
   final ImageProvider? image;
@@ -48,18 +49,13 @@ class ProfileAvatar extends StatelessWidget {
                     ),
                   ),
           )
-        : Shimmer.fromColors(
-            baseColor: Colors.white,
-            highlightColor: Colors.grey[300]!,
-            child: Container(
-              padding: padding,
-              height: height,
-              width: width,
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Theme.of(context).colorScheme.surfaceVariant),
-              child: const SizedBox.expand(),
-            ),
+        : ShimmerEffect(
+            width: width,
+            height: height,
+            padding: padding,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Theme.of(context).colorScheme.surfaceVariant),
           );
   }
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using VolumeVaultInfra.Book.Hug.Controller;
+using VolumeVaultInfra.Book.Hug.Middleware.Policies.Cache;
 using VolumeVaultInfra.Book.Hug.Models;
 
 namespace VolumeVaultInfra.Book.Hug.Endpoints;
@@ -16,7 +17,7 @@ internal static class StatsEndpoint
             BooksStatsReadModel booksStatsReadModel = await statsController.GetUserBooksStats(userId);
             
             return Results.Ok(booksStatsReadModel);
-        });
+        }).CacheStatsOutputDiffByUserId("userId");
         
         return groupBuilder;
     }

@@ -17,17 +17,23 @@ services:
       dockerfile: Dockerfile.Hug
     environment:
       - ASPNETCORE_ENVIRONMENT
+      - ASPNETCORE_URLS
       - API_KEY
       - POSTGRES_CONNECTION_STRING
       - MEILISEARCH_HOST
       - MEILISEARCH_MASTER_KEY
+      - ASPNETCORE_Kestrel__Certificates__Default__Password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path
     ports:
       - 5029:80
+      - 5030:443
     networks:
       - api
       - search
     depends_on:
       - postgres
+    volumes:
+      - ./.aspnet/https:/https:ro
     restart: unless-stopped
 
   vvinfra-search:
@@ -36,15 +42,21 @@ services:
       dockerfile: Dockerfile.Search
     environment:
       - ASPNETCORE_ENVIRONMENT
+      - ASPNETCORE_URLS
       - SEARCH_API_KEY
       - MEILISEARCH_HOST
       - MEILISEARCH_MASTER_KEY
+      - ASPNETCORE_Kestrel__Certificates__Default__Password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path
     ports:
-      - 7041:80
+      - 7039:80
+      - 7040:443
     networks:
       - search
     depends_on:
       - meilisearch
+    volumes:
+      - ./.aspnet/https:/https:ro
     restart: unless-stopped
 
   postgres:

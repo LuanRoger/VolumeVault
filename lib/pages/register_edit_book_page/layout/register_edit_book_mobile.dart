@@ -10,6 +10,7 @@ import 'package:volume_vault/pages/register_edit_book_page/commands/register_edi
 import 'package:volume_vault/pages/register_edit_book_page/widgets/book_info_getter.dart';
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/hooks/text_field_tags_controller_hook.dart';
+import "package:volume_vault/l10n/formaters/time_formater.dart";
 import 'package:volume_vault/shared/widgets/chip/chip_list.dart';
 import 'package:volume_vault/shared/widgets/viewers/book_image_viewer.dart';
 import 'package:volume_vault/shared/widgets/icon/icon_text.dart';
@@ -39,6 +40,7 @@ class RegisterEditBookPageMobile extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final localizationPreferences =
         ref.read(localizationPreferencesStateProvider);
+    final localization = localizationPreferences.localization;
 
     final coverUrlController =
         useTextEditingController(text: externalBookModel?.coverLink);
@@ -78,14 +80,12 @@ class RegisterEditBookPageMobile extends HookConsumerWidget {
     final readStartDay = useState<DateTime?>(externalBookModel?.readStartDay);
     final readStartDayController = useTextEditingController(
         text: externalBookModel?.readStartDay != null
-            ? L10n.formatDateByLocale(localizationPreferences.localization,
-                externalBookModel!.readStartDay!)
+            ? formatDateByLocale(localization, externalBookModel!.readStartDay!)
             : null);
     final readEndDay = useState<DateTime?>(externalBookModel?.readEndDay);
     final readEndDayController = useTextEditingController(
         text: externalBookModel?.readEndDay != null
-            ? L10n.formatDateByLocale(localizationPreferences.localization,
-                externalBookModel!.readEndDay!)
+            ? formatDateByLocale(localization, externalBookModel!.readEndDay!)
             : null);
     final tagLabelsState = useState<Set<String>>(externalBookModel?.tags ?? {});
     final editMode = externalBookModel != null && this.editMode;

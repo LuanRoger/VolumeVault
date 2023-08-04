@@ -40,10 +40,10 @@ public class BookModel
     public BookFormat? format { get; set; }
     
     [Column("Obsevation")]
+    [MaxLength(500)]
     public string? observation { get; set; }
     
     [Column("Synopsis")]
-    [MaxLength(300)]
     public string? synopsis { get; set; }
     
     [Column("CoverLink")]

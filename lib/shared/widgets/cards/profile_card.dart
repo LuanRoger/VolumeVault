@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import "package:go_router/go_router.dart";
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import "package:volume_vault/shared/routes/app_routes.dart";
 import "package:volume_vault/shared/theme/text_themes.dart";
 import "package:volume_vault/shared/ui_utils/snackbar_utils.dart";
 import "package:volume_vault/shared/widgets/badges/verified_badge.dart";
@@ -71,7 +73,7 @@ class _ProfileCard extends HookConsumerWidget {
       return null;
     }, [profileImageLoadState.value, profileBackgroundImageLoadState.value]);
 
-    final showControllCard = badgeToClaimFuture.hasData &&
+    final showClaimBadgeButton = badgeToClaimFuture.hasData &&
         badgeToClaimFuture.data != null &&
         badgeToClaimFuture.data!.count > 0;
 
@@ -194,19 +196,19 @@ class _ProfileCard extends HookConsumerWidget {
                   ],
                 ),
               ),
-              if (showControllCard)
-                Expanded(
-                  flex: 0,
-                  child: Card(
-                    color: Theme.of(context).colorScheme.primaryContainer,
-                    elevation: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: cardControllerLoading.value
-                          ? const Center(child: CircularProgressIndicator())
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
+              Expanded(
+                flex: 0,
+                child: Card(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  elevation: 0,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: cardControllerLoading.value
+                        ? const Center(child: CircularProgressIndicator())
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              if (showClaimBadgeButton)
                                 Flexible(
                                   flex: 0,
                                   child: Badge(
@@ -237,12 +239,12 @@ class _ProfileCard extends HookConsumerWidget {
                                           .claimBadgesUserButtonMessage),
                                     ),
                                   ),
-                                )
-                              ],
-                            ),
-                    ),
+                                ),
+                            ],
+                          ),
                   ),
                 ),
+              ),
             ],
           );
   }

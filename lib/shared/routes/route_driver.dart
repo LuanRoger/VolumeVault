@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_vault/models/book_model.dart';
+import "package:volume_vault/pages/about_page/about_page.dart";
 import 'package:volume_vault/pages/book_info_view/book_info_viewer_page.dart';
 import 'package:volume_vault/pages/configuration_page/configuration_page.dart';
-import "package:volume_vault/pages/help_page/about_page.dart";
 import 'package:volume_vault/pages/home_page/home_page.dart';
 import 'package:volume_vault/pages/login_signin_page/login_signin_page.dart';
 import 'package:volume_vault/pages/qr_scanner_page/qr_scanner_page.dart';
 import 'package:volume_vault/pages/register_edit_book_page/pages/select_book_genre.dart';
 import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
 import 'package:volume_vault/pages/register_edit_book_page/pages/large_info_input.dart';
+import "package:volume_vault/pages/webview_page/webview_page.dart";
 import 'package:volume_vault/providers/providers.dart';
 import 'package:volume_vault/shared/routes/app_routes.dart';
 
@@ -84,6 +85,29 @@ final List<RouteBase> routes = [
       );
     },
   ),
+  GoRoute(
+      path: AppRoutes.webViewPageRoute,
+      builder: (_, state) {
+        final args = state.extra! as List<Object>;
+
+        final initialUrl = args[0] as String;
+        final destinationBuilder =
+            args.length > 1 ? args[1] as bool Function(String)? : null;
+        final restrictorBuilder =
+            args.length > 2 ? args[2] as bool Function(String)? : null;
+        final onDestinationReach =
+            args.length > 3 ? args[3] as void Function(BuildContext)? : null;
+        final onRestrictorReach =
+            args.length > 4 ? args[4] as void Function(BuildContext)? : null;
+
+        return WebViewPage(
+          initialUrl: initialUrl,
+          destinationBuilder: destinationBuilder,
+          restrictorBuilder: restrictorBuilder,
+          onDestinationReach: onDestinationReach,
+          onRestrictorReach: onRestrictorReach,
+        );
+      }),
   GoRoute(
     path: AppRoutes.configurationsPageRoute,
     builder: (context, state) {

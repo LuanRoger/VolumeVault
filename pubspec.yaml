@@ -52,6 +52,8 @@ dependencies:
   timelines: ^0.1.0
   text_scroll: ^0.2.0
   package_info_plus: ^4.0.2
+  webview_flutter: ^4.2.2
+  confetti: ^0.7.0
   
 dev_dependencies:
   flutter_test:

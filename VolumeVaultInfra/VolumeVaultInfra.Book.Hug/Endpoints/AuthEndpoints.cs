@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using VolumeVaultInfra.Book.Hug.Controller;
 using VolumeVaultInfra.Book.Hug.Exceptions;
+using VolumeVaultInfra.Book.Hug.Middleware.Policies.Cache;
 using VolumeVaultInfra.Book.Hug.Models;
 
 namespace VolumeVaultInfra.Book.Hug.Endpoints;
@@ -29,7 +30,8 @@ public static class AuthEndpoints
             }
             
             return Results.Ok(userInfo);
-        });
+        })
+            .CacheAuthOutputDiffByEmail("email");
         builder.MapGet("id/{userId}", 
             async (HttpContext _, 
                 [FromRoute] string userId,
@@ -50,9 +52,9 @@ public static class AuthEndpoints
                 }
             
                 return Results.Ok(userInfo);
-            });
+            })
+            .CacheAuthOutputDiffById("userId");
 
-        
         return builder;
     }
 }

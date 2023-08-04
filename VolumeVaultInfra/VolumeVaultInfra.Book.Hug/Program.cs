@@ -1,3 +1,4 @@
+using Asp.Versioning.Builder;
 using FirebaseAdmin;
 using FluentValidation;
 using Google.Apis.Auth.OAuth2;
@@ -10,6 +11,9 @@ using VolumeVaultInfra.Book.Hug.Endpoints;
 using VolumeVaultInfra.Book.Hug.Exceptions;
 using VolumeVaultInfra.Book.Hug.Filters;
 using VolumeVaultInfra.Book.Hug.Mapper.Profiles;
+using VolumeVaultInfra.Book.Hug.Middleware.Policies.Cache;
+using VolumeVaultInfra.Book.Hug.Middleware.Policies.RateLimiter;
+using VolumeVaultInfra.Book.Hug.Middleware.Versioning;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Repositories;
 using VolumeVaultInfra.Book.Hug.Repositories.Search;
@@ -32,7 +36,6 @@ FirebaseApp.Create(new AppOptions()
 {
     Credential = GoogleCredential.FromFile("volumevault-firebase-adminsdk.json")
 });
-
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
     string? mySqlConnectionString = EnvironmentVariables.PostgresConnectionString();
@@ -79,6 +82,7 @@ builder.Services.AddScoped<IValidator<BookWriteModel>, BookWriteModelValidator>(
 builder.Services.AddScoped<IValidator<BookUpdateModel>, BookUpdateModelValidator>();
 builder.Services.AddScoped<IValidator<GiveUserBadgeRequest>, UserBadgeWriteModelValidator>();
 builder.Services.AddScoped<IValidator<AttachBadgeToEmailRequest>, AttachBadgeToEmailRequestValidator>();
+builder.Services.AddScoped<IValidator<ClaimUserBadgesRequest>, ClaimUserBadgeRequestValidator>();
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
@@ -97,7 +101,37 @@ builder.Services.AddScoped<IBadgeController, BadgeController>();
 builder.Services.AddScoped<IBadgeArchiveController, BadgeArchiveController>();
 builder.Services.AddScoped<IAuthController, AuthController>();
 
+if(builder.Environment.IsDevelopment())
+{
+    builder.Services.AddHttpsRedirection(options =>
+    {
+        options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+    });
+}
+if(builder.Environment.IsProduction())
+{
+    builder.Services.AddHttpsRedirection(options =>
+    {
+        options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
+    });
+}
+builder.Services.AddHsts(options =>
+{
+    options.Preload = true;
+    options.MaxAge = TimeSpan.FromDays(365);
+});
+
+builder.Services.AddApiVersioningOptions();
+builder.Services.AddOutputCachePolicy();
+builder.Services.AddRateLimiterPolicy();
+
 WebApplication app = builder.Build();
+
+app.UseRateLimiter();
+app.UseHttpsRedirection();
+app.UseHsts();
+app.UseOutputCache();
+ApiVersionSet versionSet = ApiVersions.CreateVersionSet(app);
 
 using (IServiceScope serviceScope = app.Services.CreateScope())
 {
@@ -110,20 +144,34 @@ using (IServiceScope serviceScope = app.Services.CreateScope())
         await searchRepository.EnsureCreatedAndReady();
 }
 
-RouteGroupBuilder bookGroup = app.MapGroup("book");
-bookGroup.MapBookEndpoints()
-    .AddEndpointFilter<ApiKeyFilter>();
-RouteGroupBuilder statsGroup = app.MapGroup("stats");
-statsGroup.MapStatsEndpoints()
-    .AddEndpointFilter<ApiKeyFilter>();
-RouteGroupBuilder badgeGroup = app.MapGroup("badge");
-badgeGroup.MapBadgeEndpoints()
-    .AddEndpointFilter<ApiKeyFilter>();
+RouteGroupBuilder bookGroup = app.MapGroup("book")
+    .AddEndpointFilter<ApiKeyFilter>()
+    .RequireRateLimiting(RateLimiterPolicyBuilder.RATE_LIMITER_POLICY)
+    .WithApiVersionSet(versionSet)
+    .MapToApiVersion(ApiVersions.V1);
+bookGroup.MapBookEndpoints();
+
+RouteGroupBuilder statsGroup = app.MapGroup("stats")
+    .AddEndpointFilter<ApiKeyFilter>()
+    .RequireRateLimiting(RateLimiterPolicyBuilder.RATE_LIMITER_POLICY)
+    .WithApiVersionSet(versionSet)
+    .MapToApiVersion(ApiVersions.V1);
+statsGroup.MapStatsEndpoints();
+
+RouteGroupBuilder badgeGroup = app.MapGroup("badge")
+    .AddEndpointFilter<ApiKeyFilter>()
+    .RequireRateLimiting(RateLimiterPolicyBuilder.RATE_LIMITER_POLICY)
+    .WithApiVersionSet(versionSet)
+    .MapToApiVersion(ApiVersions.V1);
+badgeGroup.MapBadgeEndpoints();
 RouteGroupBuilder badgeArchiveGroup = badgeGroup.MapGroup("archive");
-badgeArchiveGroup.MapBadgeArchiveEndpoints()
-    .AddEndpointFilter<ApiKeyFilter>();
-RouteGroupBuilder authGroup = app.MapGroup("auth");
-authGroup.MapAuthEndpoints()
-    .AddEndpointFilter<ApiKeyFilter>();
+badgeArchiveGroup.MapBadgeArchiveEndpoints();
+
+RouteGroupBuilder authGroup = app.MapGroup("auth")
+    .AddEndpointFilter<ApiKeyFilter>()
+    .RequireRateLimiting(RateLimiterPolicyBuilder.RATE_LIMITER_POLICY)
+    .WithApiVersionSet(versionSet)
+    .MapToApiVersion(ApiVersions.V1);
+authGroup.MapAuthEndpoints();
 
 app.Run();

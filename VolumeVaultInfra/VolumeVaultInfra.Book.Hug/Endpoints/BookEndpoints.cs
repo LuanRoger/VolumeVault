@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using VolumeVaultInfra.Book.Hug.Controller;
 using VolumeVaultInfra.Book.Hug.Exceptions;
+using VolumeVaultInfra.Book.Hug.Middleware.Policies.Cache;
 using VolumeVaultInfra.Book.Hug.Models;
 using VolumeVaultInfra.Book.Hug.Models.Enums;
 using VolumeVaultInfra.Book.Hug.Models.Utils;
@@ -35,7 +37,10 @@ public static class BookEndpoints
                 
 
                 return Results.Ok(userBooks);
-            });
+            })
+            .CacheBookOutputDiffByUserIdPageAndLimit("userId",
+                "page", "limitPerPage");
+        
             builder.MapGet("{bookId:guid}", 
                 async (HttpContext _,
                     [FromRoute] Guid bookId,
@@ -78,12 +83,16 @@ public static class BookEndpoints
         builder.MapPost("/", 
             async ([FromQuery] string userId,
                 [FromBody] BookWriteModel bookWriteModel,
-                [FromServices] IBookController controller) =>
+                [FromServices] IBookController controller,
+                [FromServices] IOutputCacheStore cacheStore, 
+                CancellationToken cancellationToken) =>
             {
                 Guid newBookId;
                 try
                 {
                     newBookId = await controller.RegisterNewBook(bookWriteModel, userId);
+                    await cacheStore.EvictByTagAsync(CacheTags.CACHE_BOOK_TAG,
+                        cancellationToken);
                 }
                 catch(InvalidBookInformationException e)
                 {
@@ -100,12 +109,16 @@ public static class BookEndpoints
             async ([FromQuery] string userId,
                 [FromRoute] Guid bookId,
                 [FromBody] BookUpdateModel bookUpdateModel,
-                [FromServices] IBookController controller) =>
+                [FromServices] IBookController controller,
+                [FromServices] IOutputCacheStore cacheStore,
+                CancellationToken cancellationToken) =>
             {
                 Guid updatedBookId;
                 try
                 {
                     updatedBookId = await controller.UpdateBook(bookUpdateModel, bookId.ToString(), userId);
+                    await cacheStore.EvictByTagAsync(CacheTags.CACHE_BOOK_TAG,
+                        cancellationToken);
                 }
                 catch(InvalidBookInformationException e)
                 {
@@ -122,12 +135,16 @@ public static class BookEndpoints
             async (HttpContext _,
                 [FromRoute] Guid bookId,
                 [FromQuery] string userId,
-                [FromServices] IBookController controller) =>
+                [FromServices] IBookController controller, 
+                [FromServices] IOutputCacheStore cacheStore,
+                CancellationToken cancellationToken) =>
             {
                 Guid deletedBookId;
                 try
                 {
                     deletedBookId = await controller.RemoveBook(bookId.ToString(), userId);
+                    await cacheStore.EvictByTagAsync(CacheTags.CACHE_BOOK_TAG,
+                        cancellationToken);
                 }
                 catch(BookNotFoundException e)
                 {
