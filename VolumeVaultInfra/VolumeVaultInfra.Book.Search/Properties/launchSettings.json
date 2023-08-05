@@ -4,7 +4,7 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,
-      "applicationUrl": "http://localhost:7039;https://localhost:7040",
+      "applicationUrl": "http://localhost:7039",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "SEARCH_API_KEY": "ccae6d912a41bfefd569a77b5cd86603cde92e53cdd45813cba9e5bf080b3734",
@@ -16,7 +16,7 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,
-      "applicationUrl": "http://localhost:7039;https://localhost:7040",
+      "applicationUrl": "http://localhost:7039",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"
       }

@@ -42,33 +42,10 @@ builder.Services.AddScoped<IValidator<BookSearchRequest>, BookSearchRequestValid
 
 builder.Services.AddScoped<IBookSearchController, BookSearchController>();
 
-if(builder.Environment.IsDevelopment())
-{
-    builder.Services.AddHttpsRedirection(options =>
-    {
-        options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-    });
-}
-if(builder.Environment.IsProduction())
-{
-    builder.Services.AddHttpsRedirection(options =>
-    {
-        options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
-    });
-}
-
-builder.Services.AddHsts(options =>
-{
-    options.Preload = true;
-    options.MaxAge = TimeSpan.FromDays(365);
-});
-
 builder.Services.AddApiVersioningOptions();
 
 WebApplication app = builder.Build();
 
-app.UseHttpsRedirection();
-app.UseHsts();
 ApiVersionSet versionSet = ApiVersions.CreateVersionSet(app);
 using (IServiceScope scope = app.Services.CreateScope())
 {

@@ -101,26 +101,6 @@ builder.Services.AddScoped<IBadgeController, BadgeController>();
 builder.Services.AddScoped<IBadgeArchiveController, BadgeArchiveController>();
 builder.Services.AddScoped<IAuthController, AuthController>();
 
-if(builder.Environment.IsDevelopment())
-{
-    builder.Services.AddHttpsRedirection(options =>
-    {
-        options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-    });
-}
-if(builder.Environment.IsProduction())
-{
-    builder.Services.AddHttpsRedirection(options =>
-    {
-        options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
-    });
-}
-builder.Services.AddHsts(options =>
-{
-    options.Preload = true;
-    options.MaxAge = TimeSpan.FromDays(365);
-});
-
 builder.Services.AddApiVersioningOptions();
 builder.Services.AddOutputCachePolicy();
 builder.Services.AddRateLimiterPolicy();
@@ -128,8 +108,6 @@ builder.Services.AddRateLimiterPolicy();
 WebApplication app = builder.Build();
 
 app.UseRateLimiter();
-app.UseHttpsRedirection();
-app.UseHsts();
 app.UseOutputCache();
 ApiVersionSet versionSet = ApiVersions.CreateVersionSet(app);
 
