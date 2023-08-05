@@ -22,18 +22,13 @@ services:
       - POSTGRES_CONNECTION_STRING
       - MEILISEARCH_HOST
       - MEILISEARCH_MASTER_KEY
-      - ASPNETCORE_Kestrel__Certificates__Default__Password
-      - ASPNETCORE_Kestrel__Certificates__Default__Path
     ports:
       - 5029:80
-      - 5030:443
     networks:
       - api
       - search
     depends_on:
       - postgres
-    volumes:
-      - ./.aspnet/https:/https:ro
     restart: unless-stopped
 
   vvinfra-search:
@@ -46,17 +41,12 @@ services:
       - SEARCH_API_KEY
       - MEILISEARCH_HOST
       - MEILISEARCH_MASTER_KEY
-      - ASPNETCORE_Kestrel__Certificates__Default__Password
-      - ASPNETCORE_Kestrel__Certificates__Default__Path
     ports:
       - 7039:80
-      - 7040:443
     networks:
       - search
     depends_on:
       - meilisearch
-    volumes:
-      - ./.aspnet/https:/https:ro
     restart: unless-stopped
 
   postgres:
