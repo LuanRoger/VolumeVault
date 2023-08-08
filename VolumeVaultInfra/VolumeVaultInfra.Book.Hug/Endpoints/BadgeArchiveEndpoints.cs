@@ -98,7 +98,7 @@ public static class BadgeArchiveEndpoints
                 
                 return badgeReadModel is null ? Results.NotFound() : Results.Ok(badgeReadModel);
             });
-        
+
         return builder;
     }
 }

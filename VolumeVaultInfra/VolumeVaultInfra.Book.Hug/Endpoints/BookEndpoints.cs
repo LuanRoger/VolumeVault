@@ -38,8 +38,8 @@ public static class BookEndpoints
 
                 return Results.Ok(userBooks);
             })
-            .CacheBookOutputDiffByUserIdPageAndLimit("userId",
-                "page", "limitPerPage");
+            .CacheBookOutputDiffByUserIdPageBookFormatAndLimit("userId",
+                "page", "bookFormat", "limitPerPage");
         
             builder.MapGet("{bookId:guid}", 
                 async (HttpContext _,

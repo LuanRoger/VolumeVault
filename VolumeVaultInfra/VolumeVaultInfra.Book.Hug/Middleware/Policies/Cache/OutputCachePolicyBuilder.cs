@@ -16,12 +16,12 @@ public static class OutputCachePolicyBuilder
         return services;
     }
     
-    public static RouteHandlerBuilder CacheBookOutputDiffByUserIdPageAndLimit(this RouteHandlerBuilder builder, 
-        string userIdParamName, string pageParamName, string limitParamName)
+    public static RouteHandlerBuilder CacheBookOutputDiffByUserIdPageBookFormatAndLimit(this RouteHandlerBuilder builder, 
+        string userIdParamName, string pageParamName, string bookFormatParamName, string limitParamName)
     {
         builder.CacheOutput(options =>
         {
-            options.SetVaryByQuery(userIdParamName, pageParamName, limitParamName);
+            options.SetVaryByQuery(userIdParamName, pageParamName, limitParamName, bookFormatParamName);
             options.Tag(CacheTags.CACHE_BOOK_TAG);
         });
         return builder;
