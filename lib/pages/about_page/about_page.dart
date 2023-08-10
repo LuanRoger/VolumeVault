@@ -4,7 +4,6 @@ import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:volume_vault/pages/about_page/commands/about_command.dart";
 import "package:volume_vault/providers/providers.dart";
-import "package:volume_vault/shared/assets/app_images.dart";
 import "package:volume_vault/shared/theme/text_themes.dart";
 import "package:volume_vault/shared/widgets/heros/icon_app_name.dart";
 import "package:volume_vault/shared/widgets/list_tiles/expand_tile_text.dart";
@@ -166,16 +165,6 @@ class AboutPage extends ConsumerWidget {
                             content: TextSpan(
                               text: AppLocalizations.of(context)!
                                   .fqaQuestion15AnswerAboutPage,
-                              children: [
-                                TextSpan(
-                                    text: AppLocalizations.of(context)!
-                                        .fqaQuestion15AnswerProp1AboutPage,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.blue,
-                                        decoration: TextDecoration.underline),
-                                    recognizer: neonTextTapGesture)
-                              ],
                             ),
                           ),
                           ExpandTileText(
@@ -184,6 +173,16 @@ class AboutPage extends ConsumerWidget {
                             content: TextSpan(
                               text: AppLocalizations.of(context)!
                                   .fqaQuestion16AnswerAboutPage,
+                              children: [
+                                TextSpan(
+                                    text: AppLocalizations.of(context)!
+                                        .fqaQuestion16AnswerProp1AboutPage,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blue,
+                                        decoration: TextDecoration.underline),
+                                    recognizer: neonTextTapGesture)
+                              ],
                             ),
                           ),
                           ExpandTileText(
@@ -200,6 +199,38 @@ class AboutPage extends ConsumerWidget {
                             content: TextSpan(
                               text: AppLocalizations.of(context)!
                                   .fqaQuestion18AnswerAboutPage,
+                            ),
+                          ),
+                          ExpandTileText(
+                            AppLocalizations.of(context)!
+                                .fqaQuestion19AboutPage,
+                            content: TextSpan(
+                              text: AppLocalizations.of(context)!
+                                  .fqaQuestion19AnswerAboutPage,
+                            ),
+                          ),
+                          ExpandTileText(
+                            AppLocalizations.of(context)!
+                                .fqaQuestion20AboutPage,
+                            content: TextSpan(
+                              text: AppLocalizations.of(context)!
+                                  .fqaQuestion20AnswerAboutPage,
+                            ),
+                          ),
+                          ExpandTileText(
+                            AppLocalizations.of(context)!
+                                .fqaQuestion21AboutPage,
+                            content: TextSpan(
+                              text: AppLocalizations.of(context)!
+                                  .fqaQuestion21AnswerAboutPage,
+                            ),
+                          ),
+                          ExpandTileText(
+                            AppLocalizations.of(context)!
+                                .fqaQuestion22AboutPage,
+                            content: TextSpan(
+                              text: AppLocalizations.of(context)!
+                                  .fqaQuestion22AnswerAboutPage,
                             ),
                           ),
                         ],
