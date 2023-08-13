@@ -1,0 +1,660 @@
+{
+	"info": {
+		"_postman_id": "819c154d-497d-4238-92a4-e35c959ac44e",
+		"name": "VolumeVault",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25215552"
+	},
+	"item": [
+		{
+			"name": "HugService",
+			"item": [
+				{
+					"name": "Book",
+					"item": [
+						{
+							"name": "GetUserOwnedBooks",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5029/book?limitPerPage=10&sort=0&ascending=true&page=1&userId=0",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5029",
+									"path": [
+										"book"
+									],
+									"query": [
+										{
+											"key": "limitPerPage",
+											"value": "10"
+										},
+										{
+											"key": "sort",
+											"value": "0"
+										},
+										{
+											"key": "ascending",
+											"value": "true"
+										},
+										{
+											"key": "bookFormat",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "userId",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "RegisterBook",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-Api-Key",
+										"value": "ccae6d912a41bfefd569a77b5cd86603cde92e53cdd45813cba9e5bf080b3734",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Harry Potter\",\r\n    \"author\": \"J.K. Rowling\",\r\n    \"isbn\": \"978-85-7683-393-2\",\r\n    \"publicationYear\": 2017,\r\n    \"publisher\": \"Rocco\",\r\n    \"edition\": 1,\r\n    \"pagesNumber\": 208,\r\n    \"genre\": [ \"Fantasia\" ],\r\n    \"format\": 0,\r\n    \"observation\": \"I need to reed more\",\r\n    \"synopsis\": \"Harry Potter é um garoto cujos pais, feiticeiros, foram assassinados por um poderosíssimo bruxo quando ele ainda era um bebê.\",\r\n    \"coverLink\": \"https://m.media-amazon.com/images/I/81ibfYk4qmL.jpg\",\r\n    \"buyLink\": \"https://www.amazon.com.br/Harry-Potter-Pedra-Filosofal-Rowling/dp/8532530788/ref=asc_df_8532530788/?tag=googleshopp00-20&linkCode=df0&hvadid=379795242161&hvpos=&hvnetw=g&hvrand=4863720407530529741&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9074237&hvtargid=pla-569630960550&psc=1\",\r\n    \"readStatus\": 1,\r\n    \"readStartDay\": \"2023-01-26T13:54:08.015Z\",\r\n    \"readEndDay\": null,\r\n    \"createdAt\": \"2023-01-26T13:54:08.015Z\",\r\n    \"lastModification\": \"2023-01-26T13:54:08.015Z\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5029/book?userId=0",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5029",
+									"path": [
+										"book"
+									],
+									"query": [
+										{
+											"key": "userId",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "UpdateBook",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "X-Api-Key",
+										"value": "ccae6d912a41bfefd569a77b5cd86603cde92e53cdd45813cba9e5bf080b3734",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"Changed\",\r\n  \"author\": \"Changed\",\r\n  \"isbn\": \"000-00-0000-000-0\",\r\n  \"publicationYear\": 2000,\r\n  \"publisher\": \"Changed\",\r\n  \"edition\": 0,\r\n  \"pagesNumber\": 20,\r\n  \"genre\": [],\r\n  \"format\": 0,\r\n  \"observation\": \"Changed\",\r\n  \"synopsis\": \"Changed\",\r\n  \"coverLink\": \"Changed\",\r\n  \"buyLink\": \"Changed\",\r\n  \"readed\": false,\r\n  \"tags\": [\r\n    \"Changed\",\r\n    \"ChangedTest\"\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5029/book/1?userId=0",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5029",
+									"path": [
+										"book",
+										"1"
+									],
+									"query": [
+										{
+											"key": "userId",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DeleteBook",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "X-Api-Key",
+										"value": "ccae6d912a41bfefd569a77b5cd86603cde92e53cdd45813cba9e5bf080b3734",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:5029/book/1?userId=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5029",
+									"path": [
+										"book",
+										"1"
+									],
+									"query": [
+										{
+											"key": "userId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetBooksGenres",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:5030/book/genres?userId=0",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5030",
+									"path": [
+										"book",
+										"genres"
+									],
+									"query": [
+										{
+											"key": "userId",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Stats",
+					"item": [
+						{
+							"name": "GetUserBookStats",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:5030/stats?userId=0",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5030",
+									"path": [
+										"stats"
+									],
+									"query": [
+										{
+											"key": "userId",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Badge",
+					"item": [
+						{
+							"name": "GetUserBadges",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5029/badge?userId=0",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5029",
+									"path": [
+										"badge"
+									],
+									"query": [
+										{
+											"key": "userId",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GiveUserBadge",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"userId\": \"0\",\r\n    \"badgeCode\": 0,\r\n    \"recivedAt\": \"2023-01-26T13:54:08.015Z\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5029/badge?userId=0",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5029",
+									"path": [
+										"badge"
+									],
+									"query": [
+										{
+											"key": "userId",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DeleteUserBadge",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5029/badge/1?userId=0",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5029",
+									"path": [
+										"badge",
+										"1"
+									],
+									"query": [
+										{
+											"key": "userId",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "BadgeArchive",
+					"item": [
+						{
+							"name": "GetUserBadgesOnArchive",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:5029/badge/archive?email=test@test.com",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5029",
+									"path": [
+										"badge",
+										"archive"
+									],
+									"query": [
+										{
+											"key": "email",
+											"value": "test@test.com"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ClaimBadgesFromUserEmail",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"test@test.com\",\r\n    \"claimedAt\": \"2023-10-26T13:54:08.015Z\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5029/badge/archive",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5029",
+									"path": [
+										"badge",
+										"archive"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AttachBadgeToUserEmail",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "\r\n{\r\n    \"email\": \"test@test.com\",\r\n    \"badgeCode\": 0,\r\n    \"attachDate\": \"2023-01-26T13:54:08.015Z\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5029/badge/archive",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5029",
+									"path": [
+										"badge",
+										"archive"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DetachBadgeToUserEmail",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5029/badge/archive?email=test@test.com&badgeCode=0",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5029",
+									"path": [
+										"badge",
+										"archive"
+									],
+									"query": [
+										{
+											"key": "email",
+											"value": "test@test.com"
+										},
+										{
+											"key": "badgeCode",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "GetUserInfoFromAuthEmail",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5029/auth/email/test@test.com",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5029",
+									"path": [
+										"auth",
+										"email",
+										"test@test.com"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetUserInfoFromAuthIdentifier",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5029/auth/id/<Firebase User UID>",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5029",
+									"path": [
+										"auth",
+										"id",
+										"<Firebase User UID>"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "apikey",
+				"apikey": [
+					{
+						"key": "value",
+						"value": "ccae6d912a41bfefd569a77b5cd86603cde92e53cdd45813cba9e5bf080b3734",
+						"type": "string"
+					},
+					{
+						"key": "key",
+						"value": "X-Api-Key",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Search",
+			"item": [
+				{
+					"name": "SearchBook",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7040/search?userId=0&query=potter&limitPerSection=10",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7040",
+							"path": [
+								"search"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "0"
+								},
+								{
+									"key": "query",
+									"value": "potter"
+								},
+								{
+									"key": "limitPerSection",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "apikey",
+				"apikey": [
+					{
+						"key": "value",
+						"value": "ccae6d912a41bfefd569a77b5cd86603cde92e53cdd45813cba9e5bf080b3734",
+						"type": "string"
+					},
+					{
+						"key": "key",
+						"value": "X-Api-Key",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "ccae6d912a41bfefd569a77b5cd86603cde92e53cdd45813cba9e5bf080b3734",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "X-Api-Key",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
