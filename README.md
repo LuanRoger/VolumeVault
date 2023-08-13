@@ -21,7 +21,7 @@
 - 🔍 Fast search with [Meilisearch](https://www.meilisearch.com).
 - 🐋 [Docker](https://www.docker.com) and Docker Compose support.
 - 🔨 Multi environment build (development, sttaging, production).
-- 🔥 API integration with Firebase Admim SDK.
+- 🔥 Integration with Firebase Admim SDK.
 - 🛣️ API versioning.
 - 📤 Output cache.
 
@@ -98,6 +98,9 @@ Cheke out the [Postman](https://www.postman.com) collection to see all endpoints
   - `?userId=0`
   - `?query={string}`
   - `?limitPerSection=10`
+
+## Setup
+To setup the project (development/production environments) [click here](https://github.com/LuanRoger/VolumeVault/blob/main/SETUP.md).
 
 # Screenshots
 |                                                                            |
