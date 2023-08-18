@@ -7,9 +7,9 @@ import 'package:volume_vault/providers/providers.dart';
 
 abstract class ConfigurationPageStrategy {
   void resetConfiguration(BuildContext context, WidgetRef ref) async {
-    bool resetConfig = false;
+    var resetConfig = false;
 
-    await showDialog(
+    await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(
@@ -47,10 +47,11 @@ abstract class ConfigurationPageStrategy {
     }
   }
 
-  Future showThemeChangeDialog(BuildContext context, WidgetRef ref) async {
+  Future<void> showThemeChangeDialog(
+      BuildContext context, WidgetRef ref) async {
     final themeBrightness = ref.read(themePreferencesStateProvider);
 
-    await showDialog(
+    await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         actions: [
@@ -68,7 +69,7 @@ abstract class ConfigurationPageStrategy {
             RadioListTile<ThemeBrightness>(
               title: Text(AppLocalizations.of(context)!
                   .lightThemeSelectionDialogOption),
-              value: ThemeBrightness.LIGHT,
+              value: ThemeBrightness.light,
               groupValue: themeBrightness.themeBrightnes,
               onChanged: (newValue) {
                 if (newValue == null) return;
@@ -82,7 +83,7 @@ abstract class ConfigurationPageStrategy {
             RadioListTile<ThemeBrightness>(
               title: Text(
                   AppLocalizations.of(context)!.darkThemeSelectionDialogOption),
-              value: ThemeBrightness.DARK,
+              value: ThemeBrightness.dark,
               groupValue: themeBrightness.themeBrightnes,
               onChanged: (newValue) {
                 if (newValue == null) return;
@@ -96,7 +97,7 @@ abstract class ConfigurationPageStrategy {
             RadioListTile<ThemeBrightness>(
               title: Text(AppLocalizations.of(context)!
                   .systemThemeSelectionDialogOption),
-              value: ThemeBrightness.SYSTEM,
+              value: ThemeBrightness.system,
               groupValue: themeBrightness.themeBrightnes,
               onChanged: (newValue) {
                 if (newValue == null) return;
