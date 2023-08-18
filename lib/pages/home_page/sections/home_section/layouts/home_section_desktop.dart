@@ -99,6 +99,10 @@ class HomeSectionDesktop extends HookConsumerWidget {
             onPressed: () {
               _commands.showConfigurationsDialog(context);
             },
+          ),
+          IconButton(
+            icon: const Icon(Icons.help),
+            onPressed: () => context.push(AppRoutes.aboutPageRoute),
           )
         ],
       ),
