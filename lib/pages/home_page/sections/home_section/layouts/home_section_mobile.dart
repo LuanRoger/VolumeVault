@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import "package:volume_vault/l10n/l10n.dart";
+import "package:volume_vault/l10n/l10n_utils.dart";
 import 'package:volume_vault/models/book_model.dart';
 import "package:volume_vault/models/book_result_limiter.dart";
 import 'package:volume_vault/models/book_sort_option.dart';
@@ -188,36 +189,36 @@ class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
                               text: AppLocalizations.of(context)!
                                   .allBooksFormatsTabOption),
                           Tab(
-                            text: L10n.bookFormat(context,
+                            text: localizeBookFormat(context,
                                 format: BookFormat.hardcover),
                           ),
                           Tab(
-                              text: L10n.bookFormat(context,
+                              text: localizeBookFormat(context,
                                   format: BookFormat.hardback)),
                           Tab(
-                            text: L10n.bookFormat(context,
+                            text: localizeBookFormat(context,
                                 format: BookFormat.paperback),
                           ),
                           Tab(
-                            text: L10n.bookFormat(context,
+                            text: localizeBookFormat(context,
                                 format: BookFormat.ebook),
                           ),
                           Tab(
-                            text: L10n.bookFormat(context,
+                            text: localizeBookFormat(context,
                                 format: BookFormat.pocket),
                           ),
                           Tab(
-                              text: L10n.bookFormat(context,
+                              text: localizeBookFormat(context,
                                   format: BookFormat.audioBook)),
                           Tab(
-                            text: L10n.bookFormat(context,
+                            text: localizeBookFormat(context,
                                 format: BookFormat.spiral),
                           ),
                           Tab(
-                              text: L10n.bookFormat(context,
+                              text: localizeBookFormat(context,
                                   format: BookFormat.hq)),
                           Tab(
-                            text: L10n.bookFormat(context,
+                            text: localizeBookFormat(context,
                                 format: BookFormat.collectorsEdition),
                           ),
                         ]),

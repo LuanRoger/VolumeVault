@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import "package:volume_vault/l10n/formaters/time_formater.dart";
 import 'package:volume_vault/l10n/l10n.dart';
+import "package:volume_vault/l10n/l10n_utils.dart";
 import 'package:volume_vault/models/book_model.dart';
 import 'package:volume_vault/pages/book_info_view/commands/book_info_viewer_command.dart';
 import 'package:volume_vault/providers/providers.dart';
@@ -225,8 +226,8 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
                 ListTile(
                     title: Text(
                         AppLocalizations.of(context)!.formatBookViewerPage),
-                    trailing:
-                        Text(L10n.bookFormat(context, format: book.format!))),
+                    trailing: Text(
+                        localizeBookFormat(context, format: book.format!))),
               ListTile(
                 title:
                     Text(AppLocalizations.of(context)!.createdAtBookViewerPage),

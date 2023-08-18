@@ -4,6 +4,7 @@ import "package:go_router/go_router.dart";
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 import 'package:volume_vault/l10n/l10n.dart';
+import "package:volume_vault/l10n/l10n_utils.dart";
 import 'package:volume_vault/l10n/supported_locales.dart';
 import 'package:volume_vault/models/enums/book_format.dart';
 import 'package:volume_vault/models/enums/read_status.dart';
@@ -186,47 +187,47 @@ class BookInfoGetterCommand {
                 items: [
                   DropdownMenuItem(
                     value: BookFormat.hardcover,
-                    child: Text(
-                        L10n.bookFormat(context, format: BookFormat.hardcover)),
+                    child: Text(localizeBookFormat(context,
+                        format: BookFormat.hardcover)),
                   ),
                   DropdownMenuItem(
                     value: BookFormat.hardback,
-                    child: Text(
-                        L10n.bookFormat(context, format: BookFormat.hardback)),
+                    child: Text(localizeBookFormat(context,
+                        format: BookFormat.hardback)),
                   ),
                   DropdownMenuItem(
                     value: BookFormat.paperback,
-                    child: Text(
-                        L10n.bookFormat(context, format: BookFormat.paperback)),
+                    child: Text(localizeBookFormat(context,
+                        format: BookFormat.paperback)),
                   ),
                   DropdownMenuItem(
                     value: BookFormat.ebook,
                     child: Text(
-                        L10n.bookFormat(context, format: BookFormat.ebook)),
+                        localizeBookFormat(context, format: BookFormat.ebook)),
                   ),
                   DropdownMenuItem(
                     value: BookFormat.pocket,
                     child: Text(
-                        L10n.bookFormat(context, format: BookFormat.pocket)),
+                        localizeBookFormat(context, format: BookFormat.pocket)),
                   ),
                   DropdownMenuItem(
                     value: BookFormat.audioBook,
-                    child: Text(
-                        L10n.bookFormat(context, format: BookFormat.audioBook)),
+                    child: Text(localizeBookFormat(context,
+                        format: BookFormat.audioBook)),
                   ),
                   DropdownMenuItem(
                     value: BookFormat.spiral,
                     child: Text(
-                        L10n.bookFormat(context, format: BookFormat.spiral)),
+                        localizeBookFormat(context, format: BookFormat.spiral)),
                   ),
                   DropdownMenuItem(
                     value: BookFormat.hq,
-                    child:
-                        Text(L10n.bookFormat(context, format: BookFormat.hq)),
+                    child: Text(
+                        localizeBookFormat(context, format: BookFormat.hq)),
                   ),
                   DropdownMenuItem(
                     value: BookFormat.collectorsEdition,
-                    child: Text(L10n.bookFormat(context,
+                    child: Text(localizeBookFormat(context,
                         format: BookFormat.collectorsEdition)),
                   ),
                 ],

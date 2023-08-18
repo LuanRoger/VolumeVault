@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import "package:volume_vault/l10n/l10n.dart";
+import "package:volume_vault/l10n/l10n_utils.dart";
 import 'package:volume_vault/models/book_model.dart';
 import "package:volume_vault/models/book_result_limiter.dart";
 import 'package:volume_vault/models/book_sort_option.dart';
@@ -213,36 +214,36 @@ class HomeSectionDesktop extends HookConsumerWidget {
                           text: AppLocalizations.of(context)!
                               .allBooksFormatsTabOption),
                       Tab(
-                        text: L10n.bookFormat(context,
+                        text: localizeBookFormat(context,
                             format: BookFormat.hardcover),
                       ),
                       Tab(
-                          text: L10n.bookFormat(context,
+                          text: localizeBookFormat(context,
                               format: BookFormat.hardback)),
                       Tab(
-                        text: L10n.bookFormat(context,
+                        text: localizeBookFormat(context,
                             format: BookFormat.paperback),
                       ),
                       Tab(
-                        text:
-                            L10n.bookFormat(context, format: BookFormat.ebook),
+                        text: localizeBookFormat(context,
+                            format: BookFormat.ebook),
                       ),
                       Tab(
-                        text:
-                            L10n.bookFormat(context, format: BookFormat.pocket),
+                        text: localizeBookFormat(context,
+                            format: BookFormat.pocket),
                       ),
                       Tab(
-                          text: L10n.bookFormat(context,
+                          text: localizeBookFormat(context,
                               format: BookFormat.audioBook)),
                       Tab(
-                        text:
-                            L10n.bookFormat(context, format: BookFormat.spiral),
+                        text: localizeBookFormat(context,
+                            format: BookFormat.spiral),
                       ),
                       Tab(
-                          text:
-                              L10n.bookFormat(context, format: BookFormat.hq)),
+                          text: localizeBookFormat(context,
+                              format: BookFormat.hq)),
                       Tab(
-                        text: L10n.bookFormat(context,
+                        text: localizeBookFormat(context,
                             format: BookFormat.collectorsEdition),
                       ),
                     ],
@@ -307,10 +308,9 @@ class HomeSectionDesktop extends HookConsumerWidget {
                         children: [
                           IconButton(
                               onPressed: () async {
-                                final refresh = await context
-                                    .push<bool>(
-                                        AppRoutes.registerEditBookPageRoute,
-                                        extra: [bookOnViwer.value!, true]);
+                                final refresh = await context.push<bool>(
+                                    AppRoutes.registerEditBookPageRoute,
+                                    extra: [bookOnViwer.value!, true]);
                                 if (refresh == null || !refresh) return;
 
                                 pagingController.refresh();

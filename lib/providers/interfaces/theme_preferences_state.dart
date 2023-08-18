@@ -9,7 +9,7 @@ class ThemePreferencesState extends StateNotifier<ThemePreferences> {
 
   ThemePreferencesState(this._preferences, {ThemePreferences? themePreferences})
       : super(themePreferences ??
-            const ThemePreferences(themeBrightnes: ThemeBrightness.LIGHT));
+            const ThemePreferences(themeBrightnes: ThemeBrightness.light));
 
   ThemeBrightness get themeBrightness => state.themeBrightnes;
   set themeBrightness(ThemeBrightness newValue) {
@@ -18,7 +18,7 @@ class ThemePreferencesState extends StateNotifier<ThemePreferences> {
   }
 
   void reset() {
-    state = const ThemePreferences(themeBrightnes: ThemeBrightness.LIGHT);
+    state = const ThemePreferences(themeBrightnes: ThemeBrightness.light);
 
     _preferences.setInt(
         PreferencesKeys.themeModePrefKey, state.themeBrightnes.index);
