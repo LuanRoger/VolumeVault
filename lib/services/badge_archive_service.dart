@@ -27,12 +27,12 @@ class BadgeArchiveService {
   Future<UserBadgeModel?> getUserBadgesOnArchive(String email) async {
     final queryParams = {"email": email};
 
-    HttpResponse response = await _httpModule.get(_baseUrl, query: queryParams);
-    if (response.statusCode != HttpCode.OK || response.body is! Map) {
+    final response = await _httpModule.get(_baseUrl, query: queryParams);
+    if (response.statusCode != HttpCode.ok || response.body is! Map) {
       return null;
     }
 
-    UserBadgeModel userBadgeModel =
+    final userBadgeModel =
         UserBadgeModel.fromJson(response.body as Map<String, dynamic>);
     return userBadgeModel;
   }
@@ -41,7 +41,7 @@ class BadgeArchiveService {
       ClaimBadgeRequestModel request) async {
     final bodyRequest = json.encode(request);
     final response = await _httpModule.put(_baseUrl, body: bodyRequest);
-    if (response.statusCode != HttpCode.OK || response.body is! Map) {
+    if (response.statusCode != HttpCode.ok || response.body is! Map) {
       return null;
     }
 

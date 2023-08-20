@@ -1,12 +1,12 @@
 enum HttpCode {
-  OK(200),
-  CREATED(201),
-  BAD_REQUEST(400),
-  UNAUTHORIZED(401),
-  NOT_FOUND(404),
-  CONFLICT(409),
-  BAD_GATEWAY(502),
-  UNKNOWN(-1);
+  ok(200),
+  created(201),
+  badRequest(400),
+  unauthorized(401),
+  notFound(404),
+  conflict(409),
+  badGateway(502),
+  unknown(-1);
 
   final int code;
 
@@ -14,21 +14,21 @@ enum HttpCode {
   factory HttpCode.fromInt(int code) {
     switch (code) {
       case 200:
-        return OK;
+        return ok;
       case 201:
-        return CREATED;
+        return created;
       case 400:
-        return BAD_REQUEST;
+        return badRequest;
       case 401:
-        return UNAUTHORIZED;
+        return unauthorized;
       case 404:
-        return NOT_FOUND;
+        return notFound;
       case 409:
-        return CONFLICT;
+        return conflict;
       case 502:
-        return BAD_GATEWAY;
+        return badGateway;
       default:
-        return UNKNOWN;
+        return unknown;
     }
   }
 }

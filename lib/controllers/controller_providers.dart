@@ -1,4 +1,4 @@
-part of '../providers/providers.dart';
+part of "../providers/providers.dart";
 
 final bookControllerProvider = FutureProvider<BookController>((ref) async {
   final service = await ref.watch(_bookServiceProvider.future);

@@ -1,1 +1,8 @@
-enum BadgeCode { creator, sponsor, tester, earlyAccessUser, bugHunter, openSourceContributor }
+enum BadgeCode {
+  creator,
+  sponsor,
+  tester,
+  earlyAccessUser,
+  bugHunter,
+  openSourceContributor,
+}

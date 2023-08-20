@@ -24,12 +24,12 @@ class BadgeService {
   Future<UserBadgeModel?> getUserBadges(String userId) async {
     final queryParams = {"userId": userId};
 
-    HttpResponse response = await _httpModule.get(_baseUrl, query: queryParams);
-    if (response.statusCode != HttpCode.OK || response.body is! Map) {
+    final response = await _httpModule.get(_baseUrl, query: queryParams);
+    if (response.statusCode != HttpCode.ok || response.body is! Map) {
       return null;
     }
 
-    UserBadgeModel userBadgeModel =
+    final userBadgeModel =
         UserBadgeModel.fromJson(response.body as Map<String, dynamic>);
     return userBadgeModel;
   }

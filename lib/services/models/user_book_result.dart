@@ -1,4 +1,4 @@
-import 'package:volume_vault/models/book_model.dart';
+import "package:volume_vault/models/book_model.dart";
 
 class UserBookResult {
   final int page;

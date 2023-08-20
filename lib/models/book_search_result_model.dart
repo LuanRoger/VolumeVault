@@ -1,5 +1,5 @@
-import 'package:volume_vault/models/enums/book_format.dart';
-import 'package:volume_vault/models/enums/read_status.dart';
+import "package:volume_vault/models/enums/book_format.dart";
+import "package:volume_vault/models/enums/read_status.dart";
 
 class BookSearchResultModel {
   String id;
@@ -20,24 +20,25 @@ class BookSearchResultModel {
   DateTime? lastModification;
   String ownerId;
 
-  BookSearchResultModel(
-      {required this.id,
-      required this.title,
-      required this.author,
-      required this.isbn,
-      this.publicationYear,
-      this.publisher,
-      this.edition,
-      this.pagesNumber,
-      this.genre,
-      this.format,
-      this.readStatus,
-      this.readStartDay,
-      this.readEndDay,
-      this.tags,
-      this.createdAt,
-      this.lastModification,
-      required this.ownerId});
+  BookSearchResultModel({
+    required this.id,
+    required this.title,
+    required this.author,
+    required this.isbn,
+    required this.ownerId,
+    this.publicationYear,
+    this.publisher,
+    this.edition,
+    this.pagesNumber,
+    this.genre,
+    this.format,
+    this.readStatus,
+    this.readStartDay,
+    this.readEndDay,
+    this.tags,
+    this.createdAt,
+    this.lastModification,
+  });
 
   factory BookSearchResultModel.empty() => BookSearchResultModel(
         id: "",

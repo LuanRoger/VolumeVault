@@ -1,11 +1,10 @@
-import 'package:volume_vault/models/book_model.dart';
-import 'package:volume_vault/models/book_sort_option.dart';
+import "package:volume_vault/models/book_model.dart";
 import "package:volume_vault/models/books_genres_model.dart";
-import 'package:volume_vault/services/book_service.dart';
-import 'package:volume_vault/services/models/edit_book_request.dart';
-import 'package:volume_vault/services/models/get_user_book_request.dart';
-import 'package:volume_vault/services/models/register_book_request.dart';
-import 'package:volume_vault/services/models/user_book_result.dart';
+import "package:volume_vault/services/book_service.dart";
+import "package:volume_vault/services/models/edit_book_request.dart";
+import "package:volume_vault/services/models/get_user_book_request.dart";
+import "package:volume_vault/services/models/register_book_request.dart";
+import "package:volume_vault/services/models/user_book_result.dart";
 
 class BookController {
   final BookService? _service;
@@ -21,7 +20,7 @@ class BookController {
   Future<UserBookResult> fetcherBooks(GetUserBookRequest request) async {
     if (_service == null) return UserBookResult.empty();
 
-    UserBookResult? userBookResult = await _service!.getUserBook(request);
+    final userBookResult = await _service!.getUserBook(request);
     return userBookResult ?? UserBookResult.empty();
   }
 

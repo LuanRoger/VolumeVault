@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
-import "package:volume_vault/models/enums/book_format.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:volume_vault/models/enums/book_format.dart";
 import "package:volume_vault/models/enums/theme_brightness.dart";
 
 String localizeBookFormat(BuildContext context, {required BookFormat format}) {

@@ -1,4 +1,4 @@
-import 'package:volume_vault/models/http_code.dart';
+import "package:volume_vault/models/http_code.dart";
 
 class HttpResponse {
   final HttpCode statusCode;

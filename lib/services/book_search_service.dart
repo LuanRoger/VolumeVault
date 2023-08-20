@@ -1,10 +1,10 @@
-import 'package:volume_vault/models/book_search_result.dart';
-import 'package:volume_vault/models/http_code.dart';
-import 'package:volume_vault/models/http_response.dart';
-import 'package:volume_vault/models/interfaces/http_module.dart';
-import 'package:volume_vault/models/search_api_config_params.dart';
-import 'package:volume_vault/services/models/book_search_request.dart';
-import 'package:volume_vault/shared/consts.dart';
+import "package:volume_vault/models/book_search_result.dart";
+import "package:volume_vault/models/http_code.dart";
+import "package:volume_vault/models/http_response.dart";
+import "package:volume_vault/models/interfaces/http_module.dart";
+import "package:volume_vault/models/search_api_config_params.dart";
+import "package:volume_vault/services/models/book_search_request.dart";
+import "package:volume_vault/shared/consts.dart";
 
 class BookSearchService {
   late final HttpModule _httpModule;
@@ -24,19 +24,18 @@ class BookSearchService {
   String get _searchBookUrl => _baseUrl;
 
   Future<BookSearchResult?> searchBook(BookSearchRequest requestParams) async {
-    Map<String, dynamic> queryParams = {
+    final queryParams = <String, dynamic>{
       "userId": userIdentifier,
       "query": requestParams.query,
       "limitPerSection": requestParams.limitPerPage
     };
 
-    HttpResponse response =
-        await _httpModule.get(_searchBookUrl, query: queryParams);
-    if (response.statusCode != HttpCode.OK &&
+    final response = await _httpModule.get(_searchBookUrl, query: queryParams);
+    if (response.statusCode != HttpCode.ok &&
         response.body == null &&
         response.body is! Map) return null;
 
-    BookSearchResult bookSearchResult =
+    final bookSearchResult =
         BookSearchResult.fromJson(response.body as Map<String, dynamic>);
 
     return bookSearchResult;

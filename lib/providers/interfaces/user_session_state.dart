@@ -1,12 +1,12 @@
 // ignore_for_file: omit_local_variable_types
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:volume_vault/models/enums/login_auth_result.dart';
-import 'package:volume_vault/models/enums/signin_auth_result.dart';
-import 'package:volume_vault/models/user_session.dart';
-import 'package:volume_vault/services/models/user_login_request.dart';
-import 'package:volume_vault/services/models/user_signin_request.dart';
+import "package:firebase_auth/firebase_auth.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:volume_vault/models/enums/login_auth_result.dart";
+import "package:volume_vault/models/enums/signin_auth_result.dart";
+import "package:volume_vault/models/user_session.dart";
+import "package:volume_vault/services/models/user_login_request.dart";
+import "package:volume_vault/services/models/user_signin_request.dart";
 
 class UserSessionState extends Notifier<UserSession?> {
   @override

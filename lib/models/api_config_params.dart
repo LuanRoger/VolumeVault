@@ -4,9 +4,10 @@ class ApiConfigParams {
   String host;
   String port;
 
-  ApiConfigParams(
-      {required this.apiKey,
-      required this.protocol,
-      required this.host,
-      required this.port});
+  ApiConfigParams({
+    required this.apiKey,
+    required this.protocol,
+    required this.host,
+    required this.port,
+  });
 }

@@ -1,11 +1,13 @@
-import 'dart:io';
+// ignore_for_file: avoid_slow_async_io
 
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart';
-import 'package:volume_vault/models/enums/image_upload_result.dart';
-import 'package:volume_vault/models/user_storage_bucket.dart';
-import 'package:volume_vault/shared/app_storage.dart';
-import 'package:path/path.dart' as path;
+import "dart:io";
+
+import "package:firebase_storage/firebase_storage.dart";
+import "package:flutter/foundation.dart";
+import "package:path/path.dart" as path;
+import "package:volume_vault/models/enums/image_upload_result.dart";
+import "package:volume_vault/models/user_storage_bucket.dart";
+import "package:volume_vault/shared/app_storage.dart";
 
 class StorageBucketNotifier extends ChangeNotifier {
   UserStorageBucket? storageBucket;
@@ -84,7 +86,7 @@ class StorageBucketNotifier extends ChangeNotifier {
 
     final storageBucketRef =
         FirebaseStorage.instance.ref(storageBucket!.profileImagePath);
-    UploadTask uploadTask = storageBucketRef.putFile(imageFile);
+    final uploadTask = storageBucketRef.putFile(imageFile);
     await uploadTask;
 
     final appProfileFolder = await AppStorage.ensureCreatedAppDirectory(
@@ -110,7 +112,7 @@ class StorageBucketNotifier extends ChangeNotifier {
 
     final storageBucketRef =
         FirebaseStorage.instance.ref(storageBucket!.profileBackgroundImagePath);
-    UploadTask uploadTask = storageBucketRef.putFile(imageFile);
+    final uploadTask = storageBucketRef.putFile(imageFile);
     await uploadTask;
 
     final inAppBackgroundImagePath = await AppStorage.ensureCreatedAppDirectory(

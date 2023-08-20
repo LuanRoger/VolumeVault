@@ -1,7 +1,7 @@
-import 'package:volume_vault/models/api_config_params.dart';
-import 'package:volume_vault/models/http_response.dart';
-import 'package:volume_vault/models/interfaces/http_module.dart';
-import 'package:volume_vault/shared/consts.dart';
+import "package:volume_vault/models/api_config_params.dart";
+import "package:volume_vault/models/http_response.dart";
+import "package:volume_vault/models/interfaces/http_module.dart";
+import "package:volume_vault/shared/consts.dart";
 
 class UtilsService {
   late final HttpModule _httpModule;

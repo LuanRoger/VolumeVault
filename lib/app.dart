@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:responsive_framework/responsive_wrapper.dart';
-import 'package:volume_vault/l10n/l10n.dart';
-import 'package:volume_vault/providers/providers.dart';
-import 'package:volume_vault/shared/routes/route_driver.dart';
-import 'package:volume_vault/shared/theme/app_theme.dart';
+import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:flutter_localizations/flutter_localizations.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:responsive_framework/responsive_wrapper.dart";
+import "package:volume_vault/l10n/l10n.dart";
+import "package:volume_vault/providers/providers.dart";
+import "package:volume_vault/shared/routes/route_driver.dart";
+import "package:volume_vault/shared/theme/app_theme.dart";
 
 class App extends ConsumerWidget {
   const App({super.key});

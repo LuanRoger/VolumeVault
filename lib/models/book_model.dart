@@ -1,7 +1,7 @@
-import 'package:volume_vault/models/enums/book_format.dart';
-import 'package:volume_vault/models/enums/read_status.dart';
+import "package:volume_vault/models/enums/book_format.dart";
+import "package:volume_vault/models/enums/read_status.dart";
 import "package:volume_vault/models/qr_sharable.dart";
-import 'package:volume_vault/models/user_info_model.dart';
+import "package:volume_vault/models/user_info_model.dart";
 
 class BookModel implements QrSharable {
   String id;
@@ -26,24 +26,29 @@ class BookModel implements QrSharable {
   DateTime lastModification;
   UserInfoModel owner;
 
-  BookModel(this.id, this.title, this.author, this.isbn,
-      {this.publicationYear,
-      this.publisher,
-      this.edition,
-      this.pagesNumber,
-      this.genre,
-      this.format,
-      this.observation,
-      this.synopsis,
-      this.coverLink,
-      this.buyLink,
-      this.readStatus,
-      this.readStartDay,
-      this.readEndDay,
-      this.tags,
-      required this.createdAt,
-      required this.lastModification,
-      required this.owner});
+  BookModel(
+    this.id,
+    this.title,
+    this.author,
+    this.isbn, {
+    required this.createdAt,
+    required this.lastModification,
+    required this.owner,
+    this.publicationYear,
+    this.publisher,
+    this.edition,
+    this.pagesNumber,
+    this.genre,
+    this.format,
+    this.observation,
+    this.synopsis,
+    this.coverLink,
+    this.buyLink,
+    this.readStatus,
+    this.readStartDay,
+    this.readEndDay,
+    this.tags,
+  });
 
   @override
   Map<String, dynamic> toJson() => {

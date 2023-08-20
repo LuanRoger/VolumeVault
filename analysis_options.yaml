@@ -1,8 +1,9 @@
 include: package:very_good_analysis/analysis_options.5.0.0.yaml
 linter:
   rules:
+    prefer_double_quotes: true
     public_member_api_docs: false
     require_trailing_commas: false
     sort_constructors_first: false
-    prefer_double_quotes: true
     prefer_single_quotes: false
+    no_default_cases: false
