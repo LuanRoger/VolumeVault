@@ -4,12 +4,12 @@ import "package:flutter/material.dart";
 class RadialLight extends StatelessWidget {
   final double height;
   final double width;
-  List<Color> colors;
-  double sceneXPoss;
-  double sceneYPoss;
-  double radius;
+  final List<Color> colors;
+  final double sceneXPoss;
+  final double sceneYPoss;
+  final double radius;
 
-  RadialLight(
+  const RadialLight(
     this.height,
     this.width, {
     required this.colors,

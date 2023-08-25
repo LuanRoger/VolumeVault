@@ -7,11 +7,11 @@ class BookShowcase extends StatelessWidget {
   final Color? color;
   final Size size;
   final ImageProvider image;
-  bool lightEffect;
-  Clip clipBehavior;
-  Alignment alignment;
+  final bool lightEffect;
+  final Clip clipBehavior;
+  final Alignment alignment;
 
-  BookShowcase({
+  const BookShowcase({
     required this.size,
     required this.image,
     super.key,

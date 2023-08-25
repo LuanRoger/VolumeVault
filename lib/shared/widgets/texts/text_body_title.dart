@@ -1,8 +1,9 @@
 import "package:flutter/material.dart";
 
 class TextBodyTitle extends StatelessWidget {
-  String text;
-  TextBodyTitle(this.text, {super.key});
+  final String text;
+
+  const TextBodyTitle(this.text, {super.key});
 
   @override
   Widget build(BuildContext context) {

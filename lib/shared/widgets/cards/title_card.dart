@@ -2,15 +2,16 @@ import "package:flutter/material.dart";
 import "package:volume_vault/shared/theme/text_themes.dart";
 
 class TitleCard extends StatelessWidget {
-  Widget title;
-  Widget content;
-  bool expand;
+  final Widget title;
+  final Widget content;
+  final bool expand;
 
-  TitleCard(
-      {required this.title,
-      required this.content,
-      super.key,
-      this.expand = false});
+  const TitleCard({
+    required this.title,
+    required this.content,
+    super.key,
+    this.expand = false,
+  });
 
   @override
   Widget build(BuildContext context) {

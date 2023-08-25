@@ -4,9 +4,9 @@ import "package:volume_vault/shared/widgets/cards/book_info_card.dart";
 import "package:volume_vault/shared/widgets/fx/fade.dart";
 
 class BookInfoListCard extends BookInfoCard {
-  double? height;
+  final double? height;
 
-  BookInfoListCard(super.bookModel,
+  const BookInfoListCard(super.bookModel,
       {required super.onPressed, super.key, this.height = 150});
 
   @override
