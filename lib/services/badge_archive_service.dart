@@ -2,7 +2,6 @@ import "dart:convert";
 
 import "package:volume_vault/models/api_config_params.dart";
 import "package:volume_vault/models/http_code.dart";
-import "package:volume_vault/models/http_response.dart";
 import "package:volume_vault/models/interfaces/http_module.dart";
 import "package:volume_vault/models/user_badge_model.dart";
 import "package:volume_vault/services/models/claim_badge_request_model.dart";

@@ -1,6 +1,5 @@
 import "package:volume_vault/models/api_config_params.dart";
 import "package:volume_vault/models/http_code.dart";
-import "package:volume_vault/models/http_response.dart";
 import "package:volume_vault/models/interfaces/http_module.dart";
 import "package:volume_vault/services/models/book_stats.dart";
 import "package:volume_vault/shared/consts.dart";

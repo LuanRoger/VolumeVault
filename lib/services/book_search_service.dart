@@ -1,6 +1,5 @@
 import "package:volume_vault/models/book_search_result.dart";
 import "package:volume_vault/models/http_code.dart";
-import "package:volume_vault/models/http_response.dart";
 import "package:volume_vault/models/interfaces/http_module.dart";
 import "package:volume_vault/models/search_api_config_params.dart";
 import "package:volume_vault/services/models/book_search_request.dart";
