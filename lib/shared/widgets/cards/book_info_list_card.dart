@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 import "package:volume_vault/shared/theme/text_themes.dart";
-import 'package:volume_vault/shared/widgets/cards/book_info_card.dart';
-import 'package:volume_vault/shared/widgets/fx/fade.dart';
+import "package:volume_vault/shared/widgets/cards/book_info_card.dart";
+import "package:volume_vault/shared/widgets/fx/fade.dart";
 
 class BookInfoListCard extends BookInfoCard {
   double? height;
 
   BookInfoListCard(super.bookModel,
-      {super.key, required super.onPressed, this.height = 150});
+      {required super.onPressed, super.key, this.height = 150});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class BookInfoListCard extends BookInfoCard {
               else
                 const SizedBox(),
               Padding(
-                padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 2.0),
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 2),
                 child: Align(
                   alignment: Alignment.topLeft,
                   child: Column(

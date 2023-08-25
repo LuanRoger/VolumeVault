@@ -7,8 +7,14 @@ class TextBadge extends StatelessWidget {
   final double? width;
   final double? height;
 
-  const TextBadge(
-      {required this.text, this.color, this.fillColor, this.width, this.height, super.key});
+  const TextBadge({
+    required this.text,
+    this.color,
+    this.fillColor,
+    this.width,
+    this.height,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

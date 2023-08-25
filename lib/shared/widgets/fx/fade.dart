@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
 class Fade extends StatelessWidget {
   final AlignmentGeometry begin;
@@ -6,12 +6,13 @@ class Fade extends StatelessWidget {
   final Rect Function(Rect)? createShaderRect;
   final Widget child;
 
-  const Fade(
-      {super.key,
-      required this.child,
-      this.begin = Alignment.centerRight,
-      this.end = Alignment.centerLeft,
-      this.createShaderRect});
+  const Fade({
+    required this.child,
+    super.key,
+    this.begin = Alignment.centerRight,
+    this.end = Alignment.centerLeft,
+    this.createShaderRect,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 import "package:volume_vault/shared/theme/text_themes.dart";
 
 class TitleCard extends StatelessWidget {
@@ -7,9 +7,9 @@ class TitleCard extends StatelessWidget {
   bool expand;
 
   TitleCard(
-      {super.key,
-      required this.title,
+      {required this.title,
       required this.content,
+      super.key,
       this.expand = false});
 
   @override
@@ -19,7 +19,7 @@ class TitleCard extends StatelessWidget {
       child: Card(
         color: Theme.of(context).scaffoldBackgroundColor,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

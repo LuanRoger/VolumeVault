@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
 class LinearVinheta extends StatelessWidget {
   final Color startColor;

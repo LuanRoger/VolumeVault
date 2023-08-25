@@ -1,16 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:volume_vault/models/enums/badge_code.dart';
-import 'package:volume_vault/shared/widgets/badges/badge_viewer.dart';
+import "package:flutter/material.dart";
+import "package:volume_vault/models/enums/badge_code.dart";
+import "package:volume_vault/shared/widgets/badges/badge_viewer.dart";
 
 class BadgesShowcaseContainer extends StatelessWidget {
   final List<BadgeCode> badgesCodes;
 
-  const BadgesShowcaseContainer({super.key, required this.badgesCodes});
+  const BadgesShowcaseContainer({required this.badgesCodes, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surfaceVariant,
           borderRadius: BorderRadius.circular(10),

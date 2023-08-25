@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:volume_vault/models/enums/visualization_type.dart';
+import "package:flutter/material.dart";
+import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
+import "package:volume_vault/models/enums/visualization_type.dart";
 import "package:volume_vault/shared/widgets/lists/pagination_list_grid_base.dart";
-import 'package:volume_vault/shared/widgets/placeholders/no_registered_book_placeholder.dart';
+import "package:volume_vault/shared/widgets/placeholders/no_registered_book_placeholder.dart";
 
 class PaginationListGrid<T, K> extends PaginationListGridBase<T, K> {
   const PaginationListGrid(
@@ -14,7 +14,7 @@ class PaginationListGrid<T, K> extends PaginationListGridBase<T, K> {
   @override
   Widget build(BuildContext context) {
     switch (visualizationType) {
-      case VisualizationType.LIST:
+      case VisualizationType.list:
         return PagedListView<T, K>(
           pagingController: pagingController,
           builderDelegate: PagedChildBuilderDelegate<K>(
@@ -23,7 +23,7 @@ class PaginationListGrid<T, K> extends PaginationListGridBase<T, K> {
                 const NoRegisteredBookPlaceholder(),
           ),
         );
-      case VisualizationType.GRID:
+      case VisualizationType.grid:
         return PagedGridView<T, K>(
           pagingController: pagingController,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

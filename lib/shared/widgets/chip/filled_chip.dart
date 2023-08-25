@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
 class FilledChip extends StatelessWidget {
   final String label;
 
-  const FilledChip({super.key, required this.label});
+  const FilledChip({required this.label, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +13,5 @@ class FilledChip extends StatelessWidget {
       side: BorderSide.none,
       backgroundColor: Theme.of(context).colorScheme.primaryContainer,
     );
-    ;
   }
 }

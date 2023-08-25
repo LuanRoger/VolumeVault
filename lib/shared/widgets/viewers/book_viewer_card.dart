@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:volume_vault/models/book_model.dart';
-import 'package:volume_vault/shared/utils/image_utils.dart';
-import 'package:volume_vault/shared/widgets/viewers/book_image_viewer.dart';
+import "package:flutter/material.dart";
+import "package:flutter_animate/flutter_animate.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:volume_vault/models/book_model.dart";
+import "package:volume_vault/shared/utils/image_utils.dart";
+import "package:volume_vault/shared/widgets/viewers/book_image_viewer.dart";
 
 class BookViewerCard extends HookConsumerWidget {
   final BookModel book;
@@ -13,7 +13,7 @@ class BookViewerCard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final NetworkImage? coverImage =
+    final coverImage =
         book.coverLink != null ? NetworkImage(book.coverLink!) : null;
     final dominantColor = useMemoized(
       () {
@@ -22,8 +22,7 @@ class BookViewerCard extends HookConsumerWidget {
         return ImageUtils.getDominantColor(coverImage);
       },
     );
-    final dominantColorFuture =
-        useFuture<Color?>(dominantColor, initialData: null);
+    final dominantColorFuture = useFuture<Color?>(dominantColor);
 
     return Container(
       clipBehavior: Clip.hardEdge,
@@ -37,10 +36,10 @@ class BookViewerCard extends HookConsumerWidget {
           end: Alignment.bottomRight,
           stops: const [0.1, 0.5],
         ),
-        borderRadius: BorderRadius.circular(18.0),
+        borderRadius: BorderRadius.circular(18),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8),
         child: Column(
           children: [
             Row(

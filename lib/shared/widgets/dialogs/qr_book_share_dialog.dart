@@ -1,10 +1,9 @@
-import 'dart:convert';
+import "dart:convert";
 
-import 'package:flutter/material.dart';
-import 'package:volume_vault/models/book_model.dart';
+import "package:flutter/material.dart";
+import "package:qr_flutter/qr_flutter.dart";
 import "package:volume_vault/models/qr_share.dart";
-import 'package:volume_vault/shared/widgets/dialogs/content_dialog.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+import "package:volume_vault/shared/widgets/dialogs/content_dialog.dart";
 
 class QrBookShareDialog {
   final QrShare shareInfo;
@@ -25,8 +24,6 @@ class QrBookShareDialog {
 
     final dialog = ContentDialog(
       heightFactor: 0.6,
-      widthFactor: 0.5,
-      padding: EdgeInsets.zero,
       alignment: Alignment.topCenter,
       content: Column(
         children: [

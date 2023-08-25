@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+import "package:flutter/material.dart";
+import "package:flutter_animate/flutter_animate.dart";
 
 class WidgetSwitcher extends StatelessWidget {
   final Widget first;
   final Widget second;
 
-  const WidgetSwitcher({super.key, required this.first, required this.second});
+  const WidgetSwitcher({required this.first, required this.second, super.key});
 
   @override
   Widget build(BuildContext context) {

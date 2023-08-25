@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import "package:flutter/material.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
 
 class SearchTextField extends HookWidget {
   final List<Widget>? trailing;
@@ -10,14 +10,15 @@ class SearchTextField extends HookWidget {
 
   final TextEditingController controller;
 
-  const SearchTextField(
-      {super.key,
-      required this.controller,
-      this.trailing,
-      this.width,
-      this.height,
-      this.label,
-      this.showClearButton = true});
+  const SearchTextField({
+    required this.controller,
+    super.key,
+    this.trailing,
+    this.width,
+    this.height,
+    this.label,
+    this.showClearButton = true,
+  });
 
   @override
   Widget build(BuildContext context) {

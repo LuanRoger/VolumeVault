@@ -1,9 +1,9 @@
-import 'package:chips_choice/chips_choice.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:volume_vault/models/enums/search_filter.dart';
-import 'package:volume_vault/shared/widgets/chip/chip_choice.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import "package:chips_choice/chips_choice.dart";
+import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:volume_vault/models/enums/search_filter.dart";
+import "package:volume_vault/shared/widgets/chip/chip_choice.dart";
 
 class SearchFilterChipChoice extends HookWidget
     implements ChipChoice<SearchFilter> {

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
 class DateTextField extends StatelessWidget {
   final void Function(DateTime) onDateSelected;
@@ -10,15 +10,16 @@ class DateTextField extends StatelessWidget {
 
   final TextEditingController? controller;
 
-  const DateTextField(
-      {super.key,
-      required this.onDateSelected,
-      required this.initialDate,
-      required this.firstDate,
-      required this.lastDate,
-      this.controller,
-      this.enabled,
-      this.label});
+  const DateTextField({
+    required this.onDateSelected,
+    required this.initialDate,
+    required this.firstDate,
+    required this.lastDate,
+    super.key,
+    this.controller,
+    this.enabled,
+    this.label,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class DateTextField extends StatelessWidget {
           filled: true),
       readOnly: true,
       onTap: () async {
-        final DateTime? newDate = await showDatePicker(
+        final newDate = await showDatePicker(
             context: context,
             initialDate: initialDate,
             firstDate: firstDate,

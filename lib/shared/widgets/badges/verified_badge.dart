@@ -28,9 +28,8 @@ class VerifierdBadge extends ConsumerWidget {
               final sendEmail =
                   await VerifyEmailDialog().show(context, ref: ref);
 
-              // ignore: use_build_context_synchronously
               if (!sendEmail || !context.mounted) return;
-
+              // ignore: use_build_context_synchronously
               SnackbarUtils.showUserEmailVerificationSnackbar(context);
             },
             child: Tooltip(
