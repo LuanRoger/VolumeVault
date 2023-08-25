@@ -1,6 +1,6 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+import "package:freezed_annotation/freezed_annotation.dart";
 
-part 'graphics_preferences.freezed.dart';
+part "graphics_preferences.freezed.dart";
 
 @freezed
 class GraphicsPreferences with _$GraphicsPreferences {

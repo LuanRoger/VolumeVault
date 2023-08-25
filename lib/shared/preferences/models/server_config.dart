@@ -1,7 +1,7 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+import "package:freezed_annotation/freezed_annotation.dart";
 
-part 'server_config.freezed.dart';
-part 'server_config.g.dart';
+part "server_config.freezed.dart";
+part "server_config.g.dart";
 
 @freezed
 class ServerConfig with _$ServerConfig {

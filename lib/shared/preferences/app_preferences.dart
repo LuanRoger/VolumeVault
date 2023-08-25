@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
-import 'package:volume_vault/shared/preferences/models/graphics_preferences.dart';
-import 'package:volume_vault/shared/preferences/models/localization_preferences.dart';
-import 'package:volume_vault/shared/preferences/models/theme_preferences.dart';
+import "package:flutter/foundation.dart";
+import "package:volume_vault/shared/preferences/models/graphics_preferences.dart";
+import "package:volume_vault/shared/preferences/models/localization_preferences.dart";
+import "package:volume_vault/shared/preferences/models/theme_preferences.dart";
 
 class AppPreferences extends ChangeNotifier {
   final ThemePreferences themePreferences;

@@ -1,19 +1,19 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:volume_vault/models/book_model.dart';
+import "package:flutter/material.dart";
+import "package:go_router/go_router.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:volume_vault/models/book_model.dart";
 import "package:volume_vault/pages/about_page/about_page.dart";
-import 'package:volume_vault/pages/book_info_view/book_info_viewer_page.dart';
-import 'package:volume_vault/pages/configuration_page/configuration_page.dart';
-import 'package:volume_vault/pages/home_page/home_page.dart';
-import 'package:volume_vault/pages/login_signin_page/login_signin_page.dart';
-import 'package:volume_vault/pages/qr_scanner_page/qr_scanner_page.dart';
-import 'package:volume_vault/pages/register_edit_book_page/pages/select_book_genre.dart';
-import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
-import 'package:volume_vault/pages/register_edit_book_page/pages/large_info_input.dart';
+import "package:volume_vault/pages/book_info_view/book_info_viewer_page.dart";
+import "package:volume_vault/pages/configuration_page/configuration_page.dart";
+import "package:volume_vault/pages/home_page/home_page.dart";
+import "package:volume_vault/pages/login_signin_page/login_signin_page.dart";
+import "package:volume_vault/pages/qr_scanner_page/qr_scanner_page.dart";
+import "package:volume_vault/pages/register_edit_book_page/pages/large_info_input.dart";
+import "package:volume_vault/pages/register_edit_book_page/pages/select_book_genre.dart";
+import "package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart";
 import "package:volume_vault/pages/webview_page/webview_page.dart";
-import 'package:volume_vault/providers/providers.dart';
-import 'package:volume_vault/shared/routes/app_routes.dart';
+import "package:volume_vault/providers/providers.dart";
+import "package:volume_vault/shared/routes/app_routes.dart";
 
 final List<RouteBase> routes = [
   GoRoute(
@@ -28,7 +28,7 @@ final List<RouteBase> routes = [
   GoRoute(
     path: AppRoutes.bookInfoViewerPageRoute,
     builder: (context, state) {
-      final List<Object> args = state.extra! as List<Object>;
+      final args = state.extra! as List<Object>;
 
       final bookModel = args[0] as BookModel;
       final onCardPressed =
@@ -43,9 +43,9 @@ final List<RouteBase> routes = [
   GoRoute(
     path: AppRoutes.registerEditBookPageRoute,
     builder: (context, state) {
-      final List<Object> args = state.extra! as List<Object>;
-      final BookModel? bookToEdit = args[0] as BookModel?;
-      final bool? editMode = args[1] as bool?;
+      final args = state.extra! as List<Object>;
+      final bookToEdit = args[0] as BookModel?;
+      final editMode = args[1] as bool?;
 
       return RegisterEditBookPage(
         externalBookModel: bookToEdit,
@@ -62,7 +62,7 @@ final List<RouteBase> routes = [
   GoRoute(
     path: AppRoutes.largeInfoInputPageRoute,
     builder: (context, state) {
-      final List<Object> args = state.extra! as List<Object>;
+      final args = state.extra! as List<Object>;
 
       final initialObservationText = args[0] as String;
       final initialSynopsisText = args[1] as String;
@@ -76,9 +76,9 @@ final List<RouteBase> routes = [
   GoRoute(
     path: AppRoutes.selectBookGenrePageRoute,
     builder: (context, state) {
-      final List<Object> args = state.extra! as List<Object>;
+      final args = state.extra! as List<Object>;
 
-      final Set<String>? allreadySelectedGenres = args[0] as Set<String>?;
+      final allreadySelectedGenres = args[0] as Set<String>?;
 
       return SelectBookGenre(
         allreadyAddedGenres: allreadySelectedGenres,
