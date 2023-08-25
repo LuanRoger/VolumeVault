@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:go_router/go_router.dart';
-import 'package:textfield_tags/textfield_tags.dart';
-import 'package:volume_vault/models/enums/book_format.dart';
-import 'package:volume_vault/models/enums/read_status.dart';
-import "package:volume_vault/models/utils/aditional_info_modal_model.dart";
-import 'package:volume_vault/pages/register_edit_book_page/commands/book_info_getter_command.dart';
-import 'package:volume_vault/shared/routes/app_routes.dart';
+import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:go_router/go_router.dart";
+import "package:textfield_tags/textfield_tags.dart";
+import "package:volume_vault/models/enums/book_format.dart";
+import "package:volume_vault/models/enums/read_status.dart";
+import "package:volume_vault/pages/register_edit_book_page/commands/book_info_getter_command.dart";
+import "package:volume_vault/shared/routes/app_routes.dart";
 
 class BookInfoGetter extends StatelessWidget {
   final BookInfoGetterCommand _command;
@@ -37,9 +36,7 @@ class BookInfoGetter extends StatelessWidget {
   final ValueNotifier<BookFormat> bookFormat;
 
   BookInfoGetter({
-    super.key,
     required BookInfoGetterCommand command,
-    this.divider,
     required this.titleController,
     required this.authorController,
     required this.isbnController,
@@ -60,6 +57,8 @@ class BookInfoGetter extends StatelessWidget {
     required GlobalKey<FormState> publisherInfoFormKey,
     required GlobalKey<FormState> aditionalInfoFormKey,
     required this.bookFormat,
+    super.key,
+    this.divider,
   })  : _command = command,
         _bookInfoFormKey = bookInfoFormKey,
         _publisherInfoFormKey = publisherInfoFormKey,
@@ -119,9 +118,12 @@ class BookInfoGetter extends StatelessWidget {
                 .synopsisAndObservationsRegisterBookPage),
             trailing: const Icon(Icons.navigate_next_rounded),
             onTap: () async {
-              final List<String>? observationSynopsisValue = await context.push(
-                  AppRoutes.largeInfoInputPageRoute,
-                  extra: [observationController.text, synopsisController.text]);
+              final observationSynopsisValue = await context
+                  .push<List<String>?>(AppRoutes.largeInfoInputPageRoute,
+                      extra: [
+                    observationController.text,
+                    synopsisController.text
+                  ]);
               if (observationSynopsisValue == null ||
                   observationSynopsisValue.length != 2) {
                 return;

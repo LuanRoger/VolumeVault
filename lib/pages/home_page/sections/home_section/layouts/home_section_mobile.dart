@@ -51,7 +51,7 @@ class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
     final tabBookFormatController = useTabController(initialLength: 10);
 
     final visualizationTypeState =
-        useState<VisualizationType>(widget.viewType ?? VisualizationType.LIST);
+        useState<VisualizationType>(widget.viewType ?? VisualizationType.list);
     final sortOptionState = useState(BookSortOption());
     final resultLimiterState = useState<BookResultLimiter?>(null);
     final bookStatsState = useState<BookStats?>(null);
@@ -159,12 +159,12 @@ class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
                                   onPressed: () {
                                     visualizationTypeState.value =
                                         visualizationTypeState.value ==
-                                                VisualizationType.LIST
-                                            ? VisualizationType.GRID
-                                            : VisualizationType.LIST;
+                                                VisualizationType.list
+                                            ? VisualizationType.grid
+                                            : VisualizationType.list;
                                   },
                                   icon: Icon(visualizationTypeState.value ==
-                                          VisualizationType.LIST
+                                          VisualizationType.list
                                       ? Icons.grid_view_rounded
                                       : Icons.view_list_rounded),
                                 ),

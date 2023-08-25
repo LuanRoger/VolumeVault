@@ -49,7 +49,7 @@ class HomeSectionDesktop extends HookConsumerWidget {
     final tabBookFormatController = useTabController(initialLength: 10);
 
     final userInfo = ref.watch(userSessionAuthProvider);
-    final visualizationTypeState = useState(VisualizationType.LIST);
+    final visualizationTypeState = useState(VisualizationType.list);
     final resultLimiterState = useState<BookResultLimiter?>(null);
     final sortOptionState = useState(BookSortOption());
     final bookStatsState = useState<BookStats?>(null);
@@ -170,12 +170,12 @@ class HomeSectionDesktop extends HookConsumerWidget {
                               onPressed: () {
                                 visualizationTypeState.value =
                                     visualizationTypeState.value ==
-                                            VisualizationType.LIST
-                                        ? VisualizationType.GRID
-                                        : VisualizationType.LIST;
+                                            VisualizationType.list
+                                        ? VisualizationType.grid
+                                        : VisualizationType.list;
                               },
                               icon: Icon(visualizationTypeState.value ==
-                                      VisualizationType.LIST
+                                      VisualizationType.list
                                   ? Icons.grid_view_rounded
                                   : Icons.view_list_rounded),
                             ),

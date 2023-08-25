@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:volume_vault/models/book_model.dart';
+import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:url_launcher/url_launcher.dart";
+import "package:volume_vault/models/book_model.dart";
 import "package:volume_vault/models/enums/qr_scanner_result_type.dart";
 import "package:volume_vault/models/qr_share.dart";
-import 'package:volume_vault/providers/providers.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:volume_vault/shared/widgets/dialogs/qr_book_share_dialog.dart';
+import "package:volume_vault/providers/providers.dart";
+import "package:volume_vault/shared/widgets/dialogs/qr_book_share_dialog.dart";
 
 abstract class BookInfoViewerStrategy {
   const BookInfoViewerStrategy();
@@ -14,9 +14,9 @@ abstract class BookInfoViewerStrategy {
   Future<BookModel?> refreshBookInfo(
       BuildContext context, WidgetRef ref, String bookId) async {
     final bookController = await ref.read(bookControllerProvider.future);
-    final BookModel? newBookInfo = await bookController.getBookInfoById(bookId);
+    final newBookInfo = await bookController.getBookInfoById(bookId);
 
-    if (newBookInfo == null) {
+    if (context.mounted && newBookInfo == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Erro ao atualizar informações"),
@@ -28,9 +28,9 @@ abstract class BookInfoViewerStrategy {
   }
 
   Future<bool> showDeleteBookDialog(BuildContext context) async {
-    bool delete = false;
+    var delete = false;
 
-    await showDialog(
+    await showDialog<void>(
       context: context,
       builder: (_) => AlertDialog(
         title: Text(AppLocalizations.of(context)!.deleteBookDialogTitle),

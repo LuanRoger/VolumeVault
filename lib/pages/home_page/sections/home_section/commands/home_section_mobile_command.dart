@@ -1,16 +1,16 @@
-import 'package:flutter/material.dart' hide BottomSheet;
-import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:volume_vault/models/book_model.dart';
-import 'package:volume_vault/models/book_sort_option.dart';
-import 'package:volume_vault/models/enums/book_sort.dart';
-import 'package:volume_vault/pages/home_page/sections/home_section/commands/home_section_layout_strategy.dart';
-import 'package:volume_vault/shared/routes/app_routes.dart';
-import 'package:volume_vault/shared/widgets/bottom_sheet/bottom_sheet.dart';
-import 'package:volume_vault/shared/widgets/cards/search_floating_card.dart';
-import 'package:volume_vault/shared/widgets/chip/book_sort_chip_choice.dart';
-import 'package:volume_vault/shared/widgets/switcher/text_switch.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import "package:flutter/material.dart" hide BottomSheet;
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:go_router/go_router.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:volume_vault/models/book_model.dart";
+import "package:volume_vault/models/book_sort_option.dart";
+import "package:volume_vault/models/enums/book_sort.dart";
+import "package:volume_vault/pages/home_page/sections/home_section/commands/home_section_layout_strategy.dart";
+import "package:volume_vault/shared/routes/app_routes.dart";
+import "package:volume_vault/shared/widgets/bottom_sheet/bottom_sheet.dart";
+import "package:volume_vault/shared/widgets/cards/search_floating_card.dart";
+import "package:volume_vault/shared/widgets/chip/book_sort_chip_choice.dart";
+import "package:volume_vault/shared/widgets/switcher/text_switch.dart";
 
 class HomeSectionMobileCommand extends HomeSectionLayoutStrategy {
   const HomeSectionMobileCommand();
@@ -19,15 +19,14 @@ class HomeSectionMobileCommand extends HomeSectionLayoutStrategy {
   Future<bool> onBookSelect(
       BuildContext context, WidgetRef ref, BookModel bookModel,
       {void Function()? onUpdate}) async {
-    onChipSelected(String searchText, BuildContext context) async =>
-        await showSearchDialog(searchText: searchText, context: context, ref: ref);
+    Future<void> onChipSelected(
+            String searchText, BuildContext context) async =>
+        showSearchDialog(searchText: searchText, context: context, ref: ref);
 
-    return await context.push<bool>(
-        AppRoutes.bookInfoViewerPageRoute,
-        extra: [
-          bookModel,
-          onChipSelected,
-        ]).then((hasChange) {
+    return context.push<bool>(AppRoutes.bookInfoViewerPageRoute, extra: [
+      bookModel,
+      onChipSelected,
+    ]).then((hasChange) {
       if (hasChange == null) return false;
 
       onUpdate?.call();
@@ -38,15 +37,15 @@ class HomeSectionMobileCommand extends HomeSectionLayoutStrategy {
   @override
   Future<BookSortOption?> showSortFilterDialog(BuildContext context,
       {bool wrapped = true, BookSortOption? currentOptions}) async {
-    bool update = false;
-    bool ascending = currentOptions?.ascending ?? true;
-    BookSort? sortType = currentOptions?.sort;
+    var update = false;
+    var ascending = currentOptions?.ascending ?? true;
+    var sortType = currentOptions?.sort;
 
-    BottomSheet filterSheet = BottomSheet(
+    final filterSheet = BottomSheet(
         isScrollControlled: false,
         isDismissible: true,
         dragable: true,
-        padding: 5.0,
+        padding: 5,
         action: (context) => FilledButton(
               onPressed: () {
                 update = true;
@@ -57,7 +56,6 @@ class HomeSectionMobileCommand extends HomeSectionLayoutStrategy {
         items: [
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               TextSwitch(
                 text: AppLocalizations.of(context)!.sortOptionAscending,
@@ -87,11 +85,11 @@ class HomeSectionMobileCommand extends HomeSectionLayoutStrategy {
   }
 
   Future<void> showSearchDialog({
-    String searchText = "",
     required WidgetRef ref,
     required BuildContext context,
+    String searchText = "",
   }) async {
-    SearchFloatingCard searchFloatingCard = SearchFloatingCard(
+    final searchFloatingCard = SearchFloatingCard(
       initialSearch: searchText,
       search: (query) => search(query, ref),
       searchResultBuilder: (query, dialogContext) =>

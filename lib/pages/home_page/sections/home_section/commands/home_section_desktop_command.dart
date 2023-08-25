@@ -1,15 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:volume_vault/models/book_model.dart';
-import 'package:volume_vault/models/book_sort_option.dart';
-import 'package:volume_vault/models/enums/book_sort.dart';
-import 'package:volume_vault/pages/configuration_page/configuration_page.dart';
-import 'package:volume_vault/pages/home_page/sections/home_section/commands/home_section_layout_strategy.dart';
-import 'package:volume_vault/shared/widgets/chip/book_sort_chip_choice.dart';
-import 'package:volume_vault/shared/widgets/dialogs/content_dialog.dart';
-import 'package:volume_vault/shared/widgets/icon/icon_text.dart';
-import 'package:volume_vault/shared/widgets/switcher/text_switch.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:volume_vault/models/book_model.dart";
+import "package:volume_vault/models/book_sort_option.dart";
+import "package:volume_vault/pages/configuration_page/configuration_page.dart";
+import "package:volume_vault/pages/home_page/sections/home_section/commands/home_section_layout_strategy.dart";
+import "package:volume_vault/shared/widgets/chip/book_sort_chip_choice.dart";
+import "package:volume_vault/shared/widgets/dialogs/content_dialog.dart";
+import "package:volume_vault/shared/widgets/icon/icon_text.dart";
+import "package:volume_vault/shared/widgets/switcher/text_switch.dart";
 
 class HomeSectionDesktopCommand extends HomeSectionLayoutStrategy {
   late ValueNotifier<BookModel?> bookOnViwerState;
@@ -23,11 +22,10 @@ class HomeSectionDesktopCommand extends HomeSectionLayoutStrategy {
   }
 
   Future<void> showConfigurationsDialog(BuildContext context) async {
-    final ContentDialog dialog = ContentDialog(
+    final dialog = ContentDialog(
       closeButton: true,
-      widthFactor: 0.5,
       heightFactor: 0.7,
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10),
       title: Text(
         AppLocalizations.of(context)!.configurationsAppBarTitle,
         style: Theme.of(context).appBarTheme.titleTextStyle,
@@ -39,16 +37,17 @@ class HomeSectionDesktopCommand extends HomeSectionLayoutStrategy {
 
   @override
   Future<BookSortOption?> showSortFilterDialog(BuildContext context,
-      {bool wrapped = true, BookSortOption? currentOptions, bool full = false}) async {
+      {bool wrapped = true,
+      BookSortOption? currentOptions,
+      bool full = false}) async {
     const iconSize = 30.0;
 
-    bool update = false;
-    bool ascending = currentOptions?.ascending ?? true;
-    BookSort? sortType = currentOptions?.sort;
+    var update = false;
+    var ascending = currentOptions?.ascending ?? true;
+    var sortType = currentOptions?.sort;
 
-    ContentDialog dialog = ContentDialog(
-        padding: const EdgeInsets.all(10.0),
-        widthFactor: 0.5,
+    final dialog = ContentDialog(
+        padding: const EdgeInsets.all(10),
         heightFactor: full ? 1 : 0.5,
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

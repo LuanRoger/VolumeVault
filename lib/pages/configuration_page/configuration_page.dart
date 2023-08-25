@@ -1,14 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
 import "package:go_router/go_router.dart";
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:volume_vault/l10n/l10n_utils.dart";
-import 'package:volume_vault/l10n/supported_locales.dart';
-import 'package:volume_vault/pages/configuration_page/commands/configuration_page_commands.dart';
-import 'package:volume_vault/providers/providers.dart';
+import "package:volume_vault/l10n/supported_locales.dart";
+import "package:volume_vault/pages/configuration_page/commands/configuration_page_commands.dart";
+import "package:volume_vault/providers/providers.dart";
 import "package:volume_vault/shared/routes/app_routes.dart";
-import 'package:volume_vault/shared/widgets/texts/text_body_title.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import "package:volume_vault/shared/widgets/texts/text_body_title.dart";
 
 class ConfigurationPage extends StatelessWidget {
   const ConfigurationPage({super.key});
@@ -66,12 +66,12 @@ class ConfigurationContent extends HookConsumerWidget {
           ListTile(
             title: Text(AppLocalizations.of(context)!
                 .lightEffectOptionConfigurationsPage),
-            onTap: () => _commands.toggleLightEffect(
-                ref, !graphicsPreferences.lightEffect),
+            onTap: () => _commands.toggleLightEffect(ref,
+                newValue: !graphicsPreferences.lightEffect),
             trailing: Switch(
               value: graphicsPreferences.lightEffect,
               onChanged: (newValue) =>
-                  _commands.toggleLightEffect(ref, newValue),
+                  _commands.toggleLightEffect(ref, newValue: newValue),
             ),
           ),
           TextBodyTitle(AppLocalizations.of(context)!
@@ -100,7 +100,7 @@ class ConfigurationContent extends HookConsumerWidget {
             onPressed: !resetConfigLoadingState.value
                 ? () async {
                     resetConfigLoadingState.value = true;
-                    _commands.resetConfiguration(context, ref);
+                    await _commands.resetConfiguration(context, ref);
                     resetConfigLoadingState.value = false;
                   }
                 : null,
