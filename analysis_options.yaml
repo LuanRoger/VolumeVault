@@ -7,3 +7,4 @@ linter:
     sort_constructors_first: false
     prefer_single_quotes: false
     no_default_cases: false
+    sort_pub_dependencies: false

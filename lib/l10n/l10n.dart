@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:volume_vault/l10n/supported_locales.dart';
-import 'package:volume_vault/models/enums/book_format.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import "package:flutter/material.dart";
+import "package:volume_vault/l10n/supported_locales.dart";
 
 class L10n {
   static List<Locale> get locales => List.from(
