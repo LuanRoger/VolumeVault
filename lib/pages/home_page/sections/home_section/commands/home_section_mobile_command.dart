@@ -4,7 +4,6 @@ import "package:go_router/go_router.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:volume_vault/models/book_model.dart";
 import "package:volume_vault/models/book_sort_option.dart";
-import "package:volume_vault/models/enums/book_sort.dart";
 import "package:volume_vault/pages/home_page/sections/home_section/commands/home_section_layout_strategy.dart";
 import "package:volume_vault/shared/routes/app_routes.dart";
 import "package:volume_vault/shared/widgets/bottom_sheet/bottom_sheet.dart";
@@ -60,7 +59,7 @@ class HomeSectionMobileCommand extends HomeSectionLayoutStrategy {
               TextSwitch(
                 text: AppLocalizations.of(context)!.sortOptionAscending,
                 value: ascending,
-                onChanged: (newValue) => ascending = newValue,
+                onChanged: ({required newValue}) => ascending = newValue,
               ),
               ElevatedButton(
                 onPressed: () {

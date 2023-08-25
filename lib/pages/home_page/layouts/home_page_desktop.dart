@@ -36,9 +36,9 @@ class HomePageDesktop extends HookConsumerWidget {
             onPressed: () async {
               final result = await context
                   .push<BookModel?>(AppRoutes.qrCodeScannerPageRoute);
-              // ignore: use_build_context_synchronously
-              if (!context.mounted || result == null) return;
 
+              if (!context.mounted || result == null) return;
+              // ignore: use_build_context_synchronously
               await context.push(AppRoutes.registerEditBookPageRoute,
                   extra: [result, false]);
             },

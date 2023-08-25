@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
-import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:volume_vault/l10n/supported_locales.dart";
 import "package:volume_vault/models/enums/theme_brightness.dart";
 import "package:volume_vault/providers/providers.dart";

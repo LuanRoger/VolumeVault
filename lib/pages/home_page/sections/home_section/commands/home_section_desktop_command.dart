@@ -72,7 +72,7 @@ class HomeSectionDesktopCommand extends HomeSectionLayoutStrategy {
                 child: TextSwitch(
                   text: "Cresente",
                   value: ascending,
-                  onChanged: (newValue) => ascending = newValue,
+                  onChanged: ({required newValue}) => ascending = newValue,
                 ),
               ),
             ),

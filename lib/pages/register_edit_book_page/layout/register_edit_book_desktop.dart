@@ -111,7 +111,6 @@ class RegisterEditBookPageDesktop extends HookConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
-                    flex: 1,
                     child: Column(
                       children: [
                         GestureDetector(

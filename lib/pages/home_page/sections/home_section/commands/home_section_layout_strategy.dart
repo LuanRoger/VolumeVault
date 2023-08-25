@@ -55,8 +55,8 @@ abstract class HomeSectionLayoutStrategy {
                 await ref.read(bookControllerProvider.future);
             final book = await bookController.getBookInfoById(bookResult.id);
 
-            // ignore: use_build_context_synchronously
             if (!dialogContext.mounted || book == null) return;
+            // ignore: use_build_context_synchronously
             onBookSelect(dialogContext, ref, book);
           },
         )

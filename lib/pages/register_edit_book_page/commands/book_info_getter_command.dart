@@ -113,7 +113,6 @@ class BookInfoGetterCommand {
                 controller: publisherController,
                 validator: maximumLenght100,
                 maxLength: 100,
-                maxLines: 1,
                 decoration: InputDecoration(
                     labelText:
                         AppLocalizations.of(context)!.publisherTextFieldHint),

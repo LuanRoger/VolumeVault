@@ -35,7 +35,7 @@ class BookInfoGetter extends StatelessWidget {
 
   final ValueNotifier<BookFormat> bookFormat;
 
-  BookInfoGetter({
+  const BookInfoGetter({
     required BookInfoGetterCommand command,
     required this.titleController,
     required this.authorController,

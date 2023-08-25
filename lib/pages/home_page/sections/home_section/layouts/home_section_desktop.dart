@@ -1,31 +1,28 @@
-import 'package:animations/animations.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:responsive_framework/responsive_wrapper.dart';
-import "package:volume_vault/l10n/l10n.dart";
+import "package:animations/animations.dart";
+import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:go_router/go_router.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
+import "package:responsive_framework/responsive_wrapper.dart";
 import "package:volume_vault/l10n/l10n_utils.dart";
-import 'package:volume_vault/models/book_model.dart';
+import "package:volume_vault/models/book_model.dart";
 import "package:volume_vault/models/book_result_limiter.dart";
-import 'package:volume_vault/models/book_sort_option.dart';
+import "package:volume_vault/models/book_sort_option.dart";
 import "package:volume_vault/models/enums/book_format.dart";
-import 'package:volume_vault/models/enums/visualization_type.dart';
-import 'package:volume_vault/pages/book_info_view/commands/book_info_viewer_command.dart';
-import 'package:volume_vault/pages/home_page/sections/home_section/commands/home_section_desktop_command.dart';
-import 'package:volume_vault/pages/home_page/sections/widgets/card_book_view_content.dart';
-import 'package:volume_vault/providers/providers.dart';
+import "package:volume_vault/models/enums/visualization_type.dart";
+import "package:volume_vault/pages/book_info_view/commands/book_info_viewer_command.dart";
+import "package:volume_vault/pages/home_page/sections/home_section/commands/home_section_desktop_command.dart";
+import "package:volume_vault/pages/home_page/sections/widgets/card_book_view_content.dart";
+import "package:volume_vault/providers/providers.dart";
 import "package:volume_vault/services/models/book_stats.dart";
-import 'package:volume_vault/services/models/get_user_book_request.dart';
-import 'package:volume_vault/services/models/user_book_result.dart';
-import 'package:volume_vault/shared/routes/app_routes.dart';
-import 'package:volume_vault/shared/widgets/images/user_profile_image.dart';
+import "package:volume_vault/services/models/get_user_book_request.dart";
+import "package:volume_vault/shared/routes/app_routes.dart";
+import "package:volume_vault/shared/widgets/images/user_profile_image.dart";
 import "package:volume_vault/shared/widgets/lists/pagination_list_grid.dart";
-import 'package:volume_vault/shared/widgets/lists/pagination_sliver_list_grid.dart';
-import 'package:volume_vault/shared/widgets/text_fields/search_text_field.dart';
-import 'package:volume_vault/shared/widgets/widget_switcher.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import "package:volume_vault/shared/widgets/text_fields/search_text_field.dart";
+import "package:volume_vault/shared/widgets/widget_switcher.dart";
 
 class HomeSectionDesktop extends HookConsumerWidget {
   final HomeSectionDesktopCommand _commands = HomeSectionDesktopCommand();
@@ -142,7 +139,7 @@ class HomeSectionDesktop extends HookConsumerWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(width: 8.0),
+                      const SizedBox(width: 8),
                       Flexible(
                         flex: 0,
                         child: IconButton(
@@ -181,12 +178,12 @@ class HomeSectionDesktop extends HookConsumerWidget {
                             ),
                           IconButton(
                               onPressed: () async {
-                                BookSortOption? newSortOptions = await _commands
-                                    .showSortFilterDialog(context,
-                                        currentOptions: sortOptionState.value,
-                                        wrapped: true,
-                                        full: ResponsiveWrapper.of(context)
-                                            .isTablet);
+                                final newSortOptions =
+                                    await _commands.showSortFilterDialog(
+                                  context,
+                                  currentOptions: sortOptionState.value,
+                                  full: ResponsiveWrapper.of(context).isTablet,
+                                );
                                 if (newSortOptions == null) return;
                                 sortOptionState.value = newSortOptions;
 
@@ -315,7 +312,11 @@ class HomeSectionDesktop extends HookConsumerWidget {
 
                                 pagingController.refresh();
 
-                                if (bookOnViwer.value == null) return;
+                                if (!context.mounted ||
+                                    bookOnViwer.value == null) {
+                                  return;
+                                }
+                                // ignore: use_build_context_synchronously
                                 bookOnViwer.value = await _bookInfoViewerCommand
                                     .refreshBookInfo(
                                         context, ref, bookOnViwer.value!.id);
@@ -328,7 +329,7 @@ class HomeSectionDesktop extends HookConsumerWidget {
                                 icon: const Icon(Icons.shopping_cart_rounded)),
                           IconButton(
                             onPressed: () async {
-                              bool delete = await _bookInfoViewerCommand
+                              final delete = await _bookInfoViewerCommand
                                   .showDeleteBookDialog(context);
                               if (!delete) return;
                               bookTaskLoadingState.value = true;
@@ -337,7 +338,7 @@ class HomeSectionDesktop extends HookConsumerWidget {
                                   await ref.read(bookControllerProvider.future);
                               final result = await controller
                                   .deleteBook(bookOnViwer.value!.id);
-                              if (!result) {
+                              if (context.mounted && !result) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text("Erro ao deletar livro"),
@@ -355,14 +356,13 @@ class HomeSectionDesktop extends HookConsumerWidget {
                     ),
                   ),
                 Flexible(
-                  flex: 1,
                   child: Card(
                     elevation: 0,
                     color: Theme.of(context).colorScheme.surfaceVariant,
                     child: CardBookViewContent(
                       book: bookOnViwer.value,
                       onRefresh: () async {
-                        final BookModel? newInfoBook =
+                        final newInfoBook =
                             await _bookInfoViewerCommand.refreshBookInfo(
                                 context, ref, bookOnViwer.value!.id);
                         if (newInfoBook == null) return;
