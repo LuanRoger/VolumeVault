@@ -1,22 +1,22 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:volume_vault/models/book_model.dart';
-import 'package:volume_vault/models/book_search_result.dart';
-import 'package:volume_vault/models/book_sort_option.dart';
-import 'package:volume_vault/models/enums/visualization_type.dart';
-import 'package:volume_vault/pages/book_info_view/commands/book_info_viewer_strategy.dart';
-import 'package:volume_vault/providers/providers.dart';
-import 'package:volume_vault/services/models/book_search_request.dart';
-import 'package:volume_vault/services/models/book_stats.dart';
-import 'package:volume_vault/services/models/get_user_book_request.dart';
-import 'package:volume_vault/services/models/user_book_result.dart';
-import 'package:volume_vault/shared/routes/app_routes.dart';
-import 'package:volume_vault/shared/widgets/cards/book_info_grid_card.dart';
-import 'package:volume_vault/shared/widgets/cards/book_info_list_card.dart';
-import 'package:volume_vault/shared/widgets/cards/profile_card.dart';
-import 'package:volume_vault/shared/widgets/list_tiles/book_search_result_tile.dart';
+import "package:flutter/material.dart";
+import "package:flutter_slidable/flutter_slidable.dart";
+import "package:go_router/go_router.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:volume_vault/models/book_model.dart";
+import "package:volume_vault/models/book_search_result.dart";
+import "package:volume_vault/models/book_sort_option.dart";
+import "package:volume_vault/models/enums/visualization_type.dart";
+import "package:volume_vault/pages/book_info_view/commands/book_info_viewer_strategy.dart";
+import "package:volume_vault/providers/providers.dart";
+import "package:volume_vault/services/models/book_search_request.dart";
+import "package:volume_vault/services/models/book_stats.dart";
+import "package:volume_vault/services/models/get_user_book_request.dart";
+import "package:volume_vault/services/models/user_book_result.dart";
+import "package:volume_vault/shared/routes/app_routes.dart";
+import "package:volume_vault/shared/widgets/cards/book_info_grid_card.dart";
+import "package:volume_vault/shared/widgets/cards/book_info_list_card.dart";
+import "package:volume_vault/shared/widgets/cards/profile_card.dart";
+import "package:volume_vault/shared/widgets/list_tiles/book_search_result_tile.dart";
 
 abstract class HomeSectionLayoutStrategy {
   const HomeSectionLayoutStrategy();
@@ -27,10 +27,9 @@ abstract class HomeSectionLayoutStrategy {
   Future<BookSearchResult?> search(String query, WidgetRef ref) async {
     final bookSearchController =
         await ref.read(bookSearchControllerProvider.future);
-    BookSearchRequest searchRequest =
-        BookSearchRequest(query: query, limitPerPage: 10);
+    final searchRequest = BookSearchRequest(query: query, limitPerPage: 10);
 
-    BookSearchResult? searchResult =
+    final searchResult =
         await bookSearchController.searchForBook(searchRequest);
 
     return searchResult;
@@ -54,10 +53,10 @@ abstract class HomeSectionLayoutStrategy {
           onTap: () async {
             final bookController =
                 await ref.read(bookControllerProvider.future);
-            final BookModel? book =
-                await bookController.getBookInfoById(bookResult.id);
+            final book = await bookController.getBookInfoById(bookResult.id);
 
-            if (book == null) return;
+            if (!dialogContext.mounted || book == null) return;
+            // ignore: use_build_context_synchronously
             onBookSelect(dialogContext, ref, book);
           },
         )
@@ -76,7 +75,7 @@ abstract class HomeSectionLayoutStrategy {
   Future<BookStats?> getUserBookStats(WidgetRef ref) async {
     final statsController = await ref.read(statsControllerProvider.future);
 
-    BookStats? bookStats = await statsController.getUserBooksCount();
+    final bookStats = await statsController.getUserBooksCount();
     return bookStats;
   }
 
@@ -85,11 +84,10 @@ abstract class HomeSectionLayoutStrategy {
       required BookInfoViewerStrategy bookInfoViewerStrategy,
       void Function()? onUpdate,
       void Function(BookModel)? onSelect,
-      VisualizationType viewType = VisualizationType.LIST}) {
+      VisualizationType viewType = VisualizationType.list}) {
     final slidableBackgroundColor = Theme.of(context).colorScheme.surface;
     return switch (viewType) {
-      VisualizationType.LIST => Slidable(
-          closeOnScroll: true,
+      VisualizationType.list => Slidable(
           endActionPane: ActionPane(
               motion: const BehindMotion(),
               extentRatio: 0.3,
@@ -114,7 +112,7 @@ abstract class HomeSectionLayoutStrategy {
                 : () => onBookSelect(context, ref, book, onUpdate: onUpdate),
           ),
         ),
-      VisualizationType.GRID => BookInfoGridCard(
+      VisualizationType.grid => BookInfoGridCard(
           book,
           onPressed: onSelect != null
               ? () => onSelect(book)

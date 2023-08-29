@@ -1,15 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:volume_vault/l10n/supported_locales.dart';
-import 'package:volume_vault/models/enums/theme_brightness.dart';
-import 'package:volume_vault/providers/providers.dart';
+import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:volume_vault/l10n/supported_locales.dart";
+import "package:volume_vault/models/enums/theme_brightness.dart";
+import "package:volume_vault/providers/providers.dart";
 
 abstract class ConfigurationPageStrategy {
-  void resetConfiguration(BuildContext context, WidgetRef ref) async {
-    bool resetConfig = false;
+  Future<void> resetConfiguration(BuildContext context, WidgetRef ref) async {
+    var resetConfig = false;
 
-    await showDialog(
+    await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(
@@ -47,10 +47,11 @@ abstract class ConfigurationPageStrategy {
     }
   }
 
-  Future showThemeChangeDialog(BuildContext context, WidgetRef ref) async {
+  Future<void> showThemeChangeDialog(
+      BuildContext context, WidgetRef ref) async {
     final themeBrightness = ref.read(themePreferencesStateProvider);
 
-    await showDialog(
+    await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         actions: [
@@ -68,7 +69,7 @@ abstract class ConfigurationPageStrategy {
             RadioListTile<ThemeBrightness>(
               title: Text(AppLocalizations.of(context)!
                   .lightThemeSelectionDialogOption),
-              value: ThemeBrightness.LIGHT,
+              value: ThemeBrightness.light,
               groupValue: themeBrightness.themeBrightnes,
               onChanged: (newValue) {
                 if (newValue == null) return;
@@ -82,7 +83,7 @@ abstract class ConfigurationPageStrategy {
             RadioListTile<ThemeBrightness>(
               title: Text(
                   AppLocalizations.of(context)!.darkThemeSelectionDialogOption),
-              value: ThemeBrightness.DARK,
+              value: ThemeBrightness.dark,
               groupValue: themeBrightness.themeBrightnes,
               onChanged: (newValue) {
                 if (newValue == null) return;
@@ -96,7 +97,7 @@ abstract class ConfigurationPageStrategy {
             RadioListTile<ThemeBrightness>(
               title: Text(AppLocalizations.of(context)!
                   .systemThemeSelectionDialogOption),
-              value: ThemeBrightness.SYSTEM,
+              value: ThemeBrightness.system,
               groupValue: themeBrightness.themeBrightnes,
               onChanged: (newValue) {
                 if (newValue == null) return;
@@ -113,15 +114,13 @@ abstract class ConfigurationPageStrategy {
     );
   }
 
-  void toggleLightEffect(WidgetRef ref, bool newValue) {
-    final graphicsPrefernces =
-        ref.read(graphicsPreferencesStateProvider.notifier);
-    graphicsPrefernces.lightEffect = newValue;
+  void toggleLightEffect(WidgetRef ref, {required bool newValue}) {
+    ref.read(graphicsPreferencesStateProvider.notifier).lightEffect = newValue;
   }
 
   void changeLanguage(WidgetRef ref, SupportedLocales newLocale) {
-    final localizationPreferences =
-        ref.read(localizationPreferencesStateProvider.notifier);
-    localizationPreferences.changeLocalization(newLocale);
+    ref
+        .read(localizationPreferencesStateProvider.notifier)
+        .changeLocalization(newLocale);
   }
 }

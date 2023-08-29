@@ -1,4 +1,4 @@
-import 'package:volume_vault/models/book_search_result_model.dart';
+import "package:volume_vault/models/book_search_result_model.dart";
 
 class BookSearchResult {
   final int count;

@@ -55,7 +55,7 @@ final searchApiParamsProvider =
     FutureProvider<SearchApiConfigParams>((ref) async {
   final serverConfig = ref.watch(serverConfigNotifierProvider);
 
-  int intPort = int.parse(serverConfig.searchServerPort);
+  final intPort = int.parse(serverConfig.searchServerPort);
   return SearchApiConfigParams(
       host: serverConfig.searchServerHost,
       port: intPort,
@@ -65,7 +65,7 @@ final searchApiParamsProvider =
 
 final sharedPreferencesProvider =
     FutureProvider<SharedPreferences>((ref) async {
-  return await SharedPreferences.getInstance();
+  return SharedPreferences.getInstance();
 });
 final profileStorageBucketProvider = ChangeNotifierProvider((ref) {
   final userSession = ref.watch(userSessionAuthProvider);

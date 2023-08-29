@@ -1,18 +1,18 @@
-import 'package:animations/animations.dart';
-import 'package:flutter/material.dart';
+import "package:animations/animations.dart";
+import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:go_router/go_router.dart";
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:volume_vault/models/book_model.dart';
-import 'package:volume_vault/pages/home_page/commands/home_page_desktop_commands.dart';
-import 'package:volume_vault/pages/home_page/sections/home_section/layouts/home_section_desktop.dart';
-import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
-import 'package:volume_vault/shared/hooks/paging_controller_hook.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:volume_vault/models/book_model.dart";
+import "package:volume_vault/pages/home_page/commands/home_page_desktop_commands.dart";
+import "package:volume_vault/pages/home_page/sections/home_section/layouts/home_section_desktop.dart";
+import "package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart";
+import "package:volume_vault/shared/hooks/paging_controller_hook.dart";
 import "package:volume_vault/shared/routes/app_routes.dart";
 
 class HomePageDesktop extends HookConsumerWidget {
-  // ignore: unused_field
-  final HomePageDesktopCommands _commands = const HomePageDesktopCommands();
+  // ignore: unused_element
+  HomePageDesktopCommands get _commands => const HomePageDesktopCommands();
 
   const HomePageDesktop({super.key});
 
@@ -23,7 +23,7 @@ class HomePageDesktop extends HookConsumerWidget {
 
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8),
         child: HomeSectionDesktop(fetcherListController),
       ),
       floatingActionButton: Column(
@@ -34,11 +34,12 @@ class HomePageDesktop extends HookConsumerWidget {
             heroTag: "qrCodeScanner",
             child: const Icon(Icons.qr_code_scanner_rounded),
             onPressed: () async {
-              final BookModel? result = await context
+              final result = await context
                   .push<BookModel?>(AppRoutes.qrCodeScannerPageRoute);
-              if (!context.mounted || result == null) return;
 
-              context.push(AppRoutes.registerEditBookPageRoute,
+              if (!context.mounted || result == null) return;
+              // ignore: use_build_context_synchronously
+              await context.push(AppRoutes.registerEditBookPageRoute,
                   extra: [result, false]);
             },
           ),

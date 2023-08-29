@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:volume_vault/shared/widgets/bottom_sheet/bottom_sheet_base.dart';
+import "package:flutter/material.dart";
+import "package:volume_vault/shared/widgets/bottom_sheet/bottom_sheet_base.dart";
 
 class BottomSheet extends BottomSheetBase {
   final List<Widget>? items;
@@ -16,11 +16,13 @@ class BottomSheet extends BottomSheetBase {
     super.onClose,
     super.mainAxisAlignment,
     super.crossAxisAlignment,
-  }) : assert(items == null && content != null ||
-            items != null && content == null);
+  }) : assert(
+          items == null && content != null || items != null && content == null,
+          "You must provide either items or content",
+        );
 
   Future<void> show(BuildContext context) async {
-    return await super.showBottomSheet(context,
+    return super.showBottomSheet(context,
         builder: (context) => content ?? Column(children: items!));
   }
 }

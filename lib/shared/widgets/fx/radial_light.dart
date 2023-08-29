@@ -1,20 +1,23 @@
-import 'package:eeffects/eeffects.dart';
-import 'package:flutter/material.dart';
+import "package:eeffects/eeffects.dart";
+import "package:flutter/material.dart";
 
 class RadialLight extends StatelessWidget {
   final double height;
   final double width;
-  List<Color> colors;
-  double sceneXPoss;
-  double sceneYPoss;
-  double radius;
+  final List<Color> colors;
+  final double sceneXPoss;
+  final double sceneYPoss;
+  final double radius;
 
-  RadialLight(this.height, this.width,
-      {super.key,
-      required this.colors,
-      this.sceneXPoss = 0,
-      this.sceneYPoss = 0,
-      this.radius = 0});
+  const RadialLight(
+    this.height,
+    this.width, {
+    required this.colors,
+    super.key,
+    this.sceneXPoss = 0,
+    this.sceneYPoss = 0,
+    this.radius = 0,
+  });
 
   @override
   Widget build(BuildContext context) {

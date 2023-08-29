@@ -1,6 +1,6 @@
-import 'package:envied/envied.dart';
+import "package:envied/envied.dart";
 
-part 'env_vars.g.dart';
+part "env_vars.g.dart";
 
 @Envied(path: ".env", obfuscate: true)
 abstract class EnvVars {

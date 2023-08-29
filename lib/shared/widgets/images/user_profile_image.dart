@@ -1,15 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:volume_vault/providers/providers.dart';
-import 'package:volume_vault/shared/widgets/images/profile_avatar.dart';
+import "package:flutter/material.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:volume_vault/providers/providers.dart";
+import "package:volume_vault/shared/widgets/images/profile_avatar.dart";
 
 class UserProfileImage extends HookConsumerWidget {
   final TextStyle? letterStyle;
   final double? width;
   final double? height;
 
-  const UserProfileImage({super.key, this.letterStyle, this.height, this.width});
+  const UserProfileImage({
+    super.key,
+    this.letterStyle,
+    this.height,
+    this.width,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,7 +25,7 @@ class UserProfileImage extends HookConsumerWidget {
     final profileImageLoadState = useState(false);
 
     final profileImageMemoize =
-        useMemoized(() => profileStorageProvider.getProfileImageFromBucket());
+        useMemoized(profileStorageProvider.getProfileImageFromBucket);
 
     final profileImageFuture = useFuture(profileImageMemoize);
 

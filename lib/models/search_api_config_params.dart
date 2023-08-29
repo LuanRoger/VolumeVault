@@ -4,9 +4,10 @@ class SearchApiConfigParams {
   String host;
   int port;
 
-  SearchApiConfigParams(
-      {required this.apiKey,
-      required this.protocol,
-      required this.host,
-      required this.port});
+  SearchApiConfigParams({
+    required this.apiKey,
+    required this.protocol,
+    required this.host,
+    required this.port,
+  });
 }

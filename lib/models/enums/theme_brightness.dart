@@ -1,14 +1,13 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
 enum ThemeBrightness {
-  LIGHT("Claro", ThemeMode.light),
-  DARK("Escuro", ThemeMode.dark),
-  SYSTEM("Sistema", ThemeMode.system);
+  light(ThemeMode.light),
+  dark(ThemeMode.dark),
+  system(ThemeMode.system);
 
-  final String name;
   final ThemeMode themeMode;
 
-  const ThemeBrightness(this.name, this.themeMode);
+  const ThemeBrightness(this.themeMode);
 }

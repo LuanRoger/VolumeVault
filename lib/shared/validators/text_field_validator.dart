@@ -1,9 +1,9 @@
-import 'package:volume_vault/shared/validators/int_validators.dart';
-import 'package:volume_vault/shared/validators/text_validators.dart';
-import 'package:volume_vault/shared/validators/validation_regexes.dart';
+import "package:volume_vault/shared/validators/int_validators.dart";
+import "package:volume_vault/shared/validators/text_validators.dart";
+import "package:volume_vault/shared/validators/validation_regexes.dart";
 
 String? mandatoryNotEmpty(String? value) {
-  String tratedValue = value ?? "";
+  final tratedValue = value ?? "";
   if (!StringValidators.notEmpty(tratedValue)) {
     return "Este campo é obrigatório";
   }
@@ -12,7 +12,7 @@ String? mandatoryNotEmpty(String? value) {
 }
 
 String? mandatoryNotEmptyExactLenght17(String? value) {
-  String tratedValue = value ?? "";
+  final tratedValue = value ?? "";
 
   if (!StringValidators.notEmpty(tratedValue)) {
     return "Este campo é obrigatório.";
@@ -25,7 +25,7 @@ String? mandatoryNotEmptyExactLenght17(String? value) {
 }
 
 String? minumumLenght3(String? value) {
-  String tratedValue = value ?? "";
+  final tratedValue = value ?? "";
 
   if (!StringValidators.minimumLengh(tratedValue, lenght: 3)) {
     return "Este campo deve conter ao menos 3 characteres.";
@@ -35,10 +35,11 @@ String? minumumLenght3(String? value) {
 }
 
 String? minumumLenght8AndMaximum18(String? value) {
-  String tratedValue = value ?? "";
+  final tratedValue = value ?? "";
 
   if (!StringValidators.inBetween(tratedValue, min: 8, max: 18)) {
-    return "Este campo deve conter mais do que 8 characteres e menos do que 18.";
+    return "Este campo deve conter mais do que "
+    "8 characteres e menos do que 18.";
   }
 
   return null;
@@ -87,7 +88,7 @@ String? maximumLenght500(String? value) {
 String? greaterThanOrEqualTo1(String? value) {
   if (value == null || value.isEmpty) return null;
 
-  int tratedValue = int.tryParse(value) ?? 0;
+  final tratedValue = int.tryParse(value) ?? 0;
   if (!IntValidator.greaterThanOrEqualTo(tratedValue, number: 1)) {
     return "O valor deve ser maior que 0";
   }
@@ -96,7 +97,7 @@ String? greaterThanOrEqualTo1(String? value) {
 }
 
 String? matchEmailRegex(String? value) {
-  String tratedValue = value ?? "";
+  final tratedValue = value ?? "";
 
   if (!StringValidators.matchWithRegex(tratedValue,
       regex: ValidationRegexes.email)) {
@@ -107,7 +108,7 @@ String? matchEmailRegex(String? value) {
 }
 
 String? notEmptyAndNotMustNotRepeat(String? value, List<String> list) {
-  String tratedValue = value ?? "";
+  final tratedValue = value ?? "";
 
   if (!StringValidators.notEmpty(tratedValue)) {
     return "Este campo é obrigatório";

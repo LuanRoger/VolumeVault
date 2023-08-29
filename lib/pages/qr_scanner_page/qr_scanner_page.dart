@@ -66,7 +66,7 @@ class QrScannerPage extends HookConsumerWidget {
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeOutQuart,
         child: Container(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(10),
           width: double.infinity,
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primaryContainer,

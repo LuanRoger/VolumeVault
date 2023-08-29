@@ -1,26 +1,26 @@
-import 'package:animations/animations.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import "package:volume_vault/l10n/l10n.dart";
-import 'package:volume_vault/models/book_model.dart';
+import "package:animations/animations.dart";
+import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:go_router/go_router.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:volume_vault/l10n/l10n_utils.dart";
+import "package:volume_vault/models/book_model.dart";
 import "package:volume_vault/models/book_result_limiter.dart";
-import 'package:volume_vault/models/book_sort_option.dart';
+import "package:volume_vault/models/book_sort_option.dart";
 import "package:volume_vault/models/enums/book_format.dart";
-import 'package:volume_vault/models/enums/visualization_type.dart';
-import 'package:volume_vault/pages/book_info_view/commands/book_info_viewer_command.dart';
-import 'package:volume_vault/pages/home_page/sections/home_section/commands/home_section_mobile_command.dart';
-import 'package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart';
-import 'package:volume_vault/providers/providers.dart';
+import "package:volume_vault/models/enums/visualization_type.dart";
+import "package:volume_vault/pages/book_info_view/commands/book_info_viewer_command.dart";
+import "package:volume_vault/pages/home_page/sections/home_section/commands/home_section_mobile_command.dart";
+import "package:volume_vault/pages/register_edit_book_page/register_edit_book_page.dart";
+import "package:volume_vault/providers/providers.dart";
 import "package:volume_vault/services/models/book_stats.dart";
-import 'package:volume_vault/services/models/get_user_book_request.dart';
-import 'package:volume_vault/shared/routes/app_routes.dart';
-import 'package:volume_vault/shared/widgets/images/user_profile_image.dart';
-import 'package:volume_vault/shared/widgets/lists/pagination_sliver_list_grid.dart';
-import 'package:volume_vault/shared/widgets/widget_switcher.dart';
-import 'package:volume_vault/shared/hooks/paging_controller_hook.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import "package:volume_vault/services/models/get_user_book_request.dart";
+import "package:volume_vault/shared/hooks/paging_controller_hook.dart";
+import "package:volume_vault/shared/routes/app_routes.dart";
+import "package:volume_vault/shared/widgets/images/user_profile_image.dart";
+import "package:volume_vault/shared/widgets/lists/pagination_sliver_list_grid.dart";
+import "package:volume_vault/shared/widgets/widget_switcher.dart";
 
 class HomeSectionMobile extends StatefulHookConsumerWidget {
   final VisualizationType? viewType;
@@ -50,7 +50,7 @@ class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
     final tabBookFormatController = useTabController(initialLength: 10);
 
     final visualizationTypeState =
-        useState<VisualizationType>(widget.viewType ?? VisualizationType.LIST);
+        useState<VisualizationType>(widget.viewType ?? VisualizationType.list);
     final sortOptionState = useState(BookSortOption());
     final resultLimiterState = useState<BookResultLimiter?>(null);
     final bookStatsState = useState<BookStats?>(null);
@@ -122,7 +122,7 @@ class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
                     Flexible(
                       flex: 0,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -141,12 +141,11 @@ class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
                                   smallSize: 10,
                                   child: IconButton(
                                       onPressed: () async {
-                                        BookSortOption? newSortOptions =
-                                            await _commands
-                                                .showSortFilterDialog(context,
-                                                    currentOptions:
-                                                        sortOptionState.value,
-                                                    wrapped: true);
+                                        final newSortOptions = await _commands
+                                            .showSortFilterDialog(
+                                          context,
+                                          currentOptions: sortOptionState.value,
+                                        );
                                         if (newSortOptions == null) return;
                                         sortOptionState.value = newSortOptions;
 
@@ -158,12 +157,12 @@ class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
                                   onPressed: () {
                                     visualizationTypeState.value =
                                         visualizationTypeState.value ==
-                                                VisualizationType.LIST
-                                            ? VisualizationType.GRID
-                                            : VisualizationType.LIST;
+                                                VisualizationType.list
+                                            ? VisualizationType.grid
+                                            : VisualizationType.list;
                                   },
                                   icon: Icon(visualizationTypeState.value ==
-                                          VisualizationType.LIST
+                                          VisualizationType.list
                                       ? Icons.grid_view_rounded
                                       : Icons.view_list_rounded),
                                 ),
@@ -188,36 +187,36 @@ class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
                               text: AppLocalizations.of(context)!
                                   .allBooksFormatsTabOption),
                           Tab(
-                            text: L10n.bookFormat(context,
+                            text: localizeBookFormat(context,
                                 format: BookFormat.hardcover),
                           ),
                           Tab(
-                              text: L10n.bookFormat(context,
+                              text: localizeBookFormat(context,
                                   format: BookFormat.hardback)),
                           Tab(
-                            text: L10n.bookFormat(context,
+                            text: localizeBookFormat(context,
                                 format: BookFormat.paperback),
                           ),
                           Tab(
-                            text: L10n.bookFormat(context,
+                            text: localizeBookFormat(context,
                                 format: BookFormat.ebook),
                           ),
                           Tab(
-                            text: L10n.bookFormat(context,
+                            text: localizeBookFormat(context,
                                 format: BookFormat.pocket),
                           ),
                           Tab(
-                              text: L10n.bookFormat(context,
+                              text: localizeBookFormat(context,
                                   format: BookFormat.audioBook)),
                           Tab(
-                            text: L10n.bookFormat(context,
+                            text: localizeBookFormat(context,
                                 format: BookFormat.spiral),
                           ),
                           Tab(
-                              text: L10n.bookFormat(context,
+                              text: localizeBookFormat(context,
                                   format: BookFormat.hq)),
                           Tab(
-                            text: L10n.bookFormat(context,
+                            text: localizeBookFormat(context,
                                 format: BookFormat.collectorsEdition),
                           ),
                         ]),
@@ -252,11 +251,12 @@ class _HomeSectionMobileState extends ConsumerState<HomeSectionMobile>
             heroTag: "qrCodeScanner",
             child: const Icon(Icons.qr_code_scanner_rounded),
             onPressed: () async {
-              final BookModel? result = await context
+              final result = await context
                   .push<BookModel?>(AppRoutes.qrCodeScannerPageRoute);
-              if (!context.mounted || result == null) return;
 
-              context.push(AppRoutes.registerEditBookPageRoute,
+              if (!context.mounted || result == null) return;
+              // ignore: use_build_context_synchronously
+              await context.push(AppRoutes.registerEditBookPageRoute,
                   extra: [result, false]);
             },
           ),

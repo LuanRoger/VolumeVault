@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
 class IconText extends StatelessWidget {
   final IconData icon;
@@ -6,12 +6,13 @@ class IconText extends StatelessWidget {
   final double? iconSize;
   final TextStyle? textStyle;
 
-  const IconText(
-      {super.key,
-      required this.icon,
-      required this.text,
-      this.iconSize,
-      this.textStyle});
+  const IconText({
+    required this.icon,
+    required this.text,
+    super.key,
+    this.iconSize,
+    this.textStyle,
+  });
 
   @override
   Widget build(BuildContext context) {

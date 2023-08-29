@@ -1,10 +1,11 @@
-import 'dart:ui';
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:volume_vault/pages/login_signin_page/sections/login_section.dart';
-import 'package:volume_vault/pages/login_signin_page/sections/signin_section.dart';
-import 'package:volume_vault/shared/assets/app_images.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import "dart:ui";
+
+import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:volume_vault/pages/login_signin_page/sections/login_section.dart";
+import "package:volume_vault/pages/login_signin_page/sections/signin_section.dart";
+import "package:volume_vault/shared/assets/app_images.dart";
 
 class LoginSigninPage extends HookWidget {
   const LoginSigninPage({super.key});
@@ -22,7 +23,7 @@ class LoginSigninPage extends HookWidget {
     final imageConainerDecorator = BoxDecoration(
       borderRadius: BorderRadius.circular(10),
     );
-    const containersPadding = EdgeInsets.all(20.0);
+    const containersPadding = EdgeInsets.all(20);
 
     const containersCurves = Curves.easeInOutExpo;
     const containerElementsOpacityDuration = Duration(milliseconds: 600);
@@ -31,7 +32,7 @@ class LoginSigninPage extends HookWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.onSurface,
       body: Padding(
-          padding: const EdgeInsets.all(3.0),
+          padding: const EdgeInsets.all(3),
           child: Row(
             children: [
               AnimatedContainer(
@@ -99,8 +100,7 @@ class LoginSigninPage extends HookWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        AppLocalizations.of(context)!
-                            .initialPageTitle,
+                        AppLocalizations.of(context)!.initialPageTitle,
                         style: Theme.of(context)
                             .textTheme
                             .displaySmall!
@@ -116,14 +116,16 @@ class LoginSigninPage extends HookWidget {
                               loginSctionMaximizedState.value = true;
                               initialSctionMaximizedState.value = false;
                             },
-                            child: Text(AppLocalizations.of(context)!.loginButtonLoginPage),
+                            child: Text(AppLocalizations.of(context)!
+                                .loginButtonLoginPage),
                           ),
                           ElevatedButton(
                             onPressed: () {
                               signinSctionMaximizedState.value = true;
                               initialSctionMaximizedState.value = false;
                             },
-                            child: Text(AppLocalizations.of(context)!.signinButtonSigninPage),
+                            child: Text(AppLocalizations.of(context)!
+                                .signinButtonSigninPage),
                           )
                         ],
                       )

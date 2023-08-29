@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:volume_vault/models/enums/login_auth_result.dart';
-import 'package:volume_vault/models/enums/signin_auth_result.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:volume_vault/models/enums/login_auth_result.dart";
+import "package:volume_vault/models/enums/signin_auth_result.dart";
 
 abstract class SnackbarUtils {
   static void showUserLoginAuthErrorSnackbar(BuildContext context,

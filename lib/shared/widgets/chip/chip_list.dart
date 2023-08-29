@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:volume_vault/shared/widgets/chip/filled_chip.dart';
+import "package:flutter/material.dart";
+import "package:volume_vault/shared/widgets/chip/filled_chip.dart";
 
 class ChipList extends StatelessWidget {
   final Set<String> labels;
@@ -9,13 +9,16 @@ class ChipList extends StatelessWidget {
 
   const ChipList(this.labels,
       {super.key, this.spacing = 10.0, this.onRemove, this.onPressed})
-      : assert(onRemove != null && onPressed == null ||
-            onRemove == null && onPressed != null);
+      : assert(
+          onRemove != null && onPressed == null ||
+              onRemove == null && onPressed != null,
+          "You must provide either onRemove or onPressed",
+        );
 
   List<Widget> _generateChips(BuildContext context) {
-    List<Widget> chips = List.empty(growable: true);
-    for (String label in labels) {
-      final bool isLast = label == labels.last;
+    final chips = List<Widget>.empty(growable: true);
+    for (final label in labels) {
+      final isLast = label == labels.last;
       Widget chip;
       if (onPressed != null) {
         chip = InputChip(

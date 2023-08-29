@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:volume_vault/l10n/supported_locales.dart';
-import 'package:volume_vault/models/enums/book_format.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import "package:flutter/material.dart";
+import "package:volume_vault/l10n/supported_locales.dart";
 
 class L10n {
   static List<Locale> get locales => List.from(
@@ -14,27 +11,5 @@ class L10n {
     } catch (_) {
       return SupportedLocales.ptBR;
     }
-  }
-
-  static String bookFormat(BuildContext context, {required BookFormat format}) {
-    return switch (format) {
-      BookFormat.hardcover =>
-        AppLocalizations.of(context)!.hardcoverRegisterBookFormatOption,
-      BookFormat.hardback =>
-        AppLocalizations.of(context)!.hardbackRegisterBookFormatOption,
-      BookFormat.paperback =>
-        AppLocalizations.of(context)!.paperbackRegisterBookFormatOption,
-      BookFormat.ebook =>
-        AppLocalizations.of(context)!.ebookRegisterBookFormatOption,
-      BookFormat.pocket =>
-        AppLocalizations.of(context)!.pocketBookRegisterBookFormatOption,
-      BookFormat.audioBook =>
-        AppLocalizations.of(context)!.audiobookRegisterBookFormatOption,
-      BookFormat.spiral =>
-        AppLocalizations.of(context)!.spiralBoundRegisterBookFormatOption,
-      BookFormat.hq => AppLocalizations.of(context)!.hqRegisterBookFormatOption,
-      BookFormat.collectorsEdition =>
-        AppLocalizations.of(context)!.collectorsEditionRegisterBookFormatOption,
-    };
   }
 }

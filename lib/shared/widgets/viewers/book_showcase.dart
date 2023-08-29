@@ -1,24 +1,25 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:volume_vault/shared/widgets/viewers/book_image_viewer.dart';
-import 'package:volume_vault/shared/widgets/fx/radial_light.dart';
+import "package:flutter/material.dart";
+import "package:flutter_animate/flutter_animate.dart";
+import "package:volume_vault/shared/widgets/fx/radial_light.dart";
+import "package:volume_vault/shared/widgets/viewers/book_image_viewer.dart";
 
 class BookShowcase extends StatelessWidget {
   final Color? color;
   final Size size;
   final ImageProvider image;
-  bool lightEffect;
-  Clip clipBehavior;
-  Alignment alignment;
+  final bool lightEffect;
+  final Clip clipBehavior;
+  final Alignment alignment;
 
-  BookShowcase(
-      {super.key,
-      this.color,
-      required this.size,
-      required this.image,
-      this.lightEffect = true,
-      this.clipBehavior = Clip.hardEdge,
-      this.alignment = Alignment.center});
+  const BookShowcase({
+    required this.size,
+    required this.image,
+    super.key,
+    this.color,
+    this.lightEffect = true,
+    this.clipBehavior = Clip.hardEdge,
+    this.alignment = Alignment.center,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +48,5 @@ class BookShowcase extends StatelessWidget {
         ],
       ),
     );
-    ;
   }
 }

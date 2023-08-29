@@ -1,17 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
 abstract class HomePageLayoutStrategy {
   const HomePageLayoutStrategy();
 
-  Future showErrorDialog(BuildContext context,
+  Future<void> showErrorDialog(BuildContext context,
       {required bool connectionError,
       required bool authValidationError}) async {
-    final String message = authValidationError
+    final message = authValidationError
         ? AppLocalizations.of(context)!.authErrorDialogMessage
         : AppLocalizations.of(context)!.serverConnectionErrorDialogMessage;
 
-    await showDialog(
+    await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(AppLocalizations.of(context)!.problemDialogTitle),

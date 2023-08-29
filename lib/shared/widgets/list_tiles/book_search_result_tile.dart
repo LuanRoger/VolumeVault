@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:volume_vault/models/book_search_result_model.dart';
+import "package:flutter/material.dart";
+import "package:volume_vault/models/book_search_result_model.dart";
 
 class BookSearchResultTile extends StatelessWidget {
   final BookSearchResultModel bookSearchResult;

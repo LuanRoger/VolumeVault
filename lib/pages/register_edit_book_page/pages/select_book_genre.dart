@@ -61,8 +61,8 @@ class SelectBookGenre extends HookConsumerWidget {
                     if (newValue) {
                       selectedGenres.value = {...selectedGenres.value, genre};
                     } else {
-                      final Set<String> removeGenreSet =
-                          Set.from(selectedGenres.value)..remove(genre);
+                      final removeGenreSet =
+                          Set<String>.from(selectedGenres.value)..remove(genre);
                       selectedGenres.value = removeGenreSet;
                     }
                   });

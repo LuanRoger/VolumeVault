@@ -1,27 +1,27 @@
-import 'package:flutter/material.dart' hide BottomSheet;
-import 'package:flutter/services.dart';
+import "package:flutter/material.dart" hide BottomSheet;
+import "package:flutter/services.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:go_router/go_router.dart";
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:textfield_tags/textfield_tags.dart';
-import 'package:volume_vault/l10n/l10n.dart';
-import 'package:volume_vault/l10n/supported_locales.dart';
-import 'package:volume_vault/models/enums/book_format.dart';
-import 'package:volume_vault/models/enums/read_status.dart';
+import "package:mask_text_input_formatter/mask_text_input_formatter.dart";
+import "package:textfield_tags/textfield_tags.dart";
+import "package:volume_vault/l10n/formaters/time_formater.dart";
+import "package:volume_vault/l10n/l10n_utils.dart";
+import "package:volume_vault/l10n/supported_locales.dart";
+import "package:volume_vault/models/enums/book_format.dart";
+import "package:volume_vault/models/enums/read_status.dart";
 import "package:volume_vault/models/utils/aditional_info_modal_model.dart";
 import "package:volume_vault/models/utils/read_date_info_modal_model.dart";
-import 'package:volume_vault/shared/routes/app_routes.dart';
-import "package:volume_vault/l10n/formaters/time_formater.dart";
-import 'package:volume_vault/shared/validators/text_field_validator.dart';
-import 'package:volume_vault/shared/widgets/bottom_sheet/bottom_sheet.dart';
-import 'package:volume_vault/shared/widgets/bottom_sheet/stateful_bottom_sheet.dart';
-import 'package:volume_vault/shared/widgets/chip/book_read_chip_choice.dart';
-import 'package:volume_vault/shared/widgets/chip/chip_list.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:volume_vault/shared/widgets/text_fields/date_text_field.dart';
+import "package:volume_vault/shared/routes/app_routes.dart";
+import "package:volume_vault/shared/validators/text_field_validator.dart";
+import "package:volume_vault/shared/widgets/bottom_sheet/bottom_sheet.dart";
+import "package:volume_vault/shared/widgets/bottom_sheet/stateful_bottom_sheet.dart";
+import "package:volume_vault/shared/widgets/chip/book_read_chip_choice.dart";
+import "package:volume_vault/shared/widgets/chip/chip_list.dart";
+import "package:volume_vault/shared/widgets/text_fields/date_text_field.dart";
 
 class BookInfoGetterCommand {
   void validateAndPop(BuildContext context, GlobalKey<FormState> formKey) {
-    bool allGood = formKey.currentState!.validate();
+    final allGood = formKey.currentState!.validate();
     if (allGood) Navigator.pop(context);
   }
 
@@ -92,9 +92,9 @@ class BookInfoGetterCommand {
       {TextEditingController? publisherController,
       TextEditingController? publishYearController,
       TextEditingController? editionController}) {
-    String publisherMemento = publisherController?.text ?? "";
-    String publishYearMemento = publishYearController?.text ?? "";
-    String editionMemento = editionController?.text ?? "";
+    final publisherMemento = publisherController?.text ?? "";
+    final publishYearMemento = publishYearController?.text ?? "";
+    final editionMemento = editionController?.text ?? "";
 
     BottomSheet(
       action: (context) =>
@@ -113,7 +113,6 @@ class BookInfoGetterCommand {
                 controller: publisherController,
                 validator: maximumLenght100,
                 maxLength: 100,
-                maxLines: 1,
                 decoration: InputDecoration(
                     labelText:
                         AppLocalizations.of(context)!.publisherTextFieldHint),
@@ -186,47 +185,47 @@ class BookInfoGetterCommand {
                 items: [
                   DropdownMenuItem(
                     value: BookFormat.hardcover,
-                    child: Text(
-                        L10n.bookFormat(context, format: BookFormat.hardcover)),
+                    child: Text(localizeBookFormat(context,
+                        format: BookFormat.hardcover)),
                   ),
                   DropdownMenuItem(
                     value: BookFormat.hardback,
-                    child: Text(
-                        L10n.bookFormat(context, format: BookFormat.hardback)),
+                    child: Text(localizeBookFormat(context,
+                        format: BookFormat.hardback)),
                   ),
                   DropdownMenuItem(
                     value: BookFormat.paperback,
-                    child: Text(
-                        L10n.bookFormat(context, format: BookFormat.paperback)),
+                    child: Text(localizeBookFormat(context,
+                        format: BookFormat.paperback)),
                   ),
                   DropdownMenuItem(
                     value: BookFormat.ebook,
                     child: Text(
-                        L10n.bookFormat(context, format: BookFormat.ebook)),
+                        localizeBookFormat(context, format: BookFormat.ebook)),
                   ),
                   DropdownMenuItem(
                     value: BookFormat.pocket,
                     child: Text(
-                        L10n.bookFormat(context, format: BookFormat.pocket)),
+                        localizeBookFormat(context, format: BookFormat.pocket)),
                   ),
                   DropdownMenuItem(
                     value: BookFormat.audioBook,
-                    child: Text(
-                        L10n.bookFormat(context, format: BookFormat.audioBook)),
+                    child: Text(localizeBookFormat(context,
+                        format: BookFormat.audioBook)),
                   ),
                   DropdownMenuItem(
                     value: BookFormat.spiral,
                     child: Text(
-                        L10n.bookFormat(context, format: BookFormat.spiral)),
+                        localizeBookFormat(context, format: BookFormat.spiral)),
                   ),
                   DropdownMenuItem(
                     value: BookFormat.hq,
-                    child:
-                        Text(L10n.bookFormat(context, format: BookFormat.hq)),
+                    child: Text(
+                        localizeBookFormat(context, format: BookFormat.hq)),
                   ),
                   DropdownMenuItem(
                     value: BookFormat.collectorsEdition,
-                    child: Text(L10n.bookFormat(context,
+                    child: Text(localizeBookFormat(context,
                         format: BookFormat.collectorsEdition)),
                   ),
                 ],

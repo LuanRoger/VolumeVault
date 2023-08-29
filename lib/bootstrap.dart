@@ -1,24 +1,21 @@
-import 'dart:async';
-import 'dart:developer';
-import 'package:firebase_core/firebase_core.dart';
-import "package:firebase_crashlytics/firebase_crashlytics.dart";
-import "package:flutter/foundation.dart";
-import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import "dart:async";
+import "package:firebase_core/firebase_core.dart";
+import "package:flutter/material.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:package_info_plus/package_info_plus.dart";
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:volume_vault/firebase_options.dart';
-import 'package:volume_vault/l10n/l10n.dart';
-import 'package:volume_vault/models/enums/theme_brightness.dart';
-import 'package:volume_vault/providers/interfaces/graphics_preferences_state.dart';
-import 'package:volume_vault/providers/interfaces/localization_preferences_state.dart';
-import 'package:volume_vault/providers/interfaces/theme_preferences_state.dart';
-import 'package:volume_vault/providers/providers.dart';
-import 'package:volume_vault/shared/preferences/app_preferences.dart';
-import 'package:volume_vault/shared/preferences/models/graphics_preferences.dart';
-import 'package:volume_vault/shared/preferences/models/localization_preferences.dart';
-import 'package:volume_vault/shared/preferences/models/theme_preferences.dart';
-import 'package:volume_vault/shared/preferences/preferences_keys.dart';
+import "package:shared_preferences/shared_preferences.dart";
+import "package:volume_vault/firebase_options.dart";
+import "package:volume_vault/l10n/l10n.dart";
+import "package:volume_vault/models/enums/theme_brightness.dart";
+import "package:volume_vault/providers/interfaces/graphics_preferences_state.dart";
+import "package:volume_vault/providers/interfaces/localization_preferences_state.dart";
+import "package:volume_vault/providers/interfaces/theme_preferences_state.dart";
+import "package:volume_vault/providers/providers.dart";
+import "package:volume_vault/shared/preferences/app_preferences.dart";
+import "package:volume_vault/shared/preferences/models/graphics_preferences.dart";
+import "package:volume_vault/shared/preferences/models/localization_preferences.dart";
+import "package:volume_vault/shared/preferences/models/theme_preferences.dart";
+import "package:volume_vault/shared/preferences/preferences_keys.dart";
 
 AppPreferences loadPreferences(SharedPreferences preferences) {
   final themePreferences = ThemePreferences(

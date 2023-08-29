@@ -4,9 +4,10 @@ class UserSession {
   String email;
   bool verified;
 
-  UserSession(
-      {required this.uid,
-      required this.name,
-      required this.email,
-      required this.verified});
+  UserSession({
+    required this.uid,
+    required this.name,
+    required this.email,
+    required this.verified,
+  });
 }

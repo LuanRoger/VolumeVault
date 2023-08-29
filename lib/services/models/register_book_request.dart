@@ -1,4 +1,4 @@
-import 'package:volume_vault/models/enums/read_status.dart';
+import "package:volume_vault/models/enums/read_status.dart";
 
 class RegisterBookRequest {
   String title;
@@ -25,6 +25,8 @@ class RegisterBookRequest {
     required this.title,
     required this.author,
     required this.isbn,
+    required this.createdAt,
+    required this.lastModification,
     this.publicationYear,
     this.publisher,
     this.edition,
@@ -39,8 +41,6 @@ class RegisterBookRequest {
     this.readStartDay,
     this.readEndDay,
     this.tags,
-    required this.createdAt,
-    required this.lastModification,
   });
 
   Map<String, dynamic> toJson() => {

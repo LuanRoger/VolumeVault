@@ -1,19 +1,22 @@
-import 'package:flutter/material.dart' hide BottomSheet;
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:volume_vault/models/book_model.dart';
-import 'package:volume_vault/models/enums/book_format.dart';
-import 'package:volume_vault/models/enums/read_status.dart';
-import 'package:volume_vault/pages/register_edit_book_page/commands/book_info_getter_command.dart';
-import 'package:volume_vault/pages/register_edit_book_page/commands/register_edit_book_page_desktop_command.dart';
-import 'package:volume_vault/pages/register_edit_book_page/widgets/book_info_getter.dart';
-import 'package:volume_vault/providers/providers.dart';
-import 'package:volume_vault/shared/hooks/text_field_tags_controller_hook.dart';
+// ignore_for_file: lines_longer_than_80_chars
+
+import "package:flutter/material.dart" hide BottomSheet;
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:go_router/go_router.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:volume_vault/l10n/formaters/time_formater.dart";
-import 'package:volume_vault/shared/widgets/chip/chip_list.dart';
-import 'package:volume_vault/shared/widgets/viewers/book_image_viewer.dart';
-import 'package:volume_vault/shared/widgets/icon/icon_text.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import "package:volume_vault/models/book_model.dart";
+import "package:volume_vault/models/enums/book_format.dart";
+import "package:volume_vault/models/enums/read_status.dart";
+import "package:volume_vault/pages/register_edit_book_page/commands/book_info_getter_command.dart";
+import "package:volume_vault/pages/register_edit_book_page/commands/register_edit_book_page_desktop_command.dart";
+import "package:volume_vault/pages/register_edit_book_page/widgets/book_info_getter.dart";
+import "package:volume_vault/providers/providers.dart";
+import "package:volume_vault/shared/hooks/text_field_tags_controller_hook.dart";
+import "package:volume_vault/shared/widgets/chip/chip_list.dart";
+import "package:volume_vault/shared/widgets/icon/icon_text.dart";
+import "package:volume_vault/shared/widgets/viewers/book_image_viewer.dart";
 
 class RegisterEditBookPageDesktop extends HookConsumerWidget {
   final RegisterEditBookPageDesktopCommand _command =
@@ -31,7 +34,7 @@ class RegisterEditBookPageDesktop extends HookConsumerWidget {
   RegisterEditBookPageDesktop({super.key, this.editBookModel});
 
   void validateAndPop(BuildContext context, GlobalKey<FormState> formKey) {
-    bool allGood = formKey.currentState!.validate();
+    final allGood = formKey.currentState!.validate();
     if (allGood) Navigator.pop(context);
   }
 
@@ -100,7 +103,7 @@ class RegisterEditBookPageDesktop extends HookConsumerWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8),
         child: loadingState.value
             ? const Center(
                 child: CircularProgressIndicator(),
@@ -109,7 +112,6 @@ class RegisterEditBookPageDesktop extends HookConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
-                    flex: 1,
                     child: Column(
                       children: [
                         GestureDetector(
@@ -157,7 +159,7 @@ class RegisterEditBookPageDesktop extends HookConsumerWidget {
                             decoration: BoxDecoration(
                               color:
                                   Theme.of(context).colorScheme.surfaceVariant,
-                              borderRadius: BorderRadius.circular(10.0),
+                              borderRadius: BorderRadius.circular(10),
                             ),
                             child: BookInfoGetter(
                               bookInfoFormKey: _bookInfoFormKey,
@@ -193,8 +195,7 @@ class RegisterEditBookPageDesktop extends HookConsumerWidget {
                               ),
                               FilledButton.tonal(
                                 onPressed: () async {
-                                  TextEditingController tagController =
-                                      TextEditingController();
+                                  final tagController = TextEditingController();
                                   await _command.showAddTagDialog(
                                       context, tagController);
                                   if (tagController.text.isEmpty ||
@@ -218,9 +219,9 @@ class RegisterEditBookPageDesktop extends HookConsumerWidget {
                           ChipList(
                             tagLabelsState.value,
                             onRemove: (value) {
-                              Set<String> newLabels =
-                                  Set.from(tagLabelsState.value);
-                              newLabels.remove(value);
+                              final newLabels =
+                                  Set<String>.from(tagLabelsState.value)
+                                    ..remove(value);
                               tagLabelsState.value = newLabels;
                             },
                           ),
@@ -229,7 +230,7 @@ class RegisterEditBookPageDesktop extends HookConsumerWidget {
                               loadingState.value = true;
                               late bool success;
                               if (editMode) {
-                                final bool saveInfos = await _command
+                                final saveInfos = await _command
                                     .showConfirmEditDialog(context);
                                 if (!saveInfos) {
                                   loadingState.value = false;
@@ -258,12 +259,13 @@ class RegisterEditBookPageDesktop extends HookConsumerWidget {
                                   bookController: await ref
                                       .read(bookControllerProvider.future),
                                 );
-                                if (!success) {
+                                if (context.mounted && !success) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text(AppLocalizations.of(
-                                              context)!
-                                          .wasNotPossibleToUpdateTheBookSnackbarMessage),
+                                      content: Text(
+                                        AppLocalizations.of(context)!
+                                            .wasNotPossibleToUpdateTheBookSnackbarMessage,
+                                      ),
                                     ),
                                   );
                                 }
@@ -290,9 +292,7 @@ class RegisterEditBookPageDesktop extends HookConsumerWidget {
                                       .read(bookControllerProvider.future),
                                 );
 
-                                // ignore: use_build_context_synchronously
-                                if (!context.mounted) return;
-                                if (!success) {
+                                if (context.mounted && !success) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(AppLocalizations.of(
@@ -310,10 +310,9 @@ class RegisterEditBookPageDesktop extends HookConsumerWidget {
                                 return;
                               }
 
-                              if (editMode)
-                                Navigator.pop(context, true);
-                              else
-                                Navigator.pop(context);
+                              if (context.mounted) {
+                                context.pop(editMode ? true : null);
+                              }
                             },
                             child: Text(AppLocalizations.of(context)!
                                 .confirmButtonRegisterBookPage),

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 import "package:volume_vault/shared/widgets/fx/shimmer_effect.dart";
 
 class ProfileBackgroundImage extends StatelessWidget {
@@ -6,7 +6,7 @@ class ProfileBackgroundImage extends StatelessWidget {
   final bool isLoading;
 
   const ProfileBackgroundImage(
-      {super.key, required this.image, this.isLoading = false});
+      {required this.image, super.key, this.isLoading = false});
 
   @override
   Widget build(BuildContext context) {

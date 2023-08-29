@@ -1,6 +1,8 @@
-import 'package:dio/dio.dart';
-import 'package:volume_vault/models/http_code.dart';
-import 'package:volume_vault/models/http_response.dart';
+// ignore_for_file: strict_raw_type
+
+import "package:dio/dio.dart";
+import "package:volume_vault/models/http_code.dart";
+import "package:volume_vault/models/http_response.dart";
 
 class HttpModule {
   //Http client
@@ -27,7 +29,7 @@ class HttpModule {
           headers: Map.from({...?fixHeaders, ...?headers}),
         ),
       );
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return HttpResponse.error(
           message: e.message, code: e.response?.statusCode);
     }
@@ -51,7 +53,7 @@ class HttpModule {
           headers: Map.from({...?fixHeaders, ...?headers}),
         ),
       );
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return HttpResponse.error(
           message: e.message, code: e.response?.statusCode);
     }
@@ -75,7 +77,7 @@ class HttpModule {
           headers: Map.from({...?fixHeaders, ...?headers}),
         ),
       );
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return HttpResponse.error(
           message: e.message, code: e.response?.statusCode);
     }
@@ -98,7 +100,7 @@ class HttpModule {
           headers: Map.from({...?fixHeaders, ...?headers}),
         ),
       );
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return HttpResponse.error(
           message: e.message, code: e.response?.statusCode);
     }

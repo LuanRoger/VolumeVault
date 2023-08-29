@@ -9,7 +9,7 @@ class BadgeController {
   Future<UserBadgeModel?> getUserBadges(String userId) async {
     if (_service == null) return null;
 
-    UserBadgeModel? userBadgeModel = await _service!.getUserBadges(userId);
+    final userBadgeModel = await _service!.getUserBadges(userId);
     return userBadgeModel;
   }
 }

@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
+import "package:flutter/material.dart";
 import "package:volume_vault/shared/theme/text_themes.dart";
 import "package:volume_vault/shared/widgets/fx/shimmer_effect.dart";
 
@@ -22,7 +21,7 @@ class ProfileAvatar extends StatelessWidget {
       this.width,
       this.letterBackgroundColor,
       this.isLoading = false})
-      : assert(letter.length == 1);
+      : assert(letter.length == 1, "Letter must be a single character");
 
   @override
   Widget build(BuildContext context) {

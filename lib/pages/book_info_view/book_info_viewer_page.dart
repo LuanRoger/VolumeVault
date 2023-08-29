@@ -1,31 +1,31 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:go_router/go_router.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:volume_vault/l10n/formaters/time_formater.dart";
-import 'package:volume_vault/l10n/l10n.dart';
-import 'package:volume_vault/models/book_model.dart';
-import 'package:volume_vault/pages/book_info_view/commands/book_info_viewer_command.dart';
-import 'package:volume_vault/providers/providers.dart';
-import 'package:volume_vault/shared/routes/app_routes.dart';
+import "package:volume_vault/l10n/l10n_utils.dart";
+import "package:volume_vault/models/book_model.dart";
+import "package:volume_vault/pages/book_info_view/commands/book_info_viewer_command.dart";
+import "package:volume_vault/providers/providers.dart";
+import "package:volume_vault/shared/routes/app_routes.dart";
 import "package:volume_vault/shared/theme/text_themes.dart";
-import 'package:volume_vault/shared/utils/image_utils.dart';
-import 'package:volume_vault/shared/widgets/cards/title_card.dart';
-import 'package:volume_vault/shared/widgets/cards/title_text_card.dart';
-import 'package:volume_vault/shared/widgets/chip/chip_list.dart';
-import 'package:volume_vault/shared/widgets/icon/icon_text.dart';
-import 'package:volume_vault/shared/widgets/progress_indicators/read_progress.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import "package:volume_vault/shared/utils/image_utils.dart";
+import "package:volume_vault/shared/widgets/cards/title_card.dart";
+import "package:volume_vault/shared/widgets/cards/title_text_card.dart";
+import "package:volume_vault/shared/widgets/chip/chip_list.dart";
+import "package:volume_vault/shared/widgets/icon/icon_text.dart";
+import "package:volume_vault/shared/widgets/progress_indicators/read_progress.dart";
 import "package:volume_vault/shared/widgets/texts/scroll_text.dart";
-import 'package:volume_vault/shared/widgets/viewers/book_showcase.dart';
+import "package:volume_vault/shared/widgets/viewers/book_showcase.dart";
 
 class BookInfoViewerPage extends HookConsumerWidget {
   final BookModel _book;
   final Future<void> Function(String, BuildContext)? onCardPressed;
 
-  final BookInfoViewerCommand _command = const BookInfoViewerCommand();
+  BookInfoViewerCommand get _command => const BookInfoViewerCommand();
 
   const BookInfoViewerPage(this._book, {super.key, this.onCardPressed});
 
@@ -46,12 +46,12 @@ class BookInfoViewerPage extends HookConsumerWidget {
           actions: [
             IconButton(
               onPressed: () async {
-                final bool? success = await context.push<bool>(
+                final success = await context.push<bool>(
                     AppRoutes.registerEditBookPageRoute,
                     extra: [book, true]);
                 if (success == null || !success || !isMounted()) return;
 
-                final BookModel? newInfoBook =
+                final newInfoBook =
                     await _command.refreshBookInfo(context, ref, book.id);
                 if (newInfoBook == null) return;
 
@@ -73,11 +73,11 @@ class BookInfoViewerPage extends HookConsumerWidget {
             ),
             IconButton(
               onPressed: () async {
-                bool delete = await _command.showDeleteBookDialog(context);
+                final delete = await _command.showDeleteBookDialog(context);
                 if (!delete || !isMounted()) return;
                 isLoadingState.value = true;
 
-                final bool success =
+                final success =
                     await _command.deleteBook(context, ref, book.id);
                 if (!success) return;
 
@@ -96,7 +96,7 @@ class BookInfoViewerPage extends HookConsumerWidget {
                 book,
                 onCardPressed: onCardPressed,
                 onRefresh: () async {
-                  final BookModel? newInfoBook =
+                  final newInfoBook =
                       await _command.refreshBookInfo(context, ref, book.id);
                   if (newInfoBook == null) return;
 
@@ -111,18 +111,22 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
   final Future<void> Function() onRefresh;
   final Future<void> Function(String, BuildContext)? onCardPressed;
 
-  const BookInfoViwerBodyPage(this.book,
-      {super.key, required this.onRefresh, this.onCardPressed});
+  const BookInfoViwerBodyPage(
+    this.book, {
+    required this.onRefresh,
+    super.key,
+    this.onCardPressed,
+  });
 
   Future<Widget> _buildCoverShowcase(String coverLink,
       {required Size showcaseSize,
       required BuildContext context,
       bool renderLightEffect = true}) async {
     if (coverLink.isEmpty) return const SizedBox();
-    NetworkImage coverImage = NetworkImage(coverLink);
+    final coverImage = NetworkImage(coverLink);
 
     await precacheImage(coverImage, context);
-    Color? dominantColor = await ImageUtils.getDominantColor(coverImage);
+    final dominantColor = await ImageUtils.getDominantColor(coverImage);
 
     return BookShowcase(
       size: showcaseSize,
@@ -141,7 +145,7 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
     final localization = localizationPreferences.localization;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(children: [
@@ -225,8 +229,8 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
                 ListTile(
                     title: Text(
                         AppLocalizations.of(context)!.formatBookViewerPage),
-                    trailing:
-                        Text(L10n.bookFormat(context, format: book.format!))),
+                    trailing: Text(
+                        localizeBookFormat(context, format: book.format!))),
               ListTile(
                 title:
                     Text(AppLocalizations.of(context)!.createdAtBookViewerPage),
@@ -249,7 +253,7 @@ class BookInfoViwerBodyPage extends HookConsumerWidget {
               title: Text(
                   AppLocalizations.of(context)!.readProgressBookViewerPage),
               content: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8),
                 child: ReadProgress(
                   readStatus: book.readStatus!,
                   readStartDay: book.readStartDay,

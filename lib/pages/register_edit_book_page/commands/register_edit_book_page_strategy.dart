@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:textfield_tags/textfield_tags.dart';
-import 'package:volume_vault/controllers/book_controller.dart';
-import 'package:volume_vault/models/book_model.dart';
-import 'package:volume_vault/models/enums/book_format.dart';
-import 'package:volume_vault/models/enums/read_status.dart';
-import 'package:volume_vault/services/models/edit_book_request.dart';
-import 'package:volume_vault/services/models/register_book_request.dart';
-import 'package:volume_vault/shared/widgets/dialogs/input_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
+import "package:textfield_tags/textfield_tags.dart";
+import "package:volume_vault/controllers/book_controller.dart";
+import "package:volume_vault/models/book_model.dart";
+import "package:volume_vault/models/enums/book_format.dart";
+import "package:volume_vault/models/enums/read_status.dart";
+import "package:volume_vault/services/models/edit_book_request.dart";
+import "package:volume_vault/services/models/register_book_request.dart";
+import "package:volume_vault/shared/widgets/dialogs/input_dialog.dart";
 
 abstract class RegisterEditBookPageStrategy {
   Future<void> showImageCoverDialog(
@@ -33,9 +33,9 @@ abstract class RegisterEditBookPageStrategy {
   }
 
   Future<bool> showConfirmEditDialog(BuildContext context) async {
-    bool saveUpdates = false;
+    var saveUpdates = false;
 
-    await showDialog(
+    await showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(AppLocalizations.of(context)!.editBookDialogTitle),

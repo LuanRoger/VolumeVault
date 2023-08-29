@@ -1,8 +1,10 @@
-import 'package:animations/animations.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:volume_vault/models/book_search_result.dart';
-import 'package:volume_vault/shared/widgets/chip/search_filter_chip_choice.dart';
+// ignore_for_file: lines_longer_than_80_chars
+
+import "package:animations/animations.dart";
+import "package:flutter/material.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:volume_vault/models/book_search_result.dart";
+import "package:volume_vault/shared/widgets/chip/search_filter_chip_choice.dart";
 
 class SearchFloatingCard {
   final String initialSearch;
@@ -11,14 +13,15 @@ class SearchFloatingCard {
       searchResultBuilder;
   final Size? size;
 
-  SearchFloatingCard(
-      {this.initialSearch = "",
-      required this.search,
-      required this.searchResultBuilder,
-      this.size});
+  SearchFloatingCard({
+    required this.search,
+    required this.searchResultBuilder,
+    this.initialSearch = "",
+    this.size,
+  });
 
   Future<void> show(BuildContext context) {
-    final Size dialogSize = size ?? MediaQuery.of(context).size;
+    final dialogSize = size ?? MediaQuery.of(context).size;
 
     return showGeneralDialog(
         context: context,
@@ -27,7 +30,6 @@ class SearchFloatingCard {
             MaterialLocalizations.of(context).modalBarrierDismissLabel,
         pageBuilder: (context, animation, secondaryAnimation) {
           return Align(
-            alignment: Alignment.center,
             child: SizedBox(
               width: dialogSize.width * 0.8,
               height: dialogSize.height * 0.9,
@@ -60,7 +62,7 @@ class _SeachCard extends HookWidget {
         () => search(searchController.text), [refreshSearchResultKey.value]);
     final searchFuture = useFuture(searchMemoize);
     useEffect(() {
-      onChange() {
+      void onChange() {
         refreshSearchResultKey.value = UniqueKey();
       }
 
@@ -73,7 +75,7 @@ class _SeachCard extends HookWidget {
         surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
         clipBehavior: Clip.hardEdge,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -81,21 +83,21 @@ class _SeachCard extends HookWidget {
                 flex: 0,
                 child: TextField(
                   controller: searchController,
-                  maxLines: 1,
                   decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.search_rounded),
                       suffixIcon: IconButton(
-                        onPressed: () => searchController.clear(),
+                        onPressed: searchController.clear,
                         icon: const Icon(Icons.backspace_rounded),
                       ),
                       suffixText:
                           "${searchFuture.data?.searchElapsedTime.inMilliseconds.toString() ?? "0"}ms",
                       border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide.none),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide.none,
+                      ),
                       filled: true,
                       isDense: true,
-                      contentPadding: const EdgeInsets.all(8.0)),
+                      contentPadding: const EdgeInsets.all(8)),
                 ),
               ),
               const Flexible(flex: 0, child: SearchFilterChipChoice()),

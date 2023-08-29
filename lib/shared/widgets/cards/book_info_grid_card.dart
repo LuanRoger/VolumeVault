@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 import "package:volume_vault/shared/theme/text_themes.dart";
-import 'package:volume_vault/shared/widgets/viewers/book_image_viewer.dart';
-import 'package:volume_vault/shared/widgets/cards/book_info_card.dart';
+import "package:volume_vault/shared/widgets/cards/book_info_card.dart";
+import "package:volume_vault/shared/widgets/viewers/book_image_viewer.dart";
 
 class BookInfoGridCard extends BookInfoCard {
   const BookInfoGridCard(super.bookModel,

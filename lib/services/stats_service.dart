@@ -1,10 +1,8 @@
-import 'package:volume_vault/models/api_config_params.dart';
+import "package:volume_vault/models/api_config_params.dart";
 import "package:volume_vault/models/http_code.dart";
-import 'package:volume_vault/models/http_response.dart';
-import 'package:volume_vault/models/interfaces/http_module.dart';
-import 'package:volume_vault/services/models/book_stats.dart';
-
-import '../shared/consts.dart';
+import "package:volume_vault/models/interfaces/http_module.dart";
+import "package:volume_vault/services/models/book_stats.dart";
+import "package:volume_vault/shared/consts.dart";
 
 class StatsService {
   late final HttpModule _httpModule;
@@ -25,10 +23,9 @@ class StatsService {
   final String _userIdQueryHeader = "userId";
 
   Future<BookStats?> getUserBooksStats() async {
-    Map<String, String> requestQuery = {_userIdQueryHeader: userIdentifier};
-    HttpResponse response =
-        await _httpModule.get(_bookStatsUrl, query: requestQuery);
-    if (response.statusCode != HttpCode.OK && response.body is! Map) {
+    final requestQuery = <String, String>{_userIdQueryHeader: userIdentifier};
+    final response = await _httpModule.get(_bookStatsUrl, query: requestQuery);
+    if (response.statusCode != HttpCode.ok && response.body is! Map) {
       return null;
     }
 

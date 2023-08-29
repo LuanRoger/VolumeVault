@@ -1,8 +1,8 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:volume_vault/l10n/supported_locales.dart';
-import 'package:volume_vault/shared/preferences/models/localization_preferences.dart';
-import 'package:volume_vault/shared/preferences/preferences_keys.dart';
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:shared_preferences/shared_preferences.dart";
+import "package:volume_vault/l10n/supported_locales.dart";
+import "package:volume_vault/shared/preferences/models/localization_preferences.dart";
+import "package:volume_vault/shared/preferences/preferences_keys.dart";
 
 class LocalizationPreferencesState
     extends StateNotifier<LocalizationPreferences> {
